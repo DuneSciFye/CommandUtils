@@ -1,7 +1,6 @@
 package me.dunescifye.commandutils;
 
 import dev.jorel.commandapi.CommandAPI;
-import dev.jorel.commandapi.CommandAPICommand;
 import me.dunescifye.commandutils.commands.*;
 import me.dunescifye.commandutils.placeholders.StringUtils;
 import org.bukkit.Bukkit;
@@ -29,6 +28,7 @@ public final class CommandUtils extends JavaPlugin {
         SetItemCommand.register();
         HighlightBlocksCommand.register();
         CobwebPrisonCommand.register();
+        ItemAttributeCommand.register();
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new StringUtils(this).register();
@@ -51,6 +51,7 @@ public final class CommandUtils extends JavaPlugin {
         CommandAPI.unregister("setitem");
         CommandAPI.unregister("highlightblocks");
         CommandAPI.unregister("cobwebprison");
+        CommandAPI.unregister("itemattribute");
     }
 
     public static CommandUtils getInstance(){

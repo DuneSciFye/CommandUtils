@@ -17,7 +17,6 @@ public class BoneMealBlockCommand {
                 .withOptionalArguments(new IntegerArgument("Amount"))
                 .withOptionalArguments(new IntegerArgument("Radius"))
                 .withOptionalArguments(new BooleanArgument("Affect Target Block"))
-                .withPermission("CommandPermission.OP")
                 .executes((sender, args) -> {
 
                     World world = Bukkit.getWorld((String) args.get("World"));
