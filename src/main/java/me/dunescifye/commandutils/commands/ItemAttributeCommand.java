@@ -33,7 +33,11 @@ public class ItemAttributeCommand {
                                 .then(new StringArgument("Operation")
                                     .replaceSuggestions(ArgumentSuggestions.strings(Arrays.toString(AttributeModifier.Operation.values())))
                                     .then(new StringArgument("Equipment Slot")
-                                        .replaceSuggestions(ArgumentSuggestions.strings(List.of(Arrays.toString(EquipmentSlot.values()))))
+                                        .replaceSuggestions(ArgumentSuggestions.strings(info -> {
+                                            return Arrays.stream(EquipmentSlot.values())
+                                                .map(value -> value.toString())
+                                                .collect(Collectors.toList());
+                                        }))
                                         .executes((sender, args) -> {
                                             Player p = (Player) args.get("Player");
                                             int slot = (Integer) args.get("Item Slot");
