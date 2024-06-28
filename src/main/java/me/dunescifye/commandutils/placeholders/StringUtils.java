@@ -7,6 +7,7 @@ import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -355,6 +356,35 @@ public class StringUtils extends PlaceholderExpansion {
                             return items.get(i);
                         }
                     }
+                case "armorset":
+                    String[] armorSetArgs = org.apache.commons.lang3.StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
+                    if (armorSetArgs == null) return "Invalid args.";
+
+                    String armorSetID = armorSetArgs[0];
+                    Player p = player.getPlayer();
+
+                    if (p == null || !p.isOnline()) return "false";
+
+                    ItemStack helm = p.getInventory().getHelmet();
+                    if (helm == null) return "false";
+                    ItemStack chest = p.getInventory().getChestplate();
+                    if (chest == null) return "false";
+                    ItemStack legs = p.getInventory().getLeggings();
+                    if (legs == null) return "false";
+                    ItemStack boots = p.getInventory().getBoots();
+                    if (boots == null) return "false";
+                    if (!helm.hasItemMeta() || !chest.hasItemMeta() || !legs.hasItemMeta() || !boots.hasItemMeta()) return "false";
+
+                    String helmID = helm.getItemMeta().getPersistentDataContainer().get(CommandUtils.keyEIID, PersistentDataType.STRING);
+                    if (helmID == null || !helmID.equals(armorSetID + "helm")) return "false";
+                    String legsID = legs.getItemMeta().getPersistentDataContainer().get(CommandUtils.keyEIID, PersistentDataType.STRING);
+                    if (legsID == null || !legsID.equals(armorSetID + "legs")) return "false";
+                    String chestID = chest.getItemMeta().getPersistentDataContainer().get(CommandUtils.keyEIID, PersistentDataType.STRING);
+                    if (chestID == null || !chestID.equals(armorSetID + "chest")) return "false";
+                    String bootsID = boots.getItemMeta().getPersistentDataContainer().get(CommandUtils.keyEIID, PersistentDataType.STRING);
+                    if (bootsID == null || !bootsID.equals(armorSetID + "boots")) return "false";
+
+                    return "true";
                 default:
                     separator = function.replace("\\_", "_");
                     String[] temp = arguments.split("_", 2);

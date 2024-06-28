@@ -41,5 +41,10 @@
       <option name="name" value="maven3" />
       <option name="url" value="https://maven.playpro.com" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven4" />
+      <option name="name" value="maven4" />
+      <option name="url" value="https://hub.jeff-media.com/nexus/repository/jeff-media-public/" />
+    </remote-repository>
   </component>
 </project>

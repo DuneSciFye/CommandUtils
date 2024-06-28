@@ -8,6 +8,7 @@ import org.bukkit.command.ConsoleCommandSender;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 
@@ -40,7 +41,9 @@ public class WeightedRandomCommand {
                     if (random <= numbers.get(i)) {
                         String[] commands = items.get(i).split("\\|");
                         for (String command : commands) {
-                            server.dispatchCommand(console, command);
+                            if (!Objects.equals(command, "")) {
+                                server.dispatchCommand(console, command);
+                            }
                         }
                         break;
                     }

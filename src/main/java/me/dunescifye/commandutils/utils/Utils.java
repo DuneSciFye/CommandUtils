@@ -65,6 +65,7 @@ public class Utils {
         }
     }
 
+
     public static boolean isNaturallyGenerated(Block block) {
         List<String[]> lookup = getCoreProtect().blockLookup(block, 2147483647);
         if (lookup != null && !lookup.isEmpty()) {

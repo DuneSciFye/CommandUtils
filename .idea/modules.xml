@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/CommandUtils.main.iml" filepath="$PROJECT_DIR$/.idea/modules/CommandUtils.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/CommandUtils.test.iml" filepath="$PROJECT_DIR$/.idea/modules/CommandUtils.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/me.dunescifye.CommandUtils.test.iml" filepath="$PROJECT_DIR$/.idea/modules/me.dunescifye.CommandUtils.test.iml" />
     </modules>
   </component>
 </project>

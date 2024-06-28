@@ -22,6 +22,18 @@ public class ItemAttributeCommand {
             .collect(Collectors.toList());
     }
 
+    private static List<String> getAllOperations() {
+        return Arrays.stream(AttributeModifier.Operation.values())
+            .map(Enum::name)
+            .collect(Collectors.toList());
+    }
+
+    private static List<String> getAllEquipmentSlots() {
+        return Arrays.stream(EquipmentSlot.values())
+            .map(Enum::name)
+            .collect(Collectors.toList());
+    }
+
     public static void register() {
         new CommandTree("itemattribute")
             .then(new LiteralArgument("add")
@@ -31,27 +43,29 @@ public class ItemAttributeCommand {
                             .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllAttributes().toArray(new String[0])))
                             .then(new DoubleArgument("Value")
                                 .then(new StringArgument("Operation")
-                                    .replaceSuggestions(ArgumentSuggestions.strings(Arrays.toString(AttributeModifier.Operation.values())))
+                                    .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllOperations().toArray(new String[0])))
                                     .then(new StringArgument("Equipment Slot")
-                                        .replaceSuggestions(ArgumentSuggestions.strings(info -> {
-                                            return Arrays.stream(EquipmentSlot.values())
-                                                .map(value -> value.toString())
-                                                .collect(Collectors.toList());
-                                        }))
+                                        .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllEquipmentSlots().toArray(new String[0])))
                                         .executes((sender, args) -> {
                                             Player p = (Player) args.get("Player");
                                             int slot = (Integer) args.get("Item Slot");
                                             ItemStack item = p.getInventory().getItem(slot);
+                                            if (item == null)
+                                                return;
+
                                             ItemMeta meta = item.getItemMeta();
+                                            if (meta == null)
+                                                return;
 
                                             double amount = (Double) args.get("Value");
                                             UUID uuid = UUID.randomUUID();
-                                            Attribute attribute = Attribute.valueOf(args.get("Attribute").toString());
-                                            AttributeModifier.Operation operation = AttributeModifier.Operation.valueOf((String) args.get("Operation"));
-                                            EquipmentSlot equipmentSlot = EquipmentSlot.valueOf((String) args.get("Equipment Slot"));
+                                            Attribute attribute = Attribute.valueOf(args.get("Attribute").toString().toUpperCase());
+                                            AttributeModifier.Operation operation = AttributeModifier.Operation.valueOf(args.get("Operation").toString().toUpperCase());
+                                            EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(args.get("Equipment Slot").toString().toUpperCase());
 
                                             AttributeModifier modifier = new AttributeModifier(uuid, uuid.toString(), amount, operation, equipmentSlot);
                                             meta.addAttributeModifier(attribute, modifier);
+                                            item.setItemMeta(meta);
                                         })
                                     )
                                 )
@@ -61,7 +75,27 @@ public class ItemAttributeCommand {
                 )
             )
             .then(new LiteralArgument("set"))
-            .then(new LiteralArgument("remove"))
+            .then(new LiteralArgument("remove")
+                .then(new PlayerArgument("Player")
+                    .then(new IntegerArgument("Item Slot")
+                        .then(new StringArgument("Attribute")
+                            .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllAttributes().toArray(new String[0])))
+                            .executes((sender, args) -> {
+                                Player p = (Player) args.get("Player");
+                                ItemStack item = p.getInventory().getItem((Integer) args.get("Item Slot"));
+                                if (item == null)
+                                    return;
+
+                                ItemMeta meta = item.getItemMeta();
+                                Attribute attribute = Attribute.valueOf(args.get("Attribute").toString().toUpperCase());
+
+                                meta.removeAttributeModifier(attribute);
+                                item.setItemMeta(meta);
+                            })
+                        )
+                    )
+                )
+            )
             .withPermission("commandutils.itemattribute")
             .register("commandutils");
     }
