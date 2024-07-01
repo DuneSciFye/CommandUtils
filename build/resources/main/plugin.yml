@@ -1,6 +1,0 @@
-name: CommandUtils
-version: '1.0.1'
-main: me.dunescifye.commandutils.CommandUtils
-depend: [CommandAPI]
-softdepend: [PlaceholderAPI]
-api-version: '1.20'
