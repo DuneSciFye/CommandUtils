@@ -44,6 +44,7 @@ public final class CommandUtils extends JavaPlugin {
         SpawnNoDamageFireworkCommand.register();
         BlockGravityCommand.register();
         BlockCycleCommand.register();
+        SendBossBarCommand.register();
 
         CustomBlockData.registerListener(plugin);
 
@@ -73,6 +74,7 @@ public final class CommandUtils extends JavaPlugin {
         CommandAPI.unregister("while");
         CommandAPI.unregister("spawnnodamagefirework");
         CommandAPI.unregister("blockgravity");
+        CommandAPI.unregister("sendbossbar");
     }
 
     public static CommandUtils getInstance(){
