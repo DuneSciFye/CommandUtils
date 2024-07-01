@@ -2,6 +2,7 @@ package me.dunescifye.commandutils;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
+import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import me.dunescifye.commandutils.commands.*;
 import me.dunescifye.commandutils.listeners.EntityChangeBlockListener;
 import me.dunescifye.commandutils.listeners.EntityDamageByEntityListener;
@@ -16,11 +17,17 @@ public final class CommandUtils extends JavaPlugin {
     public static NamespacedKey keyEIID = new NamespacedKey("executableitems", "ei-id");
     public static final NamespacedKey keyNoDamagePlayer = new NamespacedKey("lunaritems", "nodamageplayer");
     public static final NamespacedKey noGravityKey = new NamespacedKey("lunaritems", "nogravity");
-
+    @Override
+    public void onLoad() {
+        CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
+    }
 
     @Override
     public void onEnable() {
         plugin = this;
+
+        CommandAPI.onEnable();
+
 
         new EntityDamageByEntityListener().entityDamageByEntityHandler(this);
         new EntityChangeBlockListener().entityChangeBlockHandler(this);
@@ -47,6 +54,7 @@ public final class CommandUtils extends JavaPlugin {
         SendBossBarCommand.register();
 
         CustomBlockData.registerListener(plugin);
+
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new StringUtils(this).register();
@@ -75,6 +83,8 @@ public final class CommandUtils extends JavaPlugin {
         CommandAPI.unregister("spawnnodamagefirework");
         CommandAPI.unregister("blockgravity");
         CommandAPI.unregister("sendbossbar");
+
+        CommandAPI.onDisable();
     }
 
     public static CommandUtils getInstance(){
