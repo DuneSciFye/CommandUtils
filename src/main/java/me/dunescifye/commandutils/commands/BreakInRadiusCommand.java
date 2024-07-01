@@ -41,54 +41,6 @@ public class BreakInRadiusCommand {
         materials.add("");
         tags.add("");
 
-        new CommandAPICommand("test")
-            .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))
-            .withArguments(new StringArgument("World"))
-            .withArguments(new PlayerArgument("Player"))
-            .withArguments(new IntegerArgument("Radius", 0))
-            .withOptionalArguments(new ListArgumentBuilder<String>("Blocks")
-                .withList()
-                .withStringMapper()
-                .buildText()
-            )
-            .withOptionalArguments(new ListArgumentBuilder<String>("Tags")
-                .withList()
-                .withStringMapper()
-                .buildText()
-            )
-            .withOptionalArguments(new ItemStackArgument("Drop"))
-            .executes((sender, args) -> {
-
-                World world = Bukkit.getWorld((String) args.get("World"));
-                Location location = (Location) args.get("Location");
-                Block block = world.getBlockAt(location);
-                int radius = (int) args.get("Radius");
-                ItemStack drop = ((ItemStack) args.get("Drop"));
-
-                Set<Tag<Material>> whitelistTags = new HashSet<>();
-                Set<Tag<Material>> blacklistTags = new HashSet<>();
-                EnumSet<Material> whitelistMaterials = EnumSet.noneOf(Material.class);
-                EnumSet<Material> blacklistMaterials = EnumSet.noneOf(Material.class);
-
-                List<String> inputTags = (List<String>) args.get("Tags");
-                List<String> inputMaterials = (List<String>) args.get("Blocks");
-
-                for (int x = -radius; x <= radius; x++){
-                    for (int y = -radius; y <= radius; y++){
-                        for (int z = -radius; z <= radius; z++){
-                            Block b = block.getRelative(x, y, z);
-                            drop.setAmount(drop.getAmount() + 1);
-                            b.setType(AIR);
-                        }
-                    }
-                }
-
-                drop.setAmount(drop.getAmount() - 1);
-                world.dropItemNaturally(location, drop);
-
-            })
-            .register();
-
 
         new CommandTree("breakinradius")
             .then(new LocationArgument("Location", LocationType.BLOCK_POSITION)
