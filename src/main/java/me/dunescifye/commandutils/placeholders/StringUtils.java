@@ -376,13 +376,13 @@ public class StringUtils extends PlaceholderExpansion {
                     if (!helm.hasItemMeta() || !chest.hasItemMeta() || !legs.hasItemMeta() || !boots.hasItemMeta()) return "false";
 
                     String helmID = helm.getItemMeta().getPersistentDataContainer().get(CommandUtils.keyEIID, PersistentDataType.STRING);
-                    if (helmID == null || !helmID.equals(armorSetID + "helm")) return "false";
+                    if (helmID == null || !helmID.contains(armorSetID + "helm")) return "false";
                     String legsID = legs.getItemMeta().getPersistentDataContainer().get(CommandUtils.keyEIID, PersistentDataType.STRING);
-                    if (legsID == null || !legsID.equals(armorSetID + "legs")) return "false";
+                    if (legsID == null || !legsID.contains(armorSetID + "legs")) return "false";
                     String chestID = chest.getItemMeta().getPersistentDataContainer().get(CommandUtils.keyEIID, PersistentDataType.STRING);
-                    if (chestID == null || !chestID.equals(armorSetID + "chest")) return "false";
+                    if (chestID == null || !chestID.contains(armorSetID + "chest")) return "false";
                     String bootsID = boots.getItemMeta().getPersistentDataContainer().get(CommandUtils.keyEIID, PersistentDataType.STRING);
-                    if (bootsID == null || !bootsID.equals(armorSetID + "boots")) return "false";
+                    if (bootsID == null || !bootsID.contains(armorSetID + "boots")) return "false";
 
                     return "true";
                 default:
