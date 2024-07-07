@@ -1,8 +1,9 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
+import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -57,12 +58,28 @@ public class BreakInRadiusCommand {
                             ItemStack heldItem = player.getInventory().getItemInMainHand();
                             Collection<ItemStack> drops = new ArrayList<>();
 
-                            for (int x = -radius; x <= radius; x++){
-                                for (int y = -radius; y <= radius; y++){
-                                    for (int z = -radius; z <= radius; z++){
-                                        Block b = block.getRelative(x, y, z);
-                                        drops.addAll(b.getDrops(heldItem));
-                                        b.setType(AIR);
+                            if (CommandUtils.griefPreventionEnabled) {
+                                for (int x = -radius; x <= radius; x++) {
+                                    for (int y = -radius; y <= radius; y++) {
+                                        for (int z = -radius; z <= radius; z++) {
+                                            Block b = block.getRelative(x, y, z);
+                                            //Testing claim
+                                            Location relativeLocation = b.getLocation();
+                                            if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                                drops.addAll(b.getDrops(heldItem));
+                                                b.setType(AIR);
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                for (int x = -radius; x <= radius; x++) {
+                                    for (int y = -radius; y <= radius; y++) {
+                                        for (int z = -radius; z <= radius; z++) {
+                                            Block b = block.getRelative(x, y, z);
+                                            drops.addAll(b.getDrops(heldItem));
+                                            b.setType(AIR);
+                                        }
                                     }
                                 }
                             }

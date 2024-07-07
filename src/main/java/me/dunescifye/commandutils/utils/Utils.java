@@ -1,10 +1,14 @@
 package me.dunescifye.commandutils.utils;
 
+import me.ryanhamshire.GriefPrevention.DataStore;
+import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.coreprotect.CoreProtectAPI;
 import net.coreprotect.CoreProtect;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
@@ -79,6 +83,13 @@ public class Utils {
         return true;
     }
 
+    public static boolean isInsideClaim(final Player player, final Location blockLocation) {
+        final DataStore dataStore = GriefPrevention.instance.dataStore;
+        return dataStore.getClaimAt(blockLocation, false, dataStore.getPlayerData(player.getUniqueId()).lastClaim) != null;
+    }
+    public static boolean isWilderness(Location location) {
+        return GriefPrevention.instance.dataStore.getClaimAt(location, true, null) == null;
+    }
 
     private static CoreProtectAPI getCoreProtect() {
         Plugin plugin = getServer().getPluginManager().getPlugin("CoreProtect");

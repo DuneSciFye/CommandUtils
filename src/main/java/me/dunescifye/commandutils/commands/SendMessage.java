@@ -10,23 +10,22 @@ import org.bukkit.entity.Player;
 
 public class SendMessage {
 
-    public static void register(){
+        public static void register(){
 
-        new CommandAPICommand("sendmessage")
-            .withArguments(new PlayerArgument("Player"))
-            .withArguments(new GreedyStringArgument("Message"))
-            .executes((sender, args) -> {
+            new CommandAPICommand("sendmessage")
+                .withArguments(new PlayerArgument("Player"))
+                .withArguments(new GreedyStringArgument("Message"))
+                .executes((sender, args) -> {
+                    Player player = (Player) args.get("Player");
+                    String message = PlaceholderAPI.setPlaceholders(player, (String) args.get("Message"));
 
-                Player player = (Player) args.get("Player");
-                String message = PlaceholderAPI.setPlaceholders(player, (String) args.get("Message"));
+                    final Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
 
-                final Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
+                    player.sendMessage(component);
 
-                player.sendMessage(component);
-
-            })
-            .withPermission("CommandPermission.OP")
-            .register();
+                })
+                .withPermission("CommandPermission.OP")
+                .register();
 
     }
 
