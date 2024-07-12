@@ -58,6 +58,7 @@ public final class CommandUtils extends JavaPlugin {
         ReplaceInFacingCommand.register();
         BroadcastMessageCommand.register();
         ChanceRandomRun.register();
+        SpawnNoDamageEvokerFangCommand.register();
 
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
             Bukkit.getLogger().info("Detected GriefPrevention, enabling support for it.");
@@ -97,6 +98,7 @@ public final class CommandUtils extends JavaPlugin {
         CommandAPI.unregister("replaceinfacing");
         CommandAPI.unregister("broadcastmessage");
         CommandAPI.unregister("chancerandomrun");
+        CommandAPI.unregister("spawnnodamageevokerfang");
 
         CommandAPI.onDisable();
     }

@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.listeners;
 import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EvokerFangs;
 import org.bukkit.entity.Firework;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,6 +33,8 @@ public class EntityDamageByEntityListener implements Listener {
                     e.setCancelled(true);
                 }
             }
+        } else if (damager instanceof EvokerFangs evokerFangs) {
+            if (evokerFangs.hasMetadata("nodamage")) e.setCancelled(true);
         }
 
 
