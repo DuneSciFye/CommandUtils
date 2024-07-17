@@ -4,6 +4,7 @@ import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import me.dunescifye.commandutils.commands.*;
+import me.dunescifye.commandutils.files.Config;
 import me.dunescifye.commandutils.listeners.EntityChangeBlockListener;
 import me.dunescifye.commandutils.listeners.EntityDamageByEntityListener;
 import me.dunescifye.commandutils.placeholders.StringUtils;
@@ -32,7 +33,7 @@ public final class CommandUtils extends JavaPlugin {
         plugin = this;
 
         //CommandAPI.onEnable();
-
+        Config.setup(this);
 
         new EntityDamageByEntityListener().entityDamageByEntityHandler(this);
         new EntityChangeBlockListener().entityChangeBlockHandler(this);
