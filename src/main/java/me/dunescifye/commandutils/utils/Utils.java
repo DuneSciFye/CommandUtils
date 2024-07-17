@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -45,7 +46,15 @@ public class Utils {
     public static List<Predicate<Block>> getPredicate(String id){
         return predicates.get(id);
     }
+    public static Vector yawPitchToVector(float yaw, float pitch) {
+        double pitchRad = Math.toRadians(pitch);
+        double yawRad = Math.toRadians(yaw);
+        double x = Math.sin(pitchRad) * Math.cos(yawRad);
+        double y = Math.sin(pitchRad) * Math.sin(yawRad);
+        double z = Math.cos(pitchRad);
 
+        return new Vector(x, z, y);
+    }
     public static Collection<ItemStack> mergeSimilarItemStacks(Collection<ItemStack> itemStacks) {
         Map<Material, ItemStack> mergedStacksMap = new HashMap<>();
 

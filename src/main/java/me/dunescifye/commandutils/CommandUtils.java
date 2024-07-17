@@ -18,18 +18,20 @@ public final class CommandUtils extends JavaPlugin {
     public static final NamespacedKey keyNoDamagePlayer = new NamespacedKey("lunaritems", "nodamageplayer");
     public static final NamespacedKey noGravityKey = new NamespacedKey("lunaritems", "nogravity");
     public static boolean griefPreventionEnabled;
-
+    /*
     @Override
     public void onLoad() {
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
     }
+
+     */
 
 
     @Override
     public void onEnable() {
         plugin = this;
 
-        CommandAPI.onEnable();
+        //CommandAPI.onEnable();
 
 
         new EntityDamageByEntityListener().entityDamageByEntityHandler(this);
@@ -59,6 +61,7 @@ public final class CommandUtils extends JavaPlugin {
         BroadcastMessageCommand.register();
         ChanceRandomRun.register();
         SpawnNoDamageEvokerFangCommand.register();
+        SpawnBlockBreaker.register();
 
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
             Bukkit.getLogger().info("Detected GriefPrevention, enabling support for it.");
@@ -99,8 +102,9 @@ public final class CommandUtils extends JavaPlugin {
         CommandAPI.unregister("broadcastmessage");
         CommandAPI.unregister("chancerandomrun");
         CommandAPI.unregister("spawnnodamageevokerfang");
+        CommandAPI.unregister("spawnblockbreaker");
 
-        CommandAPI.onDisable();
+        //CommandAPI.onDisable();
     }
 
     public static CommandUtils getInstance(){
