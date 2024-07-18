@@ -5,6 +5,7 @@ import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import me.dunescifye.commandutils.commands.*;
 import me.dunescifye.commandutils.files.Config;
+import me.dunescifye.commandutils.listeners.BlockDropItemListener;
 import me.dunescifye.commandutils.listeners.EntityChangeBlockListener;
 import me.dunescifye.commandutils.listeners.EntityDamageByEntityListener;
 import me.dunescifye.commandutils.placeholders.StringUtils;
@@ -18,6 +19,7 @@ public final class CommandUtils extends JavaPlugin {
     public static NamespacedKey keyEIID = new NamespacedKey("executableitems", "ei-id");
     public static final NamespacedKey keyNoDamagePlayer = new NamespacedKey("lunaritems", "nodamageplayer");
     public static final NamespacedKey noGravityKey = new NamespacedKey("lunaritems", "nogravity");
+    public static final NamespacedKey autoPickupKey = new NamespacedKey("commandutils", "autopickup");
     public static boolean griefPreventionEnabled;
     /*
     @Override
@@ -37,6 +39,7 @@ public final class CommandUtils extends JavaPlugin {
 
         new EntityDamageByEntityListener().entityDamageByEntityHandler(this);
         new EntityChangeBlockListener().entityChangeBlockHandler(this);
+        new BlockDropItemListener().blockDropItemHandler(this);
 
         WaterlogCommand.register();
         BoneMealBlockCommand.register();

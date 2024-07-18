@@ -1,18 +1,27 @@
 package me.dunescifye.commandutils.commands;
 
+import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.files.Config;
 import me.dunescifye.commandutils.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +43,7 @@ public class SpawnBlockBreaker {
         PlayerArgument playerArgument = new PlayerArgument("Player");
         BooleanArgument checkClaimArgument = new BooleanArgument("Check Claim");
         BooleanArgument autoPickupArgument = new BooleanArgument("Auto Pickup");
+        BooleanArgument generateBlockBreakEventArgument = new BooleanArgument("Generate BLock Break Event");
 
         new CommandTree("spawnblockbreaker")
             .then((locationArgument)
@@ -254,7 +264,7 @@ public class SpawnBlockBreaker {
                                                     }
                                                 }.runTaskTimer(CommandUtils.getInstance(), 0, period);
                                             })
-                                            .then(autoPickupArgument
+                                            .then(generateBlockBreakEventArgument
                                                 .executes((sender, args) -> {
                                                     Player p = args.getByArgument(playerArgument);
                                                     Location loc = p.getLocation();
@@ -278,7 +288,8 @@ public class SpawnBlockBreaker {
                                                             }
 
                                                             Block origin = snowball.getLocation().getBlock();
-
+                                                            //Set meta data so LunarItems doesn't do radius mining
+                                                            p.setMetadata("ignoreBlockBreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
                                                             for (int x = -radius; x <= radius; x++) {
                                                                 for (int y = -radius; y <= radius; y++) {
                                                                     block: for (int z = -radius; z <= radius; z++) {
@@ -290,36 +301,74 @@ public class SpawnBlockBreaker {
                                                                                         continue block;
                                                                                     }
                                                                                 }
-                                                                                //Testing claim
-                                                                                Location relativeLocation = relative.getLocation();
-                                                                                if (Utils.isInsideClaim(p, relativeLocation) || Utils.isWilderness(relativeLocation)) {
-                                                                                    if (p.getInventory().firstEmpty() == -1) {
-                                                                                        relative.breakNaturally();
-                                                                                    } else {
-                                                                                        for (ItemStack drop : relative.getDrops()) {
-                                                                                            HashMap<Integer, ItemStack> unaddedItems = p.getInventory().addItem(drop);
-                                                                                            if (!unaddedItems.isEmpty()) {
-                                                                                                for (Map.Entry<Integer, ItemStack> entry : unaddedItems.entrySet()) {
-                                                                                                    relativeLocation.getWorld().dropItemNaturally(relativeLocation, entry.getValue());
-                                                                                                }
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                    relative.setType(Material.AIR);
-                                                                                    break;
-                                                                                }
+                                                                                p.breakBlock(relative);
+                                                                                continue block;
                                                                             }
                                                                         }
                                                                     }
                                                                 }
                                                             }
+                                                            p.removeMetadata("ignoreBlockBreak", CommandUtils.getInstance());
 
                                                             count += period;
                                                         }
                                                     }.runTaskTimer(CommandUtils.getInstance(), 0, period);
                                                 })
-                                            )
+                                                .then(autoPickupArgument
+                                                    .executes((sender, args) -> {
+                                                        Player p = args.getByArgument(playerArgument);
+                                                        Location loc = p.getLocation();
+                                                        Snowball snowball = p.getWorld().spawn(loc, Snowball.class);
+                                                        snowball.setVelocity(loc.getDirection().multiply(args.getByArgument(vectorMultiplierArgument)));
+                                                        snowball.setItem(args.getByArgument(itemStackArgument));
 
+                                                        int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
+
+                                                        String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
+                                                        List<Predicate<Block>> whitelist = Config.whitelists.get(whitelistedBlocks), blacklist = Config.blacklists.get(whitelistedBlocks);
+
+                                                        new BukkitRunnable() {
+                                                            int count = 0;
+
+                                                            @Override
+                                                            public void run() {
+                                                                if (count > maxTime || snowball.isDead()) {
+                                                                    cancel();
+                                                                    return;
+                                                                }
+
+                                                                Block origin = snowball.getLocation().getBlock();
+
+                                                                for (int x = -radius; x <= radius; x++) {
+                                                                    for (int y = -radius; y <= radius; y++) {
+                                                                        block: for (int z = -radius; z <= radius; z++) {
+                                                                            Block relative = origin.getRelative(x, y, z);
+                                                                            for (Predicate<Block> whitelist : whitelist) {
+                                                                                if (whitelist.test(relative)) {
+                                                                                    for (Predicate<Block> blacklist : blacklist) {
+                                                                                        if (blacklist.test(relative)) {
+                                                                                            continue block;
+                                                                                        }
+                                                                                    }
+                                                                                    p.setMetadata("ignoreBlockBreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
+                                                                                    //BlockBreakEvent blockBreakEvent = new BlockBreakEvent(relative, p);
+                                                                                    //Bukkit.getServer().getPluginManager().callEvent(blockBreakEvent);
+                                                                                    PersistentDataContainer pdc = new CustomBlockData(relative, CommandUtils.getInstance());
+                                                                                    pdc.set(CommandUtils.autoPickupKey, PersistentDataType.BOOLEAN, true);
+                                                                                    p.breakBlock(relative);
+                                                                                    p.removeMetadata("ignoreBlockBreak", CommandUtils.getInstance());
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                                count += period;
+                                                            }
+                                                        }.runTaskTimer(CommandUtils.getInstance(), 0, period);
+                                                    })
+                                                )
+                                            )
                                         )
                                     )
                                 )

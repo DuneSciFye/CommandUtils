@@ -32,10 +32,14 @@ repositories {
     maven {
         url = "https://jitpack.io/"
     }
+    maven {
+        url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+    }
 }
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
+    compileOnly "org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT"
     compileOnly "dev.jorel:commandapi-bukkit-core:9.4.0"
     //annotationProcessor "dev.jorel:commandapi-annotations:9.4.0"
     compileOnly 'me.clip:placeholderapi:2.11.5'
