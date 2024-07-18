@@ -2,7 +2,6 @@ package me.dunescifye.commandutils;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
-import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import me.dunescifye.commandutils.commands.*;
 import me.dunescifye.commandutils.files.Config;
 import me.dunescifye.commandutils.listeners.BlockDropItemListener;
@@ -66,6 +65,7 @@ public final class CommandUtils extends JavaPlugin {
         ChanceRandomRun.register();
         SpawnNoDamageEvokerFangCommand.register();
         SpawnBlockBreaker.register();
+        RunCommandWhenCommand.register();
 
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
             Bukkit.getLogger().info("Detected GriefPrevention, enabling support for it.");
@@ -107,6 +107,7 @@ public final class CommandUtils extends JavaPlugin {
         CommandAPI.unregister("chancerandomrun");
         CommandAPI.unregister("spawnnodamageevokerfang");
         CommandAPI.unregister("spawnblockbreaker");
+        CommandAPI.unregister("runwhen");
 
         //CommandAPI.onDisable();
     }

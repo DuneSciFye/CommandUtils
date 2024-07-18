@@ -32,7 +32,7 @@ public class WhileCommand {
                 String compareMethod = (String) args.get("Compare Method");
                 int delay = (Integer) args.get("Initial Delay");
                 int interval = (Integer) args.get("Interval");
-                String command = ((String) args.get("Commands")).replace("$", "%");
+                String[] commands = ((String) args.get("Commands")).replace("$", "%").split("||");
 
                 BukkitScheduler scheduler = Bukkit.getScheduler();
                 Server server = Bukkit.getServer();
@@ -40,20 +40,40 @@ public class WhileCommand {
 
                 switch (compareMethod) {
                     case "==" -> scheduler.runTaskTimer(CommandUtils.getInstance(), task -> {
-                        if (!p.isOnline() || !Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2))) task.cancel();
-                        server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(p, command));
+                        if (!p.isOnline() || !Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2)))
+                            if (!p.isOnline()) {
+                                task.cancel();
+                                return;
+                            }
+                        for (String command : commands)
+                            server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(p, command));
                     }, delay, interval);
                     case "!=" -> scheduler.runTaskTimer(CommandUtils.getInstance(), task -> {
-                        if (!p.isOnline() || Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2))) task.cancel();
-                        server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(p, command));
+                        if (!p.isOnline() || Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2)))
+                            if (!p.isOnline()) {
+                                task.cancel();
+                                return;
+                            }
+                        for (String command : commands)
+                            server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(p, command));
                     }, delay, interval);
                     case "contains" -> scheduler.runTaskTimer(CommandUtils.getInstance(), task -> {
-                        if (!p.isOnline() || !PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2))) task.cancel();
-                        server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(p, command));
+                        if (!p.isOnline() || !PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2)))
+                            if (!p.isOnline()) {
+                                task.cancel();
+                                return;
+                            }
+                        for (String command : commands)
+                            server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(p, command));
                     }, delay, interval);
                     case "!contains" -> scheduler.runTaskTimer(CommandUtils.getInstance(), task -> {
-                        if (!p.isOnline() || PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2))) task.cancel();
-                        server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(p, command));
+                        if (!p.isOnline() || PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2)))
+                            if (!p.isOnline()) {
+                                task.cancel();
+                                return;
+                            }
+                        for (String command : commands)
+                            server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(p, command));
                     }, delay, interval);
                 }
             })
