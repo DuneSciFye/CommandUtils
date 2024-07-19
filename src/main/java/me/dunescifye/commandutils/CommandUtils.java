@@ -66,6 +66,7 @@ public final class CommandUtils extends JavaPlugin {
         SpawnNoDamageEvokerFangCommand.register();
         SpawnBlockBreaker.register();
         RunCommandWhenCommand.register();
+        FoodCommand.register();
 
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
             Bukkit.getLogger().info("Detected GriefPrevention, enabling support for it.");
@@ -108,6 +109,7 @@ public final class CommandUtils extends JavaPlugin {
         CommandAPI.unregister("spawnnodamageevokerfang");
         CommandAPI.unregister("spawnblockbreaker");
         CommandAPI.unregister("runwhen");
+        CommandAPI.unregister("food");
 
         //CommandAPI.onDisable();
     }

@@ -22,7 +22,7 @@ public class RunCommandWhenCommand {
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
     public static void register() {
         new CommandTree("runcommandwhen")
-            .then(new LiteralArgument("remove")
+            .then(new LiteralArgument("add")
                 .then(new StringArgument("Command ID")
                     .then(new PlayerArgument("Player")
                         .then(new TextArgument("Compare 1")
@@ -37,11 +37,11 @@ public class RunCommandWhenCommand {
                                                     String compare1 = ((String) args.get("Compare 1")).replace("$", "%");
                                                     String compare2 = ((String) args.get("Compare 2")).replace("$", "%");
                                                     String compareMethod = (String) args.get("Compare Method");
+                                                    String commandID = (String) args.get("Command ID");
                                                     int delay = (Integer) args.get("Initial Delay");
                                                     int interval = (Integer) args.get("Interval");
                                                     String[] commands = ((String) args.get("Commands")).replace("$", "%").split("\\|");
 
-                                                    BukkitScheduler scheduler = Bukkit.getScheduler();
                                                     Server server = Bukkit.getServer();
                                                     ConsoleCommandSender console = server.getConsoleSender();
                                                     BukkitTask task = null;
@@ -105,7 +105,9 @@ public class RunCommandWhenCommand {
                                                             }
                                                         }.runTaskTimer(CommandUtils.getInstance(), delay, interval);
                                                     }
-                                                    tasks.put((String) args.get("Command ID"), task);
+                                                    //Cancel task with same ID
+                                                    tasks.remove(commandID).cancel();
+                                                    tasks.put(commandID, task);
                                                 })
                                             )
                                         )
@@ -116,87 +118,15 @@ public class RunCommandWhenCommand {
                     )
                 )
             )
-            .then(new LiteralArgument("add")
+            .then(new LiteralArgument("remove")
+                .then(new StringArgument("Command ID")
+                    .executes((sender, args) -> {
+                        String commandID = args.getUnchecked("Command ID");
+                        tasks.remove(commandID).cancel();
+                    })
+                )
             )
             .withPermission("commandutils.runcommandwhen")
-            .register("commandutils");
-        new CommandAPICommand("runwhen")
-            .withArguments(new MultiLiteralArgument("Option", "remove", "add"))
-            .withArguments(new StringArgument("Command ID"))
-            .withArguments(new PlayerArgument("Player"))
-            .withArguments(new TextArgument("Compare 1"))
-            .withArguments(new TextArgument("Compare Method")
-                .replaceSuggestions(ArgumentSuggestions.strings("==", "!=", "contains", "!contains"))
-            )
-            .withArguments(new TextArgument("Compare 2"))
-            .withArguments(new IntegerArgument("Initial Delay"))
-            .withArguments(new IntegerArgument("Interval"))
-            .withArguments(new GreedyStringArgument("Commands"))
-            .executes((sender, args) -> {
-                Player p = (Player) args.get("Player");
-                String compare1 = ((String) args.get("Compare 1")).replace("$", "%");
-                String compare2 = ((String) args.get("Compare 2")).replace("$", "%");
-                String compareMethod = (String) args.get("Compare Method");
-                int delay = (Integer) args.get("Initial Delay");
-                int interval = (Integer) args.get("Interval");
-                String[] commands = ((String) args.get("Commands")).replace("$", "%").split("\\|");
-
-                BukkitScheduler scheduler = Bukkit.getScheduler();
-                Server server = Bukkit.getServer();
-                ConsoleCommandSender console = server.getConsoleSender();
-
-                assert compareMethod != null;
-                switch (compareMethod) {
-                    case "==" -> scheduler.runTaskTimer(CommandUtils.getInstance(), task -> {
-                        if (!p.isOnline()) {
-                            task.cancel();
-                            return;
-                        }
-                        if (Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2))) {
-                            task.cancel();
-                            for (String command : commands)
-                                server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(p, command));
-                        }
-                    }, delay, interval);
-                    case "!=" -> scheduler.runTaskTimer(CommandUtils.getInstance(), task -> {
-                        if (!p.isOnline())
-                            if (!p.isOnline()) {
-                                task.cancel();
-                                return;
-                            }
-                        if (!Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2))) {
-                            task.cancel();
-                            for (String command : commands)
-                                server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(p, command));
-                        }
-                    }, delay, interval);
-                    case "contains" -> scheduler.runTaskTimer(CommandUtils.getInstance(), task -> {
-                        if (!p.isOnline())
-                            if (!p.isOnline()) {
-                                task.cancel();
-                                return;
-                            }
-                        if (PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2))) {
-                            task.cancel();
-                            for (String command : commands)
-                                server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(p, command));
-                        }
-                    }, delay, interval);
-                    case "!contains" -> scheduler.runTaskTimer(CommandUtils.getInstance(), task -> {
-                        if (!p.isOnline())
-                            if (!p.isOnline()) {
-                                task.cancel();
-                                return;
-                            }
-                        if (!PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2))) {
-                            task.cancel();
-                            for (String command : commands)
-                                server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(p, command));
-                        }
-                    }, delay, interval);
-                }
-            })
-            .withPermission("commandutils.command.runwhen")
             .register("commandutils");
     }
 }
