@@ -1,8 +1,10 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.ItemStackArgument;
+import dev.jorel.commandapi.arguments.LiteralArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -34,5 +36,24 @@ public class SetItemCommand {
             .withPermission("CommandPermission.OP")
             .register();
 
+        new CommandTree("setitem")
+            .then(new PlayerArgument("Player")
+                .then(new IntegerArgument("Slot", 0, 40)
+                    .then(new LiteralArgument("material")
+                        .then(new ItemStackArgument("Material")
+                            .executes((sender, args) -> {
+                                Player p = (Player) args.get("Player");
+                                int slot = (int) args.get("Slot");
+                                ItemMeta meta = p.getInventory().getItem(slot).getItemMeta();
+                                ItemStack newItem = (ItemStack) args.get("Material");
+                                newItem.setItemMeta(meta);
+                                p.getInventory().setItem(slot, newItem);
+                            })
+                        )
+                    )
+                )
+            )
+            .withPermission("commandutils.command.setitem")
+            .register("commandutils");
     }
 }
