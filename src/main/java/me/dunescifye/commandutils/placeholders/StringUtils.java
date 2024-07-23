@@ -348,9 +348,6 @@ public class StringUtils extends PlaceholderExpansion {
                     }
                     int randomweightedrandom = ThreadLocalRandom.current().nextInt(1, totalWeight);
 
-                    Server server = Bukkit.getServer();
-                    ConsoleCommandSender console = server.getConsoleSender();
-
                     for (int i = 0; i < numbers.size(); i++) {
                         if (randomweightedrandom <= numbers.get(i)) {
                             return items.get(i);
@@ -385,6 +382,8 @@ public class StringUtils extends PlaceholderExpansion {
                     if (bootsID == null || !bootsID.contains(armorSetID + "boots")) return "false";
 
                     return "true";
+                case "worldenvironment":
+                    return player.getPlayer().getWorld().getEnvironment().toString();
                 default:
                     separator = function.replace("\\_", "_");
                     String[] temp = arguments.split("_", 2);

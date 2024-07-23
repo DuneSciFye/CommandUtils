@@ -87,7 +87,7 @@ public class ItemAttributeCommand {
                                     return;
 
                                 ItemMeta meta = item.getItemMeta();
-                                Attribute attribute = Attribute.valueOf(args.get("Attribute").toString().toUpperCase());
+                                Attribute attribute = Attribute.valueOf(((String) args.get("Attribute")).toUpperCase());
 
                                 meta.removeAttributeModifier(attribute);
                                 item.setItemMeta(meta);
