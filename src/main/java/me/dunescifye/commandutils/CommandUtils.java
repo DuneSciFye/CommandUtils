@@ -68,7 +68,6 @@ public final class CommandUtils extends JavaPlugin {
         RunCommandWhenCommand.register();
         FoodCommand.register();
         SetTNTSourceCommand.register();
-        DamageIgnoreArmor.register();
 
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
             Bukkit.getLogger().info("Detected GriefPrevention, enabling support for it.");
@@ -113,7 +112,6 @@ public final class CommandUtils extends JavaPlugin {
         CommandAPI.unregister("runwhen");
         CommandAPI.unregister("food");
         CommandAPI.unregister("settntsource");
-        CommandAPI.unregister("damageignorearmor");
 
         //CommandAPI.onDisable();
     }
