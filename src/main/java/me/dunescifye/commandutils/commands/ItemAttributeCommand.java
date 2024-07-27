@@ -38,7 +38,7 @@ public class ItemAttributeCommand {
         new CommandTree("itemattribute")
             .then(new LiteralArgument("add")
                 .then(new PlayerArgument("Player")
-                    .then(new IntegerArgument("Item Slot")
+                    .then(new IntegerArgument("Item Slot", -1, 36)
                         .then(new StringArgument("Attribute")
                             .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllAttributes().toArray(new String[0])))
                             .then(new DoubleArgument("Value")
@@ -49,7 +49,7 @@ public class ItemAttributeCommand {
                                         .executes((sender, args) -> {
                                             Player p = (Player) args.get("Player");
                                             int slot = (Integer) args.get("Item Slot");
-                                            ItemStack item = p.getInventory().getItem(slot);
+                                            ItemStack item = slot == -1 ? p.getInventory().getItemInMainHand() : p.getInventory().getItem(slot);
                                             if (item == null)
                                                 return;
 
@@ -82,12 +82,13 @@ public class ItemAttributeCommand {
                             .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllAttributes().toArray(new String[0])))
                             .executes((sender, args) -> {
                                 Player p = (Player) args.get("Player");
-                                ItemStack item = p.getInventory().getItem((Integer) args.get("Item Slot"));
+                                int slot = (Integer) args.get("Item Slot");
+                                ItemStack item = slot == -1 ? p.getInventory().getItemInMainHand() : p.getInventory().getItem(slot);
                                 if (item == null)
                                     return;
 
                                 ItemMeta meta = item.getItemMeta();
-                                Attribute attribute = Attribute.valueOf(args.get("Attribute").toString().toUpperCase());
+                                Attribute attribute = Attribute.valueOf(((String) args.get("Attribute")).toUpperCase());
 
                                 meta.removeAttributeModifier(attribute);
                                 item.setItemMeta(meta);
