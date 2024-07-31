@@ -31,7 +31,7 @@ public class ChangeVillagerProfessionCommand {
                 assert entities != null;
                 for (Entity entity : entities) {
                     if (entity instanceof Villager villager) {
-                        villager.setProfession(Villager.Profession.valueOf((args.getUnchecked("Profession"))));
+                        villager.setProfession(Villager.Profession.valueOf(((String) args.get("Profession")).toUpperCase()));
                     }
                 }
             })
