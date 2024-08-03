@@ -20,6 +20,7 @@ public class LoadCrossbowCommand {
                 ItemStack item = ((Player) args.get("Player")).getInventory().getItem((int) args.get("Slot"));
                 if (item.getItemMeta() instanceof CrossbowMeta crossbowMeta) {
                     crossbowMeta.setChargedProjectiles(List.of(new ItemStack(Material.ARROW)));
+                    item.setItemMeta(crossbowMeta);
                 }
             })
             .withPermission("commandutils.command.loadcrossbow")
