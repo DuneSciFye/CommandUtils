@@ -69,6 +69,7 @@ public final class CommandUtils extends JavaPlugin {
         FoodCommand.register();
         SetTNTSourceCommand.register();
         ChangeVillagerProfessionCommand.register();
+        LoadCrossbowCommand.register();
 
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
             Bukkit.getLogger().info("Detected GriefPrevention, enabling support for it.");
@@ -114,6 +115,7 @@ public final class CommandUtils extends JavaPlugin {
         CommandAPI.unregister("food");
         CommandAPI.unregister("settntsource");
         CommandAPI.unregister("changevillagerprofession");
+        CommandAPI.unregister("loadcrossbow");
 
         //CommandAPI.onDisable();
     }

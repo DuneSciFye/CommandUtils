@@ -25,10 +25,7 @@ import java.util.regex.Pattern;
 
 public class StringUtils extends PlaceholderExpansion {
 
-    private final CommandUtils plugin;
-
     public StringUtils(CommandUtils plugin) {
-        this.plugin = plugin;
     }
 
     @Override
