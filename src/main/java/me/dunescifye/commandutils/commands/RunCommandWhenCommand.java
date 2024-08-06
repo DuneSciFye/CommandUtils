@@ -27,7 +27,7 @@ public class RunCommandWhenCommand {
                     .then(new PlayerArgument("Player")
                         .then(new TextArgument("Compare 1")
                             .then(new TextArgument("Compare Method")
-                                .replaceSuggestions(ArgumentSuggestions.strings("==", "!=", "contains", "!contains"))
+                                .replaceSuggestions(ArgumentSuggestions.strings("==", "!=", "contains", "!contains", "equals"))
                                 .then(new TextArgument("Compare 2")
                                     .then(new IntegerArgument("Initial Delay")
                                         .then(new IntegerArgument("Interval")
@@ -48,7 +48,7 @@ public class RunCommandWhenCommand {
 
                                                     assert compareMethod != null;
                                                     switch (compareMethod) {
-                                                        case "==" -> task = new BukkitRunnable() {
+                                                        case "==", "equals" -> task = new BukkitRunnable() {
                                                             @Override
                                                             public void run() {
                                                                 if (!p.isOnline()) {
@@ -106,7 +106,10 @@ public class RunCommandWhenCommand {
                                                         }.runTaskTimer(CommandUtils.getInstance(), delay, interval);
                                                     }
                                                     //Cancel task with same ID
-                                                    tasks.remove(commandID).cancel();
+                                                    BukkitTask oldTask = tasks.remove(commandID);
+                                                    if (oldTask != null) {
+                                                        oldTask.cancel();
+                                                    }
                                                     tasks.put(commandID, task);
                                                 })
                                             )
