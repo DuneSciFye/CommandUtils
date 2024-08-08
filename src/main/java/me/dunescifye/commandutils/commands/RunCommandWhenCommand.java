@@ -125,7 +125,10 @@ public class RunCommandWhenCommand {
                 .then(new StringArgument("Command ID")
                     .executes((sender, args) -> {
                         String commandID = args.getUnchecked("Command ID");
-                        tasks.remove(commandID).cancel();
+                        BukkitTask oldTask = tasks.remove(commandID);
+                        if (oldTask != null) {
+                            oldTask.cancel();
+                        }
                     })
                 )
             )
