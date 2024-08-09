@@ -72,6 +72,7 @@ public final class CommandUtils extends JavaPlugin {
         LoadCrossbowCommand.register();
         RayTraceParticle.register();
         LaunchFireworkCommand.register();
+        SetCursorItem.register();
 
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
             Bukkit.getLogger().info("Detected GriefPrevention, enabling support for it.");
