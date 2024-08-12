@@ -57,8 +57,8 @@ public class HighlightBlocksCommand {
                     }
                 }
             })
-            .withPermission("CommandPermission.OP")
-            .register();
+            .withPermission("commandutils.command.highlightblocks")
+            .register("commandutils");
 
     }
 }

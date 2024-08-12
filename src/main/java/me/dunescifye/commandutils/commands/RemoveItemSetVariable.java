@@ -45,8 +45,8 @@ public class RemoveItemSetVariable {
                 }
 
             })
-            .withPermission("CommandPermission.OP")
-            .register();
+            .withPermission("commandutils.command.removeitemsetvariable")
+            .register("commandutils");
     }
 
 }

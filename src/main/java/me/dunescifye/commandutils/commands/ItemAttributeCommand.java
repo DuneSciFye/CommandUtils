@@ -97,7 +97,7 @@ public class ItemAttributeCommand {
                     )
                 )
             )
-            .withPermission("commandutils.itemattribute")
+            .withPermission("commandutils.command.itemattribute")
             .register("commandutils");
     }
 

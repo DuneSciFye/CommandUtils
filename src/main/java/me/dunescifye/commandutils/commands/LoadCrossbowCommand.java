@@ -1,6 +1,7 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import org.bukkit.Material;
@@ -16,10 +17,17 @@ public class LoadCrossbowCommand {
         new CommandAPICommand("loadcrossbow")
             .withArguments(new PlayerArgument("Player"))
             .withArguments(new IntegerArgument("Slot", 0, 36))
+            .withOptionalArguments(new BooleanArgument("Loaded"))
             .executes((sender, args) -> {
-                ItemStack item = ((Player) args.get("Player")).getInventory().getItem((int) args.get("Slot"));
+                Player p = args.getUnchecked("Player");
+                assert p != null;
+                ItemStack item = p.getInventory().getItem(args.getUnchecked("Slot"));
                 if (item.getItemMeta() instanceof CrossbowMeta crossbowMeta) {
-                    crossbowMeta.setChargedProjectiles(List.of(new ItemStack(Material.ARROW)));
+                    if (args.getOrDefaultUnchecked("Loaded", true)) {
+                        crossbowMeta.setChargedProjectiles(List.of(new ItemStack(Material.ARROW)));
+                    } else {
+                        crossbowMeta.setChargedProjectiles(List.of());
+                    }
                     item.setItemMeta(crossbowMeta);
                 }
             })

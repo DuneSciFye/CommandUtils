@@ -62,8 +62,8 @@ public class CobwebPrisonCommand {
                     }
                 }
             })
-            .withPermission("CommandPermission.OP")
-            .register();
+            .withPermission("commandutils.command.cobwebprison")
+            .register("commandutils");
     }
 
 }

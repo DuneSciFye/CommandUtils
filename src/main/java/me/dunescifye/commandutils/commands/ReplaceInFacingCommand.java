@@ -81,7 +81,7 @@ public class ReplaceInFacingCommand {
                 }
 
             })
-            .withPermission("commandutils.command.replace")
-            .register();
+            .withPermission("commandutils.command.replaceinfacing")
+            .register("commandutils");
     }
 }
