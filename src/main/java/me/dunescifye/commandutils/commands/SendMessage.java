@@ -24,8 +24,8 @@ public class SendMessage {
                     player.sendMessage(component);
 
                 })
-                .withPermission("CommandPermission.OP")
-                .register();
+                .withPermission("commandutils.command.sendmessage")
+                .register("commandutils");
 
     }
 

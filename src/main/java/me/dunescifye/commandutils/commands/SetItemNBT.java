@@ -40,8 +40,8 @@ public class SetItemNBT {
                 item.setItemMeta(meta);
 
             })
-            .withPermission("CommandPermission.OP")
-            .register();
+            .withPermission("commandutils.command.setitemnbt")
+            .register("commandutils");
     }
 
 
