@@ -12,9 +12,11 @@ import java.util.*;
 
 import static me.dunescifye.commandutils.utils.Utils.mergeSimilarItemStacks;
 
-public class BreakInFacing {
+public class BreakInFacingCommand extends Command {
 
     public static void register() {
+
+        if (!BreakInFacingCommand.getEnabled()) return;
 
         Collection<String> materials = new ArrayList<>();
         List<String> tags = new ArrayList<>();
@@ -1117,6 +1119,7 @@ public class BreakInFacing {
                 )
             )
             .withPermission("commandutils.command.breakinfacing")
+            .withAliases(BreakInFacingCommand.getCommandAliases())
             .register("commandutils");
     }
 

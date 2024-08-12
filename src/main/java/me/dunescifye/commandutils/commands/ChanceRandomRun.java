@@ -9,10 +9,11 @@ import org.bukkit.command.ConsoleCommandSender;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ChanceRandomRun {
+public class ChanceRandomRun extends Command {
 
 
     public static void register(){
+        if (!ChanceRandomRun.getEnabled()) return;
 
         new CommandAPICommand("chancerandomrun")
             .withArguments(new GreedyStringArgument("Arguments"))
@@ -36,6 +37,7 @@ public class ChanceRandomRun {
 
             })
             .withPermission("commandutils.command.chancerandomrun")
+            .withAliases(ChanceRandomRun.getCommandAliases())
             .register("commandutils");
 
     }

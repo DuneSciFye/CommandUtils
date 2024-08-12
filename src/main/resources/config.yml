@@ -1,3 +1,24 @@
+Whitelists:
+  axe:
+    - "#mineable/axe"
+    - "#leaves"
+    - "!BARREL"
+    - "!CHEST"
+    - "!TRAPPED_CHEST"
+    - "!#all_signs"
+  pickaxe:
+    - "#mineable/pickaxe"
+    - "!SPAWNER"
+    - "!GILDED_BLACKSTONE"
+    - "!DROPPER"
+    - "!DISPENSER"
+    - "!HOPPER"
+    - "!FURNACE"
+    - "!BLAST_FURNACE"
+    - "!SMOKER"
+    - "!#shulker_boxes"
+  shovel:
+    "#mineable/shovel"
 Commands:
   BlockCycle:
     Enabled: true

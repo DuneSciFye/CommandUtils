@@ -9,9 +9,10 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class BroadcastMessageCommand {
+public class BroadcastMessageCommand extends Command {
 
     public static void register() {
+        if (!BroadcastMessageCommand.getEnabled()) return;
 
         new CommandAPICommand("broadcastmessage")
             .withArguments(new GreedyStringArgument("Message"))
@@ -25,6 +26,7 @@ public class BroadcastMessageCommand {
 
             })
             .withPermission("commandutils.command.broadcastmessage")
+            .withAliases(BroadcastMessageCommand.getCommandAliases())
             .register("commandutils");
     }
 }

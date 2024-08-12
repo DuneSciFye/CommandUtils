@@ -17,9 +17,11 @@ import java.util.Collection;
 
 import static me.dunescifye.commandutils.utils.Utils.*;
 
-public class BreakAndReplant {
+public class BreakAndReplantCommand extends Command {
 
     public static void register(){
+
+        if (!BreakAndReplantCommand.getEnabled()) return;
 
         new CommandTree("breakandreplant")
             .then(new LocationArgument("Location", LocationType.BLOCK_POSITION)
@@ -114,6 +116,7 @@ public class BreakAndReplant {
                 )
             )
             .withPermission("commandutils.command.breakandreplant")
+            .withAliases(BreakAndReplantCommand.getCommandAliases())
             .register("commandutils");
 
     }

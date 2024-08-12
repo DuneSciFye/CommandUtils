@@ -14,7 +14,7 @@ import java.util.*;
 import static me.dunescifye.commandutils.utils.Utils.mergeSimilarItemStacks;
 import static org.bukkit.Material.AIR;
 
-public class BreakInRadiusCommand {
+public class BreakInRadiusCommand extends Command {
 
     public static void register() {
         /*
@@ -24,6 +24,7 @@ public class BreakInRadiusCommand {
         }
 
          */
+        if (!BreakInRadiusCommand.getEnabled()) return;
 
 
 
@@ -457,6 +458,7 @@ public class BreakInRadiusCommand {
                 )
             )
             .withPermission("commandutils.command.breakinradius")
+            .withAliases(BreakInRadiusCommand.getCommandAliases())
             .register("commandutils");
     }
 

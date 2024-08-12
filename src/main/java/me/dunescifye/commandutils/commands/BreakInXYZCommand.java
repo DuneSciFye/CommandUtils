@@ -11,9 +11,10 @@ import java.util.*;
 
 import static me.dunescifye.commandutils.utils.Utils.mergeSimilarItemStacks;
 
-public class BreakInXYZCommand {
+public class BreakInXYZCommand extends Command {
 
     public static void register() {
+        if (!BreakInXYZCommand.getEnabled()) return;
 
         Collection<String> materials = new ArrayList<>();
         Collection<String> tags = new ArrayList<>(List.of(
@@ -363,6 +364,7 @@ public class BreakInXYZCommand {
                         )
                 )
             .withPermission("commandutils.command.breakinxyz")
+            .withAliases(BreakInXYZCommand.getCommandAliases())
             .register("commandutils");
     }
 

@@ -8,9 +8,11 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-public class BoneMealBlockCommand {
+public class BoneMealBlockCommand extends Command{
 
     public static void register(){
+        if (!BoneMealBlockCommand.getEnabled()) return;
+
         new CommandAPICommand("bonemealblock")
                 .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))
                 .withArguments(new StringArgument("World"))
@@ -52,7 +54,8 @@ public class BoneMealBlockCommand {
                         }
                     }
                 })
-                .withPermission("commandutils.command.bonemealblock")
+            .withPermission("commandutils.command.bonemealblock")
+            .withAliases(BoneMealBlockCommand.getCommandAliases())
             .register("commandutils");
     }
 }

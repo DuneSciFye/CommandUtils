@@ -37,7 +37,7 @@ public final class CommandUtils extends JavaPlugin {
         plugin = this;
         Logger logger = plugin.getLogger();
 
-        //Files
+        //Files first
         Config.setup(this);
 
         registerListeners();
@@ -47,8 +47,8 @@ public final class CommandUtils extends JavaPlugin {
         BoneMealBlockCommand.register();
         BreakInRadiusCommand.register();
         BreakInXYZCommand.register();
-        BreakInFacing.register();
-        BreakAndReplant.register();
+        BreakInFacingCommand.register();
+        BreakAndReplantCommand.register();
         RemoveItemSetVariable.register();
         SendMessage.register();
         SetItemNBT.register();

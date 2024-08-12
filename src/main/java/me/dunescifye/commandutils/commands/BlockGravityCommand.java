@@ -16,9 +16,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-public class BlockGravityCommand implements Listener {
+public class BlockGravityCommand extends Command {
 
     public static void register() {
+        if (!BlockGravityCommand.getEnabled()) return;
+
         new CommandAPICommand("blockgravity")
             .withArguments(new StringArgument("World"))
             .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))
@@ -34,6 +36,7 @@ public class BlockGravityCommand implements Listener {
                 }
             })
             .withPermission("commandutils.command.blockgravity")
+            .withAliases(BlockGravityCommand.getCommandAliases())
             .register("commandutils");
     }
 
