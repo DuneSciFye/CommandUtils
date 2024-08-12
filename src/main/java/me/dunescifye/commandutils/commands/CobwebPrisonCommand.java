@@ -7,9 +7,11 @@ import org.bukkit.block.Block;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-public class CobwebPrisonCommand {
+public class CobwebPrisonCommand extends Command{
 
     public static void register() {
+        if (!CobwebPrisonCommand.getEnabled()) return;
+
         new CommandAPICommand("cobwebprison")
             .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))
             .withArguments(new StringArgument("World"))
@@ -63,6 +65,7 @@ public class CobwebPrisonCommand {
                 }
             })
             .withPermission("commandutils.command.cobwebprison")
+            .withAliases(CobwebPrisonCommand.getCommandAliases())
             .register("commandutils");
     }
 

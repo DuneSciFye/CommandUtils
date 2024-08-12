@@ -2,6 +2,7 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
+import dev.jorel.commandapi.wrappers.ParticleData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -14,15 +15,17 @@ import java.util.function.Predicate;
 
 import static me.dunescifye.commandutils.CommandUtils.getInstance;
 
-public class HighlightBlocksCommand {
+public class HighlightBlocksCommand extends Command {
 
     public static void register (){
+        if (!HighlightBlocksCommand.getEnabled()) return;
 
         new CommandAPICommand("highlightblocks")
             .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))
             .withArguments(new StringArgument("World"))
             .withArguments(new IntegerArgument("Radius", 0))
             .withArguments(new BlockPredicateArgument("Block"))
+            .withOptionalArguments(new ParticleArgument("Particle"))
             .executes((sender, args) -> {
 
                 World world = Bukkit.getWorld((String) args.get("World"));
@@ -30,7 +33,8 @@ public class HighlightBlocksCommand {
                 Block block = world.getBlockAt(location);
                 int radius = (int) args.get("Radius");
                 Predicate<Block> predicate = (Predicate<Block>) args.get("Block");
-
+                ParticleData particleData = args.getUnchecked("Particle");
+                Particle particle = particleData == null ? Particle.ELECTRIC_SPARK : particleData.particle();
 
                 for (int x = -radius; x <= radius; x++){
                     for (int y = -radius; y <= radius; y++){
@@ -47,7 +51,7 @@ public class HighlightBlocksCommand {
                                             return;
                                         }
 
-                                        world.spawnParticle(Particle.ELECTRIC_SPARK, b.getX() + 0.5, b.getY() + 0.5, b.getZ() + 0.5, 3, 0, 0, 0,0);
+                                        world.spawnParticle(particle, b.getX() + 0.5, b.getY() + 0.5, b.getZ() + 0.5, 3, 0, 0, 0,0);
 
                                         count += 1;
                                     }

@@ -4,8 +4,10 @@ import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import org.bukkit.entity.Player;
 
-public class FoodCommand {
+public class FoodCommand extends Command{
     public static void register() {
+        if (!FoodCommand.getEnabled()) return;
+
         new CommandTree("food")
             .then(new LiteralArgument("add")
                 .then(new PlayerArgument("Player")
@@ -56,6 +58,7 @@ public class FoodCommand {
                 )
             )
             .withPermission("commandutils.command.food")
+            .withAliases(FoodCommand.getCommandAliases())
             .register("commandutils");
     }
 }

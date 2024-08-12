@@ -76,6 +76,7 @@ public final class CommandUtils extends JavaPlugin {
         LaunchFireworkCommand.register();
         SetCursorItem.register();
         GodCommand.register();
+        SilentParticleCommand.register();
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {

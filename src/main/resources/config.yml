@@ -53,3 +53,5 @@ Commands:
   CobwebPrison:
     Enabled: true
     Aliases: []
+#Recommended to not change unless you know what your doing
+CommandNamespace: "commandutils"

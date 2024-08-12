@@ -13,9 +13,10 @@ import org.bukkit.util.Vector;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class LaunchFireworkCommand {
+public class LaunchFireworkCommand extends Command {
 
     public static void register() {
+        if (!LaunchFireworkCommand.getEnabled()) return;
         new CommandTree("launchfirework")
             .then(new PlayerArgument("Player")
                 .then(new IntegerArgument("Ticks To Detonate")
@@ -37,6 +38,7 @@ public class LaunchFireworkCommand {
                 )
             )
             .withPermission("commandutils.command.launchfirework")
+            .withAliases(LaunchFireworkCommand.getCommandAliases())
             .register("commandutils");
     }
 

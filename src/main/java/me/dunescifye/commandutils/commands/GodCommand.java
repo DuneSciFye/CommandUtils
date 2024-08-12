@@ -8,9 +8,11 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.Collection;
 
-public class GodCommand {
+public class GodCommand extends Command {
 
     public static void register() {
+        if (!GodCommand.getEnabled()) return;
+
         new CommandTree("god")
             .then(new EntitySelectorArgument.ManyEntities("Entities")
                 .executes((sender, args) -> {
@@ -21,6 +23,7 @@ public class GodCommand {
                 p.setMetadata("godmode", new FixedMetadataValue(CommandUtils.getInstance(), true));
             })
             .withPermission("commandutils.command.god")
+            .withAliases(BreakAndReplantCommand.getCommandAliases())
             .register("commandutils");
     }
 

@@ -11,9 +11,11 @@ import org.bukkit.inventory.meta.CrossbowMeta;
 
 import java.util.List;
 
-public class LoadCrossbowCommand {
+public class LoadCrossbowCommand extends Command {
 
     public static void register() {
+        if (!LoadCrossbowCommand.getEnabled()) return;
+
         new CommandAPICommand("loadcrossbow")
             .withArguments(new PlayerArgument("Player"))
             .withArguments(new IntegerArgument("Slot", 0, 36))
@@ -32,6 +34,7 @@ public class LoadCrossbowCommand {
                 }
             })
             .withPermission("commandutils.command.loadcrossbow")
+            .withAliases(LoadCrossbowCommand.getCommandAliases())
             .register("commandutils");
     }
 

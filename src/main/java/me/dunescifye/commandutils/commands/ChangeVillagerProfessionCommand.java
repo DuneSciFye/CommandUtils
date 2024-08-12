@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ChangeVillagerProfessionCommand {
+public class ChangeVillagerProfessionCommand extends Command{
 
     private static List<String> getAllVillagerProfession() {
         return Arrays.stream(Villager.Profession.values())
@@ -21,6 +21,8 @@ public class ChangeVillagerProfessionCommand {
     }
 
     public static void register() {
+        if (!ChangeVillagerProfessionCommand.getEnabled()) return;
+
         new CommandAPICommand("changevillagerprofession")
             .withArguments(new EntitySelectorArgument.ManyEntities("Villagers"))
             .withArguments(new StringArgument("Profession")
@@ -36,6 +38,7 @@ public class ChangeVillagerProfessionCommand {
                 }
             })
             .withPermission("commandutils.command.changevillagerprofession")
+            .withAliases(ChangeVillagerProfessionCommand.getCommandAliases())
             .register("commandutils");
     }
 

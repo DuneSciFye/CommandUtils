@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class ItemAttributeCommand {
+public class ItemAttributeCommand extends Command {
 
     private static List<String> getAllAttributes() {
         return Arrays.stream(Attribute.values())
@@ -35,6 +35,7 @@ public class ItemAttributeCommand {
     }
 
     public static void register() {
+        if (!ItemAttributeCommand.getEnabled()) return;
         new CommandTree("itemattribute")
             .then(new LiteralArgument("add")
                 .then(new PlayerArgument("Player")
@@ -98,6 +99,7 @@ public class ItemAttributeCommand {
                 )
             )
             .withPermission("commandutils.command.itemattribute")
+            .withAliases(ItemAttributeCommand.getCommandAliases())
             .register("commandutils");
     }
 
