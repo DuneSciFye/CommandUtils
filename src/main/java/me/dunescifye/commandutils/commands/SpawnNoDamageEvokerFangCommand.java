@@ -16,7 +16,7 @@ public class SpawnNoDamageEvokerFangCommand {
             .withArguments(new LocationArgument("Location"))
             .executes((sender, args) -> {
                 Location loc = (Location) args.get("Location");
-
+                assert loc != null;
                 Entity evokerFangs = loc.getWorld().spawnEntity(loc, EntityType.EVOKER_FANGS);
                 evokerFangs.setMetadata("nodamage", new FixedMetadataValue(CommandUtils.getInstance(), true));
             })

@@ -16,6 +16,7 @@ public class SetTNTSourceCommand {
             .withArguments(new PlayerArgument("Player Source"))
             .executes((sender, args) -> {
                 Collection<Entity> entities = args.getUnchecked("tnts");
+                assert entities != null;
                 for (Entity entity : entities) {
                     if (entity instanceof TNTPrimed tnt)
                         tnt.setSource(args.getUnchecked("Player Source"));

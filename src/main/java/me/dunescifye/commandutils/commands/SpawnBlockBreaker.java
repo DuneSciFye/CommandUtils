@@ -377,7 +377,7 @@ public class SpawnBlockBreaker {
                     )
                 )
             )
-            .withPermission("commandutils.spawnblockbreaker")
+            .withPermission("commandutils.command.spawnblockbreaker")
             .register("commandutils");
 
     }

@@ -115,7 +115,7 @@ public class WhileCommand {
                     })
                 )
             )
-            .withPermission("commandutils.while")
+            .withPermission("commandutils.command.while")
             .register("commandutils");
     }
 }

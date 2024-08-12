@@ -50,8 +50,8 @@ public class WeightedRandomCommand {
                 }
 
             })
-            .withPermission("CommandPermission.OP")
-            .register();
+            .withPermission("commandutils.command.weightedrandom")
+            .register("commandutils");
 
     }
 }

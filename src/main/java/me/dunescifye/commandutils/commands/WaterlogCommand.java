@@ -37,8 +37,8 @@ public class WaterlogCommand {
                     }
                 }
             })
-            .withPermission("CommandPermission.OP")
-            .register();
+            .withPermission("commandutils.command.waterlog")
+            .register("commandutils");
     }
 
 }

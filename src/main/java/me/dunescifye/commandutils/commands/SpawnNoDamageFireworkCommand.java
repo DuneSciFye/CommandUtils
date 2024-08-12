@@ -44,7 +44,7 @@ public class SpawnNoDamageFireworkCommand {
                 }
 
             })
-            .withPermission("lunaritems.command.spawnnodamagefirework")
-            .register();
+            .withPermission("commandutils.command.spawnnodamagefirework")
+            .register("commandutils");
     }
 }
