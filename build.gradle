@@ -50,12 +50,14 @@ dependencies {
     implementation 'com.jeff_media:MorePersistentDataTypes:2.4.0'
     implementation 'com.jeff-media:custom-block-data:2.2.2'
     //implementation "dev.jorel:commandapi-bukkit-shade:9.6.0-SNAPSHOT"
+    implementation 'dev.dejvokep:boosted-yaml:1.3.5'
 }
 
 shadowJar {
     relocate 'com.jeff_media.customblockdata', 'me.dunescifye.libs.customblockdata'
     relocate 'com.jeff_media.morepersistentdatatypes', 'me.dunescifye.libs.morepersistentdatatypes'
     //relocate 'dev.jorel.commandapi', 'me.dunescifye.libs.commandutils.commandapi'
+    relocate 'dev.dejvokep.boostedyaml', 'me.dunescifye.libs'
 }
 
 def targetJavaVersion = 17

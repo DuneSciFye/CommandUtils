@@ -1,0 +1,34 @@
+Commands:
+  BlockCycle:
+    Enabled: true
+    Aliases: []
+  BlockGravity:
+    Enabled: true
+    Aliases: []
+  BoneMealBlock:
+    Enabled: true
+    Aliases: []
+  BreakAndReplant:
+    Enabled: true
+    Aliases: []
+  BreakInFacing:
+    Enabled: true
+    Aliases: []
+  BreakInRadius:
+    Enabled: true
+    Aliases: []
+  BreakInXYZ:
+    Enabled: true
+    Aliases: []
+  BroadcastMessage:
+    Enabled: true
+    Aliases: []
+  ChanceRandomRun:
+    Enabled: true
+    Aliases: []
+  ChangeVillagerProfession:
+    Enabled: true
+    Aliases: []
+  CobwebPrison:
+    Enabled: true
+    Aliases: []

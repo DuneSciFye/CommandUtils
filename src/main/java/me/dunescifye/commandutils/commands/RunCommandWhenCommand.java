@@ -132,7 +132,7 @@ public class RunCommandWhenCommand {
                     })
                 )
             )
-            .withPermission("commandutils.runcommandwhen")
+            .withPermission("commandutils.command.runcommandwhen")
             .register("commandutils");
     }
 }

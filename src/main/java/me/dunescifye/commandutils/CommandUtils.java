@@ -7,10 +7,13 @@ import me.dunescifye.commandutils.files.Config;
 import me.dunescifye.commandutils.listeners.BlockDropItemListener;
 import me.dunescifye.commandutils.listeners.EntityChangeBlockListener;
 import me.dunescifye.commandutils.listeners.EntityDamageByEntityListener;
+import me.dunescifye.commandutils.listeners.GodModeListener;
 import me.dunescifye.commandutils.placeholders.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.logging.Logger;
 
 public final class CommandUtils extends JavaPlugin {
 
@@ -32,13 +35,13 @@ public final class CommandUtils extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
+        Logger logger = plugin.getLogger();
 
-        //CommandAPI.onEnable();
+        //Files
         Config.setup(this);
 
-        new EntityDamageByEntityListener().entityDamageByEntityHandler(this);
-        new EntityChangeBlockListener().entityChangeBlockHandler(this);
-        new BlockDropItemListener().blockDropItemHandler(this);
+        registerListeners();
+        //CommandAPI.onEnable();
 
         WaterlogCommand.register();
         BoneMealBlockCommand.register();
@@ -52,7 +55,6 @@ public final class CommandUtils extends JavaPlugin {
         WeightedRandomCommand.register();
         SetItemCommand.register();
         HighlightBlocksCommand.register();
-        CobwebPrisonCommand.register();
         ItemAttributeCommand.register();
         RunCommandLaterCommand.register();
         WhileCommand.register();
@@ -73,9 +75,15 @@ public final class CommandUtils extends JavaPlugin {
         RayTraceParticle.register();
         LaunchFireworkCommand.register();
         SetCursorItem.register();
+        GodCommand.register();
+
+        //Special Commands
+        if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
+            CobwebPrisonCommand.register();
+        }
 
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
-            Bukkit.getLogger().info("Detected GriefPrevention, enabling support for it.");
+            logger.info("Detected GriefPrevention, enabling support for it.");
             griefPreventionEnabled = true;
         }
 
@@ -125,6 +133,12 @@ public final class CommandUtils extends JavaPlugin {
         //CommandAPI.onDisable();
     }
 
+    private void registerListeners() {
+        new EntityDamageByEntityListener().entityDamageByEntityHandler(this);
+        new EntityChangeBlockListener().entityChangeBlockHandler(this);
+        new BlockDropItemListener().blockDropItemHandler(this);
+        new GodModeListener().registerEvents(this);
+    }
     public static CommandUtils getInstance(){
         return plugin;
     }

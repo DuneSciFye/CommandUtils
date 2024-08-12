@@ -34,8 +34,8 @@ public class SendBossBarCommand {
 
                 showBossBar(p, bossbarID, bossbarProgress, bossbarColor, ticks, LegacyComponentSerializer.legacyAmpersand().deserialize(bossbarContent));
             })
-            .withPermission("commandutils.sendbossbar")
-            .register();
+            .withPermission("commandutils.command.sendbossbar")
+            .register("commandutils");
     }
 
     private static void showBossBar(Player player, String bossBarId, float bossbarProgress, String bossbarColor, int ticks, Component message) {

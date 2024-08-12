@@ -1,5 +1,5 @@
 name: CommandUtils
 version: '1.0.0'
 main: me.dunescifye.commandutils.CommandUtils
-softdepend: [PlaceholderAPI, GriefPrevention]
+softdepend: [PlaceholderAPI, GriefPrevention, ExecutableBlocks]
 api-version: '1.20'
