@@ -16,8 +16,10 @@ import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Stairs;
 
 public class BlockCycleCommand extends Command {
-    
+
     public static void register() {
+        if (!BlockCycleCommand.getEnabled()) return;
+
         new CommandTree("blockcycle")
             .then(new LiteralArgument("oxidize")
                 .then(new StringArgument("World")
@@ -124,6 +126,7 @@ public class BlockCycleCommand extends Command {
                 )
             )
             .withPermission("commandutils.command.blockcycle")
+            .withAliases(BlockCycleCommand.getCommandAliases())
             .register("commandutils");
     }
 }

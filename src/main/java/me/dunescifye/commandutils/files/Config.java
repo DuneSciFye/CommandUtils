@@ -2,6 +2,7 @@ package me.dunescifye.commandutils.files;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.commands.BlockCycleCommand;
 import me.dunescifye.commandutils.utils.ConfigUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -30,7 +31,9 @@ public class Config {
         try {
             YamlDocument config = YamlDocument.create(new File(plugin.getDataFolder(), "config.yml"), plugin.getResource("config.yml"));
 
-
+            if (config.isList("Commands.BlockCycle.Aliases")) {
+                BlockCycleCommand.setCommandAliases(config.getStringList("Commands.BlockCycle.Aliases").toArray(new String[0]));
+            }
 
             ConfigUtils.setupConfig("Whitelists.axe", config, List.of("#mineable/axe", "#leaves", "!BARREL", "!CHEST", "!TRAPPED_CHEST", "!#all_signs"));
             ConfigUtils.setupConfig("Whitelists.pickaxe", config, List.of("#mineable/pickaxe", "!SPAWNER", "!GILDED_BLACKSTONE", "!DROPPER", "!DISPENSER", "!HOPPER", "!FURNACE", "!BLAST_FURNACE", "!SMOKER", "!#shulker_boxes"));
