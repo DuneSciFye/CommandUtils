@@ -1116,8 +1116,8 @@ public class BreakInFacing {
                     )
                 )
             )
-            .withPermission("CommandPermission.OP")
-            .register();
+            .withPermission("commandutils.command.breakinfacing")
+            .register("commandutils");
     }
 
 }

@@ -362,8 +362,8 @@ public class BreakInXYZCommand {
                                 )
                         )
                 )
-                .withPermission("CommandPermission.OP")
-                .register();
+            .withPermission("commandutils.command.breakinxyz")
+            .register("commandutils");
     }
 
 

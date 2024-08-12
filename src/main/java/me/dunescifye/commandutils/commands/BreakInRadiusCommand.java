@@ -456,8 +456,8 @@ public class BreakInRadiusCommand {
                         )
                 )
             )
-            .withPermission("CommandPermission.OP")
-            .register();
+            .withPermission("commandutils.command.breakinradius")
+            .register("commandutils");
     }
 
 }

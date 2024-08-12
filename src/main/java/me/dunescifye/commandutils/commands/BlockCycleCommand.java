@@ -15,8 +15,8 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Stairs;
 
-public class BlockCycleCommand {
-
+public class BlockCycleCommand extends Command {
+    
     public static void register() {
         new CommandTree("blockcycle")
             .then(new LiteralArgument("oxidize")
@@ -123,7 +123,7 @@ public class BlockCycleCommand {
                     )
                 )
             )
-            .withPermission("commandutils.blockcycle")
-            .register();
+            .withPermission("commandutils.command.blockcycle")
+            .register("commandutils");
     }
 }

@@ -113,8 +113,8 @@ public class BreakAndReplant {
                     )
                 )
             )
-            .withPermission("CommandPermission.OP")
-            .register();
+            .withPermission("commandutils.command.breakandreplant")
+            .register("commandutils");
 
     }
 }

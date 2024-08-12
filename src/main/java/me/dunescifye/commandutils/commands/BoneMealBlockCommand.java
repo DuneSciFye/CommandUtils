@@ -52,7 +52,7 @@ public class BoneMealBlockCommand {
                         }
                     }
                 })
-                .withPermission("CommandPermission.OP")
-                .register();
+                .withPermission("commandutils.command.bonemealblock")
+            .register("commandutils");
     }
 }

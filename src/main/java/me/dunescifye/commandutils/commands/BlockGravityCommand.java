@@ -33,8 +33,8 @@ public class BlockGravityCommand implements Listener {
                     blockContainer.set(CommandUtils.noGravityKey, PersistentDataType.BYTE, (byte) 1);
                 }
             })
-            .withPermission("commandutils.blockgravity")
-            .register();
+            .withPermission("commandutils.command.blockgravity")
+            .register("commandutils");
     }
 
 }
