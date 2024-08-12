@@ -61,7 +61,7 @@ public class RunCommandLaterCommand {
                     })
                 )
             )
-            .withPermission("commandutils.runcommandlater")
+            .withPermission("commandutils.command.runcommandlater")
             .register("commandutils");
     }
 
