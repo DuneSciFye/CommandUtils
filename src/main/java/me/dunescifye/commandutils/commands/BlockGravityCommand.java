@@ -18,7 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class BlockGravityCommand extends Command {
 
-    public static void register() {
+    public void register() {
         if (!BlockGravityCommand.getEnabled()) return;
 
         new CommandAPICommand("blockgravity")

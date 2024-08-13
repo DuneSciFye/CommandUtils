@@ -5,7 +5,7 @@ import dev.jorel.commandapi.arguments.*;
 import org.bukkit.entity.Player;
 
 public class FoodCommand extends Command{
-    public static void register() {
+    public void register() {
         if (!FoodCommand.getEnabled()) return;
 
         new CommandTree("food")

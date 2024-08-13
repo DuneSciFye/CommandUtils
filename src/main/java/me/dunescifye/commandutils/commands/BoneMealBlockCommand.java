@@ -10,7 +10,7 @@ import org.bukkit.block.BlockFace;
 
 public class BoneMealBlockCommand extends Command{
 
-    public static void register(){
+    public void register(){
         if (!BoneMealBlockCommand.getEnabled()) return;
 
         new CommandAPICommand("bonemealblock")

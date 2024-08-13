@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-public class ReplaceInFacingCommand {
+public class ReplaceInFacingCommand extends Command {
 
-    public static void register() {
+    public void register() {
         new CommandAPICommand("replaceinfacing")
             .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))
             .withArguments(new PlayerArgument("Player"))

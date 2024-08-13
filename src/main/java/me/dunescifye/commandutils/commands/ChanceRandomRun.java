@@ -12,7 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ChanceRandomRun extends Command {
 
 
-    public static void register(){
+    public void register(){
         if (!ChanceRandomRun.getEnabled()) return;
 
         new CommandAPICommand("chancerandomrun")

@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 public class CobwebPrisonCommand extends Command{
 
-    public static void register() {
+    public void register() {
         if (!CobwebPrisonCommand.getEnabled()) return;
 
         new CommandAPICommand("cobwebprison")

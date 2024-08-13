@@ -13,7 +13,7 @@ import java.util.Collection;
 
 public class PushEntityCommand extends Command {
 
-    public static void register() {
+    public void register() {
 
         new CommandTree("pushentity")
             .then(new EntitySelectorArgument.ManyEntities("Entity")

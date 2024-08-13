@@ -45,46 +45,15 @@ public final class CommandUtils extends JavaPlugin {
         registerListeners();
         //CommandAPI.onEnable();
 
-        WaterlogCommand.register();
-        BoneMealBlockCommand.register();
-        BreakInRadiusCommand.register();
-        BreakInXYZCommand.register();
-        BreakInFacingCommand.register();
-        BreakAndReplantCommand.register();
-        RemoveItemSetVariable.register();
-        SendMessage.register();
-        SetItemNBT.register();
-        WeightedRandomCommand.register();
-        SetItemCommand.register();
-        HighlightBlocksCommand.register();
-        ItemAttributeCommand.register();
-        RunCommandLaterCommand.register();
-        WhileCommand.register();
-        SpawnNoDamageFireworkCommand.register();
-        BlockGravityCommand.register();
-        BlockCycleCommand.register();
-        SendBossBarCommand.register();
-        ReplaceInFacingCommand.register();
-        BroadcastMessageCommand.register();
-        ChanceRandomRun.register();
-        SpawnNoDamageEvokerFangCommand.register();
-        SpawnBlockBreaker.register();
-        RunCommandWhenCommand.register();
-        FoodCommand.register();
-        SetTNTSourceCommand.register();
-        ChangeVillagerProfessionCommand.register();
-        LoadCrossbowCommand.register();
-        RayTraceParticle.register();
-        LaunchFireworkCommand.register();
-        SetCursorItem.register();
-        GodCommand.register();
-        SilentParticleCommand.register();
-        LaunchFireworkCommand.register();
-        PushEntityCommand.register();
+        commands.put("BlockCycle", new BlockCycleCommand());
+
+        for (Command command : commands.values()) {
+            command.register();
+        }
+
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
-            CobwebPrisonCommand.register();
         }
 
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {

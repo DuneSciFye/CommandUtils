@@ -34,7 +34,7 @@ public class ItemAttributeCommand extends Command {
             .collect(Collectors.toList());
     }
 
-    public static void register() {
+    public void register() {
         if (!ItemAttributeCommand.getEnabled()) return;
         new CommandTree("itemattribute")
             .then(new LiteralArgument("add")

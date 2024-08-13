@@ -20,7 +20,7 @@ public class ChangeVillagerProfessionCommand extends Command{
             .collect(Collectors.toList());
     }
 
-    public static void register() {
+    public void register() {
         if (!ChangeVillagerProfessionCommand.getEnabled()) return;
 
         new CommandAPICommand("changevillagerprofession")

@@ -17,7 +17,7 @@ import static me.dunescifye.commandutils.CommandUtils.getInstance;
 
 public class HighlightBlocksCommand extends Command {
 
-    public static void register (){
+    public void register (){
         if (!HighlightBlocksCommand.getEnabled()) return;
 
         new CommandAPICommand("highlightblocks")

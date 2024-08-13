@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class LaunchFireworkCommand extends Command {
 
-    public static void register() {
+    public void register() {
         if (!LaunchFireworkCommand.getEnabled()) return;
         new CommandTree("launchfirework")
             .then(new PlayerArgument("Player")

@@ -10,9 +10,9 @@ import org.bukkit.entity.DragonFireball;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class RemoveItemSetVariable {
+public class RemoveItemSetVariable extends Command {
 
-    public static void register(){
+    public void register(){
         new CommandAPICommand("removeitemsetvariable")
             .withArguments(new PlayerArgument("Player"))
             .withArguments(new ItemStackArgument("Material"))

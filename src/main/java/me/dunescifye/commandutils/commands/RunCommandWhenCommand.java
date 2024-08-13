@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -10,17 +9,16 @@ import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class RunCommandWhenCommand {
+public class RunCommandWhenCommand extends Command {
 
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
-    public static void register() {
+    public void register() {
         new CommandTree("runcommandwhen")
             .then(new LiteralArgument("add")
                 .then(new StringArgument("Command ID")

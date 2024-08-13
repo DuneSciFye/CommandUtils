@@ -13,10 +13,10 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RunCommandLaterCommand {
+public class RunCommandLaterCommand extends Command {
 
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
-    public static void register() {
+    public void register() {
         new CommandTree("runcommandlater")
             .then(new StringArgument("Command ID")
                 .then(new IntegerArgument("Ticks", 0)

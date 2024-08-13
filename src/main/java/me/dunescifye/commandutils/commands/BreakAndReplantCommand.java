@@ -19,7 +19,7 @@ import static me.dunescifye.commandutils.utils.Utils.*;
 
 public class BreakAndReplantCommand extends Command {
 
-    public static void register(){
+    public void register(){
 
         if (!BreakAndReplantCommand.getEnabled()) return;
 

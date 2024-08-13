@@ -13,7 +13,7 @@ import static me.dunescifye.commandutils.utils.Utils.mergeSimilarItemStacks;
 
 public class BreakInXYZCommand extends Command {
 
-    public static void register() {
+    public void register() {
         if (!BreakInXYZCommand.getEnabled()) return;
 
         Collection<String> materials = new ArrayList<>();

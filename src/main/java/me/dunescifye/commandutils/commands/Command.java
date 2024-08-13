@@ -1,7 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
-
-public class Command {
+public abstract class Command {
 
     private static boolean enabled = true;
     private static String[] commandAliases;
@@ -29,6 +28,8 @@ public class Command {
     public static void setPermission(String permission) {
         Command.permission = permission;
     }
+
+    public abstract void register();
 
 
 }

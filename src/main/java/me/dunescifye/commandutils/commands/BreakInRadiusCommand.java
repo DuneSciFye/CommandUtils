@@ -16,7 +16,7 @@ import static org.bukkit.Material.AIR;
 
 public class BreakInRadiusCommand extends Command {
 
-    public static void register() {
+    public void register() {
         /*
         List<Predicate<Block>> whitelist = new ArrayList<>();
         for (Tag<Material> tag : Bukkit.getTags("blocks", Material.class)) {

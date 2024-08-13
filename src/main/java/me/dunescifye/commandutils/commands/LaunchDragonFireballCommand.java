@@ -7,7 +7,7 @@ import org.bukkit.entity.DragonFireball;
 
 public class LaunchDragonFireballCommand extends Command {
 
-    public static void register() {
+    public void register() {
         if (!LaunchDragonFireballCommand.getEnabled()) return;
 
         new CommandAPICommand("launchdragonfireball")

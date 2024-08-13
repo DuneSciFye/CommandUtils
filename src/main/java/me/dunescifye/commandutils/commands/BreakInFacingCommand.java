@@ -14,7 +14,7 @@ import static me.dunescifye.commandutils.utils.Utils.mergeSimilarItemStacks;
 
 public class BreakInFacingCommand extends Command {
 
-    public static void register() {
+    public void register() {
 
         if (!BreakInFacingCommand.getEnabled()) return;
 

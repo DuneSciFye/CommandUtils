@@ -10,7 +10,7 @@ import java.util.Collection;
 
 public class GodCommand extends Command {
 
-    public static void register() {
+    public void register() {
         if (!GodCommand.getEnabled()) return;
 
         new CommandTree("god")

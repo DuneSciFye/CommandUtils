@@ -16,7 +16,7 @@ import org.bukkit.util.Vector;
 
 public class RayTraceParticle extends Command{
 
-    public static void register() {
+    public void register() {
         if (!RayTraceParticle.getEnabled()) return;
 
         new CommandTree("raytraceparticle")

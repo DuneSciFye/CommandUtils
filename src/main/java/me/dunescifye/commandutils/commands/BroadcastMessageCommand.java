@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 public class BroadcastMessageCommand extends Command {
 
-    public static void register() {
+    public void register() {
         if (!BroadcastMessageCommand.getEnabled()) return;
 
         new CommandAPICommand("broadcastmessage")
