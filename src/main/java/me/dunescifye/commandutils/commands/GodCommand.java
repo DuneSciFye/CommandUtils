@@ -1,15 +1,28 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandTree;
+import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
+import dev.jorel.commandapi.arguments.StringArgument;
+import me.dunescifye.commandutils.utils.Command;
 import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.entity.Entity;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class GodCommand extends Command {
+
+    private static List<String> getDamageCauses() {
+        return Arrays.stream(EntityDamageEvent.DamageCause.values())
+            .map(Enum::name)
+            .collect(Collectors.toList());
+    }
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
@@ -38,8 +51,13 @@ public class GodCommand extends Command {
                             }
                         }
                     })
+                    .then(new StringArgument("Damage Cause")
+                        .replaceSuggestions(ArgumentSuggestions.strings(getDamageCauses()))
+                        .executes((sender, args) -> {
+
+                        })
+                    )
                 )
-                .then()
             )
             .executesPlayer((p, args) -> {
                 if (p.hasMetadata("godmode")) {

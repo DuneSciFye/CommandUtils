@@ -2,13 +2,13 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
+import me.dunescifye.commandutils.utils.Command;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-public class BoneMealBlockCommand extends Command{
+public class BoneMealBlockCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){

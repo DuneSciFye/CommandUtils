@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.commands;
 import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
+import me.dunescifye.commandutils.utils.Command;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.files.Config;
 import me.dunescifye.commandutils.utils.Utils;

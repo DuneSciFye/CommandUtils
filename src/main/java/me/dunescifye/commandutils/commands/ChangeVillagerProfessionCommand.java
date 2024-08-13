@@ -4,6 +4,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
+import me.dunescifye.commandutils.utils.Command;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Villager;
 
@@ -12,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ChangeVillagerProfessionCommand extends Command{
+public class ChangeVillagerProfessionCommand extends Command {
 
     private static List<String> getAllVillagerProfession() {
         return Arrays.stream(Villager.Profession.values())

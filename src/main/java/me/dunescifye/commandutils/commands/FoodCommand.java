@@ -2,6 +2,7 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
+import me.dunescifye.commandutils.utils.Command;
 import org.bukkit.entity.Player;
 
 public class FoodCommand extends Command {
@@ -16,7 +17,7 @@ public class FoodCommand extends Command {
                         .executes((sender, args) -> {
                             Player p = args.getUnchecked("Player");
                             int foodLevel = p.getFoodLevel();
-                            int addAmount = (int) args.get("Amount");
+                            int addAmount = args.getUnchecked("Amount");
                             p.setFoodLevel(Math.min(foodLevel + addAmount, 20));
                         })
                         .then(new BooleanArgument("Allow Overflow")
@@ -39,7 +40,7 @@ public class FoodCommand extends Command {
                     .then(new IntegerArgument("Amount")
                         .executes((sender, args) -> {
                             Player p = args.getUnchecked("Player");
-                            p.setFoodLevel(p.getFoodLevel() - (int) args.get("Amount"));
+                            p.setFoodLevel(p.getFoodLevel() - args.getByClass("Amount", int.class));
                         })
                     )
                 )
@@ -49,7 +50,7 @@ public class FoodCommand extends Command {
                     .then(new IntegerArgument("Amount")
                         .executes((sender, args) -> {
                             Player p = args.getUnchecked("Player");
-                            p.setFoodLevel((int) args.get("Amount"));
+                            p.setFoodLevel(args.getUnchecked("Amount"));
                         })
                     )
                 )

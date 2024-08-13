@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
+import me.dunescifye.commandutils.utils.Command;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.TNTPrimed;
 

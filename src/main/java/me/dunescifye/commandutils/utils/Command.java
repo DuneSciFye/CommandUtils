@@ -1,4 +1,4 @@
-package me.dunescifye.commandutils.commands;
+package me.dunescifye.commandutils.utils;
 
 import me.dunescifye.commandutils.files.Config;
 

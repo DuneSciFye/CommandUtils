@@ -2,6 +2,7 @@ package me.dunescifye.commandutils.listeners;
 
 import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

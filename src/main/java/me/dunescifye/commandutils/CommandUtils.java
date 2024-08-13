@@ -9,6 +9,7 @@ import me.dunescifye.commandutils.listeners.EntityChangeBlockListener;
 import me.dunescifye.commandutils.listeners.EntityDamageByEntityListener;
 import me.dunescifye.commandutils.listeners.GodModeListener;
 import me.dunescifye.commandutils.placeholders.StringUtils;
+import me.dunescifye.commandutils.utils.Command;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -58,7 +59,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("God", new GodCommand());
         commands.put("HighlightBlocks", new HighlightBlocksCommand());
         commands.put("ItemAttribute", new ItemAttributeCommand());
-        commands.put("LaunchDragonFireball", new LaunchDragonFireballCommand());
+        commands.put("LaunchProjectile", new LaunchProjectileCommand());
         commands.put("LaunchFirework", new LaunchFireworkCommand());
         commands.put("LoadCrossbow", new LoadCrossbowCommand());
         commands.put("PushEntity", new PushEntityCommand());

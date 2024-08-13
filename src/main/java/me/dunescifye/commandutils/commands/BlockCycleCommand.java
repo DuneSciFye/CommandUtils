@@ -5,6 +5,7 @@ import dev.jorel.commandapi.arguments.LiteralArgument;
 import dev.jorel.commandapi.arguments.LocationArgument;
 import dev.jorel.commandapi.arguments.LocationType;
 import dev.jorel.commandapi.arguments.StringArgument;
+import me.dunescifye.commandutils.utils.Command;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

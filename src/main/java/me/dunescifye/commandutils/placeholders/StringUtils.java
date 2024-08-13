@@ -44,11 +44,10 @@ public class StringUtils extends PlaceholderExpansion {
 
     @Override
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String args) {
-        String[] parts;
         String separator = ",";
         String function, arguments = null;
 
-        parts = args.split("(?<!\\\\)_", 2);
+        String[] parts = args.split("(?<!\\\\)_", 2);
         function = parts[0];
 
         if (parts.length == 2) {
