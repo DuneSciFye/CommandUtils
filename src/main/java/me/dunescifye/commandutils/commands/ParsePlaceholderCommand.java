@@ -11,6 +11,7 @@ public class ParsePlaceholderCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
+        if (!this.getEnabled()) return;
         new CommandTree("parseplaceholder")
             .then(new PlayerArgument("Player")
                 .then(new GreedyStringArgument("Placeholder")

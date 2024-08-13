@@ -48,14 +48,13 @@ public class Config {
             //Commands
             HashMap<String, Command> commands = CommandUtils.getCommands();
             Section commandSection = config.getSection("Commands");
-            for (Object objectKey : commandSection.getKeys()) {
-                if (objectKey instanceof String key) {
-                    Section keySection = commandSection.getSection(key);
+
+            for (String key : commands.keySet()) {
+                Section keySection = commandSection.getSection(key);
+                if (keySection == null) {
+                    commandSection.set(key + ".Enabled", true);
+                } else {
                     Command command = commands.get(key);
-                    if (command == null) {
-                        logger.warning(key + " command not found! It was specified in config!");
-                        continue;
-                    }
                     if (keySection.isBoolean("Enabled")) {
                         command.setEnabled(keySection.getBoolean("Enabled"));
                     } else {

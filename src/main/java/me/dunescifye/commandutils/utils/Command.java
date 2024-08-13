@@ -8,6 +8,7 @@ public abstract class Command {
     private static String[] commandAliases = new String[0];
     private static String permission;
     private String namespace = Config.getNamespace();
+    private String commandSeparator = ",";
 
     public void setEnabled(boolean enabled) {
         Command.enabled = enabled;
@@ -41,5 +42,13 @@ public abstract class Command {
 
     public void setNamespace(String namespace) {
         this.namespace = namespace;
+    }
+
+    public String getCommandSeparator() {
+        return commandSeparator;
+    }
+
+    public void setCommandSeparator(String commandSeparator) {
+        this.commandSeparator = commandSeparator;
     }
 }

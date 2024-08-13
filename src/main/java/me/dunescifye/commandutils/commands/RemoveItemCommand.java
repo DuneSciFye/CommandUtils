@@ -12,12 +12,6 @@ import org.bukkit.inventory.ItemStack;
 
 public class RemoveItemCommand extends Command {
 
-    private static String commandSeparator = ",";
-
-    public static void setCommandSeparator(String commandSeparator) {
-        RemoveItemCommand.commandSeparator = commandSeparator;
-    }
-
     @SuppressWarnings("ConstantConditions")
     public void register(){
         if (!this.getEnabled()) return;
@@ -59,7 +53,7 @@ public class RemoveItemCommand extends Command {
                     }
                 }
 
-                String[] commands = inputCommands.split(",");
+                String[] commands = inputCommands.split(this.getCommandSeparator());
 
                 Server server = Bukkit.getServer();
                 ConsoleCommandSender console = server.getConsoleSender();

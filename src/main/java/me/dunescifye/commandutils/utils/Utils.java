@@ -1,5 +1,6 @@
 package me.dunescifye.commandutils.utils;
 
+import me.dunescifye.commandutils.CommandUtils;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.coreprotect.CoreProtectAPI;
@@ -15,12 +16,13 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 import static org.bukkit.Bukkit.getServer;
 
 public class Utils {
 
-    private static Map<String, List<Predicate<Block>>> predicates = new HashMap<>();
+    private static final Map<String, List<Predicate<Block>>> predicates = new HashMap<>();
 
     private static final List<Predicate<Block>> pickaxeBlacklist = Arrays.asList(
         block -> block.getType().equals(Material.SPAWNER),
@@ -34,7 +36,7 @@ public class Utils {
         block -> Tag.SHULKER_BOXES.isTagged(block.getType())
     );
 
-    private static final List<Predicate<Block>> pickaxeWhitelist = Arrays.asList(
+    private static final List<Predicate<Block>> pickaxeWhitelist = List.of(
         block -> Tag.MINEABLE_PICKAXE.isTagged(block.getType())
     );
 
@@ -46,15 +48,7 @@ public class Utils {
     public static List<Predicate<Block>> getPredicate(String id){
         return predicates.get(id);
     }
-    public static Vector yawPitchToVector(float yaw, float pitch) {
-        double pitchRad = Math.toRadians(pitch);
-        double yawRad = Math.toRadians(yaw);
-        double x = Math.sin(pitchRad) * Math.cos(yawRad);
-        double y = Math.sin(pitchRad) * Math.sin(yawRad);
-        double z = Math.cos(pitchRad);
 
-        return new Vector(x, z, y);
-    }
     public static Collection<ItemStack> mergeSimilarItemStacks(Collection<ItemStack> itemStacks) {
         Map<Material, ItemStack> mergedStacksMap = new HashMap<>();
 
@@ -102,23 +96,24 @@ public class Utils {
 
     private static CoreProtectAPI getCoreProtect() {
         Plugin plugin = getServer().getPluginManager().getPlugin("CoreProtect");
+        Logger logger = CommandUtils.getInstance().getLogger();
 
         // Check that CoreProtect is loaded
-        if (plugin == null || !(plugin instanceof CoreProtect)) {
-            System.out.println("core protect plugin not found");
+        if (!(plugin instanceof CoreProtect)) {
+            logger.warning("core protect plugin not found");
             return null;
         }
 
         // Check that the API is enabled
         CoreProtectAPI CoreProtect = ((CoreProtect) plugin).getAPI();
-        if (CoreProtect.isEnabled() == false) {
-            System.out.println("core protect api is not enabled");
+        if (!CoreProtect.isEnabled()) {
+            logger.warning("core protect api is not enabled");
             return null;
         }
 
         // Check that a compatible version of the API is loaded
         if (CoreProtect.APIVersion() < 10) {
-            System.out.println("core protect api version is not supported");
+            logger.warning("core protect api version is not supported");
             return null;
         }
 
