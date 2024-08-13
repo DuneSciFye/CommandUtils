@@ -28,14 +28,6 @@ public class BreakAndReplantCommand extends Command {
             .then(new LocationArgument("Location", LocationType.BLOCK_POSITION)
                 .then(new StringArgument("World")
                     .then(new PlayerArgument("Player")
-                        .executes((sender, args) -> {
-                            Player player = (Player) args.get("Player");
-                            World world = Bukkit.getWorld((String) args.get("World"));
-                            Location location = (Location) args.get("Location");
-                            Block block = world.getBlockAt(location);
-
-                            System.out.println(isNaturallyGenerated(block));
-                        })
                         .then(new IntegerArgument("Radius", 0)
                             .then(new BlockStateArgument("Original Block")
                             .executes((sender, args) -> {

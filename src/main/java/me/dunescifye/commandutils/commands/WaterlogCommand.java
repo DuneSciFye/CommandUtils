@@ -8,8 +8,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Waterlogged;
 
-import static org.bukkit.Material.AIR;
-
 public class WaterlogCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     public void register() {

@@ -11,7 +11,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Stairs;
 
@@ -26,18 +25,14 @@ public class BlockCycleCommand extends Command {
                 .then(new StringArgument("World")
                     .then(new LocationArgument("Location", LocationType.BLOCK_POSITION)
                         .executes((sender, args) -> {
-                            World world = Bukkit.getWorld((String) args.get("World"));
-                            Block b = world.getBlockAt((Location) args.get("Location"));
+                            Block b = Bukkit.getWorld(args.getByClass("World", String.class)).getBlockAt(args.getUnchecked("Location"));
                             Material material = b.getType();
-
                             BlockData blockData = b.getBlockData();
 
-                            // Cast the block data to Stairs to get facing direction
                             if (blockData instanceof Stairs stairs) {
                                 Stairs.Shape shape = stairs.getShape();
                                 boolean waterlogged = stairs.isWaterlogged();
-                                Directional directional = (Directional) blockData;
-                                org.bukkit.block.BlockFace facing = directional.getFacing();
+                                org.bukkit.block.BlockFace facing = stairs.getFacing();
 
                                 switch (material) {
                                     case CUT_COPPER_STAIRS -> b.setType(Material.EXPOSED_CUT_COPPER_STAIRS);
@@ -54,8 +49,7 @@ public class BlockCycleCommand extends Command {
                                 BlockData newBlockData = b.getBlockData();
 
                                 // Set the facing direction and other properties
-                                if (newBlockData instanceof Stairs) {
-                                    Stairs newStairs = (Stairs) newBlockData;
+                                if (newBlockData instanceof Stairs newStairs) {
                                     newStairs.setFacing(facing);
                                     newStairs.setShape(shape);
                                     newStairs.setWaterlogged(waterlogged);

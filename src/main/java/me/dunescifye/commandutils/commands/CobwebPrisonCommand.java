@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 public class CobwebPrisonCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!this.getEnabled()) return;
 
@@ -19,15 +20,15 @@ public class CobwebPrisonCommand extends Command {
             .withArguments(new IntegerArgument("Radius"))
             .withArguments(new IntegerArgument("Height"))
             .executes((sender, args) -> {
-                World world = Bukkit.getWorld((String) (args.get("World")));
-                Block block = world.getBlockAt((Location) args.get("Location"));
+                World world = Bukkit.getWorld(args.getByClass("World", String.class));
+                Block block = world.getBlockAt(args.getUnchecked("Location"));
                 Location loc = block.getLocation();
                 int startX = loc.getBlockX();
                 int startY = loc.getBlockY();
                 int startZ = loc.getBlockZ();
-                String p = ((Player) args.get("Player")).getName();
-                int radius = (Integer) args.get("Radius");
-                int height = (Integer) args.get("Height");
+                String p = args.getByClass("Player", Player.class).getName();
+                int radius = args.getUnchecked("Radius");
+                int height = args.getUnchecked("Height");
 
                 Server server = Bukkit.getServer();
                 ConsoleCommandSender commandSender = Bukkit.getConsoleSender();
