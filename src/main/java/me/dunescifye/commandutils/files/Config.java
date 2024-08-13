@@ -13,31 +13,43 @@ import org.bukkit.block.Block;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 public class Config {
 
-    public static Map<String, List<Predicate<Block>>> whitelists = new HashMap<>();
-    public static Map<String, List<Predicate<Block>>> blacklists = new HashMap<>();
+    private static Map<String, List<Predicate<Block>>> whitelists = new HashMap<>();
+    private static Map<String, List<Predicate<Block>>> blacklists = new HashMap<>();
 
     private static String namespace = "commandutils";
+
+    public static List<Predicate<Block>> getWhitelist(String name) {
+        return whitelists.get(name);
+    }
+    public static List<Predicate<Block>> getBlacklist(String name) {
+        return blacklists.get(name);
+    }
+
+    public static Set<String> getWhitelistKeySet() {
+        return whitelists.keySet();
+    }
 
     public static void setup(CommandUtils plugin) {
         Logger logger = plugin.getLogger();
         try {
             YamlDocument config = YamlDocument.create(new File(plugin.getDataFolder(), "config.yml"), plugin.getResource("config.yml"));
 
+            //Namespace
+            if (config.isString("CommandNamespace")) {
+                namespace = config.getString("CommandNamespace");
+            }
+
             //Commands
             HashMap<String, Command> commands = CommandUtils.getCommands();
             Section commandSection = config.getSection("Commands");
             for (Object objectKey : commandSection.getKeys()) {
                 if (objectKey instanceof String key) {
-                    System.out.println(key);
                     Section keySection = commandSection.getSection(key);
                     Command command = commands.get(key);
                     if (command == null) {
@@ -50,82 +62,78 @@ public class Config {
                         logger.warning("Configuration Commands." + key + ".Enabled is not a boolean.");
                     }
 
-                    if (keySection.isList("Aliases")) {
-                        command.setCommandAliases(keySection.getStringList("Aliases").toArray(new String[0]));
-                    } else {
-                        logger.warning("Configuration Commands." + key + ".Aliases is not a list.");
+                    if (keySection.getOptionalStringList("Aliases").isPresent()) {
+                        if (keySection.isList("Aliases")) {
+                            command.setCommandAliases(keySection.getStringList("Aliases").toArray(new String[0]));
+                        } else {
+                            logger.warning("Configuration Commands." + key + ".Aliases is not a list.");
+                        }
                     }
 
-                    if (keySection.isList("Permission")) {
+                    if (keySection.getOptionalString("Permission").isPresent()) {
                         command.setPermission(keySection.getString("Permission"));
                     } else {
-                        logger.warning("Configuration Commands." + key + ".Permission is not a string.");
+                        command.setPermission("commandutils.command." + key.toLowerCase());
                     }
 
-                    if (keySection.isString("Namespace")) {
-                        command.setNamespace(keySection.getString("Namespace"));
-                    } else {
-                        logger.warning("Configuration Commands." + key + ".Namespace is not a string.");
+                    if (keySection.getOptionalString("NameSpace").isPresent()) {
+                        if (keySection.isString("Namespace")) {
+                            command.setNamespace(keySection.getString("Namespace"));
+                        } else {
+                            logger.warning("Configuration Commands." + key + ".Namespace is not a string.");
+                        }
                     }
                 }
             }
 
-            //Namespace
-            if (config.isString("CommandNamespace")) {
-                namespace = config.getString("CommandNamespace");
-            }
-
-
             Section whitelistSection = config.getSection("Whitelists");
-            if (whitelistSection != null) {
-                for (Object objectKey : whitelistSection.getKeys()) {
-                    if (objectKey instanceof String key) {
-                        List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
-                        for (String predicate : config.getStringList("Whitelists." + key)) {
-                            //Blacklist
-                            if (predicate.startsWith("!")) {
-                                //Tags
-                                if (predicate.startsWith("!#")) {
-                                    predicate = predicate.substring(2);
-                                    try {
-                                        Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(predicate), Material.class);
-                                        blacklist.add(block -> tag.isTagged(block.getType()));
-                                    } catch (
-                                        IllegalArgumentException e) {
-                                        logger.info("Invalid block tag: " + predicate);
-                                    }
-                                }
-                                //Blocks
-                                else {
-                                    predicate = predicate.substring(1);
-                                    Material material = Material.getMaterial(predicate.toUpperCase());
-                                    blacklist.add(block -> block.getType().equals(material));
+            for (Object objectKey : whitelistSection.getKeys()) {
+                if (objectKey instanceof String key) {
+                    List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
+                    for (String predicate : config.getStringList("Whitelists." + key)) {
+                        //Blacklist
+                        if (predicate.startsWith("!")) {
+                            //Tags
+                            if (predicate.startsWith("!#")) {
+                                predicate = predicate.substring(2);
+                                try {
+                                    Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(predicate), Material.class);
+                                    blacklist.add(block -> tag.isTagged(block.getType()));
+                                } catch (
+                                    IllegalArgumentException e) {
+                                    logger.info("Invalid block tag: " + predicate);
                                 }
                             }
-                            //Whitelist
+                            //Blocks
                             else {
-                                //Tags
-                                if (predicate.startsWith("#")) {
-                                    predicate = predicate.substring(1);
-                                    try {
-                                        Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(predicate), Material.class);
-                                        whitelist.add(block -> tag.isTagged(block.getType()));
-                                    } catch (
-                                        IllegalArgumentException e) {
-                                        logger.info("Invalid block tag: " + predicate);
-                                    }
-                                }
-                                //Blocks
-                                else {
-                                    Material material = Material.getMaterial(predicate.toUpperCase());
-                                    whitelist.add(block -> block.getType().equals(material));
-                                }
+                                predicate = predicate.substring(1);
+                                Material material = Material.getMaterial(predicate.toUpperCase());
+                                blacklist.add(block -> block.getType().equals(material));
                             }
                         }
-
-                        whitelists.put(key, whitelist);
-                        blacklists.put(key, blacklist);
+                        //Whitelist
+                        else {
+                            //Tags
+                            if (predicate.startsWith("#")) {
+                                predicate = predicate.substring(1);
+                                try {
+                                    Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(predicate), Material.class);
+                                    whitelist.add(block -> tag.isTagged(block.getType()));
+                                } catch (
+                                    IllegalArgumentException e) {
+                                    logger.info("Invalid block tag: " + predicate);
+                                }
+                            }
+                            //Blocks
+                            else {
+                                Material material = Material.getMaterial(predicate.toUpperCase());
+                                whitelist.add(block -> block.getType().equals(material));
+                            }
+                        }
                     }
+
+                    whitelists.put(key, whitelist);
+                    blacklists.put(key, blacklist);
                 }
             }
             config.save();

@@ -19,6 +19,13 @@ Whitelists:
     - "!#shulker_boxes"
   shovel:
     "#mineable/shovel"
+BlockCycle:
+  oxidize:
+    - CUT_COPPER_STAIRS EXPOSED_CUT_COPPER_STAIRS
+    - EXPOSED_CUT_COPPER_STAIRS WEATHERED_CUT_COPPER_STAIRS
+    - WEATHERED_CUT_COPPER_STAIRS OXIDIZED_CUT_COPPER_STAIRS
+    - OXIDIZED_CUT_COPPER_STAIRS CUT_COPPER_STAIRS
+    -
 Commands:
   BlockCycle:
     Enabled: true

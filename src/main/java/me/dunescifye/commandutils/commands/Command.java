@@ -5,7 +5,7 @@ import me.dunescifye.commandutils.files.Config;
 public abstract class Command {
 
     private static boolean enabled = true;
-    private static String[] commandAliases;
+    private static String[] commandAliases = new String[0];
     private static String permission;
     private String namespace = Config.getNamespace();
 

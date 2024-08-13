@@ -70,7 +70,7 @@ public class SpawnBlockBreakerCommand extends Command {
                                             })
                                             //Player, Item, Vector Multiplier, Radius, Period, Max Time, Whitelisted Blocks
                                             .then(whitelistedBlocksArgument
-                                                .replaceSuggestions(ArgumentSuggestions.strings(Config.whitelists.keySet()))
+                                                .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
                                                 .executes((sender, args) -> {
                                                     Location loc = args.getByArgument(locationArgument);
                                                     loc.setPitch(args.getByArgument(pitchArgument));
@@ -82,7 +82,7 @@ public class SpawnBlockBreakerCommand extends Command {
                                                     int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
 
                                                     String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
-                                                    List<Predicate<Block>> whitelist = Config.whitelists.get(whitelistedBlocks), blacklist = Config.blacklists.get(whitelistedBlocks);
+                                                    List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
 
                                                     new BukkitRunnable() {
                                                         int count = 0;
@@ -167,7 +167,7 @@ public class SpawnBlockBreakerCommand extends Command {
                                             int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
 
                                             String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
-                                            List<Predicate<Block>> whitelist = Config.whitelists.get(whitelistedBlocks), blacklist = Config.blacklists.get(whitelistedBlocks);
+                                            List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
 
                                             new BukkitRunnable() {
                                                 int count = 0;
@@ -217,7 +217,7 @@ public class SpawnBlockBreakerCommand extends Command {
                                                 int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
 
                                                 String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
-                                                List<Predicate<Block>> whitelist = Config.whitelists.get(whitelistedBlocks), blacklist = Config.blacklists.get(whitelistedBlocks);
+                                                List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
 
                                                 new BukkitRunnable() {
                                                     int count = 0;
@@ -269,7 +269,7 @@ public class SpawnBlockBreakerCommand extends Command {
                                                     int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
 
                                                     String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
-                                                    List<Predicate<Block>> whitelist = Config.whitelists.get(whitelistedBlocks), blacklist = Config.blacklists.get(whitelistedBlocks);
+                                                    List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
 
                                                     new BukkitRunnable() {
                                                         int count = 0;
@@ -319,7 +319,7 @@ public class SpawnBlockBreakerCommand extends Command {
                                                         int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
 
                                                         String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
-                                                        List<Predicate<Block>> whitelist = Config.whitelists.get(whitelistedBlocks), blacklist = Config.blacklists.get(whitelistedBlocks);
+                                                        List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
 
                                                         new BukkitRunnable() {
                                                             int count = 0;
