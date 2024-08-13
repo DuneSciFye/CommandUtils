@@ -24,6 +24,8 @@ public class Config {
     public static Map<String, List<Predicate<Block>>> whitelists = new HashMap<>();
     public static Map<String, List<Predicate<Block>>> blacklists = new HashMap<>();
 
+    private static String namespace = "commandutils";
+
     public static void setup(CommandUtils plugin) {
         Logger logger = plugin.getLogger();
         try {
@@ -43,6 +45,11 @@ public class Config {
                 BlockCycleCommand.setEnabled(config.getBoolean("Enabled"));
             } else {
                 logger.warning("Invalid boolean for Commands.BlockCycle.Enabled");
+            }
+
+            //Namespace
+            if (config.isString("CommandNamespace")) {
+                namespace = config.getString("CommandNamespace");
             }
 
 
@@ -104,4 +111,7 @@ public class Config {
         }
     }
 
+    public static String getNamespace() {
+        return namespace;
+    }
 }

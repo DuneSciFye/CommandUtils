@@ -5,6 +5,7 @@ import dev.jorel.commandapi.arguments.LiteralArgument;
 import dev.jorel.commandapi.arguments.LocationArgument;
 import dev.jorel.commandapi.arguments.LocationType;
 import dev.jorel.commandapi.arguments.StringArgument;
+import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,6 +17,10 @@ import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Stairs;
 
 public class BlockCycleCommand extends Command {
+
+    public static void setup() {
+        CommandUtils.addCommand("BlockCycle", BlockCycleCommand);
+    }
 
     public static void register() {
         if (!BlockCycleCommand.getEnabled()) return;

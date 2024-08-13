@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.DragonFireball;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

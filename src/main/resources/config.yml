@@ -23,35 +23,46 @@ Commands:
   BlockCycle:
     Enabled: true
     Aliases: []
+    Permission: "commandutils.command.blockcycle"
   BlockGravity:
     Enabled: true
     Aliases: []
+    Permission: "commandutils.command.blockgravity"
   BoneMealBlock:
     Enabled: true
     Aliases: []
+    Permission: "commandutils.command.bonemealblock"
   BreakAndReplant:
     Enabled: true
     Aliases: []
+    Permission: "commandutils.command.breakandreplant"
   BreakInFacing:
     Enabled: true
     Aliases: []
+    Permission: "commandutils.command.breakinfacing"
   BreakInRadius:
     Enabled: true
     Aliases: []
+    Permission: "commandutils.command.breakinradius"
   BreakInXYZ:
     Enabled: true
     Aliases: []
+    Permission: "commandutils.command.breakinxyz"
   BroadcastMessage:
     Enabled: true
     Aliases: []
+    Permission: "commandutils.command.broadcastmessage"
   ChanceRandomRun:
     Enabled: true
     Aliases: []
+    Permission: "commandutils.command.chancerandomrun"
   ChangeVillagerProfession:
     Enabled: true
     Aliases: []
+    Permission: "commandutils.command.changevillagerprofession"
   CobwebPrison:
     Enabled: true
     Aliases: []
+    Permission: "commandutils.command.cobwebprison"
 #Recommended to not change unless you know what your doing
 CommandNamespace: "commandutils"

@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 public final class CommandUtils extends JavaPlugin {
@@ -23,6 +24,7 @@ public final class CommandUtils extends JavaPlugin {
     public static final NamespacedKey noGravityKey = new NamespacedKey("lunaritems", "nogravity");
     public static final NamespacedKey autoPickupKey = new NamespacedKey("commandutils", "autopickup");
     public static boolean griefPreventionEnabled;
+    private static HashMap<String, Command> commands = new HashMap<>();
     /*
     @Override
     public void onLoad() {
@@ -144,5 +146,9 @@ public final class CommandUtils extends JavaPlugin {
     }
     public static CommandUtils getInstance(){
         return plugin;
+    }
+
+    public static void addCommand(String name, Command command){
+        commands.put(name, command);
     }
 }
