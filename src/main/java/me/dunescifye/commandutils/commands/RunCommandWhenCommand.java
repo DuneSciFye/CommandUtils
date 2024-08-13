@@ -18,6 +18,7 @@ import java.util.Objects;
 public class RunCommandWhenCommand extends Command {
 
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         new CommandTree("runcommandwhen")
             .then(new LiteralArgument("add")

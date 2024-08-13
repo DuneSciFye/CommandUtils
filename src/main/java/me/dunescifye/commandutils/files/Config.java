@@ -4,6 +4,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.commands.BlockCycleCommand;
+import me.dunescifye.commandutils.commands.Command;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -32,19 +33,30 @@ public class Config {
             YamlDocument config = YamlDocument.create(new File(plugin.getDataFolder(), "config.yml"), plugin.getResource("config.yml"));
 
             //Commands
+            HashMap<String, Command> commands = CommandUtils.getCommands();
+            Section commandSection = config.getSection("Commands");
+            for (Object objectKey : commandSection.getKeys()) {
+                if (objectKey instanceof String key) {
+                    Section keySection = commandSection.getSection(key);
+                    Command command = commands.get(key);
+                    if (keySection.isBoolean("Enabled")) {
+                        command.setEnabled(keySection.getBoolean("Enabled"));
+                    } else {
+                        logger.warning("Configuration Commands." + key + ".Enabled is not a boolean.");
+                    }
 
-            if (config.isList("Commands.BlockCycle.Aliases")) {
-                BlockCycleCommand.setCommandAliases(config.getStringList("Commands.BlockCycle.Aliases").toArray(new String[0]));
-            }
-            if (config.isList("Commands.BlockGravity.Aliases")) {
-                BlockCycleCommand.setCommandAliases(config.getStringList("Commands.BlockGravity.Aliases").toArray(new String[0]));
-            }
+                    if (keySection.isList("Aliases")) {
+                        command.setCommandAliases(keySection.getStringList("Aliases").toArray(new String[0]));
+                    } else {
+                        logger.warning("Configuration Commands." + key + ".Enabled is not a list.");
+                    }
 
-            //Enabling
-            if (config.isBoolean("Commands.BlockCycle.Enabled")) {
-                BlockCycleCommand.setEnabled(config.getBoolean("Enabled"));
-            } else {
-                logger.warning("Invalid boolean for Commands.BlockCycle.Enabled");
+                    if (keySection.isList("Permission")) {
+                        command.setPermission(keySection.getString("Permission"));
+                    } else {
+                        logger.warning("Configuration Commands." + key + ".Enabled is not a string.");
+                    }
+                }
             }
 
             //Namespace

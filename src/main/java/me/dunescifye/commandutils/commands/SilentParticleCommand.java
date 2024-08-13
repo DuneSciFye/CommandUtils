@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 public class SilentParticleCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register(){
         new CommandTree("silentparticle")
             .then(new ParticleArgument("Particle")

@@ -24,6 +24,7 @@ Commands:
     Enabled: true
     Aliases: []
     Permission: "commandutils.command.blockcycle"
+    Namespace:
   BlockGravity:
     Enabled: true
     Aliases: []

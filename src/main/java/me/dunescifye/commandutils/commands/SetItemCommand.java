@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class SetItemCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register(){
 
         new CommandAPICommand("setitem")

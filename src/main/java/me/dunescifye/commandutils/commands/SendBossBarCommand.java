@@ -16,6 +16,7 @@ import java.util.Map;
 public class SendBossBarCommand extends Command {
     private static final Map<String, BossBar> bossBars = new HashMap<>();
     private static final Map<String, BukkitTask> bossBarTasks = new HashMap<>();
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         new CommandAPICommand("sendbossbar")
             .withArguments(new PlayerArgument("Player"))

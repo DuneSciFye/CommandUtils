@@ -9,8 +9,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-public class SetItemNBT extends Command {
+public class SetItemNBTCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register(){
 
         new CommandAPICommand("setitemnbt")

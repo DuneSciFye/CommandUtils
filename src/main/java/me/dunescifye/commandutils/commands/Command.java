@@ -6,26 +6,26 @@ public abstract class Command {
     private static String[] commandAliases;
     private static String permission;
 
-    public static void setEnabled(boolean enabled) {
+    public void setEnabled(boolean enabled) {
         Command.enabled = enabled;
     }
 
-    public static boolean getEnabled() {
+    public boolean getEnabled() {
         return enabled;
     }
-    public static String[] getCommandAliases() {
+    public String[] getCommandAliases() {
         return commandAliases;
     }
 
-    public static void setCommandAliases(String[] commandAliases) {
+    public void setCommandAliases(String[] commandAliases) {
         Command.commandAliases = commandAliases;
     }
 
-    public static String getPermission() {
+    public String getPermission() {
         return permission;
     }
 
-    public static void setPermission(String permission) {
+    public void setPermission(String permission) {
         Command.permission = permission;
     }
 

@@ -14,6 +14,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public final class CommandUtils extends JavaPlugin {
@@ -24,7 +25,7 @@ public final class CommandUtils extends JavaPlugin {
     public static final NamespacedKey noGravityKey = new NamespacedKey("lunaritems", "nogravity");
     public static final NamespacedKey autoPickupKey = new NamespacedKey("commandutils", "autopickup");
     public static boolean griefPreventionEnabled;
-    private static HashMap<String, Command> commands = new HashMap<>();
+    private static final HashMap<String, Command> commands = new HashMap<>();
     /*
     @Override
     public void onLoad() {
@@ -44,8 +45,43 @@ public final class CommandUtils extends JavaPlugin {
 
         registerListeners();
         //CommandAPI.onEnable();
-
         commands.put("BlockCycle", new BlockCycleCommand());
+        commands.put("BlockGravity", new BlockGravityCommand());
+        commands.put("BoneMealBlock", new BoneMealBlockCommand());
+        commands.put("BreakAndReplant", new BreakAndReplantCommand());
+        commands.put("BreakInRadius", new BreakInRadiusCommand());
+        commands.put("BreakInXYZ", new BreakInXYZCommand());
+        commands.put("BroadcastMessage", new BroadcastMessageCommand());
+        commands.put("ChanceRandomRun", new ChanceRandomRunCommand());
+        commands.put("ChangeVillagerProfession", new ChangeVillagerProfessionCommand());
+        commands.put("CobwebPrison", new CobwebPrisonCommand());
+        commands.put("Food", new FoodCommand());
+        commands.put("God", new GodCommand());
+        commands.put("HighlightBlocks", new HighlightBlocksCommand());
+        commands.put("ItemAttribute", new ItemAttributeCommand());
+        commands.put("LaunchDragonFireball", new LaunchDragonFireballCommand());
+        commands.put("LaunchFirework", new LaunchFireworkCommand());
+        commands.put("LoadCrossbow", new LoadCrossbowCommand());
+        commands.put("PushEntity", new PushEntityCommand());
+        commands.put("RayTraceParticle", new RayTraceParticleCommand());
+        commands.put("RemoveItemSetVariable", new RemoveItemSetVariableCommand());
+        commands.put("ReplaceInFacing", new ReplaceInFacingCommand());
+        commands.put("RunCommandLater", new RunCommandLaterCommand());
+        commands.put("RunCommandWhen", new RunCommandWhenCommand());
+        commands.put("SendBossBar", new SendBossBarCommand());
+        commands.put("SendMessage", new SendMessageCommand());
+        commands.put("SetCursorItem", new SetCursorItemCommand());
+        commands.put("SetItem", new SetItemCommand());
+        commands.put("SetItemNBT", new SetItemNBTCommand());
+        commands.put("SetTNTSource", new SetTNTSourceCommand());
+        commands.put("SilentParticle", new SilentParticleCommand());
+        commands.put("SpawnBlockBreaker", new SpawnBlockBreakerCommand());
+        commands.put("SpawnNoDamageEvokerFang", new SpawnNoDamageEvokerFangCommand());
+        commands.put("SpawnNoDamageFirework", new SpawnNoDamageFireworkCommand());
+        commands.put("Waterlog", new WaterlogCommand());
+        commands.put("WeightedRandom", new WeightedRandomCommand());
+        commands.put("While", new WhileCommand());
+
 
         for (Command command : commands.values()) {
             command.register();
@@ -72,37 +108,9 @@ public final class CommandUtils extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        CommandAPI.unregister("waterlogblock");
-        CommandAPI.unregister("bonemealblock");
-        CommandAPI.unregister("breakandreplant");
-        CommandAPI.unregister("breakinfacing");
-        CommandAPI.unregister("breakinradius");
-        CommandAPI.unregister("breakinxyz");
-        CommandAPI.unregister("removeitemsetvariable");
-        CommandAPI.unregister("sendmessage");
-        CommandAPI.unregister("setitemnbt");
-        CommandAPI.unregister("weightedrandom");
-        CommandAPI.unregister("setitem");
-        CommandAPI.unregister("highlightblocks");
-        CommandAPI.unregister("cobwebprison");
-        CommandAPI.unregister("itemattribute");
-        CommandAPI.unregister("runcommandlater");
-        CommandAPI.unregister("while");
-        CommandAPI.unregister("spawnnodamagefirework");
-        CommandAPI.unregister("blockgravity");
-        CommandAPI.unregister("sendbossbar");
-        CommandAPI.unregister("replaceinfacing");
-        CommandAPI.unregister("broadcastmessage");
-        CommandAPI.unregister("chancerandomrun");
-        CommandAPI.unregister("spawnnodamageevokerfang");
-        CommandAPI.unregister("spawnblockbreaker");
-        CommandAPI.unregister("runwhen");
-        CommandAPI.unregister("food");
-        CommandAPI.unregister("settntsource");
-        CommandAPI.unregister("changevillagerprofession");
-        CommandAPI.unregister("loadcrossbow");
-        CommandAPI.unregister("raytraceparticle");
-        CommandAPI.unregister("launchfirework");
+        for (String commandName : commands.keySet()) {
+            CommandAPI.unregister(commandName);
+        }
 
         //CommandAPI.onDisable();
     }
@@ -119,5 +127,13 @@ public final class CommandUtils extends JavaPlugin {
 
     public static void addCommand(String name, Command command){
         commands.put(name, command);
+    }
+
+    public static Set<String> getCommandNames() {
+        return commands.keySet();
+    }
+
+    public static HashMap<String, Command> getCommands() {
+        return commands;
     }
 }

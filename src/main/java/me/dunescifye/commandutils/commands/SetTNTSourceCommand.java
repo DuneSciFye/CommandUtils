@@ -10,6 +10,7 @@ import java.util.Collection;
 
 public class SetTNTSourceCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register(){
         new CommandAPICommand("settntsource")
             .withArguments(new EntitySelectorArgument.ManyEntities("tnts"))

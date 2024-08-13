@@ -7,8 +7,9 @@ import dev.jorel.commandapi.arguments.PlayerArgument;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class SetCursorItem extends Command {
-    
+public class SetCursorItemCommand extends Command {
+
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         new CommandAPICommand("setcursoritem")
             .withArguments(new PlayerArgument("Player"))

@@ -8,8 +8,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 
-public class SendMessage extends Command {
-
+public class SendMessageCommand extends Command {
+    @SuppressWarnings("ConstantConditions")
         public void register(){
 
             new CommandAPICommand("sendmessage")

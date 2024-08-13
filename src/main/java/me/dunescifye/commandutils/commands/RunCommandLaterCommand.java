@@ -15,6 +15,7 @@ import java.util.Map;
 public class RunCommandLaterCommand extends Command {
 
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         new CommandTree("runcommandlater")
             .then(new StringArgument("Command ID")

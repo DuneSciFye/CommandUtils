@@ -14,10 +14,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class RayTraceParticle extends Command {
+public class RayTraceParticleCommand extends Command {
 
     public void register() {
-        if (!RayTraceParticle.getEnabled()) return;
+        if (!RayTraceParticleCommand.getEnabled()) return;
 
         new CommandTree("raytraceparticle")
             .then(new ParticleArgument("Particle")
@@ -39,7 +39,7 @@ public class RayTraceParticle extends Command {
                 )
             )
             .withPermission("commandutils.command.raytraceparticle")
-            .withAliases(RayTraceParticle.getCommandAliases())
+            .withAliases(RayTraceParticleCommand.getCommandAliases())
             .register("commandutils");
     }
 
