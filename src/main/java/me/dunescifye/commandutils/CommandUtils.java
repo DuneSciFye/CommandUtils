@@ -81,6 +81,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("Waterlog", new WaterlogCommand());
         commands.put("WeightedRandom", new WeightedRandomCommand());
         commands.put("While", new WhileCommand());
+        commands.put("ParsePlaceholder", new ParsePlaceholderCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {

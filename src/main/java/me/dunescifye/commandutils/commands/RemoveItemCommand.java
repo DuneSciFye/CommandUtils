@@ -12,6 +12,12 @@ import org.bukkit.inventory.ItemStack;
 
 public class RemoveItemCommand extends Command {
 
+    private static String commandSeparator = ",";
+
+    public static void setCommandSeparator(String commandSeparator) {
+        RemoveItemCommand.commandSeparator = commandSeparator;
+    }
+
     @SuppressWarnings("ConstantConditions")
     public void register(){
         if (!this.getEnabled()) return;
@@ -25,11 +31,24 @@ public class RemoveItemCommand extends Command {
                 ItemStack matcher = args.getUnchecked("Material");
                 String inputCommands = args.getUnchecked("Commands");
                 int maxamount = args.getOrDefaultUnchecked("Max Amount", 99999);
-                boolean strict = args.getUnchecked("Only Vanilla Items");
+                boolean strict = args.getOrDefaultUnchecked("Only Vanilla Items", false);
 
                 int amountFound = 0;
-                for (ItemStack invItem : args.getByClass("Player", Player.class).getInventory().getContents()){
-                    if (invItem != null && !invItem.hasItemMeta() && (invItem.getType() == matcher.getType())){
+                ItemStack[] inv = args.getByClass("Player", Player.class).getInventory().getContents();
+                if (strict) {
+                    for (ItemStack invItem : inv) {
+                        if (invItem == null || invItem.hasItemMeta() || invItem.getType() != matcher.getType()) continue;
+                        if (amountFound + invItem.getAmount() > maxamount) {
+                            invItem.setAmount(invItem.getAmount() - maxamount + amountFound);
+                            amountFound = maxamount;
+                            break;
+                        }
+                        amountFound += invItem.getAmount();
+                        invItem.setAmount(0);
+                    }
+                } else {
+                    for (ItemStack invItem : inv) {
+                        if (invItem == null || invItem.getType() != matcher.getType()) continue;
                         if (amountFound + invItem.getAmount() > maxamount) {
                             invItem.setAmount(invItem.getAmount() - maxamount + amountFound);
                             amountFound = maxamount;

@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 public class StringUtils extends PlaceholderExpansion {
 
-    private static String separator;
+    private static String separator = ",";
     private static boolean allowCustomSeparator;
 
     public StringUtils(CommandUtils plugin) {
@@ -63,7 +63,6 @@ public class StringUtils extends PlaceholderExpansion {
 
     @Override
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String args) {
-        String separator = ",";
         String function, arguments = null;
 
         String[] parts = args.split("(?<!\\\\)_", 2);

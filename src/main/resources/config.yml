@@ -124,100 +124,86 @@ Commands:
     Aliases: []
     Permission: "commandutils.command.loadcrossbowcommand"
 
+  ParsePlaceholder:
+    Enabled: true
+    Aliases: []
+
   PushEntity:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.pushentitycommand"
 
   RayTraceParticle:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.raytraceparticlecommand"
 
-  RemoveItemSetVariable:
+  RemoveItem:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.removeitemsetvariablecommand"
+    CommandSeparator: ","
 
   ReplaceInFacing:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.replaceinfacingcommand"
 
   RunCommandLater:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.runcommandlatercommand"
 
   RunCommandWhen:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.runcommandwhencommand"
 
   SendBossBar:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.sendbossbarcommand"
 
   SendMessage:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.sendmessagecommand"
 
   SetCursorItem:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.setcursoritemcommand"
 
   SetItem:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.setitemcommand"
 
   SetItemNBT:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.setitemnbtcommand"
 
   SetTNTSource:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.settntsourcecommand"
 
   SilentParticle:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.silentparticlecommand"
 
   SpawnBlockBreaker:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.spawnblockbreakercommand"
 
   SpawnNoDamageEvokerFang:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.spawnnodamageevokerfangcommand"
 
   SpawnNoDamageFirework:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.spawnnodamagefireworkcommand"
 
   Waterlog:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.waterlogcommand"
 
   WeightedRandom:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.weightedrandomcommand"
 
   While:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.whilecommand"
 
 #Recommended to not change unless you know what your doing
 CommandNamespace: "commandutils"
