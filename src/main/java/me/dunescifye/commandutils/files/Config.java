@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.files;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.placeholders.StringUtils;
 import me.dunescifye.commandutils.utils.Command;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -58,14 +59,14 @@ public class Config {
                     if (keySection.isBoolean("Enabled")) {
                         command.setEnabled(keySection.getBoolean("Enabled"));
                     } else {
-                        logger.warning("Configuration Commands." + key + ".Enabled is not a boolean.");
+                        logger.warning("Configuration Commands." + key + ".Enabled is not a boolean. Found " + keySection.get("Enabled"));
                     }
 
                     if (keySection.getOptionalStringList("Aliases").isPresent()) {
                         if (keySection.isList("Aliases")) {
                             command.setCommandAliases(keySection.getStringList("Aliases").toArray(new String[0]));
                         } else {
-                            logger.warning("Configuration Commands." + key + ".Aliases is not a list.");
+                            logger.warning("Configuration Commands." + key + ".Aliases is not a list. Found " + keySection.get("Aliases"));
                         }
                     }
 
@@ -79,10 +80,23 @@ public class Config {
                         if (keySection.isString("Namespace")) {
                             command.setNamespace(keySection.getString("Namespace"));
                         } else {
-                            logger.warning("Configuration Commands." + key + ".Namespace is not a string.");
+                            logger.warning("Configuration Commands." + key + ".Namespace is not a string. Found " + keySection.get("NameSpace"));
                         }
                     }
                 }
+            }
+
+            //Placeholders
+            Section placeholderSection = config.getSection("Placeholders");
+            if (placeholderSection.isString("ArgumentSeparator")) {
+                StringUtils.setSeparator(placeholderSection.getString("ArgumentSeparator"));
+            } else {
+                logger.warning("Configuration Placeholders.ArgumentSeparator is not a string. Found " + placeholderSection.get("ArgumentSeparator"));
+            }
+            if (placeholderSection.isBoolean("AllowCustomSeparator")) {
+                StringUtils.setAllowCustomSeparator(placeholderSection.getBoolean("AllowCustomSeparator"));
+            } else {
+                logger.warning("Configuration Placeholders.AllowCustomSeparator is not a boolean. Found " + placeholderSection.get("AllowCustomSeparator"));
             }
 
             Section whitelistSection = config.getSection("Whitelists");
@@ -96,8 +110,13 @@ public class Config {
                             if (predicate.startsWith("!#")) {
                                 predicate = predicate.substring(2);
                                 try {
-                                    Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(predicate), Material.class);
-                                    blacklist.add(block -> tag.isTagged(block.getType()));
+                                    NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
+                                    if (predicateKey != null) {
+                                        Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
+                                        if (tag != null) {
+                                            blacklist.add(block -> tag.isTagged(block.getType()));
+                                        }
+                                    }
                                 } catch (
                                     IllegalArgumentException e) {
                                     logger.info("Invalid block tag: " + predicate);
@@ -116,8 +135,13 @@ public class Config {
                             if (predicate.startsWith("#")) {
                                 predicate = predicate.substring(1);
                                 try {
-                                    Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(predicate), Material.class);
-                                    whitelist.add(block -> tag.isTagged(block.getType()));
+                                    NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
+                                    if (predicateKey != null) {
+                                        Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
+                                        if (tag != null) {
+                                            whitelist.add(block -> tag.isTagged(block.getType()));
+                                        }
+                                    }
                                 } catch (
                                     IllegalArgumentException e) {
                                     logger.info("Invalid block tag: " + predicate);

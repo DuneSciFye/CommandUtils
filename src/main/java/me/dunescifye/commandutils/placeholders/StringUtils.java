@@ -24,7 +24,26 @@ import java.util.regex.Pattern;
 
 public class StringUtils extends PlaceholderExpansion {
 
+    private static String separator;
+    private static boolean allowCustomSeparator;
+
     public StringUtils(CommandUtils plugin) {
+    }
+
+    public static String getSeparator() {
+        return separator;
+    }
+
+    public static void setSeparator(String separator) {
+        StringUtils.separator = separator;
+    }
+
+    public static boolean isAllowCustomSeparator() {
+        return allowCustomSeparator;
+    }
+
+    public static void setAllowCustomSeparator(boolean allowCustomSeparator) {
+        StringUtils.allowCustomSeparator = allowCustomSeparator;
     }
 
     @Override

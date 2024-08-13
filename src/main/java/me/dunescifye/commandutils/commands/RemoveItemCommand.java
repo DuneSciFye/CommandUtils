@@ -10,24 +10,25 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class RemoveItemSetVariableCommand extends Command {
+public class RemoveItemCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){
         if (!this.getEnabled()) return;
-        new CommandAPICommand("removeitemsetvariable")
+        new CommandAPICommand("removeitem")
             .withArguments(new PlayerArgument("Player"))
             .withArguments(new ItemStackArgument("Material"))
-            .withArguments(new IntegerArgument("Max Amount"))
-            .withArguments(new GreedyStringArgument("Commands"))
+            .withOptionalArguments(new IntegerArgument("Max Amount"))
+            .withOptionalArguments(new BooleanArgument("Only Vanilla Items"))
+            .withOptionalArguments(new GreedyStringArgument("Commands"))
             .executes((sender, args) -> {
-                Player player = (Player) args.get("Player");
-                ItemStack matcher = (ItemStack) args.get("Material");
-                String inputCommands = (String) args.get("Commands");
-                int maxamount = (Integer) args.get("Max Amount");
+                ItemStack matcher = args.getUnchecked("Material");
+                String inputCommands = args.getUnchecked("Commands");
+                int maxamount = args.getOrDefaultUnchecked("Max Amount", 99999);
+                boolean strict = args.getUnchecked("Only Vanilla Items");
 
                 int amountFound = 0;
-                for (ItemStack invItem : player.getInventory().getContents()){
+                for (ItemStack invItem : args.getByClass("Player", Player.class).getInventory().getContents()){
                     if (invItem != null && !invItem.hasItemMeta() && (invItem.getType() == matcher.getType())){
                         if (amountFound + invItem.getAmount() > maxamount) {
                             invItem.setAmount(invItem.getAmount() - maxamount + amountFound);

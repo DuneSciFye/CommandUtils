@@ -19,6 +19,9 @@ Whitelists:
     - "!#shulker_boxes"
   shovel:
     "#mineable/shovel"
+Placeholders:
+  ArgumentSeparator: ","
+  AllowCustomSeparator: true
 Commands:
   BlockCycle:
     Enabled: true

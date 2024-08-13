@@ -64,7 +64,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("LoadCrossbow", new LoadCrossbowCommand());
         commands.put("PushEntity", new PushEntityCommand());
         commands.put("RayTraceParticle", new RayTraceParticleCommand());
-        commands.put("RemoveItemSetVariable", new RemoveItemSetVariableCommand());
+        commands.put("RemoveItem", new RemoveItemCommand());
         commands.put("ReplaceInFacing", new ReplaceInFacingCommand());
         commands.put("RunCommandLater", new RunCommandLaterCommand());
         commands.put("RunCommandWhen", new RunCommandWhenCommand());
