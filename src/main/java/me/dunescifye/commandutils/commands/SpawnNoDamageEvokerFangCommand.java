@@ -9,9 +9,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.metadata.FixedMetadataValue;
 
-public class SpawnNoDamageEvokerFangCommand {
-
-    public static void register() {
+public class SpawnNoDamageEvokerFangCommand extends Command {
+    @SuppressWarnings("ConstantConditions")
+    public void register() {
         new CommandAPICommand("spawnnodamageevokerfang")
             .withArguments(new LocationArgument("Location"))
             .executes((sender, args) -> {

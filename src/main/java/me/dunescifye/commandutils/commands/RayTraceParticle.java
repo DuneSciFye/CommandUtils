@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class RayTraceParticle extends Command{
+public class RayTraceParticle extends Command {
 
     public void register() {
         if (!RayTraceParticle.getEnabled()) return;

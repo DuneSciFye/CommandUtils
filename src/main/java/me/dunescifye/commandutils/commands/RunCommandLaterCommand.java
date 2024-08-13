@@ -7,7 +7,6 @@ import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;

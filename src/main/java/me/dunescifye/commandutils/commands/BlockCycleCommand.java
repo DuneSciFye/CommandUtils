@@ -17,6 +17,7 @@ import org.bukkit.block.data.type.Stairs;
 
 public class BlockCycleCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!BlockCycleCommand.getEnabled()) return;
 

@@ -20,9 +20,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class SpawnBlockBreaker {
+public class SpawnBlockBreaker extends Command {
     @SuppressWarnings("ConstantConditions")
-    public static void register() {
+    public void register() {
 
         LocationArgument locationArgument = new LocationArgument("Location");
         FloatArgument yawArgument = new FloatArgument("Yaw");

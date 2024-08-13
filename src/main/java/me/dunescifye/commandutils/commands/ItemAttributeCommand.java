@@ -34,6 +34,7 @@ public class ItemAttributeCommand extends Command {
             .collect(Collectors.toList());
     }
 
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!ItemAttributeCommand.getEnabled()) return;
         new CommandTree("itemattribute")

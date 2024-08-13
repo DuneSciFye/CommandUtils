@@ -13,6 +13,7 @@ import static me.dunescifye.commandutils.utils.Utils.mergeSimilarItemStacks;
 
 public class BreakInXYZCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!BreakInXYZCommand.getEnabled()) return;
 

@@ -7,6 +7,7 @@ import org.bukkit.entity.DragonFireball;
 
 public class LaunchDragonFireballCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!LaunchDragonFireballCommand.getEnabled()) return;
 

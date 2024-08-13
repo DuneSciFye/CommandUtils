@@ -10,6 +10,7 @@ import java.util.Collection;
 
 public class GodCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!GodCommand.getEnabled()) return;
 

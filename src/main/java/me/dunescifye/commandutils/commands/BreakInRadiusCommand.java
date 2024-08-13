@@ -16,6 +16,7 @@ import static org.bukkit.Material.AIR;
 
 public class BreakInRadiusCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         /*
         List<Predicate<Block>> whitelist = new ArrayList<>();

@@ -10,9 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class SetItemCommand {
+public class SetItemCommand extends Command {
 
-    public static void register(){
+    public void register(){
 
         new CommandAPICommand("setitem")
             .withArguments(new PlayerArgument("Player"))

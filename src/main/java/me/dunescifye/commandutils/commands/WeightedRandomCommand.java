@@ -12,9 +12,9 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-public class WeightedRandomCommand {
-
-    public static void register(){
+public class WeightedRandomCommand extends Command {
+    @SuppressWarnings("ConstantConditions")
+    public void register() {
 
         new CommandAPICommand("weightedrandom")
             .withArguments(new GreedyStringArgument("Arguments"))

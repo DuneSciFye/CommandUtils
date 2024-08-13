@@ -7,7 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-public class CobwebPrisonCommand extends Command{
+public class CobwebPrisonCommand extends Command {
 
     public void register() {
         if (!CobwebPrisonCommand.getEnabled()) return;

@@ -17,6 +17,7 @@ import static me.dunescifye.commandutils.CommandUtils.getInstance;
 
 public class HighlightBlocksCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register (){
         if (!HighlightBlocksCommand.getEnabled()) return;
 

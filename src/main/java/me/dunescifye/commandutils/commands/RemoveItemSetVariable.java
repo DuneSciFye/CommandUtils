@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class RemoveItemSetVariable extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register(){
         new CommandAPICommand("removeitemsetvariable")
             .withArguments(new PlayerArgument("Player"))

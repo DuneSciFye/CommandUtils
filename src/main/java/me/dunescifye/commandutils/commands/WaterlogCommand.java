@@ -10,9 +10,9 @@ import org.bukkit.block.data.Waterlogged;
 
 import static org.bukkit.Material.AIR;
 
-public class WaterlogCommand {
-
-    public static void register() {
+public class WaterlogCommand extends Command {
+    @SuppressWarnings("ConstantConditions")
+    public void register() {
     //Arguments: World, X Y Z, waterlogOrNot
         new CommandAPICommand("waterlogblock")
             .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))

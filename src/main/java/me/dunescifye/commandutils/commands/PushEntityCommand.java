@@ -13,6 +13,7 @@ import java.util.Collection;
 
 public class PushEntityCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register() {
 
         new CommandTree("pushentity")

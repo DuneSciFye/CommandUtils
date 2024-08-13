@@ -10,6 +10,7 @@ import org.bukkit.block.BlockFace;
 
 public class BoneMealBlockCommand extends Command{
 
+    @SuppressWarnings("ConstantConditions")
     public void register(){
         if (!BoneMealBlockCommand.getEnabled()) return;
 

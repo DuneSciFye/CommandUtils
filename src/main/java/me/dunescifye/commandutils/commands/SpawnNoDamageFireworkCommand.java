@@ -18,9 +18,9 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class SpawnNoDamageFireworkCommand {
-
-    public static void register() {
+public class SpawnNoDamageFireworkCommand extends Command {
+    @SuppressWarnings("ConstantConditions")
+    public void register() {
         new CommandAPICommand("spawnnodamagefirework")
             .withArguments(new LocationArgument("Location"))
             .withArguments(new IntegerArgument("Ticks To Detonate", 0))

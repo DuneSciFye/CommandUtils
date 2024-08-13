@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 public class BroadcastMessageCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!BroadcastMessageCommand.getEnabled()) return;
 

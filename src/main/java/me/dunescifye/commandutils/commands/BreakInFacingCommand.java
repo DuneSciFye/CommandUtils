@@ -14,6 +14,7 @@ import static me.dunescifye.commandutils.utils.Utils.mergeSimilarItemStacks;
 
 public class BreakInFacingCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register() {
 
         if (!BreakInFacingCommand.getEnabled()) return;

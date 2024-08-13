@@ -8,9 +8,9 @@ import org.bukkit.entity.TNTPrimed;
 
 import java.util.Collection;
 
-public class SetTNTSourceCommand {
+public class SetTNTSourceCommand extends Command {
 
-    public static void register() {
+    public void register(){
         new CommandAPICommand("settntsource")
             .withArguments(new EntitySelectorArgument.ManyEntities("tnts"))
             .withArguments(new PlayerArgument("Player Source"))

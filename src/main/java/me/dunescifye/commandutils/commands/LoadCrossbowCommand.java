@@ -13,7 +13,7 @@ import java.util.List;
 
 public class LoadCrossbowCommand extends Command {
 
-    public static void register() {
+    public void register() {
         if (!LoadCrossbowCommand.getEnabled()) return;
 
         new CommandAPICommand("loadcrossbow")

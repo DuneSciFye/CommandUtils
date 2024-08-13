@@ -15,6 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class LaunchFireworkCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!LaunchFireworkCommand.getEnabled()) return;
         new CommandTree("launchfirework")

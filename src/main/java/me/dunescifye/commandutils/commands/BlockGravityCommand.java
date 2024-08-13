@@ -9,15 +9,14 @@ import dev.jorel.commandapi.arguments.StringArgument;
 import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 public class BlockGravityCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!BlockGravityCommand.getEnabled()) return;
 

@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ChanceRandomRun extends Command {
 
-
+    @SuppressWarnings("ConstantConditions")
     public void register(){
         if (!ChanceRandomRun.getEnabled()) return;
 

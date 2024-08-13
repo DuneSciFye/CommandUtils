@@ -13,10 +13,10 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SendBossBarCommand {
+public class SendBossBarCommand extends Command {
     private static final Map<String, BossBar> bossBars = new HashMap<>();
     private static final Map<String, BukkitTask> bossBarTasks = new HashMap<>();
-    public static void register() {
+    public void register() {
         new CommandAPICommand("sendbossbar")
             .withArguments(new PlayerArgument("Player"))
             .withArguments(new StringArgument("Bossbar ID"))

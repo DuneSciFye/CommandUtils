@@ -19,6 +19,7 @@ import static me.dunescifye.commandutils.utils.Utils.*;
 
 public class BreakAndReplantCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register(){
 
         if (!BreakAndReplantCommand.getEnabled()) return;

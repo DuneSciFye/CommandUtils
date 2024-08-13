@@ -8,9 +8,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 
-public class SendMessage {
+public class SendMessage extends Command {
 
-        public static void register(){
+        public void register(){
 
             new CommandAPICommand("sendmessage")
                 .withArguments(new PlayerArgument("Player"))

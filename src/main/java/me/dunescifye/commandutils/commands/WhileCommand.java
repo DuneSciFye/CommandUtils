@@ -15,10 +15,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class WhileCommand {
+public class WhileCommand extends Command {
 
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
-    public static void register() {
+        @SuppressWarnings("ConstantConditions")
+        public void register() {
         new CommandTree("while")
             .then(new LiteralArgument("add")
                 .then(new StringArgument("Command ID")

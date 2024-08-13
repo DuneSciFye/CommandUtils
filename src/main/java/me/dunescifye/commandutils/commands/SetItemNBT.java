@@ -9,9 +9,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-public class SetItemNBT {
+public class SetItemNBT extends Command {
 
-    public static void register(){
+    public void register(){
 
         new CommandAPICommand("setitemnbt")
             .withArguments(new PlayerArgument("Player"))

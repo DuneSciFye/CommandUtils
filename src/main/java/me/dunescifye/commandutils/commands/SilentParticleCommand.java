@@ -9,9 +9,9 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-public class SilentParticleCommand {
+public class SilentParticleCommand extends Command {
 
-    public static void register() {
+    public void register(){
         new CommandTree("silentparticle")
             .then(new ParticleArgument("Particle")
                 .then(new PlayerArgument("Player")

@@ -4,7 +4,8 @@ import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import org.bukkit.entity.Player;
 
-public class FoodCommand extends Command{
+public class FoodCommand extends Command {
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!FoodCommand.getEnabled()) return;
 

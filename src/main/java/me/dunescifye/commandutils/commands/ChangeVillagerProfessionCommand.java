@@ -20,6 +20,7 @@ public class ChangeVillagerProfessionCommand extends Command{
             .collect(Collectors.toList());
     }
 
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!ChangeVillagerProfessionCommand.getEnabled()) return;
 

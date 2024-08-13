@@ -13,6 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ReplaceInFacingCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         new CommandAPICommand("replaceinfacing")
             .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))
