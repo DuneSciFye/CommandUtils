@@ -41,7 +41,6 @@ public final class CommandUtils extends JavaPlugin {
         Logger logger = plugin.getLogger();
 
         //Files first
-        Config.setup(this);
 
         registerListeners();
         //CommandAPI.onEnable();
@@ -83,6 +82,8 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("WeightedRandom", new WeightedRandomCommand());
         commands.put("While", new WhileCommand());
 
+
+        Config.setup(this);
 
         for (Command command : commands.values()) {
             command.register();

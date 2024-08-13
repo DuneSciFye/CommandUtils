@@ -40,6 +40,10 @@ public class Config {
                     System.out.println(key);
                     Section keySection = commandSection.getSection(key);
                     Command command = commands.get(key);
+                    if (command == null) {
+                        logger.warning(key + " command not found! It was specified in config!");
+                        continue;
+                    }
                     if (keySection.isBoolean("Enabled")) {
                         command.setEnabled(keySection.getBoolean("Enabled"));
                     } else {
@@ -49,13 +53,13 @@ public class Config {
                     if (keySection.isList("Aliases")) {
                         command.setCommandAliases(keySection.getStringList("Aliases").toArray(new String[0]));
                     } else {
-                        logger.warning("Configuration Commands." + key + ".Enabled is not a list.");
+                        logger.warning("Configuration Commands." + key + ".Aliases is not a list.");
                     }
 
                     if (keySection.isList("Permission")) {
                         command.setPermission(keySection.getString("Permission"));
                     } else {
-                        logger.warning("Configuration Commands." + key + ".Enabled is not a string.");
+                        logger.warning("Configuration Commands." + key + ".Permission is not a string.");
                     }
 
                     if (keySection.isString("Namespace")) {
