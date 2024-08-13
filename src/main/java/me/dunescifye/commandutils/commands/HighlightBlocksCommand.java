@@ -10,7 +10,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
 import static me.dunescifye.commandutils.CommandUtils.getInstance;
@@ -33,7 +32,7 @@ public class HighlightBlocksCommand extends Command {
                 Location location = (Location) args.get("Location");
                 Block block = world.getBlockAt(location);
                 int radius = (int) args.get("Radius");
-                Predicate<Block> predicate = (Predicate<Block>) args.get("Block");
+                Predicate<Block> predicate = args.getUnchecked("Block");
                 ParticleData particleData = args.getUnchecked("Particle");
                 Particle particle = particleData == null ? Particle.ELECTRIC_SPARK : particleData.particle();
 

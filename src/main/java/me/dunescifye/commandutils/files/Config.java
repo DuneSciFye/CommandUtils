@@ -19,8 +19,8 @@ import java.util.logging.Logger;
 
 public class Config {
 
-    private static Map<String, List<Predicate<Block>>> whitelists = new HashMap<>();
-    private static Map<String, List<Predicate<Block>>> blacklists = new HashMap<>();
+    private static final Map<String, List<Predicate<Block>>> whitelists = new HashMap<>();
+    private static final Map<String, List<Predicate<Block>>> blacklists = new HashMap<>();
 
     private static String namespace = "commandutils";
 

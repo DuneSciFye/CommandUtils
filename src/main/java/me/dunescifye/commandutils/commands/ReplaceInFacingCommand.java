@@ -36,8 +36,8 @@ public class ReplaceInFacingCommand extends Command {
                 Location loc = (Location) args.get("Location");
                 Block b = loc.getBlock();
                 int radius = (int) args.get("Radius");
-                List<Material> blocksFrom = (List<Material>) args.get("Blocks To Replace From");
-                List<Material> blocksTo = (List<Material>) args.get("Blocks To Replace To");
+                List<Material> blocksFrom = args.getUnchecked("Blocks To Replace From");
+                List<Material> blocksTo = args.getUnchecked("Blocks To Replace To");
 
 
                 int depth = (int) args.get("Depth");

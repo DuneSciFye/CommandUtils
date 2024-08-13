@@ -2,7 +2,6 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.PlayerArgument;
-import me.dunescifye.commandutils.files.Config;
 import org.bukkit.entity.DragonFireball;
 
 public class LaunchDragonFireballCommand extends Command {

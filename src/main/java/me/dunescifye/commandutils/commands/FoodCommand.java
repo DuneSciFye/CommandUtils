@@ -17,11 +17,7 @@ public class FoodCommand extends Command {
                             Player p = args.getUnchecked("Player");
                             int foodLevel = p.getFoodLevel();
                             int addAmount = (int) args.get("Amount");
-                            if (foodLevel + addAmount > 20) {
-                                p.setFoodLevel(20);
-                            } else {
-                                p.setFoodLevel(foodLevel + addAmount);
-                            }
+                            p.setFoodLevel(Math.min(foodLevel + addAmount, 20));
                         })
                         .then(new BooleanArgument("Allow Overflow")
                             .executes((sender, args) -> {

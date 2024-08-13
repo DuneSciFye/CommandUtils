@@ -54,7 +54,6 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("BroadcastMessage", new BroadcastMessageCommand());
         commands.put("ChanceRandomRun", new ChanceRandomRunCommand());
         commands.put("ChangeVillagerProfession", new ChangeVillagerProfessionCommand());
-        commands.put("CobwebPrison", new CobwebPrisonCommand());
         commands.put("Food", new FoodCommand());
         commands.put("God", new GodCommand());
         commands.put("HighlightBlocks", new HighlightBlocksCommand());
@@ -82,6 +81,12 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("WeightedRandom", new WeightedRandomCommand());
         commands.put("While", new WhileCommand());
 
+        //Special Commands
+        if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
+            commands.put("CobwebPrison", new CobwebPrisonCommand());
+        }
+
+
 
         Config.setup(this);
 
@@ -89,10 +94,6 @@ public final class CommandUtils extends JavaPlugin {
             command.register();
         }
 
-
-        //Special Commands
-        if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
-        }
 
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
             logger.info("Detected GriefPrevention, enabling support for it.");
@@ -125,10 +126,6 @@ public final class CommandUtils extends JavaPlugin {
     }
     public static CommandUtils getInstance(){
         return plugin;
-    }
-
-    public static void addCommand(String name, Command command){
-        commands.put(name, command);
     }
 
     public static Set<String> getCommandNames() {

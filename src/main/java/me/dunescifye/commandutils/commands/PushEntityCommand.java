@@ -4,7 +4,6 @@ import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.DoubleArgument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.LocationArgument;
-import me.dunescifye.commandutils.files.Config;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
@@ -23,9 +22,7 @@ public class PushEntityCommand extends Command {
                     .executes((sender, args) -> {
                         Collection<Entity> entities = args.getUnchecked("Entity");
                         Location location = args.getUnchecked("Location");
-                        assert location != null;
                         Vector vector = location.toVector();
-                        assert entities != null;
                         for (Entity entity : entities) {
                             if (entity.getWorld() != location.getWorld()) continue;
                             entity.setVelocity(vector.subtract(entity.getLocation().toVector()).normalize());
@@ -35,11 +32,8 @@ public class PushEntityCommand extends Command {
                         .executes((sender, args) -> {
                             Collection<Entity> entities = args.getUnchecked("Entity");
                             Location location = args.getUnchecked("Location");
-                            assert location != null;
                             Vector vector = location.toVector();
-                            assert entities != null;
                             Double multiplier = args.getUnchecked("Multiplier");
-                            assert multiplier != null;
                             for (Entity entity : entities) {
                                 if (entity.getWorld() != location.getWorld()) continue;
                                 entity.setVelocity(vector.subtract(entity.getLocation().toVector()).normalize().multiply(multiplier));
@@ -51,9 +45,7 @@ public class PushEntityCommand extends Command {
                     .executes((sender, args) -> {
                         Collection<Entity> entities = args.getUnchecked("Entity");
                         Entity target = args.getUnchecked("Target");
-                        assert target != null;
                         Vector vector = target.getLocation().toVector();
-                        assert entities != null;
                         for (Entity entity : entities) {
                             if (entity.getWorld() != target.getWorld()) continue;
                             entity.setVelocity(vector.subtract(target.getLocation().toVector()).normalize());
@@ -63,11 +55,8 @@ public class PushEntityCommand extends Command {
                         .executes((sender, args) -> {
                             Collection<Entity> entities = args.getUnchecked("Entity");
                             Entity target = args.getUnchecked("Target");
-                            assert target != null;
                             Vector vector = target.getLocation().toVector();
-                            assert entities != null;
                             Double multiplier = args.getUnchecked("Multiplier");
-                            assert multiplier != null;
                             for (Entity entity : entities) {
                                 if (entity.getWorld() != target.getWorld()) continue;
                                 entity.setVelocity(vector.subtract(target.getLocation().toVector()).normalize().multiply(multiplier));

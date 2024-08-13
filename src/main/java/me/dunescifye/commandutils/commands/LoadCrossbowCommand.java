@@ -13,6 +13,7 @@ import java.util.List;
 
 public class LoadCrossbowCommand extends Command {
 
+    @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!this.getEnabled()) return;
 
@@ -22,7 +23,6 @@ public class LoadCrossbowCommand extends Command {
             .withOptionalArguments(new BooleanArgument("Loaded"))
             .executes((sender, args) -> {
                 Player p = args.getUnchecked("Player");
-                assert p != null;
                 ItemStack item = p.getInventory().getItem(args.getUnchecked("Slot"));
                 if (item.getItemMeta() instanceof CrossbowMeta crossbowMeta) {
                     if (args.getOrDefaultUnchecked("Loaded", true)) {
