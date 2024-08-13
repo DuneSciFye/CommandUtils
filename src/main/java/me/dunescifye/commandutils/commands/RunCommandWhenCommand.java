@@ -20,6 +20,7 @@ public class RunCommandWhenCommand extends Command {
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
     @SuppressWarnings("ConstantConditions")
     public void register() {
+        if (!this.getEnabled()) return;
         new CommandTree("runcommandwhen")
             .then(new LiteralArgument("add")
                 .then(new StringArgument("Command ID")
@@ -131,7 +132,8 @@ public class RunCommandWhenCommand extends Command {
                     })
                 )
             )
-            .withPermission("commandutils.command.runcommandwhen")
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 }

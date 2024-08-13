@@ -13,6 +13,7 @@ public class RemoveItemSetVariableCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){
+        if (!this.getEnabled()) return;
         new CommandAPICommand("removeitemsetvariable")
             .withArguments(new PlayerArgument("Player"))
             .withArguments(new ItemStackArgument("Material"))
@@ -46,8 +47,9 @@ public class RemoveItemSetVariableCommand extends Command {
                 }
 
             })
-            .withPermission("commandutils.command.removeitemsetvariable")
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 }

@@ -9,16 +9,16 @@ public class LaunchDragonFireballCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
-        if (!LaunchDragonFireballCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
 
         new CommandAPICommand("launchdragonfireball")
             .withOptionalArguments(new PlayerArgument("Player"))
             .executesPlayer((p, args) -> {
                 DragonFireball fireball = p.launchProjectile(DragonFireball.class);
             })
-            .withPermission("commandutils.command.launchdragonfireball")
-            .withAliases(LaunchDragonFireballCommand.getCommandAliases())
-            .register(Config.getNamespace());
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 }

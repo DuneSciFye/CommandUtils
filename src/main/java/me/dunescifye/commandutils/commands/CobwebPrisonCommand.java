@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 public class CobwebPrisonCommand extends Command {
 
     public void register() {
-        if (!CobwebPrisonCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
 
         new CommandAPICommand("cobwebprison")
             .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))
@@ -64,9 +64,9 @@ public class CobwebPrisonCommand extends Command {
                     }
                 }
             })
-            .withPermission("commandutils.command.cobwebprison")
-            .withAliases(CobwebPrisonCommand.getCommandAliases())
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 }

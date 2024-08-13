@@ -13,6 +13,7 @@ import static org.bukkit.Material.AIR;
 public class WaterlogCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     public void register() {
+        if (!this.getEnabled()) return;
     //Arguments: World, X Y Z, waterlogOrNot
         new CommandAPICommand("waterlogblock")
             .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))
@@ -37,8 +38,9 @@ public class WaterlogCommand extends Command {
                     }
                 }
             })
-            .withPermission("commandutils.command.waterlog")
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 }

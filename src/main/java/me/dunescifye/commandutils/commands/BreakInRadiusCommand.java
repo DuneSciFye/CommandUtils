@@ -25,7 +25,7 @@ public class BreakInRadiusCommand extends Command {
         }
 
          */
-        if (!BreakInRadiusCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
 
 
 
@@ -458,9 +458,9 @@ public class BreakInRadiusCommand extends Command {
                         )
                 )
             )
-            .withPermission("commandutils.command.breakinradius")
-            .withAliases(BreakInRadiusCommand.getCommandAliases())
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 }

@@ -1,10 +1,13 @@
 package me.dunescifye.commandutils.commands;
 
+import me.dunescifye.commandutils.files.Config;
+
 public abstract class Command {
 
     private static boolean enabled = true;
     private static String[] commandAliases;
     private static String permission;
+    private String namespace = Config.getNamespace();
 
     public void setEnabled(boolean enabled) {
         Command.enabled = enabled;
@@ -32,4 +35,11 @@ public abstract class Command {
     public abstract void register();
 
 
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
 }

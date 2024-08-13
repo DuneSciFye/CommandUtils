@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 public class SendMessageCommand extends Command {
     @SuppressWarnings("ConstantConditions")
         public void register(){
+        if (!this.getEnabled()) return;
 
             new CommandAPICommand("sendmessage")
                 .withArguments(new PlayerArgument("Player"))
@@ -24,8 +25,9 @@ public class SendMessageCommand extends Command {
                     player.sendMessage(component);
 
                 })
-                .withPermission("commandutils.command.sendmessage")
-                .register("commandutils");
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
 
     }
 

@@ -49,6 +49,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("BlockGravity", new BlockGravityCommand());
         commands.put("BoneMealBlock", new BoneMealBlockCommand());
         commands.put("BreakAndReplant", new BreakAndReplantCommand());
+        commands.put("BreakInFacing", new BreakInFacingCommand());
         commands.put("BreakInRadius", new BreakInRadiusCommand());
         commands.put("BreakInXYZ", new BreakInXYZCommand());
         commands.put("BroadcastMessage", new BroadcastMessageCommand());

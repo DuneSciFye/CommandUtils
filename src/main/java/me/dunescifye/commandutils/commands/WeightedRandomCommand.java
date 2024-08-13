@@ -15,6 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class WeightedRandomCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     public void register() {
+        if (!this.getEnabled()) return;
 
         new CommandAPICommand("weightedrandom")
             .withArguments(new GreedyStringArgument("Arguments"))
@@ -50,8 +51,9 @@ public class WeightedRandomCommand extends Command {
                 }
 
             })
-            .withPermission("commandutils.command.weightedrandom")
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
 
     }
 }

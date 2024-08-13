@@ -15,6 +15,7 @@ public class PushEntityCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
+        if (!this.getEnabled()) return;
 
         new CommandTree("pushentity")
             .then(new EntitySelectorArgument.ManyEntities("Entity")
@@ -75,8 +76,8 @@ public class PushEntityCommand extends Command {
                     )
                 )
             )
-            .withPermission("commandutils.command.launchdragonfireball")
-            .withAliases(LaunchFireworkCommand.getCommandAliases())
-            .register(Config.getNamespace());
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 }

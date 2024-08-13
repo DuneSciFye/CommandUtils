@@ -23,6 +23,7 @@ import java.util.function.Predicate;
 public class SpawnBlockBreakerCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     public void register() {
+        if (!this.getEnabled()) return;
 
         LocationArgument locationArgument = new LocationArgument("Location");
         FloatArgument yawArgument = new FloatArgument("Yaw");
@@ -370,8 +371,9 @@ public class SpawnBlockBreakerCommand extends Command {
                     )
                 )
             )
-            .withPermission("commandutils.command.spawnblockbreaker")
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
 
     }
 

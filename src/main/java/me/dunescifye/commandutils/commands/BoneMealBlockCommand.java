@@ -12,7 +12,7 @@ public class BoneMealBlockCommand extends Command{
 
     @SuppressWarnings("ConstantConditions")
     public void register(){
-        if (!BoneMealBlockCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
 
         new CommandAPICommand("bonemealblock")
                 .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))
@@ -55,8 +55,8 @@ public class BoneMealBlockCommand extends Command{
                         }
                     }
                 })
-            .withPermission("commandutils.command.bonemealblock")
-            .withAliases(BoneMealBlockCommand.getCommandAliases())
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 }

@@ -12,6 +12,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 public class SpawnNoDamageEvokerFangCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     public void register() {
+        if (!this.getEnabled()) return;
         new CommandAPICommand("spawnnodamageevokerfang")
             .withArguments(new LocationArgument("Location"))
             .executes((sender, args) -> {
@@ -20,8 +21,9 @@ public class SpawnNoDamageEvokerFangCommand extends Command {
                 Entity evokerFangs = loc.getWorld().spawnEntity(loc, EntityType.EVOKER_FANGS);
                 evokerFangs.setMetadata("nodamage", new FixedMetadataValue(CommandUtils.getInstance(), true));
             })
-            .withPermission("commandutils.commmand.summonevokerfang")
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 }

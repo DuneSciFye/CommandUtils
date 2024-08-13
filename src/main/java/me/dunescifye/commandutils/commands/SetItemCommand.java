@@ -15,6 +15,7 @@ public class SetItemCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     public void register(){
 
+        if (!this.getEnabled()) return;
         new CommandAPICommand("setitem")
             .withArguments(new PlayerArgument("Player"))
             .withArguments(new IntegerArgument("Slot", 0, 40))
@@ -34,8 +35,9 @@ public class SetItemCommand extends Command {
 
 
             })
-            .withPermission("CommandPermission.OP")
-            .register();
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
 
         new CommandTree("setitem")
             .then(new PlayerArgument("Player")
@@ -54,7 +56,8 @@ public class SetItemCommand extends Command {
                     )
                 )
             )
-            .withPermission("commandutils.command.setitem")
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 }

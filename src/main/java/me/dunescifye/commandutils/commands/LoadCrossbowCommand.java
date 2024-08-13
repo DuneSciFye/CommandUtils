@@ -14,7 +14,7 @@ import java.util.List;
 public class LoadCrossbowCommand extends Command {
 
     public void register() {
-        if (!LoadCrossbowCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
 
         new CommandAPICommand("loadcrossbow")
             .withArguments(new PlayerArgument("Player"))
@@ -33,9 +33,9 @@ public class LoadCrossbowCommand extends Command {
                     item.setItemMeta(crossbowMeta);
                 }
             })
-            .withPermission("commandutils.command.loadcrossbow")
-            .withAliases(LoadCrossbowCommand.getCommandAliases())
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 }

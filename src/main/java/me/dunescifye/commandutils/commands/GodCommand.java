@@ -12,20 +12,23 @@ public class GodCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
-        if (!GodCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
 
         new CommandTree("god")
             .then(new EntitySelectorArgument.ManyEntities("Entities")
                 .executes((sender, args) -> {
                     Collection<Entity> entities = args.getUnchecked("Entities");
+                    for (Entity entity : entities) {
+                        entity.setMetadata("godmode", new FixedMetadataValue(CommandUtils.getInstance(), true));
+                    }
                 })
             )
             .executesPlayer((p, args) -> {
                 p.setMetadata("godmode", new FixedMetadataValue(CommandUtils.getInstance(), true));
             })
-            .withPermission("commandutils.command.god")
-            .withAliases(BreakAndReplantCommand.getCommandAliases())
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 }

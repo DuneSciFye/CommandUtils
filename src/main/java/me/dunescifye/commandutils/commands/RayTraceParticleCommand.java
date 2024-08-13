@@ -17,7 +17,7 @@ import org.bukkit.util.Vector;
 public class RayTraceParticleCommand extends Command {
 
     public void register() {
-        if (!RayTraceParticleCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
 
         new CommandTree("raytraceparticle")
             .then(new ParticleArgument("Particle")
@@ -38,9 +38,9 @@ public class RayTraceParticleCommand extends Command {
                     )
                 )
             )
-            .withPermission("commandutils.command.raytraceparticle")
-            .withAliases(RayTraceParticleCommand.getCommandAliases())
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
     private static void rayTraceParticle(Player p, Particle particle, int length, double spacing, int period) {

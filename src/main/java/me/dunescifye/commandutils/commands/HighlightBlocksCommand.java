@@ -19,7 +19,7 @@ public class HighlightBlocksCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register (){
-        if (!HighlightBlocksCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
 
         new CommandAPICommand("highlightblocks")
             .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))
@@ -62,8 +62,9 @@ public class HighlightBlocksCommand extends Command {
                     }
                 }
             })
-            .withPermission("commandutils.command.highlightblocks")
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
 
     }
 }

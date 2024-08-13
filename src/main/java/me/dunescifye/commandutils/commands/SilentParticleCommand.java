@@ -13,6 +13,7 @@ public class SilentParticleCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){
+        if (!this.getEnabled()) return;
         new CommandTree("silentparticle")
             .then(new ParticleArgument("Particle")
                 .then(new PlayerArgument("Player")
@@ -81,8 +82,9 @@ public class SilentParticleCommand extends Command {
                     )
                 )
             )
-            .withPermission("commandutils.command.silentparticle")
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 }

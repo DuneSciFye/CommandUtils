@@ -20,50 +20,194 @@ Whitelists:
   shovel:
     "#mineable/shovel"
 Commands:
-  BlockCycle:
+  BlockCycleCommand:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.blockcycle"
-    Namespace:
-  BlockGravity:
+    Permission: "commandutils.command.blockcyclecommand"
+  BlockGravityCommand:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.blockgravity"
-  BoneMealBlock:
+    Permission: "commandutils.command.blockgravitycommand"
+
+  BoneMealBlockCommand:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.bonemealblock"
-  BreakAndReplant:
+    Permission: "commandutils.command.bonemealblockcommand"
+
+  BreakAndReplantCommand:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.breakandreplant"
-  BreakInFacing:
+    Permission: "commandutils.command.breakandreplantcommand"
+
+  BreakInFacingCommand:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.breakinfacing"
-  BreakInRadius:
+    Permission: "commandutils.command.breakinfacingcommand"
+
+  BreakInRadiusCommand:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.breakinradius"
-  BreakInXYZ:
+    Permission: "commandutils.command.breakinradiuscommand"
+
+  BreakInXYZCommand:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.breakinxyz"
-  BroadcastMessage:
+    Permission: "commandutils.command.breakinxyzcommand"
+
+  BroadcastMessageCommand:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.broadcastmessage"
-  ChanceRandomRun:
+    Permission: "commandutils.command.broadcastmessagecommand"
+
+  ChanceRandomRunCommand:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.chancerandomrun"
-  ChangeVillagerProfession:
+    Permission: "commandutils.command.chancerandomruncommand"
+
+  ChangeVillagerProfessionCommand:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.changevillagerprofession"
-  CobwebPrison:
+    Permission: "commandutils.command.changevillagerprofessioncommand"
+
+  CobwebPrisonCommand:
     Enabled: true
     Aliases: []
-    Permission: "commandutils.command.cobwebprison"
+    Permission: "commandutils.command.cobwebprisoncommand"
+
+  Command:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.command"
+
+  FoodCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.foodcommand"
+
+  GodCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.godcommand"
+
+  HighlightBlocksCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.highlightblockscommand"
+
+  ItemAttributeCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.itemattributecommand"
+
+  LaunchDragonFireballCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.launchdragonfireballcommand"
+
+  LaunchFireworkCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.launchfireworkcommand"
+
+  LoadCrossbowCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.loadcrossbowcommand"
+
+  PushEntityCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.pushentitycommand"
+
+  RayTraceParticleCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.raytraceparticlecommand"
+
+  RemoveItemSetVariableCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.removeitemsetvariablecommand"
+
+  ReplaceInFacingCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.replaceinfacingcommand"
+
+  RunCommandLaterCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.runcommandlatercommand"
+
+  RunCommandWhenCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.runcommandwhencommand"
+
+  SendBossBarCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.sendbossbarcommand"
+
+  SendMessageCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.sendmessagecommand"
+
+  SetCursorItemCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.setcursoritemcommand"
+
+  SetItemCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.setitemcommand"
+
+  SetItemNBTCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.setitemnbtcommand"
+
+  SetTNTSourceCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.settntsourcecommand"
+
+  SilentParticleCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.silentparticlecommand"
+
+  SpawnBlockBreakerCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.spawnblockbreakercommand"
+
+  SpawnNoDamageEvokerFangCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.spawnnodamageevokerfangcommand"
+
+  SpawnNoDamageFireworkCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.spawnnodamagefireworkcommand"
+
+  WaterlogCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.waterlogcommand"
+
+  WeightedRandomCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.weightedrandomcommand"
+
+  WhileCommand:
+    Enabled: true
+    Aliases: []
+    Permission: "commandutils.command.whilecommand"
+
 #Recommended to not change unless you know what your doing
 CommandNamespace: "commandutils"

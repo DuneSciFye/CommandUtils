@@ -22,7 +22,7 @@ public class BreakAndReplantCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     public void register(){
 
-        if (!BreakAndReplantCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
 
         new CommandTree("breakandreplant")
             .then(new LocationArgument("Location", LocationType.BLOCK_POSITION)
@@ -116,9 +116,9 @@ public class BreakAndReplantCommand extends Command {
                     )
                 )
             )
-            .withPermission("commandutils.command.breakandreplant")
-            .withAliases(BreakAndReplantCommand.getCommandAliases())
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
 
     }
 }

@@ -22,7 +22,7 @@ public class ChangeVillagerProfessionCommand extends Command{
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
-        if (!ChangeVillagerProfessionCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
 
         new CommandAPICommand("changevillagerprofession")
             .withArguments(new EntitySelectorArgument.ManyEntities("Villagers"))
@@ -38,9 +38,9 @@ public class ChangeVillagerProfessionCommand extends Command{
                     }
                 }
             })
-            .withPermission("commandutils.command.changevillagerprofession")
-            .withAliases(ChangeVillagerProfessionCommand.getCommandAliases())
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 }

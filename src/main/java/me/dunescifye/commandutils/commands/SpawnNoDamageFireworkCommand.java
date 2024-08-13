@@ -21,6 +21,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class SpawnNoDamageFireworkCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     public void register() {
+        if (!this.getEnabled()) return;
         new CommandAPICommand("spawnnodamagefirework")
             .withArguments(new LocationArgument("Location"))
             .withArguments(new IntegerArgument("Ticks To Detonate", 0))
@@ -44,7 +45,8 @@ public class SpawnNoDamageFireworkCommand extends Command {
                 }
 
             })
-            .withPermission("commandutils.command.spawnnodamagefirework")
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 }

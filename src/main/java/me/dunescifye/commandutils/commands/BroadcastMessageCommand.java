@@ -13,7 +13,7 @@ public class BroadcastMessageCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
-        if (!BroadcastMessageCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
 
         new CommandAPICommand("broadcastmessage")
             .withArguments(new GreedyStringArgument("Message"))
@@ -26,8 +26,8 @@ public class BroadcastMessageCommand extends Command {
                     player.sendMessage(component);
 
             })
-            .withPermission("commandutils.command.broadcastmessage")
-            .withAliases(BroadcastMessageCommand.getCommandAliases())
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 }

@@ -15,7 +15,7 @@ public class BreakInXYZCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
-        if (!BreakInXYZCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
 
         Collection<String> materials = new ArrayList<>();
         Collection<String> tags = new ArrayList<>(List.of(
@@ -364,9 +364,9 @@ public class BreakInXYZCommand extends Command {
                                 )
                         )
                 )
-            .withPermission("commandutils.command.breakinxyz")
-            .withAliases(BreakInXYZCommand.getCommandAliases())
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 

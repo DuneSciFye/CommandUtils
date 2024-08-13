@@ -13,7 +13,7 @@ public class ChanceRandomRunCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){
-        if (!ChanceRandomRunCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
 
         new CommandAPICommand("chancerandomrun")
             .withArguments(new GreedyStringArgument("Arguments"))
@@ -36,9 +36,9 @@ public class ChanceRandomRunCommand extends Command {
                 }
 
             })
-            .withPermission("commandutils.command.chancerandomrun")
-            .withAliases(ChanceRandomRunCommand.getCommandAliases())
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
 
     }
 

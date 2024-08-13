@@ -11,6 +11,7 @@ public class SetCursorItemCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
+        if (!this.getEnabled()) return;
         new CommandAPICommand("setcursoritem")
             .withArguments(new PlayerArgument("Player"))
             .withArguments(new ItemStackArgument("Item"))
@@ -21,8 +22,9 @@ public class SetCursorItemCommand extends Command {
                 item.setAmount(args.getOrDefaultUnchecked("Amount", 1));
                 p.setItemOnCursor(item);
             })
-            .withPermission("commandutils.command.setcursoritem")
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
     
 }

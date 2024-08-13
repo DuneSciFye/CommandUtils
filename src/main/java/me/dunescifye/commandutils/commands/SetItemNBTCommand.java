@@ -13,6 +13,7 @@ public class SetItemNBTCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){
+        if (!this.getEnabled()) return;
 
         new CommandAPICommand("setitemnbt")
             .withArguments(new PlayerArgument("Player"))
@@ -41,8 +42,9 @@ public class SetItemNBTCommand extends Command {
                 item.setItemMeta(meta);
 
             })
-            .withPermission("commandutils.command.setitemnbt")
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 

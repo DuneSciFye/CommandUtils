@@ -37,6 +37,7 @@ public class Config {
             Section commandSection = config.getSection("Commands");
             for (Object objectKey : commandSection.getKeys()) {
                 if (objectKey instanceof String key) {
+                    System.out.println(key);
                     Section keySection = commandSection.getSection(key);
                     Command command = commands.get(key);
                     if (keySection.isBoolean("Enabled")) {
@@ -55,6 +56,12 @@ public class Config {
                         command.setPermission(keySection.getString("Permission"));
                     } else {
                         logger.warning("Configuration Commands." + key + ".Enabled is not a string.");
+                    }
+
+                    if (keySection.isString("Namespace")) {
+                        command.setNamespace(keySection.getString("Namespace"));
+                    } else {
+                        logger.warning("Configuration Commands." + key + ".Namespace is not a string.");
                     }
                 }
             }

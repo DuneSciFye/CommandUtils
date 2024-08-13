@@ -17,7 +17,7 @@ public class LaunchFireworkCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
-        if (!LaunchFireworkCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
         new CommandTree("launchfirework")
             .then(new PlayerArgument("Player")
                 .then(new IntegerArgument("Ticks To Detonate")
@@ -38,9 +38,9 @@ public class LaunchFireworkCommand extends Command {
                     })
                 )
             )
-            .withPermission("commandutils.command.launchfirework")
-            .withAliases(LaunchFireworkCommand.getCommandAliases())
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 }

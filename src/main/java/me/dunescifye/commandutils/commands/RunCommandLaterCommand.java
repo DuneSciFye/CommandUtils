@@ -17,6 +17,7 @@ public class RunCommandLaterCommand extends Command {
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
     @SuppressWarnings("ConstantConditions")
     public void register() {
+        if (!this.getEnabled()) return;
         new CommandTree("runcommandlater")
             .then(new StringArgument("Command ID")
                 .then(new IntegerArgument("Ticks", 0)
@@ -61,8 +62,9 @@ public class RunCommandLaterCommand extends Command {
                     })
                 )
             )
-            .withPermission("commandutils.command.runcommandlater")
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 }

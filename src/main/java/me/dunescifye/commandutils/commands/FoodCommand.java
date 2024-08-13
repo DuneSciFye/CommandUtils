@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 public class FoodCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     public void register() {
-        if (!FoodCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
 
         new CommandTree("food")
             .then(new LiteralArgument("add")
@@ -58,8 +58,8 @@ public class FoodCommand extends Command {
                     )
                 )
             )
-            .withPermission("commandutils.command.food")
-            .withAliases(FoodCommand.getCommandAliases())
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 }

@@ -19,7 +19,7 @@ public class BlockCycleCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
-        if (!BlockCycleCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
 
         new CommandTree("blockcycle")
             .then(new LiteralArgument("oxidize")
@@ -126,8 +126,8 @@ public class BlockCycleCommand extends Command {
                     )
                 )
             )
-            .withPermission("commandutils.command.blockcycle")
-            .withAliases(BlockCycleCommand.getCommandAliases())
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 }

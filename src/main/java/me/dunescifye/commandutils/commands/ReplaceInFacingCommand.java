@@ -15,6 +15,7 @@ public class ReplaceInFacingCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
+        if (!this.getEnabled()) return;
         new CommandAPICommand("replaceinfacing")
             .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))
             .withArguments(new PlayerArgument("Player"))
@@ -82,7 +83,8 @@ public class ReplaceInFacingCommand extends Command {
                 }
 
             })
-            .withPermission("commandutils.command.replaceinfacing")
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 }

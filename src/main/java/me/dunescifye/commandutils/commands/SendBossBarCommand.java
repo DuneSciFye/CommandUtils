@@ -18,6 +18,7 @@ public class SendBossBarCommand extends Command {
     private static final Map<String, BukkitTask> bossBarTasks = new HashMap<>();
     @SuppressWarnings("ConstantConditions")
     public void register() {
+        if (!this.getEnabled()) return;
         new CommandAPICommand("sendbossbar")
             .withArguments(new PlayerArgument("Player"))
             .withArguments(new StringArgument("Bossbar ID"))
@@ -35,8 +36,9 @@ public class SendBossBarCommand extends Command {
 
                 showBossBar(p, bossbarID, bossbarProgress, bossbarColor, ticks, LegacyComponentSerializer.legacyAmpersand().deserialize(bossbarContent));
             })
-            .withPermission("commandutils.command.sendbossbar")
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
     private static void showBossBar(Player player, String bossBarId, float bossbarProgress, String bossbarColor, int ticks, Component message) {

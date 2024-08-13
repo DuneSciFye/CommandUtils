@@ -17,7 +17,7 @@ public class BreakInFacingCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        if (!BreakInFacingCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
 
         Collection<String> materials = new ArrayList<>();
         List<String> tags = new ArrayList<>();
@@ -1119,9 +1119,9 @@ public class BreakInFacingCommand extends Command {
                     )
                 )
             )
-            .withPermission("commandutils.command.breakinfacing")
-            .withAliases(BreakInFacingCommand.getCommandAliases())
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 }

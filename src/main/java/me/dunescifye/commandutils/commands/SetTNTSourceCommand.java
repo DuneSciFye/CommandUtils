@@ -12,6 +12,7 @@ public class SetTNTSourceCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){
+        if (!this.getEnabled()) return;
         new CommandAPICommand("settntsource")
             .withArguments(new EntitySelectorArgument.ManyEntities("tnts"))
             .withArguments(new PlayerArgument("Player Source"))
@@ -23,8 +24,9 @@ public class SetTNTSourceCommand extends Command {
                         tnt.setSource(args.getUnchecked("Player Source"));
                 }
             })
-            .withPermission("commandutils.command.settntsource")
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 }

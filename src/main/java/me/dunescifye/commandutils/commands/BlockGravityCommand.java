@@ -18,7 +18,7 @@ public class BlockGravityCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
-        if (!BlockGravityCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
 
         new CommandAPICommand("blockgravity")
             .withArguments(new StringArgument("World"))
@@ -34,9 +34,9 @@ public class BlockGravityCommand extends Command {
                     blockContainer.set(CommandUtils.noGravityKey, PersistentDataType.BYTE, (byte) 1);
                 }
             })
-            .withPermission("commandutils.command.blockgravity")
-            .withAliases(BlockGravityCommand.getCommandAliases())
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 }

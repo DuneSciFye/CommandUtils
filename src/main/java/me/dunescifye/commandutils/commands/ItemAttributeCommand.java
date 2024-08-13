@@ -36,7 +36,7 @@ public class ItemAttributeCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
-        if (!ItemAttributeCommand.getEnabled()) return;
+        if (!this.getEnabled()) return;
         new CommandTree("itemattribute")
             .then(new LiteralArgument("add")
                 .then(new PlayerArgument("Player")
@@ -99,9 +99,9 @@ public class ItemAttributeCommand extends Command {
                     )
                 )
             )
-            .withPermission("commandutils.command.itemattribute")
-            .withAliases(ItemAttributeCommand.getCommandAliases())
-            .register("commandutils");
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 }
