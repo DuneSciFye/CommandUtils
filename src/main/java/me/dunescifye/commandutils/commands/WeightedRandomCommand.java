@@ -1,9 +1,10 @@
 package me.dunescifye.commandutils.commands;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import me.dunescifye.commandutils.utils.Command;
-import me.dunescifye.commandutils.utils.RegisterableCommand;
+import me.dunescifye.commandutils.utils.Configurable;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
@@ -14,9 +15,9 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-public class WeightedRandomCommand extends Command implements RegisterableCommand {
+public class WeightedRandomCommand extends Command implements Configurable {
     @SuppressWarnings("ConstantConditions")
-    public void register() {
+    public void register(YamlDocument config) {
         if (!this.getEnabled()) return;
 
         new CommandAPICommand("weightedrandom")

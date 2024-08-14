@@ -3,11 +3,10 @@ package me.dunescifye.commandutils.files;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import me.dunescifye.commandutils.CommandUtils;
-import me.dunescifye.commandutils.commands.ParsePlaceholderCommand;
 import me.dunescifye.commandutils.placeholders.StringUtils;
 import me.dunescifye.commandutils.utils.Command;
-import me.dunescifye.commandutils.utils.ConfigurableCommand;
-import me.dunescifye.commandutils.utils.RegisterableCommand;
+import me.dunescifye.commandutils.utils.Configurable;
+import me.dunescifye.commandutils.utils.Registerable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -91,9 +90,9 @@ public class Config {
             //Register Commands
 
             for (Command command : commands.values()) {
-                if (command instanceof RegisterableCommand registerableCommand) {
-                    registerableCommand.register();
-                } else if (command instanceof ConfigurableCommand configurableCommand) {
+                if (command instanceof Registerable registerable) {
+                    registerable.register();
+                } else if (command instanceof Configurable configurableCommand) {
                     configurableCommand.register(config);
                 }
             }
