@@ -6,7 +6,13 @@ import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.Command;
 import me.dunescifye.commandutils.utils.ConfigurableCommand;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
+import org.bukkit.command.ConsoleCommandSender;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class IfCommand extends Command implements ConfigurableCommand {
@@ -16,6 +22,8 @@ public class IfCommand extends Command implements ConfigurableCommand {
         if (!this.getEnabled()) return;
 
         Logger logger = CommandUtils.getInstance().getLogger();
+        Server server = Bukkit.getServer();
+        ConsoleCommandSender console = server.getConsoleSender();
         String elseIfKeyword, elseKeyword, commandSeparator, conditionSeparator;
 
         if (config.isString("Commands.IfCommand.ElseIfKeyword")) {
@@ -57,14 +65,71 @@ public class IfCommand extends Command implements ConfigurableCommand {
         new CommandAPICommand("if")
             .withArguments(new GreedyStringArgument("Arguments"))
             .executes((sender, args) -> {
-                String arguments = args.getUnchecked("Arguments");
-                String[] split = arguments.split(elseIfKeyword);
-                for (String arg : split) {
-                    String[] argSplit = arg.split(conditionSeparator);
-                    if (split[1].contains("=")) {
+                String input = args.getUnchecked("Arguments");
+                String[] inputSplit = input.split(elseIfKeyword);
+                String[] elseSplit = inputSplit[inputSplit.length - 1].split(elseKeyword);
 
+                String[] combinedSplit = ArrayUtils.addAll(inputSplit, elseSplit);
+
+                //If and Else If's
+                for (int i = 0; i <= combinedSplit.length; i++) {
+                    String[] argSplit = combinedSplit[i].split(conditionSeparator, 2);
+                    if (argSplit[1].contains("=")) {
+                        String[] condition = argSplit[1].split("=", 1);
+                        if (Objects.equals(condition[0], condition[1])) {
+                            for (String command : argSplit[2].split(commandSeparator)) {
+                                server.dispatchCommand(console, command);
+                            }
+                            return;
+                        }
+                    } else if (argSplit[1].contains("!=")) {
+                        String[] condition = argSplit[1].split("!=", 1);
+                        if (!Objects.equals(condition[0], condition[1])) {
+                            for (String command : argSplit[2].split(commandSeparator)) {
+                                server.dispatchCommand(console, command);
+                            }
+                            return;
+                        }
+                    } else if (argSplit[1].contains(">")) {
+                        String[] condition = argSplit[1].split(">", 1);
+                        if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) > Double.parseDouble(condition[1]))) {
+                            for (String command : argSplit[2].split(commandSeparator)) {
+                                server.dispatchCommand(console, command);
+                            }
+                            return;
+                        }
+                    } else if (argSplit[1].contains("<")) {
+                        String[] condition = argSplit[1].split("<", 1);
+                        if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) < Double.parseDouble(condition[1]))) {
+                            for (String command : argSplit[2].split(commandSeparator)) {
+                                server.dispatchCommand(console, command);
+                            }
+                            return;
+                        }
+                    } else if (argSplit[1].contains(">=")) {
+                        String[] condition = argSplit[1].split(">=", 1);
+                        if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) >= Double.parseDouble(condition[1]))) {
+                            for (String command : argSplit[2].split(commandSeparator)) {
+                                server.dispatchCommand(console, command);
+                            }
+                            return;
+                        }
+                    } else if (argSplit[1].contains("<=")) {
+                        String[] condition = argSplit[1].split("<=", 1);
+                        if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) <= Double.parseDouble(condition[1]))) {
+                            for (String command : argSplit[2].split(commandSeparator)) {
+                                server.dispatchCommand(console, command);
+                            }
+                            return;
+                        }
                     }
                 }
+
+                //Else
+                for (String command : combinedSplit[combinedSplit.length - 1].split(commandSeparator)) {
+                    server.dispatchCommand(console, command);
+                }
+
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
