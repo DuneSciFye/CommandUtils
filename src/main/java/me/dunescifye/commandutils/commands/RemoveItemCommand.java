@@ -1,8 +1,10 @@
 package me.dunescifye.commandutils.commands;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Command;
+import me.dunescifye.commandutils.utils.ConfigurableCommand;
 import me.dunescifye.commandutils.utils.RegisterableCommand;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -11,11 +13,14 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class RemoveItemCommand extends Command implements RegisterableCommand {
+public class RemoveItemCommand extends Command implements ConfigurableCommand {
 
     @SuppressWarnings("ConstantConditions")
-    public void register(){
+    public void register(YamlDocument config){
         if (!this.getEnabled()) return;
+
+        String elseIfKeyword, elseKeyword, commandSeparator = ",,", conditionSeparator;
+
         new CommandAPICommand("removeitem")
             .withArguments(new PlayerArgument("Player"))
             .withArguments(new ItemStackArgument("Material"))
@@ -54,7 +59,7 @@ public class RemoveItemCommand extends Command implements RegisterableCommand {
                     }
                 }
 
-                String[] commands = inputCommands.split(this.getCommandSeparator());
+                String[] commands = inputCommands.split(commandSeparator);
 
                 Server server = Bukkit.getServer();
                 ConsoleCommandSender console = server.getConsoleSender();
