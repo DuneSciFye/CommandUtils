@@ -5,6 +5,8 @@ import dev.dejvokep.boostedyaml.block.implementation.Section;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.placeholders.StringUtils;
 import me.dunescifye.commandutils.utils.Command;
+import me.dunescifye.commandutils.utils.ConfigurableCommand;
+import me.dunescifye.commandutils.utils.RegisterableCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -82,6 +84,16 @@ public class Config {
                             logger.warning("Configuration Commands." + key + ".Namespace is not a string. Found " + keySection.get("NameSpace"));
                         }
                     }
+                }
+            }
+
+            //Register Commands
+
+            for (Command command : commands.values()) {
+                if (command instanceof RegisterableCommand registerableCommand) {
+                    registerableCommand.register();
+                } else if (command instanceof ConfigurableCommand configurableCommand) {
+                    configurableCommand.register(config);
                 }
             }
 

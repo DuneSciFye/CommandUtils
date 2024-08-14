@@ -4,6 +4,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Command;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.utils.RegisterableCommand;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -14,7 +15,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SendBossBarCommand extends Command {
+public class SendBossBarCommand extends Command implements RegisterableCommand {
     private static final Map<String, BossBar> bossBars = new HashMap<>();
     private static final Map<String, BukkitTask> bossBarTasks = new HashMap<>();
     @SuppressWarnings("ConstantConditions")

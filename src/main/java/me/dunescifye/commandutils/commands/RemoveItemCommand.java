@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Command;
+import me.dunescifye.commandutils.utils.RegisterableCommand;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -10,7 +11,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class RemoveItemCommand extends Command {
+public class RemoveItemCommand extends Command implements RegisterableCommand {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){

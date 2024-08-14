@@ -4,6 +4,7 @@ import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Command;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.utils.RegisterableCommand;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -15,7 +16,7 @@ import java.util.*;
 import static me.dunescifye.commandutils.utils.Utils.mergeSimilarItemStacks;
 import static org.bukkit.Material.AIR;
 
-public class BreakInRadiusCommand extends Command {
+public class BreakInRadiusCommand extends Command implements RegisterableCommand {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Command;
+import me.dunescifye.commandutils.utils.RegisterableCommand;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class ItemAttributeCommand extends Command {
+public class ItemAttributeCommand extends Command implements RegisterableCommand {
 
     private static List<String> getAllAttributes() {
         return Arrays.stream(Attribute.values())

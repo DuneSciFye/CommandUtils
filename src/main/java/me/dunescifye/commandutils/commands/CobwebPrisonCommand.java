@@ -3,12 +3,13 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Command;
+import me.dunescifye.commandutils.utils.RegisterableCommand;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-public class CobwebPrisonCommand extends Command {
+public class CobwebPrisonCommand extends Command implements RegisterableCommand {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

@@ -5,13 +5,14 @@ import dev.jorel.commandapi.arguments.DoubleArgument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.LocationArgument;
 import me.dunescifye.commandutils.utils.Command;
+import me.dunescifye.commandutils.utils.RegisterableCommand;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 
 import java.util.Collection;
 
-public class PushEntityCommand extends Command {
+public class PushEntityCommand extends Command implements RegisterableCommand {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

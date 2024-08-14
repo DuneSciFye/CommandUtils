@@ -5,6 +5,7 @@ import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import me.dunescifye.commandutils.utils.Command;
+import me.dunescifye.commandutils.utils.RegisterableCommand;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -12,7 +13,7 @@ import org.bukkit.inventory.meta.CrossbowMeta;
 
 import java.util.List;
 
-public class LoadCrossbowCommand extends Command {
+public class LoadCrossbowCommand extends Command implements RegisterableCommand {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

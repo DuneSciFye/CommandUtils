@@ -8,6 +8,7 @@ import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.wrappers.ParticleData;
 import me.dunescifye.commandutils.utils.Command;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.utils.RegisterableCommand;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -15,7 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class RayTraceParticleCommand extends Command {
+public class RayTraceParticleCommand extends Command implements RegisterableCommand {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

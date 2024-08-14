@@ -6,6 +6,8 @@ import dev.jorel.commandapi.arguments.LocationArgument;
 import dev.jorel.commandapi.arguments.LocationType;
 import dev.jorel.commandapi.arguments.StringArgument;
 import me.dunescifye.commandutils.utils.Command;
+import me.dunescifye.commandutils.utils.ConfigurableCommand;
+import me.dunescifye.commandutils.utils.RegisterableCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,7 +17,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Stairs;
 
-public class BlockCycleCommand extends Command {
+public class BlockCycleCommand extends Command implements RegisterableCommand {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

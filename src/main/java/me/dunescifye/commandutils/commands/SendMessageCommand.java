@@ -5,11 +5,12 @@ import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.commandutils.utils.Command;
+import me.dunescifye.commandutils.utils.RegisterableCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 
-public class SendMessageCommand extends Command {
+public class SendMessageCommand extends Command implements RegisterableCommand {
     @SuppressWarnings("ConstantConditions")
         public void register(){
         if (!this.getEnabled()) return;

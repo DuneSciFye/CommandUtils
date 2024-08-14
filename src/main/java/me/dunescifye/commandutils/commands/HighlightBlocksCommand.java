@@ -4,6 +4,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.wrappers.ParticleData;
 import me.dunescifye.commandutils.utils.Command;
+import me.dunescifye.commandutils.utils.RegisterableCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -15,7 +16,7 @@ import java.util.function.Predicate;
 
 import static me.dunescifye.commandutils.CommandUtils.getInstance;
 
-public class HighlightBlocksCommand extends Command {
+public class HighlightBlocksCommand extends Command implements RegisterableCommand {
 
     @SuppressWarnings("ConstantConditions")
     public void register (){

@@ -1,5 +1,6 @@
 package me.dunescifye.commandutils.utils;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
 import me.dunescifye.commandutils.files.Config;
 
 public abstract class Command {
@@ -33,7 +34,6 @@ public abstract class Command {
         Command.permission = permission;
     }
 
-    public abstract void register();
 
 
     public String getNamespace() {

@@ -6,19 +6,18 @@ import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.Command;
+import me.dunescifye.commandutils.utils.ConfigurableCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class LoopCommand extends Command {
+public class LoopCommand extends Command implements ConfigurableCommand {
 
     @SuppressWarnings("ConstantConditions")
-    public void register() {
+    public void register(YamlDocument config) {
         if (!this.getEnabled()) return;
 
-        FileConfiguration config = CommandUtils.getInstance().getConfig();
         String commandSeparator = config.getString("Commands.IfCommand.CommandSeparator");
 
         new CommandAPICommand("loopcommand")
@@ -53,5 +52,4 @@ public class LoopCommand extends Command {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
-
 }

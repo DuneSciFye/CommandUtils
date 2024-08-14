@@ -4,12 +4,13 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.LocationArgument;
 import me.dunescifye.commandutils.utils.Command;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.utils.RegisterableCommand;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.metadata.FixedMetadataValue;
 
-public class SpawnNoDamageEvokerFangCommand extends Command {
+public class SpawnNoDamageEvokerFangCommand extends Command implements RegisterableCommand {
     @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!this.getEnabled()) return;

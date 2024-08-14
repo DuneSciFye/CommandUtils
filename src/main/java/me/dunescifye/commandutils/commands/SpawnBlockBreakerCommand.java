@@ -6,6 +6,7 @@ import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Command;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.files.Config;
+import me.dunescifye.commandutils.utils.RegisterableCommand;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,7 +22,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class SpawnBlockBreakerCommand extends Command {
+public class SpawnBlockBreakerCommand extends Command implements RegisterableCommand {
     @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!this.getEnabled()) return;

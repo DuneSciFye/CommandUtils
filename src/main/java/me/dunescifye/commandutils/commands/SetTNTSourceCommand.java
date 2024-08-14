@@ -4,12 +4,13 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import me.dunescifye.commandutils.utils.Command;
+import me.dunescifye.commandutils.utils.RegisterableCommand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.TNTPrimed;
 
 import java.util.Collection;
 
-public class SetTNTSourceCommand extends Command {
+public class SetTNTSourceCommand extends Command implements RegisterableCommand {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){

@@ -5,6 +5,7 @@ import dev.jorel.commandapi.arguments.*;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.commandutils.utils.Command;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.utils.RegisterableCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
@@ -16,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class WhileCommand extends Command {
+public class WhileCommand extends Command implements RegisterableCommand {
 
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
         @SuppressWarnings("ConstantConditions")

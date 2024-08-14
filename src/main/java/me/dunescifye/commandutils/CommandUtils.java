@@ -95,10 +95,6 @@ public final class CommandUtils extends JavaPlugin {
 
         Config.setup(this);
 
-        for (Command command : commands.values()) {
-            command.register();
-        }
-
 
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
             logger.info("Detected GriefPrevention, enabling support for it.");
