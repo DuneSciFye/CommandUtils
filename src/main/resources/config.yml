@@ -104,6 +104,13 @@ Commands:
     Aliases: []
     Permission: "commandutils.command.highlightblockscommand"
 
+  IfCommand:
+    Enabled: true
+    Aliases: []
+    ElseIfKeyword: "elseif"
+    ElseKeyword: "else"
+    CommandSeparator: ",,"
+
   ItemAttribute:
     Enabled: true
     Aliases: []
