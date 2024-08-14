@@ -218,6 +218,8 @@ Commands:
   While:
     Enabled: true
     Aliases: []
+    CommandSeparator: "\\|"
+    PlaceholderSurrounder: "$"
 
 #Recommended to not change unless you know what your doing
 CommandNamespace: "commandutils"
