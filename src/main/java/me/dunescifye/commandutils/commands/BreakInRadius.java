@@ -30,7 +30,7 @@ public class BreakInRadius extends Command implements Registerable {
         if (!this.getEnabled()) return;
 
 
-
+        /*
         Collection<String> materials = new ArrayList<>();
         List<String> tags = new ArrayList<>();
         for (Tag<Material> tag : Bukkit.getTags("blocks", Material.class)) {
@@ -46,19 +46,23 @@ public class BreakInRadius extends Command implements Registerable {
         materials.add("");
         tags.add("");
 
+         */
 
+        //Grief Prevention Enabled
+        if (CommandUtils.griefPreventionEnabled) {
+
+        }
         new CommandTree("breakinradius")
             .then(new LocationArgument("Location", LocationType.BLOCK_POSITION)
                 .then(new StringArgument("World")
                     .then(new PlayerArgument("Player")
                     .then(new IntegerArgument("Radius", 0)
                         .executes((sender, args) -> {
-
-                            World world = Bukkit.getWorld((String) args.get("World"));
-                            Location location = (Location) args.get("Location");
+                            World world = Bukkit.getWorld(args.getByClass("World", String.class));
+                            Location location = args.getUnchecked("Location");
                             Block block = world.getBlockAt(location);
-                            int radius = (int) args.get("Radius");
-                            Player player = (Player) args.get("Player");
+                            int radius = args.getUnchecked("Radius");
+                            Player player = args.getUnchecked("Player");
                             ItemStack heldItem = player.getInventory().getItemInMainHand();
                             Collection<ItemStack> drops = new ArrayList<>();
 
@@ -93,10 +97,7 @@ public class BreakInRadius extends Command implements Registerable {
                             }
                         })
                             .then(new LiteralArgument("whitelistedblocks")
-                                .then(new ListArgumentBuilder<String>("Whitelisted Blocks")
-                                    .withList(materials)
-                                    .withStringMapper()
-                                    .buildText()
+                                .then(new StringArgument("Whitelisted Blocks")
                                     .executes((sender, args) -> {
                                         EnumSet<Material> whitelistMaterials = EnumSet.noneOf(Material.class);
                                         EnumSet<Material> blacklistMaterials = EnumSet.noneOf(Material.class);
@@ -150,7 +151,7 @@ public class BreakInRadius extends Command implements Registerable {
                                                          */
                                                         if (!blacklistMaterials.contains(blockType)) {
                                                             drops.addAll(b.getDrops(heldItem));
-                                                            b.setType(Material.AIR);
+                                                            b.setType(AIR);
                                                         }
                                                     }
                                                 }
@@ -175,10 +176,7 @@ public class BreakInRadius extends Command implements Registerable {
                                         }
                                     })
                                     .then(new LiteralArgument("whitelistedtags")
-                                        .then(new ListArgumentBuilder<String>("Whitelisted Tags")
-                                            .withList(tags)
-                                            .withStringMapper()
-                                            .buildText()
+                                        .then(new StringArgument("Whitelisted Tags")
                                             .executes((sender, args) -> {
 
                                                 Set<Tag<Material>> whitelistTags = new HashSet<>();
@@ -393,10 +391,7 @@ public class BreakInRadius extends Command implements Registerable {
                                 )
                             )
                             .then(new LiteralArgument("whitelistedtags")
-                                .then(new ListArgumentBuilder<String>("Whitelisted Tags")
-                                    .withList(tags)
-                                    .withStringMapper()
-                                    .buildText()
+                                .then(new StringArgument("Whitelisted Tags")
                                     .executes((sender, args) -> {
 
                                         Set<Tag<Material>> whitelistTags = new HashSet<>();

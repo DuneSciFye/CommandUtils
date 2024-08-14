@@ -42,7 +42,7 @@ public final class CommandUtils extends JavaPlugin {
 
         //Files first
 
-        registerListeners();
+        //registerListeners();
         //CommandAPI.onEnable();
         commands.put("BlockCycle", new BlockCycle());
         commands.put("BlockGravity", new BlockGravity());
