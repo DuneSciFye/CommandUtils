@@ -20,8 +20,14 @@ Whitelists:
   shovel:
     "#mineable/shovel"
 Placeholders:
+  Enabled: true
   ArgumentSeparator: ","
   AllowCustomSeparator: true
+  If:
+    ElseIfKeyword: "elseif"
+    ElseKeyword: "else"
+    ConditionSeparator: "\""
+
 Commands:
   BlockCycle:
     Enabled: true
@@ -104,7 +110,7 @@ Commands:
     Aliases: []
     Permission: "commandutils.command.highlightblockscommand"
 
-  IfCommand:
+  If:
     Enabled: true
     Aliases: []
     ElseIfKeyword: "elseif"

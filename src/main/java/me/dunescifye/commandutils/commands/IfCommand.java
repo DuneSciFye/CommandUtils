@@ -26,39 +26,39 @@ public class IfCommand extends Command implements ConfigurableCommand {
         ConsoleCommandSender console = server.getConsoleSender();
         String elseIfKeyword, elseKeyword, commandSeparator, conditionSeparator;
 
-        if (config.isString("Commands.IfCommand.ElseIfKeyword")) {
-            elseIfKeyword = config.getString("Commands.IfCommand.ElseIfKeyword");
+        if (config.isString("Commands.If.ElseIfKeyword")) {
+            elseIfKeyword = config.getString("Commands.If.ElseIfKeyword");
             if (elseIfKeyword == null)
-                config.set("Commands.IfCommand.ElseIfKeyword", "elseif");
+                config.set("Commands.If.ElseIfKeyword", "elseif");
         } else {
-            logger.warning("Configuration Commands.IfCommand.ElseIfKeyword is not a String. Using default value of `elseif`");
+            logger.warning("Configuration Commands.If.ElseIfKeyword is not a String. Using default value of `elseif`");
             elseIfKeyword = "elseif";
         }
 
-        if (config.isString("Commands.IfCommand.ElseKeyword")) {
-            elseKeyword = config.getString("Commands.IfCommand.ElseKeyword");
+        if (config.isString("Commands.If.ElseKeyword")) {
+            elseKeyword = config.getString("Commands.If.ElseKeyword");
             if (elseKeyword == null)
-                config.set("Commands.IfCommand.elseKeyword", "else");
+                config.set("Commands.If.elseKeyword", "else");
         } else {
-            logger.warning("Configuration Commands.IfCommand.ElseKeyword is not a String. Using default value of `else`");
+            logger.warning("Configuration Commands.If.ElseKeyword is not a String. Using default value of `else`");
             elseKeyword = "else";
         }
 
-        if (config.isString("Commands.IfCommand.CommandSeparator")) {
-            commandSeparator = config.getString("Commands.IfCommand.CommandSeparator");
+        if (config.isString("Commands.If.CommandSeparator")) {
+            commandSeparator = config.getString("Commands.If.CommandSeparator");
             if (commandSeparator == null)
-                config.set("Commands.IfCommand.commandSeparator", ",,");
+                config.set("Commands.If.commandSeparator", ",,");
         } else {
-            logger.warning("Configuration Commands.IfCommand.CommandSeparator is not a String. Using default value of `,,`");
+            logger.warning("Configuration Commands.If.CommandSeparator is not a String. Using default value of `,,`");
             commandSeparator = ",,";
         }
 
-        if (config.isString("Commands.IfCommand.ConditionSeparator")) {
-            conditionSeparator = config.getString("Commands.IfCommand.ConditionSeparator");
+        if (config.isString("Commands.If.ConditionSeparator")) {
+            conditionSeparator = config.getString("Commands.If.ConditionSeparator");
             if (conditionSeparator == null)
-                config.set("Commands.IfCommand.ConditionSeparator", "\\\"");
+                config.set("Commands.If.ConditionSeparator", "\\\"");
         } else {
-            logger.warning("Configuration Commands.IfCommand.ConditionSeparator is not a String. Using default value of `\"`");
+            logger.warning("Configuration Commands.If.ConditionSeparator is not a String. Using default value of `\"`");
             conditionSeparator = "\"";
         }
 

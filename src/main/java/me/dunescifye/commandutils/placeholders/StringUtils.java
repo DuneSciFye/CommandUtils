@@ -1,9 +1,12 @@
 package me.dunescifye.commandutils.placeholders;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.Utils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -19,15 +22,43 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringUtils extends PlaceholderExpansion {
 
-    private static String separator = ",";
+    private static String separator = ",", elseIfKeyword, elseKeyword, conditionSeparator;
     private static boolean allowCustomSeparator;
 
-    public StringUtils(CommandUtils plugin) {
+    public StringUtils(CommandUtils plugin, YamlDocument config) {
+        Logger logger = plugin.getLogger();
+        if (config.isString("Placeholders.If.ElseIfKeyword")) {
+            elseIfKeyword = config.getString("Commands.If.ElseIfKeyword");
+            if (elseIfKeyword == null)
+                config.set("Commands.If.ElseIfKeyword", "elseif");
+        } else {
+            logger.warning("Configuration Commands.If.ElseIfKeyword is not a String. Using default value of `elseif`");
+            elseIfKeyword = "elseif";
+        }
+
+        if (config.isString("Commands.If.ElseKeyword")) {
+            elseKeyword = config.getString("Commands.If.ElseKeyword");
+            if (elseKeyword == null)
+                config.set("Commands.If.elseKeyword", "else");
+        } else {
+            logger.warning("Configuration Commands.If.ElseKeyword is not a String. Using default value of `else`");
+            elseKeyword = "else";
+        }
+
+        if (config.isString("Commands.If.ConditionSeparator")) {
+            conditionSeparator = config.getString("Commands.If.ConditionSeparator");
+            if (conditionSeparator == null)
+                config.set("Commands.If.ConditionSeparator", "\\\"");
+        } else {
+            logger.warning("Configuration Commands.If.ConditionSeparator is not a String. Using default value of `\"`");
+            conditionSeparator = "\"";
+        }
     }
 
     public static String getSeparator() {
@@ -397,6 +428,50 @@ public class StringUtils extends PlaceholderExpansion {
                     return "true";
                 case "worldenvironment":
                     return player.getPlayer().getWorld().getEnvironment().toString();
+                case "if":
+                    String[] inputSplit = arguments.split(elseIfKeyword);
+                    String[] elseSplit = inputSplit[inputSplit.length - 1].split(elseKeyword);
+
+                    String[] combinedSplit = ArrayUtils.addAll(inputSplit, elseSplit);
+
+                    //If and Else If's
+                    for (int i = 0; i <= combinedSplit.length; i++) {
+                        String[] argSplit = combinedSplit[i].split(conditionSeparator, 2);
+                        if (argSplit[1].contains("=")) {
+                            String[] condition = argSplit[1].split("=", 1);
+                            if (Objects.equals(condition[0], condition[1])) {
+                                return argSplit[2];
+                            }
+                        } else if (argSplit[1].contains("!=")) {
+                            String[] condition = argSplit[1].split("!=", 1);
+                            if (!Objects.equals(condition[0], condition[1])) {
+                                return argSplit[2];
+                            }
+                        } else if (argSplit[1].contains(">")) {
+                            String[] condition = argSplit[1].split(">", 1);
+                            if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) > Double.parseDouble(condition[1]))) {
+                                return argSplit[2];
+                            }
+                        } else if (argSplit[1].contains("<")) {
+                            String[] condition = argSplit[1].split("<", 1);
+                            if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) < Double.parseDouble(condition[1]))) {
+                                return argSplit[2];
+                            }
+                        } else if (argSplit[1].contains(">=")) {
+                            String[] condition = argSplit[1].split(">=", 1);
+                            if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) >= Double.parseDouble(condition[1]))) {
+                                return argSplit[2];
+                            }
+                        } else if (argSplit[1].contains("<=")) {
+                            String[] condition = argSplit[1].split("<=", 1);
+                            if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) <= Double.parseDouble(condition[1]))) {
+                                return argSplit[2];
+                            }
+                        }
+                    }
+
+                    //Else
+                    return combinedSplit[combinedSplit.length - 1];
                 default:
                     separator = function.replace("\\_", "_");
                     String[] temp = arguments.split("_", 2);

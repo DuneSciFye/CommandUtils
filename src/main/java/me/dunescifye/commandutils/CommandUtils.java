@@ -25,7 +25,7 @@ public final class CommandUtils extends JavaPlugin {
     public static final NamespacedKey keyNoDamagePlayer = new NamespacedKey("lunaritems", "nodamageplayer");
     public static final NamespacedKey noGravityKey = new NamespacedKey("lunaritems", "nogravity");
     public static final NamespacedKey autoPickupKey = new NamespacedKey("commandutils", "autopickup");
-    public static boolean griefPreventionEnabled;
+    public static boolean griefPreventionEnabled, placeholderAPIEnabled;
     private static final HashMap<String, Command> commands = new HashMap<>();
     /*
     @Override
@@ -89,8 +89,8 @@ public final class CommandUtils extends JavaPlugin {
             commands.put("CobwebPrison", new CobwebPrisonCommand());
         }
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            new StringUtils(this).register();
             commands.put("ParsePlaceholder", new ParsePlaceholderCommand());
+            placeholderAPIEnabled = true;
         }
 
         Config.setup(this);
