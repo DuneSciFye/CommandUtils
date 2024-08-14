@@ -110,6 +110,7 @@ Commands:
     ElseIfKeyword: "elseif"
     ElseKeyword: "else"
     CommandSeparator: ",,"
+    ConditionSeparator: "\""
 
   ItemAttribute:
     Enabled: true
