@@ -7,7 +7,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class BroadcastMessage extends Command implements Registerable {
+public class BroadcastMessageCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

@@ -51,9 +51,9 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("BreakInFacing", new BreakInFacingCommand());
         commands.put("BreakInRadius", new BreakInRadiusCommandCommand());
         commands.put("BreakInXYZ", new BreakInXYZCommand());
-        commands.put("BroadcastMessage", new BroadcastMessage());
-        commands.put("ChanceRandomRun", new ChanceRandomRun());
-        commands.put("ChangeVillagerProfession", new ChangeVillagerProfession());
+        commands.put("BroadcastMessage", new BroadcastMessageCommand());
+        commands.put("ChanceRandomRun", new ChanceRandomRunCommand());
+        commands.put("ChangeVillagerProfession", new ChangeVillagerProfessionCommand());
         commands.put("Food", new Food());
         commands.put("God", new God());
         commands.put("HighlightBlocks", new HighlightBlocks());

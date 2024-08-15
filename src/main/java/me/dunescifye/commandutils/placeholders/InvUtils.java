@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 public class InvUtils extends PlaceholderExpansion {
 
-    private static String functionSeparator = "_", nbtSeparator = ",";
+    private static String functionSeparator = "_", nbtSeparator = ",", amountSeparator = ",";
     private static boolean allowCustomSeparator;
 
     public static void setFunctionSeparator(String functionSeparator) {
@@ -43,13 +43,30 @@ public class InvUtils extends PlaceholderExpansion {
 
     public InvUtils(CommandUtils plugin, YamlDocument config) {
         Logger logger = plugin.getLogger();
+        if (config.isString("Placeholders.InvUtils.Nbt.ArgsSeparator")) {
+            nbtSeparator = config.getString("Placeholders.InvUtils.Nbt.ArgsSeparator");
+            if (nbtSeparator == null)
+                config.set("Placeholders.InvUtils.Nbt.ArgsSeparator", ",");
+        } else {
+            logger.warning("Configuration Placeholders.InvUtils.Nbt.ArgsSeparator is not a String. Using default value of `,`");
+            nbtSeparator = ",";
+        }
+
+        if (config.isString("Placeholders.InvUtils.Amount.ArgsSeparator")) {
+            amountSeparator = config.getString("Placeholders.InvUtils.Amount.ArgsSeparator");
+            if (amountSeparator == null)
+                config.set("Placeholders.InvUtils.Amount.ArgsSeparator", ",");
+        } else {
+            logger.warning("Configuration Placeholders.InvUtils.Amount.ArgsSeparator is not a String. Using default value of `,`");
+            amountSeparator = ",";
+        }
     }
 
 
     @Override
-    public @Nullable String onRequest(OfflinePlayer player, @NotNull String args) {
+    public @Nullable String onRequest(OfflinePlayer player, @NotNull String input) {
         //Get function + rest
-        String[] parts = args.split(functionSeparator, 2);
+        String[] parts = input.split(functionSeparator, 2);
         if (parts.length != 2) {
             return null;
         }
@@ -96,7 +113,12 @@ public class InvUtils extends PlaceholderExpansion {
                     return "null player";
                 }
 
+                String[] args = parts[1].split(amountSeparator);
+                ItemStack item = Utils.getInvItem(p.getInventory(), args[0]);
 
+                if (item == null) return "";
+
+                return String.valueOf(item.getAmount());
             }
         }
         return null;

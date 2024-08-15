@@ -8,7 +8,6 @@ import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.wrappers.ParticleData;
 import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -26,13 +25,13 @@ public class RayTraceParticle extends Command implements Registerable {
                     .then(new DoubleArgument("Spacing")
                         .then(new IntegerArgument("Period")
                             .executesPlayer((p, args) -> {
-                                ParticleData particleData = args.getUnchecked("Particle");
-                                rayTraceParticle(p, particleData.particle(), args.getUnchecked("Length"), args.getUnchecked("Spacing"), args.getUnchecked("Period"));
+                                ParticleData<?> particleData = args.getUnchecked("Particle");
+                                rayTraceParticle(p, particleData, args.getUnchecked("Length"), args.getUnchecked("Spacing"), args.getUnchecked("Period"));
                             })
                             .then(new PlayerArgument("Player")
                                 .executes((sender, args) -> {
-                                    ParticleData particleData = args.getUnchecked("Particle");
-                                    rayTraceParticle(args.getUnchecked("Player"), particleData.particle(), args.getUnchecked("Length"), args.getUnchecked("Spacing"), args.getUnchecked("Period"));
+                                    ParticleData<?> particleData = args.getUnchecked("Particle");
+                                    rayTraceParticle(args.getUnchecked("Player"), particleData, args.getUnchecked("Length"), args.getUnchecked("Spacing"), args.getUnchecked("Period"));
                                 })
                             )
                         )
@@ -44,7 +43,7 @@ public class RayTraceParticle extends Command implements Registerable {
             .register(this.getNamespace());
     }
 
-    private static void rayTraceParticle(Player p, Particle particle, int length, double spacing, int period) {
+    private static void rayTraceParticle(Player p, ParticleData<?> particle, int length, double spacing, int period) {
         Location startLocation = p.getEyeLocation();
         Vector direction = startLocation.getDirection();
         World world = p.getWorld();
@@ -64,7 +63,7 @@ public class RayTraceParticle extends Command implements Registerable {
                     Location pointLocation = startLocation.clone().add(direction.clone().multiply(currentPoint * spacing));
 
                     // Spawn the particle
-                    world.spawnParticle(particle, pointLocation, 0, 0, 0, 0, 0);
+                    world.spawnParticle(particle.particle(), pointLocation, 0, 0, 0, 0, 0, particle.data());
 
                     currentPoint++;
                 }
@@ -72,7 +71,7 @@ public class RayTraceParticle extends Command implements Registerable {
         } else {
             for (int x = 0; x < length; x ++) {
                 Location pointLocation = startLocation.clone().add(direction.clone().multiply(x * spacing));
-                world.spawnParticle(particle, pointLocation, 0, 0, 0, 0, 0);
+                world.spawnParticle(particle.particle(), pointLocation, 0, 0, 0, 0, 0, particle.data());
             }
         }
     }

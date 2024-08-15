@@ -9,7 +9,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ChanceRandomRun extends Command implements Registerable {
+public class ChanceRandomRunCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){

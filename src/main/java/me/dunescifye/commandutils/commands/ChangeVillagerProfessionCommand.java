@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ChangeVillagerProfession extends Command implements Registerable {
+public class ChangeVillagerProfessionCommand extends Command implements Registerable {
 
     private static List<String> getAllVillagerProfession() {
         return Arrays.stream(Villager.Profession.values())

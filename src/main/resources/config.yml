@@ -33,6 +33,10 @@ Placeholders:
     Enabled: true
     FunctionSeparator: "_"
     AllowCustomSeparator: true
+    Nbt:
+      ArgsSeparator: ","
+    Amount:
+      ArgsSeparator: ","
 
 Commands:
   BlockCycle:

@@ -33,30 +33,30 @@ public class StringUtils extends PlaceholderExpansion {
 
     public StringUtils(CommandUtils plugin, YamlDocument config) {
         Logger logger = plugin.getLogger();
-        if (config.isString("Placeholders.If.ElseIfKeyword")) {
-            elseIfKeyword = config.getString("Commands.If.ElseIfKeyword");
+        if (config.isString("Placeholders.StringUtils.If.ElseIfKeyword")) {
+            elseIfKeyword = config.getString("Placeholders.StringUtils.If.ElseIfKeyword");
             if (elseIfKeyword == null)
-                config.set("Commands.If.ElseIfKeyword", "elseif");
+                config.set("Placeholders.StringUtils.If.ElseIfKeyword", "elseif");
         } else {
-            logger.warning("Configuration Commands.If.ElseIfKeyword is not a String. Using default value of `elseif`");
+            logger.warning("Configuration Placeholders.StringUtils.If.ElseIfKeyword is not a String. Using default value of `elseif`");
             elseIfKeyword = "elseif";
         }
 
-        if (config.isString("Commands.If.ElseKeyword")) {
-            elseKeyword = config.getString("Commands.If.ElseKeyword");
+        if (config.isString("Placeholders.StringUtils.If.ElseKeyword")) {
+            elseKeyword = config.getString("Placeholders.StringUtils.If.ElseKeyword");
             if (elseKeyword == null)
-                config.set("Commands.If.elseKeyword", "else");
+                config.set("Placeholders.StringUtils.If.elseKeyword", "else");
         } else {
-            logger.warning("Configuration Commands.If.ElseKeyword is not a String. Using default value of `else`");
+            logger.warning("Configuration Placeholders.StringUtils.If.ElseKeyword is not a String. Using default value of `else`");
             elseKeyword = "else";
         }
 
-        if (config.isString("Commands.If.ConditionSeparator")) {
-            conditionSeparator = config.getString("Commands.If.ConditionSeparator");
+        if (config.isString("Placeholders.StringUtils.If.ConditionSeparator")) {
+            conditionSeparator = config.getString("Placeholders.StringUtils.If.ConditionSeparator");
             if (conditionSeparator == null)
-                config.set("Commands.If.ConditionSeparator", "\\\"");
+                config.set("Placeholders.StringUtils.If.ConditionSeparator", "\\\"");
         } else {
-            logger.warning("Configuration Commands.If.ConditionSeparator is not a String. Using default value of `\"`");
+            logger.warning("Configuration Placeholders.StringUtils.If.ConditionSeparator is not a String. Using default value of `\"`");
             conditionSeparator = "\"";
         }
     }
