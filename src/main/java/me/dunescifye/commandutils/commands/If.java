@@ -73,9 +73,9 @@ public class If extends Command implements Configurable {
 
                 //If and Else If's
                 for (int i = 0; i <= combinedSplit.length; i++) {
-                    String[] argSplit = combinedSplit[i].split(conditionSeparator, 2);
+                    String[] argSplit = combinedSplit[i].split(conditionSeparator, 3);
                     if (argSplit[1].contains("=")) {
-                        String[] condition = argSplit[1].split("=", 1);
+                        String[] condition = argSplit[1].split("=", 2);
                         if (Objects.equals(condition[0], condition[1])) {
                             for (String command : argSplit[2].split(commandSeparator)) {
                                 server.dispatchCommand(console, command);
@@ -83,7 +83,7 @@ public class If extends Command implements Configurable {
                             return;
                         }
                     } else if (argSplit[1].contains("!=")) {
-                        String[] condition = argSplit[1].split("!=", 1);
+                        String[] condition = argSplit[1].split("!=", 2);
                         if (!Objects.equals(condition[0], condition[1])) {
                             for (String command : argSplit[2].split(commandSeparator)) {
                                 server.dispatchCommand(console, command);
@@ -91,7 +91,7 @@ public class If extends Command implements Configurable {
                             return;
                         }
                     } else if (argSplit[1].contains(">")) {
-                        String[] condition = argSplit[1].split(">", 1);
+                        String[] condition = argSplit[1].split(">", 2);
                         if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) > Double.parseDouble(condition[1]))) {
                             for (String command : argSplit[2].split(commandSeparator)) {
                                 server.dispatchCommand(console, command);
@@ -99,7 +99,7 @@ public class If extends Command implements Configurable {
                             return;
                         }
                     } else if (argSplit[1].contains("<")) {
-                        String[] condition = argSplit[1].split("<", 1);
+                        String[] condition = argSplit[1].split("<", 2);
                         if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) < Double.parseDouble(condition[1]))) {
                             for (String command : argSplit[2].split(commandSeparator)) {
                                 server.dispatchCommand(console, command);
@@ -107,7 +107,7 @@ public class If extends Command implements Configurable {
                             return;
                         }
                     } else if (argSplit[1].contains(">=")) {
-                        String[] condition = argSplit[1].split(">=", 1);
+                        String[] condition = argSplit[1].split(">=", 2);
                         if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) >= Double.parseDouble(condition[1]))) {
                             for (String command : argSplit[2].split(commandSeparator)) {
                                 server.dispatchCommand(console, command);
@@ -115,7 +115,7 @@ public class If extends Command implements Configurable {
                             return;
                         }
                     } else if (argSplit[1].contains("<=")) {
-                        String[] condition = argSplit[1].split("<=", 1);
+                        String[] condition = argSplit[1].split("<=", 2);
                         if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) <= Double.parseDouble(condition[1]))) {
                             for (String command : argSplit[2].split(commandSeparator)) {
                                 server.dispatchCommand(console, command);

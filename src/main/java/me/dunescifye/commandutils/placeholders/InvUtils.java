@@ -4,9 +4,11 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.Utils;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,6 +72,23 @@ public class InvUtils extends PlaceholderExpansion {
                 } else {
                     return "integer required for slot";
                 }
+            }
+            case "nbt" -> {
+                String[] argsNbt = parts[1].split(",");
+                ItemStack item = argsNbt[0].equals("-1") ? player.getPlayer().getInventory().getItemInMainHand() : player.getPlayer().getInventory().getItem(Integer.parseInt(argsNbt[0]));
+                if (item != null) {
+                    if (item.hasItemMeta()) {
+                        NamespacedKey key = new NamespacedKey(argsNbt[1], argsNbt[2]);
+                        if (item.getItemMeta().getPersistentDataContainer().has(key)) {
+                            try {
+                                return item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
+                            } catch (IllegalArgumentException e) {
+                                return String.valueOf(item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.DOUBLE));
+                            }
+                        }
+                    }
+                }
+                return "";
             }
         }
         return null;
