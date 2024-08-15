@@ -9,7 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-public class BoneMealBlock extends Command implements Registerable {
+public class BoneMealBlockCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){

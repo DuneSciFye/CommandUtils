@@ -16,7 +16,7 @@ import org.bukkit.block.Block;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-public class BlockGravity extends Command implements Registerable {
+public class BlockGravityCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

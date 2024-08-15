@@ -16,7 +16,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Stairs;
 
-public class BlockCycle extends Command implements Registerable {
+public class BlockCycleCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
