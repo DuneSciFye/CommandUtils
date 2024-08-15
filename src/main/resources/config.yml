@@ -21,12 +21,18 @@ Whitelists:
     "#mineable/shovel"
 Placeholders:
   Enabled: true
-  ArgumentSeparator: ","
-  AllowCustomSeparator: true
-  If:
-    ElseIfKeyword: "elseif"
-    ElseKeyword: "else"
-    ConditionSeparator: "\""
+  StringUtils:
+    Enabled: true
+    ArgumentSeparator: ","
+    AllowCustomSeparator: true
+    If:
+      ElseIfKeyword: "elseif"
+      ElseKeyword: "else"
+      ConditionSeparator: "\""
+  InvUtils:
+    Enabled: true
+    FunctionSeparator: "_"
+    AllowCustomSeparator: true
 
 Commands:
   BlockCycle:

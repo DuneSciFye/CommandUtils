@@ -44,9 +44,9 @@ public final class CommandUtils extends JavaPlugin {
 
         //registerListeners();
         //CommandAPI.onEnable();
-        commands.put("BlockCycle", new BlockCycle());
-        commands.put("BlockGravity", new BlockGravity());
-        commands.put("BoneMealBlock", new BoneMealBlock());
+        commands.put("BlockCycle", new BlockCycleCommand());
+        commands.put("BlockGravity", new BlockGravityCommand());
+        commands.put("BoneMealBlock", new BoneMealBlockCommand());
         commands.put("BreakAndReplant", new BreakAndReplant());
         commands.put("BreakInFacing", new BreakInFacing());
         commands.put("BreakInRadius", new BreakInRadius());

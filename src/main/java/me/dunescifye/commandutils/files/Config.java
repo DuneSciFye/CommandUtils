@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.files;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.placeholders.InvUtils;
 import me.dunescifye.commandutils.placeholders.StringUtils;
 import me.dunescifye.commandutils.utils.Command;
 import me.dunescifye.commandutils.utils.Configurable;
@@ -100,22 +101,41 @@ public class Config {
             //Placeholders
             if (CommandUtils.placeholderAPIEnabled) {
                 //Register Placeholders
-                if (config.isBoolean("Placeholders.Enabled")) {
-                    CommandUtils.placeholderAPIEnabled = config.getBoolean("Placeholders.Enabled");
-                    if (CommandUtils.placeholderAPIEnabled) {
-                        new StringUtils(CommandUtils.getInstance(), config).register();
-                        Section placeholderSection = config.getSection("Placeholders");
-                        if (placeholderSection.isString("ArgumentSeparator")) {
-                            StringUtils.setSeparator(placeholderSection.getString("ArgumentSeparator"));
-                        } else {
-                            logger.warning("Configuration Placeholders.ArgumentSeparator is not a string. Found " + placeholderSection.get("ArgumentSeparator"));
+                if (config.getOptionalBoolean("Placeholders.StringUtils.Enabled").isPresent()) {
+                    if (config.isBoolean("Placeholders.StringUtils.Enabled")) {
+                        if (config.getBoolean("Placeholders.StringUtils.Enabled")) {
+                            new StringUtils(CommandUtils.getInstance(), config).register();
+                            Section placeholderSection = config.getSection("Placeholders.StringUtils");
+                            if (placeholderSection.isString("ArgumentSeparator")) {
+                                StringUtils.setSeparator(placeholderSection.getString("ArgumentSeparator"));
+                            } else {
+                                logger.warning("Configuration Placeholders.StringUtils.ArgumentSeparator is not a string. Found " + placeholderSection.get("ArgumentSeparator"));
+                            }
+                            if (placeholderSection.isBoolean("AllowCustomSeparator")) {
+                                StringUtils.setAllowCustomSeparator(placeholderSection.getBoolean("AllowCustomSeparator"));
+                            } else {
+                                logger.warning("Configuration Placeholders.StringUtils.AllowCustomSeparator is not a boolean. Found " + placeholderSection.get("AllowCustomSeparator"));
+                            }
                         }
-                        if (placeholderSection.isBoolean("AllowCustomSeparator")) {
-                            StringUtils.setAllowCustomSeparator(placeholderSection.getBoolean("AllowCustomSeparator"));
-                        } else {
-                            logger.warning("Configuration Placeholders.AllowCustomSeparator is not a boolean. Found " + placeholderSection.get("AllowCustomSeparator"));
+                        if (config.getBoolean("Placeholders.InvUtils.Enabled")) {
+                            new InvUtils(CommandUtils.getInstance(), config).register();
+                            Section placeholderSection = config.getSection("Placeholders.InvUtils");
+                            if (placeholderSection.isString("ArgumentSeparator")) {
+                                InvUtils.setFunctionSeparator(placeholderSection.getString("ArgumentSeparator"));
+                            } else {
+                                logger.warning("Configuration Placeholders.InvUtils.ArgumentSeparator is not a string. Found " + placeholderSection.get("ArgumentSeparator"));
+                            }
+                            if (placeholderSection.isBoolean("AllowCustomSeparator")) {
+                                InvUtils.setAllowCustomSeparator(placeholderSection.getBoolean("AllowCustomSeparator"));
+                            } else {
+                                logger.warning("Configuration Placeholders.InvUtils.AllowCustomSeparator is not a boolean. Found " + placeholderSection.get("AllowCustomSeparator"));
+                            }
                         }
+                    } else {
+                        logger.warning("Configuration Placeholders.Enabled is not a boolean. Found " + config.getString("Placeholders.Enabled"));
                     }
+                } else {
+                    config.set("Placeholders.Enabled", true);
                 }
             }
 
