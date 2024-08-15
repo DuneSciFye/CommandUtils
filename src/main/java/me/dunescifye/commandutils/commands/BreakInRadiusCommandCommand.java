@@ -3,9 +3,7 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.files.Config;
-import me.dunescifye.commandutils.utils.Command;
 import me.dunescifye.commandutils.CommandUtils;
-import me.dunescifye.commandutils.utils.Registerable;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -18,7 +16,7 @@ import java.util.function.Predicate;
 import static me.dunescifye.commandutils.utils.Utils.mergeSimilarItemStacks;
 import static org.bukkit.Material.AIR;
 
-public class BreakInRadius extends Command implements Registerable {
+public class BreakInRadiusCommandCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

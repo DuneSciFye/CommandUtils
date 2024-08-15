@@ -11,8 +11,8 @@ import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -145,6 +145,24 @@ public class Utils {
             }
         }
         return true;
+    }
+
+    public static ItemStack getInvItem(PlayerInventory inv, String input) {
+        if (isInteger(input)) {
+            int slot = Integer.parseInt(input);
+            return slot == -1 ? inv.getItemInMainHand() : inv.getItem(slot);
+        } else {
+            switch (input) {
+                case "main", "mainhand" -> {
+                    return inv.getItemInMainHand();
+                }
+                case "offhand", "off" -> {
+                    return inv.getItemInOffHand();
+                }
+            }
+        }
+
+        return null;
     }
 
 }

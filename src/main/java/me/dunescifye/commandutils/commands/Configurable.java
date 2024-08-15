@@ -1,4 +1,4 @@
-package me.dunescifye.commandutils.utils;
+package me.dunescifye.commandutils.commands;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
 

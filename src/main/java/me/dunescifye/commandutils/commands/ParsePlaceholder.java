@@ -5,8 +5,6 @@ import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.dunescifye.commandutils.utils.Command;
-import me.dunescifye.commandutils.utils.Registerable;
 
 public class ParsePlaceholder extends Command implements Registerable {
 

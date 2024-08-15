@@ -2,8 +2,6 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
-import me.dunescifye.commandutils.utils.Command;
-import me.dunescifye.commandutils.utils.Registerable;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;

@@ -4,8 +4,6 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
-import me.dunescifye.commandutils.utils.Command;
-import me.dunescifye.commandutils.utils.Registerable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Villager;
 

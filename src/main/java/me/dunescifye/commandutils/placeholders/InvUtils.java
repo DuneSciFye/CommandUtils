@@ -8,16 +8,16 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class InvUtils extends PlaceholderExpansion {
 
-    private static String functionSeparator = "_";
+    private static String functionSeparator = "_", nbtSeparator = ",";
     private static boolean allowCustomSeparator;
 
     public static void setFunctionSeparator(String functionSeparator) {
@@ -57,38 +57,46 @@ public class InvUtils extends PlaceholderExpansion {
 
         switch (parts[0]) {
             case "material", "mat" -> {
-                if (Utils.isInteger(parts[1])) {
-                    int slot = Integer.parseInt(parts[1]);
-                    if (p != null) {
-                        ItemStack item = p.getInventory().getItem(slot);
-                        if (item != null) {
-                            return item.getType().toString();
-                        } else {
-                            return "AIR";
-                        }
-                    } else {
-                        return "null player";
-                    }
-                } else {
-                    return "integer required for slot";
+
+                if (p == null) {
+                    return "null player";
                 }
+
+                ItemStack item = Utils.getInvItem(p.getInventory(), parts[1]);
+
+                if (item == null) {
+                    return "AIR";
+                }
+
+                return item.getType().toString();
             }
             case "nbt" -> {
-                String[] argsNbt = parts[1].split(",");
-                ItemStack item = argsNbt[0].equals("-1") ? player.getPlayer().getInventory().getItemInMainHand() : player.getPlayer().getInventory().getItem(Integer.parseInt(argsNbt[0]));
-                if (item != null) {
-                    if (item.hasItemMeta()) {
-                        NamespacedKey key = new NamespacedKey(argsNbt[1], argsNbt[2]);
-                        if (item.getItemMeta().getPersistentDataContainer().has(key)) {
-                            try {
-                                return item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
-                            } catch (IllegalArgumentException e) {
-                                return String.valueOf(item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.DOUBLE));
-                            }
-                        }
-                    }
+                String[] argsNbt = parts[1].split(nbtSeparator);
+                if (p == null) {
+                    return "null player";
                 }
-                return "";
+                ItemStack item = Utils.getInvItem(p.getInventory(), argsNbt[0]);
+
+                if (item == null || !item.hasItemMeta()) return "";
+
+                PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+                NamespacedKey key = new NamespacedKey(argsNbt[1], argsNbt[2]);
+
+                if (!container.has(key)) return "";
+
+                try {
+                    return item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
+                } catch (IllegalArgumentException e) {
+                    return String.valueOf(item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.DOUBLE));
+                }
+            }
+
+            case "amount" -> {
+                if (p == null) {
+                    return "null player";
+                }
+
+
             }
         }
         return null;

@@ -2,8 +2,6 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
-import me.dunescifye.commandutils.utils.Command;
-import me.dunescifye.commandutils.utils.Registerable;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -13,7 +11,7 @@ import java.util.*;
 
 import static me.dunescifye.commandutils.utils.Utils.mergeSimilarItemStacks;
 
-public class BreakInXYZ extends Command implements Registerable {
+public class BreakInXYZCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

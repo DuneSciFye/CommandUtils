@@ -2,9 +2,7 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.LocationArgument;
-import me.dunescifye.commandutils.utils.Command;
 import me.dunescifye.commandutils.CommandUtils;
-import me.dunescifye.commandutils.utils.Registerable;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;

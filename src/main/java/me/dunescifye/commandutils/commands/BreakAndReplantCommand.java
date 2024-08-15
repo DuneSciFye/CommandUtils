@@ -2,8 +2,6 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
-import me.dunescifye.commandutils.utils.Command;
-import me.dunescifye.commandutils.utils.Registerable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,7 +17,7 @@ import java.util.Collection;
 
 import static me.dunescifye.commandutils.utils.Utils.*;
 
-public class BreakAndReplant extends Command implements Registerable {
+public class BreakAndReplantCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){
