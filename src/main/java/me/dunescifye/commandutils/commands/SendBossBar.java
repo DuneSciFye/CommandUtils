@@ -27,12 +27,12 @@ public class SendBossBar extends Command implements Registerable {
             .withArguments(new IntegerArgument("Ticks To Show", 0))
             .withArguments(new GreedyStringArgument("Bossbar Content"))
             .executes((sender, args) -> {
-                Player p = (Player) args.get("Player");
-                String bossbarID = (String) args.get("Bossbar ID");
-                String bossbarColor = (String) args.get("Bossbar Color");
-                float bossbarProgress = (float) args.get("Bossbar Progress");
+                Player p = args.getUnchecked("Player");
+                String bossbarID = args.getUnchecked("Bossbar ID");
+                String bossbarColor = args.getUnchecked("Bossbar Color");
+                float bossbarProgress = args.getUnchecked("Bossbar Progress");
                 int ticks = (Integer) args.get("Ticks To Show");
-                String bossbarContent = (String) args.get("Bossbar Content");
+                String bossbarContent = args.getUnchecked("Bossbar Content");
 
                 showBossBar(p, bossbarID, bossbarProgress, bossbarColor, ticks, LegacyComponentSerializer.legacyAmpersand().deserialize(bossbarContent));
             })

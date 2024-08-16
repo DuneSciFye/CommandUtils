@@ -23,11 +23,11 @@ public class SetItemNBT extends Command implements Registerable {
             .withOptionalArguments(new GreedyStringArgument("Content"))
             .executes((sender, args) -> {
 
-                Player player = (Player) args.get("Player");
-                ItemStack item = player.getInventory().getItem((Integer) args.get("Slot"));
-                String namespace = (String) args.get("Namespace");
-                String inputKey = (String) args.get("Key");
-                String content = (String) args.getOrDefault("Content", "");
+                Player player = args.getUnchecked("Player");
+                ItemStack item = player.getInventory().getItem(args.getByClass("Slot", Integer.class));
+                String namespace = args.getUnchecked("Namespace");
+                String inputKey = args.getUnchecked("Key");
+                String content = args.getOrDefaultUnchecked("Content", "");
 
                 NamespacedKey key = new NamespacedKey(namespace, inputKey);
 

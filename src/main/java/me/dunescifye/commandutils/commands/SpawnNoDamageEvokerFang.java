@@ -15,7 +15,7 @@ public class SpawnNoDamageEvokerFang extends Command implements Registerable {
         new CommandAPICommand("spawnnodamageevokerfang")
             .withArguments(new LocationArgument("Location"))
             .executes((sender, args) -> {
-                Location loc = (Location) args.get("Location");
+                Location loc = args.getUnchecked("Location");
                 assert loc != null;
                 Entity evokerFangs = loc.getWorld().spawnEntity(loc, EntityType.EVOKER_FANGS);
                 evokerFangs.setMetadata("nodamage", new FixedMetadataValue(CommandUtils.getInstance(), true));

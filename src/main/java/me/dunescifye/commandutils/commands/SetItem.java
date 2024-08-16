@@ -21,11 +21,11 @@ public class SetItem extends Command implements Registerable {
             .withArguments(new IntegerArgument("Slot", 0, 40))
             .withArguments(new ItemStackArgument("Item"))
             .executes((sender, args) -> {
-                Player p = (Player) args.get("Player");
-                int slot = (int) args.get("Slot");
+                Player p = args.getUnchecked("Player");
+                int slot = args.getUnchecked("Slot");
 
                 ItemMeta meta = p.getInventory().getItem(slot).getItemMeta();
-                ItemStack item = (ItemStack) args.get("Item");
+                ItemStack item = args.getUnchecked("Item");
                 ItemMeta newMeta = item.getItemMeta();
                 int customModelData = newMeta.getCustomModelData();
                 meta.setCustomModelData(customModelData);

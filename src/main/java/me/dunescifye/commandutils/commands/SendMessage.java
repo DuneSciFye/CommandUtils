@@ -17,8 +17,8 @@ public class SendMessage extends Command implements Registerable {
             .withArguments(new PlayerArgument("Player"))
             .withArguments(new GreedyStringArgument("Message"))
             .executes((sender, args) -> {
-                Player player = (Player) args.get("Player");
-                String message = PlaceholderAPI.setPlaceholders(player, (String) args.get("Message"));
+                Player player = args.getUnchecked("Player");
+                String message = PlaceholderAPI.setPlaceholders(player, args.getByClass("Message", String.class));
 
                 final Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
 

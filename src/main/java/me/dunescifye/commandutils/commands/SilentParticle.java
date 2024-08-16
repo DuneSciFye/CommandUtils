@@ -18,13 +18,13 @@ public class SilentParticle extends Command implements Registerable {
                 .then(new PlayerArgument("Player")
                     .executes((sender, args) -> {
                         Player p = args.getUnchecked("Player");
-                        ParticleData particleData = args.getUnchecked("Particle");
+                        ParticleData<?> particleData = args.getUnchecked("Particle");
                         p.spawnParticle(particleData.particle(), p.getLocation(), 1);
                     })
                     .then(new IntegerArgument("Amount")
                         .executes((sender, args) -> {
                             Player p = args.getUnchecked("Player");
-                            ParticleData particleData = args.getUnchecked("Particle");
+                            ParticleData<?> particleData = args.getUnchecked("Particle");
                             int amount = args.getUnchecked("Amount");
                             p.spawnParticle(particleData.particle(), p.getLocation(), amount);
                         })
@@ -33,12 +33,12 @@ public class SilentParticle extends Command implements Registerable {
                                 .then(new DoubleArgument("Z Offset")
                                     .executes((sender, args) -> {
                                         Player p = args.getUnchecked("Player");
-                                        ParticleData particleData = args.getUnchecked("Particle");
+                                        ParticleData<?> particleData = args.getUnchecked("Particle");
                                         int amount = args.getUnchecked("Amount");
                                         double xOffset = args.getUnchecked("X Offset");
                                         double yOffset = args.getUnchecked("Y Offset");
                                         double zOffset = args.getUnchecked("Z Offset");
-                                        p.spawnParticle(particleData.particle(), p.getLocation(), amount, xOffset, yOffset, zOffset);
+                                        p.spawnParticle(particleData.particle(), p.getLocation(), amount, xOffset, yOffset, zOffset, particleData.data());
                                     })
                                 )
                             )
@@ -48,31 +48,31 @@ public class SilentParticle extends Command implements Registerable {
                 .then(new StringArgument("World")
                     .then(new LocationArgument("Location")
                         .executes((sender, args) -> {
-                            ParticleData particleData = args.getUnchecked("Particle");
+                            ParticleData<?> particleData = args.getUnchecked("Particle");
                             World world = Bukkit.getWorld(args.getByClass("World", String.class));
                             Location location = args.getUnchecked("Location");
-                            world.spawnParticle(particleData.particle(), location, 1);
+                            world.spawnParticle(particleData.particle(), location, 1, particleData.data());
                         })
                         .then(new IntegerArgument("Amount")
                             .executes((sender, args) -> {
-                                ParticleData particleData = args.getUnchecked("Particle");
+                                ParticleData<?> particleData = args.getUnchecked("Particle");
                                 World world = Bukkit.getWorld(args.getByClass("World", String.class));
                                 Location location = args.getUnchecked("Location");
                                 int amount = args.getUnchecked("Amount");
-                                world.spawnParticle(particleData.particle(), location, amount);
+                                world.spawnParticle(particleData.particle(), location, amount, particleData.data());
                             })
                             .then(new DoubleArgument("X Offset")
                                 .then(new DoubleArgument("Y Offset")
                                     .then(new DoubleArgument("Z Offset")
                                         .executes((sender, args) -> {
-                                            ParticleData particleData = args.getUnchecked("Particle");
+                                            ParticleData<?> particleData = args.getUnchecked("Particle");
                                             World world = Bukkit.getWorld(args.getByClass("World", String.class));
                                             Location location = args.getUnchecked("Location");
                                             int amount = args.getUnchecked("Amount");
                                             double xOffset = args.getUnchecked("X Offset");
                                             double yOffset = args.getUnchecked("Y Offset");
                                             double zOffset = args.getUnchecked("Z Offset");
-                                            world.spawnParticle(particleData.particle(), location, amount, xOffset, yOffset, zOffset);
+                                            world.spawnParticle(particleData.particle(), location, amount, xOffset, yOffset, zOffset, particleData.data());
                                         })
                                     )
                                 )

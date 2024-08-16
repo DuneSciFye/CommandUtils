@@ -6,7 +6,7 @@ import dev.jorel.commandapi.arguments.LiteralArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import me.clip.placeholderapi.PlaceholderAPI;
 
-public class ParsePlaceholder extends Command implements Registerable {
+public class ParsePlaceholderCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

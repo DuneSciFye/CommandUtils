@@ -10,7 +10,7 @@ import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class Loop extends Command implements Configurable {
+public class LoopCommand extends Command implements Configurable {
 
     @SuppressWarnings("ConstantConditions")
     public void register(YamlDocument config) {

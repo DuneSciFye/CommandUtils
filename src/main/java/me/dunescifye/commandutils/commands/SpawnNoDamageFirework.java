@@ -27,7 +27,7 @@ public class SpawnNoDamageFirework extends Command implements Registerable {
             .withArguments(new IntegerArgument("Ticks To Detonate", 0))
             .withOptionalArguments(new PlayerArgument("No Damage Player"))
             .executes((sender, args) -> {
-                Location loc = (Location) args.get("Location");
+                Location loc = args.getUnchecked("Location");
                 Firework fw = (Firework) loc.getWorld().spawnEntity(loc, EntityType.FIREWORK);
                 FireworkMeta fwm = fw.getFireworkMeta();
 
@@ -35,9 +35,9 @@ public class SpawnNoDamageFirework extends Command implements Registerable {
 
                 fw.setFireworkMeta(fwm);
                 fw.setMetadata("nodamage", new FixedMetadataValue(CommandUtils.getInstance(), true));
-                fw.setTicksToDetonate((int) args.get("Ticks To Detonate"));
+                fw.setTicksToDetonate(args.getUnchecked("Ticks To Detonate"));
 
-                Player noDamagePlayer = (Player) args.get("No Damage Player");
+                Player noDamagePlayer = args.getUnchecked("No Damage Player");
 
                 if (noDamagePlayer != null) {
                     PersistentDataContainer container = fw.getPersistentDataContainer();

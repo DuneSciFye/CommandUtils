@@ -53,39 +53,46 @@ public class Config {
             Section commandSection = config.getSection("Commands");
 
             for (String key : commands.keySet()) {
+                if (commandSection.getOptionalSection(key).isEmpty()) {
+                    config.set("Commands." + key + ".Enabled", true);
+                    config.set("Commands." + key + ".Aliases", new String[0]);
+                    config.set("Commands." + key + ".Permission", "commandutils.command." + key);
+                    continue;
+                }
                 Section keySection = commandSection.getSection(key);
-                if (keySection == null) {
-                    commandSection.set(key + ".Enabled", true);
-                } else {
-                    Command command = commands.get(key);
+                Command command = commands.get(key);
+                if (keySection.getOptionalString("Enabled").isPresent()) {
                     if (keySection.isBoolean("Enabled")) {
                         command.setEnabled(keySection.getBoolean("Enabled"));
                     } else {
                         logger.warning("Configuration Commands." + key + ".Enabled is not a boolean. Found " + keySection.get("Enabled"));
                     }
+                } else {
+                    config.set("Commands." + key + ".Enabled", true);
+                }
 
-                    if (keySection.getOptionalStringList("Aliases").isPresent()) {
-                        if (keySection.isList("Aliases")) {
-                            command.setCommandAliases(keySection.getStringList("Aliases").toArray(new String[0]));
-                        } else {
-                            logger.warning("Configuration Commands." + key + ".Aliases is not a list. Found " + keySection.get("Aliases"));
-                        }
-                    }
-
-                    if (keySection.getOptionalString("Permission").isPresent()) {
-                        command.setPermission(keySection.getString("Permission"));
+                if (keySection.getOptionalStringList("Aliases").isPresent()) {
+                    if (keySection.isList("Aliases")) {
+                        command.setCommandAliases(keySection.getStringList("Aliases").toArray(new String[0]));
                     } else {
-                        command.setPermission("commandutils.command." + key.toLowerCase());
-                    }
-
-                    if (keySection.getOptionalString("NameSpace").isPresent()) {
-                        if (keySection.isString("Namespace")) {
-                            command.setNamespace(keySection.getString("Namespace"));
-                        } else {
-                            logger.warning("Configuration Commands." + key + ".Namespace is not a string. Found " + keySection.get("NameSpace"));
-                        }
+                        logger.warning("Configuration Commands." + key + ".Aliases is not a list. Found " + keySection.get("Aliases"));
                     }
                 }
+
+                if (keySection.getOptionalString("Permission").isPresent()) {
+                    command.setPermission(keySection.getString("Permission"));
+                } else {
+                    command.setPermission("commandutils.command." + key.toLowerCase());
+                }
+
+                if (keySection.getOptionalString("NameSpace").isPresent()) {
+                    if (keySection.isString("Namespace")) {
+                        command.setNamespace(keySection.getString("Namespace"));
+                    } else {
+                        logger.warning("Configuration Commands." + key + ".Namespace is not a string. Found " + keySection.get("NameSpace"));
+                    }
+                }
+
             }
 
             //Register Commands
@@ -199,8 +206,6 @@ public class Config {
                     blacklists.put(key, blacklist);
                 }
             }
-
-            config.default
 
             config.save();
         } catch (IOException e) {

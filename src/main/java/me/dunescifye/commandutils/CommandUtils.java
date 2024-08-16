@@ -60,8 +60,8 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("LaunchProjectile", new LaunchProjectileCommand());
         commands.put("LaunchFirework", new LaunchFireworkCommand());
         commands.put("LoadCrossbow", new LoadCrossbowCommand());
-        commands.put("PushEntity", new PushEntity());
-        commands.put("RayTraceParticle", new RayTraceParticle());
+        commands.put("PushEntity", new PushEntityCommand());
+        commands.put("RayTraceParticle", new RayTraceParticleComand());
         commands.put("RemoveItem", new RemoveItem());
         commands.put("ReplaceInFacing", new ReplaceInFacing());
         commands.put("RunCommandLater", new RunCommandLater());
@@ -79,7 +79,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("Waterlog", new Waterlog());
         commands.put("WeightedRandom", new WeightedRandomCommand());
         commands.put("While", new While());
-        commands.put("Loop", new Loop());
+        commands.put("Loop", new LoopCommand());
         commands.put("If", new IfCommand());
 
         //Special Commands
@@ -87,7 +87,7 @@ public final class CommandUtils extends JavaPlugin {
             commands.put("CobwebPrison", new CobwebPrisonCommand());
         }
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            commands.put("ParsePlaceholder", new ParsePlaceholder());
+            commands.put("ParsePlaceholder", new ParsePlaceholderCommand());
             placeholderAPIEnabled = true;
         }
 
