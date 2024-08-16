@@ -248,7 +248,6 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                             World world = Bukkit.getWorld(args.getByArgument(worldArg));
                                             Location location = args.getByArgument(locArg);
                                             int radius = args.getByArgument(radiusArg);
-                                            Player player = args.getByArgument(playerArg);
                                             Block origin = world.getBlockAt(location);
                                             ItemStack drop = args.getByArgument(dropArg);
                                             String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
@@ -289,48 +288,45 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                 .register(this.getNamespace());
         }
 
-
-
+        LiteralArgument whitelistedBlocksArg = new LiteralArgument("whitelistedblocks");
         //Command for defining whitelists per command
         if (CommandUtils.griefPreventionEnabled) {
+            new CommandTree("breakinradius")
+                .then(locArg
+                    .then(worldArg
+                        .then(playerArg
+                            .then(radiusArg
+                                .then(whitelistedBlocksArg
+                                    .then(new ListArgumentBuilder<String>("Whitelisted Blocks")
+                                        .withList(materials)
+                                        .withStringMapper()
+                                        .buildText()
+                                        .executes((sender, args) -> {
+                                            EnumSet<Material> whitelistMaterials = EnumSet.noneOf(Material.class);
+                                            EnumSet<Material> blacklistMaterials = EnumSet.noneOf(Material.class);
 
-        }
-        new CommandTree("breakinradius")
-            .then(locArg
-                .then(worldArg
-                    .then(playerArg
-                        .then(radiusArg
-                            .then(new LiteralArgument("whitelistedblocks")
-                                .then(new ListArgumentBuilder<String>("Whitelisted Blocks")
-                                    .withList(materials)
-                                    .withStringMapper()
-                                    .buildText()
-                                    .executes((sender, args) -> {
-                                        EnumSet<Material> whitelistMaterials = EnumSet.noneOf(Material.class);
-                                        EnumSet<Material> blacklistMaterials = EnumSet.noneOf(Material.class);
+                                            List<String> inputList = args.getUnchecked("Whitelisted Blocks");
 
-                                        List<String> inputList = (List<String>) args.get("Whitelisted Blocks");
-
-                                        for (String input : inputList) {
-                                            if (input.startsWith("!")) {
-                                                input = input.substring(1);
-                                                Material material = Material.valueOf(input.toUpperCase());
-                                                blacklistMaterials.add(material);
-                                            } else {
-                                                Material material = Material.valueOf(input.toUpperCase());
-                                                whitelistMaterials.add(material);
+                                            for (String input : inputList) {
+                                                if (input.startsWith("!")) {
+                                                    input = input.substring(1);
+                                                    Material material = Material.valueOf(input.toUpperCase());
+                                                    blacklistMaterials.add(material);
+                                                } else {
+                                                    Material material = Material.valueOf(input.toUpperCase());
+                                                    whitelistMaterials.add(material);
+                                                }
                                             }
-                                        }
 
-                                        World world = Bukkit.getWorld((String) args.get("World"));
-                                        Location location = (Location) args.get("Location");
-                                        Block origin = world.getBlockAt(location);
-                                        Player player = (Player) args.get("Player");
-                                        ItemStack heldItem = player.getInventory().getItemInMainHand();
-                                        int radius = (int) args.getOrDefault("Radius", 0);
-                                        Collection<ItemStack> drops = new ArrayList<>();
+                                            World world = Bukkit.getWorld((String) args.get("World"));
+                                            Location location = (Location) args.get("Location");
+                                            Block origin = world.getBlockAt(location);
+                                            Player player = (Player) args.get("Player");
+                                            ItemStack heldItem = player.getInventory().getItemInMainHand();
+                                            int radius = (int) args.getOrDefault("Radius", 0);
+                                            Collection<ItemStack> drops = new ArrayList<>();
 
-                                        //List<Predicate<Block>> whitelist = new ArrayList<>();
+                                            //List<Predicate<Block>> whitelist = new ArrayList<>();
 
                                         /*
                                         //for (Tag<Material> tag : Bukkit.getTags("blocks", Material.class)) {
@@ -341,12 +337,12 @@ public class BreakInRadiusCommand extends Command implements Registerable {
 
                                          */
 
-                                        if (whitelistMaterials.isEmpty()){
-                                            for (int x = -radius; x <= radius; x++){
-                                                for (int y = -radius; y <= radius; y++){
-                                                    for (int z = -radius; z <= radius; z++){
-                                                        Block b = origin.getRelative(x, y, z);
-                                                        Material blockType = b.getType();
+                                            if (whitelistMaterials.isEmpty()){
+                                                for (int x = -radius; x <= radius; x++){
+                                                    for (int y = -radius; y <= radius; y++){
+                                                        for (int z = -radius; z <= radius; z++){
+                                                            Block b = origin.getRelative(x, y, z);
+                                                            Material blockType = b.getType();
                                                         /*
                                                         for (Predicate<Block> blockPredicate : whitelist) {
                                                             if (blockPredicate.test(b)) {
@@ -356,142 +352,45 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                             }
                                                         }
                                                          */
-                                                        if (!blacklistMaterials.contains(blockType)) {
-                                                            drops.addAll(b.getDrops(heldItem));
-                                                            b.setType(Material.AIR);
+                                                            if (!blacklistMaterials.contains(blockType)) {
+                                                                //Testing claim
+                                                                Location relativeLocation = b.getLocation();
+                                                                if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                                                    drops.addAll(b.getDrops(heldItem));
+                                                                    b.setType(Material.AIR);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                for (int x = -radius; x <= radius; x++){
+                                                    for (int y = -radius; y <= radius; y++){
+                                                        for (int z = -radius; z <= radius; z++){
+                                                            Block b = origin.getRelative(x, y, z);
+                                                            Material blockType = b.getType();
+                                                            if (whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)){
+                                                                //Testing claim
+                                                                Location relativeLocation = b.getLocation();
+                                                                if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                                                    drops.addAll(b.getDrops(heldItem));
+                                                                    b.setType(AIR);
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                 }
                                             }
-                                        } else {
-                                            for (int x = -radius; x <= radius; x++){
-                                                for (int y = -radius; y <= radius; y++){
-                                                    for (int z = -radius; z <= radius; z++){
-                                                        Block b = origin.getRelative(x, y, z);
-                                                        Material blockType = b.getType();
-                                                        if (whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)){
-                                                            drops.addAll(b.getDrops(heldItem));
-                                                            b.setType(AIR);
-                                                        }
-                                                    }
-                                                }
+
+                                            for (ItemStack item : mergeSimilarItemStacks(drops)){
+                                                world.dropItemNaturally(location, item);
                                             }
-                                        }
-
-                                        for (ItemStack item : mergeSimilarItemStacks(drops)){
-                                            world.dropItemNaturally(location, item);
-                                        }
-                                    })
-                                    .then(new LiteralArgument("whitelistedtags")
-                                        .then(new ListArgumentBuilder<String>("Whitelisted Tags")
-                                            .withList(tags)
-                                            .withStringMapper()
-                                            .buildText()
-                                            .executes((sender, args) -> {
-
-                                                Set<Tag<Material>> whitelistTags = new HashSet<>();
-                                                Set<Tag<Material>> blacklistTags = new HashSet<>();
-                                                EnumSet<Material> whitelistMaterials = EnumSet.noneOf(Material.class);
-                                                EnumSet<Material> blacklistMaterials = EnumSet.noneOf(Material.class);
-
-                                                List<String> inputTags = (List<String>) args.get("Whitelisted Tags");
-                                                List<String> inputMaterials = (List<String>) args.get("Whitelisted Blocks");
-
-                                                for (String input : inputTags) {
-                                                    if (input.startsWith("!")) {
-                                                        input = input.substring(1);
-                                                        Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(input), Material.class);
-                                                        blacklistTags.add(tag);
-                                                    } else {
-                                                        Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(input), Material.class);
-                                                        whitelistTags.add(tag);
-                                                    }
-                                                }
-
-
-                                                for (String input : inputMaterials) {
-                                                    if (input.startsWith("!")) {
-                                                        input = input.substring(1);
-                                                        Material material = Material.valueOf(input.toUpperCase());
-                                                        blacklistMaterials.add(material);
-                                                    } else {
-                                                        Material material = Material.valueOf(input.toUpperCase());
-                                                        whitelistMaterials.add(material);
-                                                    }
-                                                }
-
-                                                World world = Bukkit.getWorld((String) args.get("World"));
-                                                Location location = (Location) args.get("Location");
-                                                Block block = world.getBlockAt(location);
-                                                Player player = (Player) args.get("Player");
-                                                ItemStack heldItem = player.getInventory().getItemInMainHand();
-                                                int radius = (int) args.getOrDefault("Radius", 0);
-                                                Collection<ItemStack> drops = new ArrayList<>();
-
-                                                if (whitelistTags.isEmpty()){
-                                                    if (whitelistMaterials.isEmpty()){
-                                                        for (int x = -radius; x <= radius; x++){
-                                                            for (int y = -radius; y <= radius; y++){
-                                                                for (int z = -radius; z <= radius; z++){
-                                                                    Block b = block.getRelative(x, y, z);
-                                                                    Material blockType = b.getType();
-                                                                    if (!blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
-                                                                        drops.addAll(b.getDrops(heldItem));
-                                                                        b.setType(AIR);
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    } else {
-                                                        for (int x = -radius; x <= radius; x++){
-                                                            for (int y = -radius; y <= radius; y++){
-                                                                for (int z = -radius; z <= radius; z++){
-                                                                    Block b = block.getRelative(x, y, z);
-                                                                    Material blockType = b.getType();
-                                                                    if (!blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)){
-                                                                        drops.addAll(b.getDrops(heldItem));
-                                                                        b.setType(AIR);
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                } else {
-
-                                                    if (whitelistMaterials.isEmpty()){
-                                                        for (int x = -radius; x <= radius; x++){
-                                                            for (int y = -radius; y <= radius; y++){
-                                                                for (int z = -radius; z <= radius; z++){
-                                                                    Block b = block.getRelative(x, y, z);
-                                                                    Material blockType = b.getType();
-                                                                    if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
-                                                                        drops.addAll(b.getDrops(heldItem));
-                                                                        b.setType(AIR);
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    } else {
-                                                        for (int x = -radius; x <= radius; x++){
-                                                            for (int y = -radius; y <= radius; y++){
-                                                                for (int z = -radius; z <= radius; z++){
-                                                                    Block b = block.getRelative(x, y, z);
-                                                                    Material blockType = b.getType();
-                                                                    if ((whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) || whitelistMaterials.contains(blockType)) && !blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
-                                                                        drops.addAll(b.getDrops(heldItem));
-                                                                        b.setType(AIR);
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                for (ItemStack item : mergeSimilarItemStacks(drops)){
-                                                    world.dropItemNaturally(location, item);
-                                                }
-                                            })
-                                            .then(new ItemStackArgument("Drop")
+                                        })
+                                        .then(new LiteralArgument("whitelistedtags")
+                                            .then(new ListArgumentBuilder<String>("Whitelisted Tags")
+                                                .withList(tags)
+                                                .withStringMapper()
+                                                .buildText()
                                                 .executes((sender, args) -> {
 
                                                     Set<Tag<Material>> whitelistTags = new HashSet<>();
@@ -499,8 +398,8 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                     EnumSet<Material> whitelistMaterials = EnumSet.noneOf(Material.class);
                                                     EnumSet<Material> blacklistMaterials = EnumSet.noneOf(Material.class);
 
-                                                    List<String> inputTags = (List<String>) args.get("Whitelisted Tags");
-                                                    List<String> inputMaterials = (List<String>) args.get("Whitelisted Blocks");
+                                                    List<String> inputTags = args.getUnchecked("Whitelisted Tags");
+                                                    List<String> inputMaterials = args.getUnchecked("Whitelisted Blocks");
 
                                                     for (String input : inputTags) {
                                                         if (input.startsWith("!")) {
@@ -528,9 +427,10 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                     World world = Bukkit.getWorld((String) args.get("World"));
                                                     Location location = (Location) args.get("Location");
                                                     Block block = world.getBlockAt(location);
-                                                    ItemStack drop = ((ItemStack) args.get("Drop"));
-
+                                                    Player player = (Player) args.get("Player");
+                                                    ItemStack heldItem = player.getInventory().getItemInMainHand();
                                                     int radius = (int) args.getOrDefault("Radius", 0);
+                                                    Collection<ItemStack> drops = new ArrayList<>();
 
                                                     if (whitelistTags.isEmpty()){
                                                         if (whitelistMaterials.isEmpty()){
@@ -539,9 +439,13 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                                     for (int z = -radius; z <= radius; z++){
                                                                         Block b = block.getRelative(x, y, z);
                                                                         Material blockType = b.getType();
-                                                                        if (!blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
-                                                                            drop.setAmount(drop.getAmount() + 1);
-                                                                            b.setType(AIR);
+                                                                        if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
+                                                                            //Testing claim
+                                                                            Location relativeLocation = b.getLocation();
+                                                                            if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                                                                drops.addAll(b.getDrops(heldItem));
+                                                                                b.setType(AIR);
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
@@ -552,8 +456,8 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                                     for (int z = -radius; z <= radius; z++){
                                                                         Block b = block.getRelative(x, y, z);
                                                                         Material blockType = b.getType();
-                                                                        if (!blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)){
-                                                                            drop.setAmount(drop.getAmount() + 1);
+                                                                        if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)){
+                                                                            drops.addAll(b.getDrops(heldItem));
                                                                             b.setType(AIR);
                                                                         }
                                                                     }
@@ -568,8 +472,8 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                                     for (int z = -radius; z <= radius; z++){
                                                                         Block b = block.getRelative(x, y, z);
                                                                         Material blockType = b.getType();
-                                                                        if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
-                                                                            drop.setAmount(drop.getAmount() + 1);
+                                                                        if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
+                                                                            drops.addAll(b.getDrops(heldItem));
                                                                             b.setType(AIR);
                                                                         }
                                                                     }
@@ -581,8 +485,8 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                                     for (int z = -radius; z <= radius; z++){
                                                                         Block b = block.getRelative(x, y, z);
                                                                         Material blockType = b.getType();
-                                                                        if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)){
-                                                                            drop.setAmount(drop.getAmount() + 1);
+                                                                        if ((whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) || whitelistMaterials.contains(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
+                                                                            drops.addAll(b.getDrops(heldItem));
                                                                             b.setType(AIR);
                                                                         }
                                                                     }
@@ -591,86 +495,568 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                         }
                                                     }
 
-                                                    drop.setAmount(drop.getAmount() - 1);
-                                                    world.dropItemNaturally(location, drop);
-
+                                                    for (ItemStack item : mergeSimilarItemStacks(drops)){
+                                                        world.dropItemNaturally(location, item);
+                                                    }
                                                 })
+                                                .then(new ItemStackArgument("Drop")
+                                                    .executes((sender, args) -> {
+
+                                                        Set<Tag<Material>> whitelistTags = new HashSet<>();
+                                                        Set<Tag<Material>> blacklistTags = new HashSet<>();
+                                                        EnumSet<Material> whitelistMaterials = EnumSet.noneOf(Material.class);
+                                                        EnumSet<Material> blacklistMaterials = EnumSet.noneOf(Material.class);
+
+                                                        List<String> inputTags = args.getUnchecked("Whitelisted Tags");
+                                                        List<String> inputMaterials = args.getUnchecked("Whitelisted Blocks");
+
+                                                        for (String input : inputTags) {
+                                                            if (input.startsWith("!")) {
+                                                                input = input.substring(1);
+                                                                Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(input), Material.class);
+                                                                blacklistTags.add(tag);
+                                                            } else {
+                                                                Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(input), Material.class);
+                                                                whitelistTags.add(tag);
+                                                            }
+                                                        }
+
+
+                                                        for (String input : inputMaterials) {
+                                                            if (input.startsWith("!")) {
+                                                                input = input.substring(1);
+                                                                Material material = Material.valueOf(input.toUpperCase());
+                                                                blacklistMaterials.add(material);
+                                                            } else {
+                                                                Material material = Material.valueOf(input.toUpperCase());
+                                                                whitelistMaterials.add(material);
+                                                            }
+                                                        }
+
+                                                        World world = Bukkit.getWorld((String) args.get("World"));
+                                                        Location location = (Location) args.get("Location");
+                                                        Block block = world.getBlockAt(location);
+                                                        ItemStack drop = ((ItemStack) args.get("Drop"));
+
+                                                        int radius = (int) args.getOrDefault("Radius", 0);
+
+                                                        if (whitelistTags.isEmpty()){
+                                                            if (whitelistMaterials.isEmpty()){
+                                                                for (int x = -radius; x <= radius; x++){
+                                                                    for (int y = -radius; y <= radius; y++){
+                                                                        for (int z = -radius; z <= radius; z++){
+                                                                            Block b = block.getRelative(x, y, z);
+                                                                            Material blockType = b.getType();
+                                                                            if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
+                                                                                drop.setAmount(drop.getAmount() + 1);
+                                                                                b.setType(AIR);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                for (int x = -radius; x <= radius; x++){
+                                                                    for (int y = -radius; y <= radius; y++){
+                                                                        for (int z = -radius; z <= radius; z++){
+                                                                            Block b = block.getRelative(x, y, z);
+                                                                            Material blockType = b.getType();
+                                                                            if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)){
+                                                                                drop.setAmount(drop.getAmount() + 1);
+                                                                                b.setType(AIR);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        } else {
+
+                                                            if (whitelistMaterials.isEmpty()){
+                                                                for (int x = -radius; x <= radius; x++){
+                                                                    for (int y = -radius; y <= radius; y++){
+                                                                        for (int z = -radius; z <= radius; z++){
+                                                                            Block b = block.getRelative(x, y, z);
+                                                                            Material blockType = b.getType();
+                                                                            if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
+                                                                                drop.setAmount(drop.getAmount() + 1);
+                                                                                b.setType(AIR);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                for (int x = -radius; x <= radius; x++){
+                                                                    for (int y = -radius; y <= radius; y++){
+                                                                        for (int z = -radius; z <= radius; z++){
+                                                                            Block b = block.getRelative(x, y, z);
+                                                                            Material blockType = b.getType();
+                                                                            if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)){
+                                                                                drop.setAmount(drop.getAmount() + 1);
+                                                                                b.setType(AIR);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+
+                                                        drop.setAmount(drop.getAmount() - 1);
+                                                        world.dropItemNaturally(location, drop);
+
+                                                    })
+                                                )
                                             )
                                         )
                                     )
                                 )
-                            )
-                            .then(new LiteralArgument("whitelistedtags")
-                                .then(new ListArgumentBuilder<String>("Whitelisted Tags")
-                                    .withList(tags)
-                                    .withStringMapper()
-                                    .buildText()
-                                    .executes((sender, args) -> {
+                                .then(new LiteralArgument("whitelistedtags")
+                                    .then(new ListArgumentBuilder<String>("Whitelisted Tags")
+                                        .withList(tags)
+                                        .withStringMapper()
+                                        .buildText()
+                                        .executes((sender, args) -> {
 
-                                        Set<Tag<Material>> whitelistTags = new HashSet<>();
-                                        Set<Tag<Material>> blacklistTags = new HashSet<>();
+                                            Set<Tag<Material>> whitelistTags = new HashSet<>();
+                                            Set<Tag<Material>> blacklistTags = new HashSet<>();
 
-                                        List<String> inputTags = (List<String>) args.get("Whitelisted Tags");
+                                            List<String> inputTags = args.getUnchecked("Whitelisted Tags");
 
-                                        for (String input : inputTags) {
-                                            if (input.startsWith("!")) {
-                                                input = input.substring(1);
-                                                Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(input), Material.class);
-                                                blacklistTags.add(tag);
+                                            for (String input : inputTags) {
+                                                if (input.startsWith("!")) {
+                                                    input = input.substring(1);
+                                                    Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(input), Material.class);
+                                                    blacklistTags.add(tag);
+                                                } else {
+                                                    Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(input), Material.class);
+                                                    whitelistTags.add(tag);
+                                                }
+                                            }
+
+
+                                            World world = Bukkit.getWorld((String) args.get("World"));
+                                            Location location = (Location) args.get("Location");
+                                            Block block = world.getBlockAt(location);
+                                            Player player = (Player) args.get("Player");
+                                            ItemStack heldItem = player.getInventory().getItemInMainHand();
+                                            int radius = (int) args.getOrDefault("Radius", 0);
+                                            Collection<ItemStack> drops = new ArrayList<>();
+
+                                            if (whitelistTags.isEmpty()){
+                                                for (int x = -radius; x <= radius; x++){
+                                                    for (int y = -radius; y <= radius; y++){
+                                                        for (int z = -radius; z <= radius; z++){
+                                                            Block b = block.getRelative(x, y, z);
+                                                            Material blockType = b.getType();
+                                                            if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType))){
+                                                                drops.addAll(b.getDrops(heldItem));
+                                                                b.setType(AIR);
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             } else {
-                                                Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(input), Material.class);
-                                                whitelistTags.add(tag);
-                                            }
-                                        }
-
-
-                                        World world = Bukkit.getWorld((String) args.get("World"));
-                                        Location location = (Location) args.get("Location");
-                                        Block block = world.getBlockAt(location);
-                                        Player player = (Player) args.get("Player");
-                                        ItemStack heldItem = player.getInventory().getItemInMainHand();
-                                        int radius = (int) args.getOrDefault("Radius", 0);
-                                        Collection<ItemStack> drops = new ArrayList<>();
-
-                                        if (whitelistTags.isEmpty()){
-                                            for (int x = -radius; x <= radius; x++){
-                                                for (int y = -radius; y <= radius; y++){
-                                                    for (int z = -radius; z <= radius; z++){
-                                                        Block b = block.getRelative(x, y, z);
-                                                        Material blockType = b.getType();
-                                                        if (!blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType))){
-                                                            drops.addAll(b.getDrops(heldItem));
-                                                            b.setType(AIR);
+                                                for (int x = -radius; x <= radius; x++){
+                                                    for (int y = -radius; y <= radius; y++){
+                                                        for (int z = -radius; z <= radius; z++){
+                                                            Block b = block.getRelative(x, y, z);
+                                                            Material blockType = b.getType();
+                                                            if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType))){
+                                                                drops.addAll(b.getDrops(heldItem));
+                                                                b.setType(AIR);
+                                                            }
                                                         }
                                                     }
                                                 }
                                             }
-                                        } else {
-                                            for (int x = -radius; x <= radius; x++){
-                                                for (int y = -radius; y <= radius; y++){
-                                                    for (int z = -radius; z <= radius; z++){
-                                                        Block b = block.getRelative(x, y, z);
-                                                        Material blockType = b.getType();
-                                                        if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType))){
-                                                            drops.addAll(b.getDrops(heldItem));
-                                                            b.setType(AIR);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
 
-                                        for (ItemStack item : mergeSimilarItemStacks(drops)){
-                                            world.dropItemNaturally(location, item);
-                                        }
-                                    })))
+                                            for (ItemStack item : mergeSimilarItemStacks(drops)){
+                                                world.dropItemNaturally(location, item);
+                                            }
+                                        })))
+                            )
                         )
                     )
                 )
-            )
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+        } else {
+            new CommandTree("breakinradius")
+                .then(locArg
+                    .then(worldArg
+                        .then(playerArg
+                            .then(radiusArg
+                                .then(whitelistedBlocksArg
+                                    .then(new ListArgumentBuilder<String>("Whitelisted Blocks")
+                                        .withList(materials)
+                                        .withStringMapper()
+                                        .buildText()
+                                        .executes((sender, args) -> {
+                                            EnumSet<Material> whitelistMaterials = EnumSet.noneOf(Material.class);
+                                            EnumSet<Material> blacklistMaterials = EnumSet.noneOf(Material.class);
+
+                                            List<String> inputList = args.getUnchecked("Whitelisted Blocks");
+
+                                            for (String input : inputList) {
+                                                if (input.startsWith("!")) {
+                                                    input = input.substring(1);
+                                                    Material material = Material.valueOf(input.toUpperCase());
+                                                    blacklistMaterials.add(material);
+                                                } else {
+                                                    Material material = Material.valueOf(input.toUpperCase());
+                                                    whitelistMaterials.add(material);
+                                                }
+                                            }
+
+                                            World world = Bukkit.getWorld((String) args.get("World"));
+                                            Location location = (Location) args.get("Location");
+                                            Block origin = world.getBlockAt(location);
+                                            Player player = (Player) args.get("Player");
+                                            ItemStack heldItem = player.getInventory().getItemInMainHand();
+                                            int radius = (int) args.getOrDefault("Radius", 0);
+                                            Collection<ItemStack> drops = new ArrayList<>();
+
+                                            //List<Predicate<Block>> whitelist = new ArrayList<>();
+
+                                        /*
+                                        //for (Tag<Material> tag : Bukkit.getTags("blocks", Material.class)) {
+                                        for (String input : inputTags) {
+                                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(input), Material.class);
+                                            whitelist.add(block -> tag.isTagged(block.getType()));
+                                        }
+
+                                         */
+
+                                            if (whitelistMaterials.isEmpty()){
+                                                for (int x = -radius; x <= radius; x++){
+                                                    for (int y = -radius; y <= radius; y++){
+                                                        for (int z = -radius; z <= radius; z++){
+                                                            Block b = origin.getRelative(x, y, z);
+                                                            Material blockType = b.getType();
+                                                        /*
+                                                        for (Predicate<Block> blockPredicate : whitelist) {
+                                                            if (blockPredicate.test(b)) {
+                                                                drops.addAll(b.getDrops(heldItem));
+                                                                b.setType(AIR);
+                                                                break;
+                                                            }
+                                                        }
+                                                         */
+                                                            if (!blacklistMaterials.contains(blockType)) {
+                                                                drops.addAll(b.getDrops(heldItem));
+                                                                b.setType(Material.AIR);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                for (int x = -radius; x <= radius; x++){
+                                                    for (int y = -radius; y <= radius; y++){
+                                                        for (int z = -radius; z <= radius; z++){
+                                                            Block b = origin.getRelative(x, y, z);
+                                                            Material blockType = b.getType();
+                                                            if (whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)){
+                                                                drops.addAll(b.getDrops(heldItem));
+                                                                b.setType(AIR);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            for (ItemStack item : mergeSimilarItemStacks(drops)){
+                                                world.dropItemNaturally(location, item);
+                                            }
+                                        })
+                                        .then(new LiteralArgument("whitelistedtags")
+                                            .then(new ListArgumentBuilder<String>("Whitelisted Tags")
+                                                .withList(tags)
+                                                .withStringMapper()
+                                                .buildText()
+                                                .executes((sender, args) -> {
+
+                                                    Set<Tag<Material>> whitelistTags = new HashSet<>();
+                                                    Set<Tag<Material>> blacklistTags = new HashSet<>();
+                                                    EnumSet<Material> whitelistMaterials = EnumSet.noneOf(Material.class);
+                                                    EnumSet<Material> blacklistMaterials = EnumSet.noneOf(Material.class);
+
+                                                    List<String> inputTags = args.getUnchecked("Whitelisted Tags");
+                                                    List<String> inputMaterials = args.getUnchecked("Whitelisted Blocks");
+
+                                                    for (String input : inputTags) {
+                                                        if (input.startsWith("!")) {
+                                                            input = input.substring(1);
+                                                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(input), Material.class);
+                                                            blacklistTags.add(tag);
+                                                        } else {
+                                                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(input), Material.class);
+                                                            whitelistTags.add(tag);
+                                                        }
+                                                    }
+
+
+                                                    for (String input : inputMaterials) {
+                                                        if (input.startsWith("!")) {
+                                                            input = input.substring(1);
+                                                            Material material = Material.valueOf(input.toUpperCase());
+                                                            blacklistMaterials.add(material);
+                                                        } else {
+                                                            Material material = Material.valueOf(input.toUpperCase());
+                                                            whitelistMaterials.add(material);
+                                                        }
+                                                    }
+
+                                                    World world = Bukkit.getWorld((String) args.get("World"));
+                                                    Location location = (Location) args.get("Location");
+                                                    Block block = world.getBlockAt(location);
+                                                    Player player = (Player) args.get("Player");
+                                                    ItemStack heldItem = player.getInventory().getItemInMainHand();
+                                                    int radius = (int) args.getOrDefault("Radius", 0);
+                                                    Collection<ItemStack> drops = new ArrayList<>();
+
+                                                    if (whitelistTags.isEmpty()){
+                                                        if (whitelistMaterials.isEmpty()){
+                                                            for (int x = -radius; x <= radius; x++){
+                                                                for (int y = -radius; y <= radius; y++){
+                                                                    for (int z = -radius; z <= radius; z++){
+                                                                        Block b = block.getRelative(x, y, z);
+                                                                        Material blockType = b.getType();
+                                                                        if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
+                                                                            drops.addAll(b.getDrops(heldItem));
+                                                                            b.setType(AIR);
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        } else {
+                                                            for (int x = -radius; x <= radius; x++){
+                                                                for (int y = -radius; y <= radius; y++){
+                                                                    for (int z = -radius; z <= radius; z++){
+                                                                        Block b = block.getRelative(x, y, z);
+                                                                        Material blockType = b.getType();
+                                                                        if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)){
+                                                                            drops.addAll(b.getDrops(heldItem));
+                                                                            b.setType(AIR);
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+
+                                                        if (whitelistMaterials.isEmpty()){
+                                                            for (int x = -radius; x <= radius; x++){
+                                                                for (int y = -radius; y <= radius; y++){
+                                                                    for (int z = -radius; z <= radius; z++){
+                                                                        Block b = block.getRelative(x, y, z);
+                                                                        Material blockType = b.getType();
+                                                                        if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
+                                                                            drops.addAll(b.getDrops(heldItem));
+                                                                            b.setType(AIR);
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        } else {
+                                                            for (int x = -radius; x <= radius; x++){
+                                                                for (int y = -radius; y <= radius; y++){
+                                                                    for (int z = -radius; z <= radius; z++){
+                                                                        Block b = block.getRelative(x, y, z);
+                                                                        Material blockType = b.getType();
+                                                                        if ((whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) || whitelistMaterials.contains(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
+                                                                            drops.addAll(b.getDrops(heldItem));
+                                                                            b.setType(AIR);
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    for (ItemStack item : mergeSimilarItemStacks(drops)){
+                                                        world.dropItemNaturally(location, item);
+                                                    }
+                                                })
+                                                .then(new ItemStackArgument("Drop")
+                                                    .executes((sender, args) -> {
+
+                                                        Set<Tag<Material>> whitelistTags = new HashSet<>();
+                                                        Set<Tag<Material>> blacklistTags = new HashSet<>();
+                                                        EnumSet<Material> whitelistMaterials = EnumSet.noneOf(Material.class);
+                                                        EnumSet<Material> blacklistMaterials = EnumSet.noneOf(Material.class);
+
+                                                        List<String> inputTags = args.getUnchecked("Whitelisted Tags");
+                                                        List<String> inputMaterials = args.getUnchecked("Whitelisted Blocks");
+
+                                                        for (String input : inputTags) {
+                                                            if (input.startsWith("!")) {
+                                                                input = input.substring(1);
+                                                                Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(input), Material.class);
+                                                                blacklistTags.add(tag);
+                                                            } else {
+                                                                Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(input), Material.class);
+                                                                whitelistTags.add(tag);
+                                                            }
+                                                        }
+
+
+                                                        for (String input : inputMaterials) {
+                                                            if (input.startsWith("!")) {
+                                                                input = input.substring(1);
+                                                                Material material = Material.valueOf(input.toUpperCase());
+                                                                blacklistMaterials.add(material);
+                                                            } else {
+                                                                Material material = Material.valueOf(input.toUpperCase());
+                                                                whitelistMaterials.add(material);
+                                                            }
+                                                        }
+
+                                                        World world = Bukkit.getWorld((String) args.get("World"));
+                                                        Location location = (Location) args.get("Location");
+                                                        Block block = world.getBlockAt(location);
+                                                        ItemStack drop = ((ItemStack) args.get("Drop"));
+
+                                                        int radius = (int) args.getOrDefault("Radius", 0);
+
+                                                        if (whitelistTags.isEmpty()){
+                                                            if (whitelistMaterials.isEmpty()){
+                                                                for (int x = -radius; x <= radius; x++){
+                                                                    for (int y = -radius; y <= radius; y++){
+                                                                        for (int z = -radius; z <= radius; z++){
+                                                                            Block b = block.getRelative(x, y, z);
+                                                                            Material blockType = b.getType();
+                                                                            if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
+                                                                                drop.setAmount(drop.getAmount() + 1);
+                                                                                b.setType(AIR);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                for (int x = -radius; x <= radius; x++){
+                                                                    for (int y = -radius; y <= radius; y++){
+                                                                        for (int z = -radius; z <= radius; z++){
+                                                                            Block b = block.getRelative(x, y, z);
+                                                                            Material blockType = b.getType();
+                                                                            if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)){
+                                                                                drop.setAmount(drop.getAmount() + 1);
+                                                                                b.setType(AIR);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        } else {
+
+                                                            if (whitelistMaterials.isEmpty()){
+                                                                for (int x = -radius; x <= radius; x++){
+                                                                    for (int y = -radius; y <= radius; y++){
+                                                                        for (int z = -radius; z <= radius; z++){
+                                                                            Block b = block.getRelative(x, y, z);
+                                                                            Material blockType = b.getType();
+                                                                            if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
+                                                                                drop.setAmount(drop.getAmount() + 1);
+                                                                                b.setType(AIR);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                for (int x = -radius; x <= radius; x++){
+                                                                    for (int y = -radius; y <= radius; y++){
+                                                                        for (int z = -radius; z <= radius; z++){
+                                                                            Block b = block.getRelative(x, y, z);
+                                                                            Material blockType = b.getType();
+                                                                            if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)){
+                                                                                drop.setAmount(drop.getAmount() + 1);
+                                                                                b.setType(AIR);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+
+                                                        drop.setAmount(drop.getAmount() - 1);
+                                                        world.dropItemNaturally(location, drop);
+
+                                                    })
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                                .then(new LiteralArgument("whitelistedtags")
+                                    .then(new ListArgumentBuilder<String>("Whitelisted Tags")
+                                        .withList(tags)
+                                        .withStringMapper()
+                                        .buildText()
+                                        .executes((sender, args) -> {
+
+                                            Set<Tag<Material>> whitelistTags = new HashSet<>();
+                                            Set<Tag<Material>> blacklistTags = new HashSet<>();
+
+                                            List<String> inputTags = args.getUnchecked("Whitelisted Tags");
+
+                                            for (String input : inputTags) {
+                                                if (input.startsWith("!")) {
+                                                    input = input.substring(1);
+                                                    Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(input), Material.class);
+                                                    blacklistTags.add(tag);
+                                                } else {
+                                                    Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(input), Material.class);
+                                                    whitelistTags.add(tag);
+                                                }
+                                            }
+
+
+                                            World world = Bukkit.getWorld((String) args.get("World"));
+                                            Location location = (Location) args.get("Location");
+                                            Block block = world.getBlockAt(location);
+                                            Player player = (Player) args.get("Player");
+                                            ItemStack heldItem = player.getInventory().getItemInMainHand();
+                                            int radius = (int) args.getOrDefault("Radius", 0);
+                                            Collection<ItemStack> drops = new ArrayList<>();
+
+                                            if (whitelistTags.isEmpty()){
+                                                for (int x = -radius; x <= radius; x++){
+                                                    for (int y = -radius; y <= radius; y++){
+                                                        for (int z = -radius; z <= radius; z++){
+                                                            Block b = block.getRelative(x, y, z);
+                                                            Material blockType = b.getType();
+                                                            if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType))){
+                                                                drops.addAll(b.getDrops(heldItem));
+                                                                b.setType(AIR);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                for (int x = -radius; x <= radius; x++){
+                                                    for (int y = -radius; y <= radius; y++){
+                                                        for (int z = -radius; z <= radius; z++){
+                                                            Block b = block.getRelative(x, y, z);
+                                                            Material blockType = b.getType();
+                                                            if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType))){
+                                                                drops.addAll(b.getDrops(heldItem));
+                                                                b.setType(AIR);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            for (ItemStack item : mergeSimilarItemStacks(drops)){
+                                                world.dropItemNaturally(location, item);
+                                            }
+                                        })))
+                            )
+                        )
+                    )
+                )
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+        }
     }
 
 }
