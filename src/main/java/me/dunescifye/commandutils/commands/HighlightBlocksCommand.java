@@ -1,8 +1,10 @@
 package me.dunescifye.commandutils.commands;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.wrappers.ParticleData;
+import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -11,14 +13,25 @@ import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 import static me.dunescifye.commandutils.CommandUtils.getInstance;
 
-public class HighlightBlocks extends Command implements Registerable {
+public class HighlightBlocksCommand extends Command implements Configurable {
 
     @SuppressWarnings("ConstantConditions")
-    public void register (){
+    public void register (YamlDocument config){
         if (!this.getEnabled()) return;
+
+        Logger logger = CommandUtils.getInstance().getLogger();
+
+        String stringParticle;
+
+        if (config.getOptionalString("Commands.HighlightBlocks.DefaultParticle").isPresent()) {
+
+        } else {
+            logger.warning("");
+        }
 
         new CommandAPICommand("highlightblocks")
             .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))
@@ -28,12 +41,12 @@ public class HighlightBlocks extends Command implements Registerable {
             .withOptionalArguments(new ParticleArgument("Particle"))
             .executes((sender, args) -> {
 
-                World world = Bukkit.getWorld((String) args.get("World"));
-                Location location = (Location) args.get("Location");
+                World world = Bukkit.getWorld(args.getByClass("World", String.class));
+                Location location = args.getUnchecked("Location");
                 Block block = world.getBlockAt(location);
-                int radius = (int) args.get("Radius");
+                int radius = args.getUnchecked("Radius");
                 Predicate<Block> predicate = args.getUnchecked("Block");
-                ParticleData particleData = args.getUnchecked("Particle");
+                ParticleData<?> particleData = args.getUnchecked("Particle");
                 Particle particle = particleData == null ? Particle.ELECTRIC_SPARK : particleData.particle();
 
                 for (int x = -radius; x <= radius; x++){

@@ -4,7 +4,7 @@ import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import org.bukkit.entity.Player;
 
-public class Food extends Command implements Registerable {
+public class FoodCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!this.getEnabled()) return;

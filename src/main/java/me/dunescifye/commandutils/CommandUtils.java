@@ -54,9 +54,9 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("BroadcastMessage", new BroadcastMessageCommand());
         commands.put("ChanceRandomRun", new ChanceRandomRunCommand());
         commands.put("ChangeVillagerProfession", new ChangeVillagerProfessionCommand());
-        commands.put("Food", new Food());
-        commands.put("God", new God());
-        commands.put("HighlightBlocks", new HighlightBlocks());
+        commands.put("Food", new FoodCommand());
+        commands.put("God", new GodCommand());
+        commands.put("HighlightBlocks", new HighlightBlocksCommand());
         commands.put("ItemAttribute", new ItemAttribute());
         commands.put("LaunchProjectile", new LaunchProjectile());
         commands.put("LaunchFirework", new LaunchFirework());
@@ -85,7 +85,7 @@ public final class CommandUtils extends JavaPlugin {
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
-            commands.put("CobwebPrison", new CobwebPrison());
+            commands.put("CobwebPrison", new CobwebPrisonCommand());
         }
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             commands.put("ParsePlaceholder", new ParsePlaceholder());

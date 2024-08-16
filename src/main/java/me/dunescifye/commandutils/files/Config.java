@@ -199,6 +199,9 @@ public class Config {
                     blacklists.put(key, blacklist);
                 }
             }
+
+            config.default
+
             config.save();
         } catch (IOException e) {
             throw new RuntimeException(e);

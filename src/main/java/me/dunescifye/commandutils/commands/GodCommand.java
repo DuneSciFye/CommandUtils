@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class God extends Command implements Registerable {
+public class GodCommand extends Command implements Registerable {
 
     private static List<String> getDamageCauses() {
         return Arrays.stream(EntityDamageEvent.DamageCause.values())

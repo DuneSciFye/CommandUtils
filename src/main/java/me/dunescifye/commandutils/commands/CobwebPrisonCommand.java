@@ -7,7 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-public class CobwebPrison extends Command implements Registerable {
+public class CobwebPrisonCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

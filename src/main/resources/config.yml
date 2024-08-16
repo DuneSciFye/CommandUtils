@@ -119,6 +119,7 @@ Commands:
     Enabled: true
     Aliases: []
     Permission: "commandutils.command.highlightblockscommand"
+    DefaultParticle: "ELECTRIC_SPARK"
 
   If:
     Enabled: true
