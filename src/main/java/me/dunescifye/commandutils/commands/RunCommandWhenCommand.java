@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class RunCommandWhen extends Command implements Registerable {
+public class RunCommandWhenCommand extends Command implements Registerable {
 
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
     @SuppressWarnings("ConstantConditions")

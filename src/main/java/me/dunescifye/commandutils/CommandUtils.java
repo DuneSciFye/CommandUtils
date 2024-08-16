@@ -62,11 +62,11 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("LoadCrossbow", new LoadCrossbowCommand());
         commands.put("PushEntity", new PushEntityCommand());
         commands.put("RayTraceParticle", new RayTraceParticleComand());
-        commands.put("RemoveItem", new RemoveItem());
-        commands.put("ReplaceInFacing", new ReplaceInFacing());
-        commands.put("RunCommandLater", new RunCommandLater());
-        commands.put("RunCommandWhen", new RunCommandWhen());
-        commands.put("SendBossBar", new SendBossBar());
+        commands.put("RemoveItem", new RemoveItemCommand());
+        commands.put("ReplaceInFacing", new ReplaceInFacingCommand());
+        commands.put("RunCommandLater", new RunCommandLaterCommand());
+        commands.put("RunCommandWhen", new RunCommandWhenCommand());
+        commands.put("SendBossBar", new SendBossBarCommand());
         commands.put("SendMessage", new SendMessage());
         commands.put("SetCursorItem", new SetCursorItem());
         commands.put("SetItem", new SetItem());
@@ -81,6 +81,8 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("While", new While());
         commands.put("Loop", new LoopCommand());
         commands.put("If", new IfCommand());
+        commands.put("MobTarget", new MobTargetCommand());
+        commands.put("SendConditionMessage", new SendConditionMessage());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {

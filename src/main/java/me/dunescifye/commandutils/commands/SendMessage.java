@@ -1,6 +1,7 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -8,21 +9,25 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
+
 public class SendMessage extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
         public void register(){
         if (!this.getEnabled()) return;
 
         new CommandAPICommand("sendmessage")
-            .withArguments(new PlayerArgument("Player"))
+            .withArguments(new EntitySelectorArgument.ManyPlayers("Players"))
             .withArguments(new GreedyStringArgument("Message"))
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
-                String message = PlaceholderAPI.setPlaceholders(player, args.getByClass("Message", String.class));
+                Collection<Player> players = args.getUnchecked("Players");
+                for (Player player : players) {
+                    String message = PlaceholderAPI.setPlaceholders(player, args.getByClass("Message", String.class));
 
-                final Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
+                    final Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
 
-                player.sendMessage(component);
+                    player.sendMessage(component);
+                }
 
             })
             .withPermission(this.getPermission())

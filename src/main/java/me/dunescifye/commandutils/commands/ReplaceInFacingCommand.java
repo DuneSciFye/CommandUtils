@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-public class ReplaceInFacing extends Command implements Registerable {
+public class ReplaceInFacingCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

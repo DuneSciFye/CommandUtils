@@ -13,7 +13,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SendBossBar extends Command implements Registerable {
+public class SendBossBarCommand extends Command implements Registerable {
     private static final Map<String, BossBar> bossBars = new HashMap<>();
     private static final Map<String, BukkitTask> bossBarTasks = new HashMap<>();
     @SuppressWarnings("ConstantConditions")

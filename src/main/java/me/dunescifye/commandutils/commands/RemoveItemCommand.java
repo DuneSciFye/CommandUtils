@@ -10,7 +10,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class RemoveItem extends Command implements Configurable {
+public class RemoveItemCommand extends Command implements Configurable {
 
     @SuppressWarnings("ConstantConditions")
     public void register(YamlDocument config){
