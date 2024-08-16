@@ -30,20 +30,43 @@ public class BreakInRadiusCommand extends Command implements Registerable {
         if (!this.getEnabled()) return;
 
         StringArgument whitelistedBlocksArgument = new StringArgument("Whitelisted Blocks");
+        StringArgument worldArg = new StringArgument("World");
+        LocationArgument locArg = new LocationArgument("Location");
+        IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
+        PlayerArgument playerArg = new PlayerArgument("Player");
+        ItemStackArgument dropArg = new ItemStackArgument("Drop");
+
+
+        Collection<String> materials = new ArrayList<>();
+        List<String> tags = new ArrayList<>();
+        for (Tag<Material> tag : Bukkit.getTags("blocks", Material.class)) {
+            tags.add(tag.getKey().asString());
+            tags.add("!" + tag.getKey().asString());
+        }
+
+        for (Material mat : Material.values()) {
+            String name = mat.name();
+            materials.add(name);
+            materials.add("!" + name);
+        }
+        materials.add("");
+        tags.add("");
+
+
 
         //With Griefprevention
         if (CommandUtils.griefPreventionEnabled) {
             new CommandTree("breakinradius")
-                .then(new LocationArgument("Location", LocationType.BLOCK_POSITION)
-                    .then(new StringArgument("World")
-                        .then(new PlayerArgument("Player")
-                            .then(new IntegerArgument("Radius", 0)
+                .then(locArg
+                    .then(worldArg
+                        .then(playerArg
+                            .then(radiusArg
                                 .executes((sender, args) -> {
-                                    World world = Bukkit.getWorld(args.getByClass("World", String.class));
-                                    Location location = args.getUnchecked("Location");
+                                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                    Location location = args.getByArgument(locArg);
                                     Block block = world.getBlockAt(location);
-                                    int radius = args.getUnchecked("Radius");
-                                    Player player = args.getUnchecked("Player");
+                                    int radius = args.getByArgument(radiusArg);
+                                    Player player = args.getByArgument(playerArg);
                                     ItemStack heldItem = player.getInventory().getItemInMainHand();
                                     Collection<ItemStack> drops = new ArrayList<>();
 
@@ -68,12 +91,12 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                 .then(whitelistedBlocksArgument
                                     .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
                                     .executes((sender, args) -> {
-                                        World world = Bukkit.getWorld((String) args.get("World"));
-                                        Location location = (Location) args.get("Location");
+                                        World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                        Location location = args.getByArgument(locArg);
+                                        int radius = args.getByArgument(radiusArg);
+                                        Player player = args.getByArgument(playerArg);
                                         Block origin = world.getBlockAt(location);
-                                        Player player = (Player) args.get("Player");
                                         ItemStack heldItem = player.getInventory().getItemInMainHand();
-                                        int radius = (int) args.getOrDefault("Radius", 0);
                                         Collection<ItemStack> drops = new ArrayList<>();
                                         String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
                                         List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
@@ -106,15 +129,14 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                             world.dropItemNaturally(location, item);
                                         }
                                     })
-                                    .then(new ItemStackArgument("Drop")
+                                    .then(dropArg
                                         .executes((sender, args) -> {
-                                            World world = Bukkit.getWorld((String) args.get("World"));
-                                            Location location = (Location) args.get("Location");
+                                            World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                            Location location = args.getByArgument(locArg);
+                                            int radius = args.getByArgument(radiusArg);
+                                            Player player = args.getByArgument(playerArg);
                                             Block origin = world.getBlockAt(location);
-                                            ItemStack drop = ((ItemStack) args.get("Drop"));
-                                            Player player = (Player) args.get("Player");
-
-                                            int radius = (int) args.getOrDefault("Radius", 0);
+                                            ItemStack drop = args.getByArgument(dropArg);
                                             String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
                                             List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
 
@@ -157,16 +179,16 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                 .register(this.getNamespace());
         } else {
             new CommandTree("breakinradius")
-                .then(new LocationArgument("Location", LocationType.BLOCK_POSITION)
-                    .then(new StringArgument("World")
-                        .then(new PlayerArgument("Player")
-                            .then(new IntegerArgument("Radius", 0)
+                .then(locArg
+                    .then(worldArg
+                        .then(playerArg
+                            .then(radiusArg
                                 .executes((sender, args) -> {
-                                    World world = Bukkit.getWorld(args.getByClass("World", String.class));
-                                    Location location = args.getUnchecked("Location");
+                                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                    Location location = args.getByArgument(locArg);
                                     Block block = world.getBlockAt(location);
-                                    int radius = args.getUnchecked("Radius");
-                                    Player player = args.getUnchecked("Player");
+                                    int radius = args.getByArgument(radiusArg);
+                                    Player player = args.getByArgument(playerArg);
                                     ItemStack heldItem = player.getInventory().getItemInMainHand();
                                     Collection<ItemStack> drops = new ArrayList<>();
 
@@ -187,12 +209,12 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                 .then(whitelistedBlocksArgument
                                     .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
                                     .executes((sender, args) -> {
-                                        World world = Bukkit.getWorld((String) args.get("World"));
-                                        Location location = (Location) args.get("Location");
+                                        World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                        Location location = args.getByArgument(locArg);
+                                        int radius = args.getByArgument(radiusArg);
+                                        Player player = args.getByArgument(playerArg);
                                         Block origin = world.getBlockAt(location);
-                                        Player player = (Player) args.get("Player");
                                         ItemStack heldItem = player.getInventory().getItemInMainHand();
-                                        int radius = (int) args.getOrDefault("Radius", 0);
                                         Collection<ItemStack> drops = new ArrayList<>();
                                         String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
                                         List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
@@ -223,12 +245,12 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                     })
                                     .then(new ItemStackArgument("Drop")
                                         .executes((sender, args) -> {
-                                            World world = Bukkit.getWorld((String) args.get("World"));
-                                            Location location = (Location) args.get("Location");
+                                            World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                            Location location = args.getByArgument(locArg);
+                                            int radius = args.getByArgument(radiusArg);
+                                            Player player = args.getByArgument(playerArg);
                                             Block origin = world.getBlockAt(location);
-                                            ItemStack drop = ((ItemStack) args.get("Drop"));
-
-                                            int radius = (int) args.getOrDefault("Radius", 0);
+                                            ItemStack drop = args.getByArgument(dropArg);
                                             String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
                                             List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
 
@@ -268,67 +290,16 @@ public class BreakInRadiusCommand extends Command implements Registerable {
         }
 
 
-        Collection<String> materials = new ArrayList<>();
-        List<String> tags = new ArrayList<>();
-        for (Tag<Material> tag : Bukkit.getTags("blocks", Material.class)) {
-            tags.add(tag.getKey().asString());
-            tags.add("!" + tag.getKey().asString());
+
+        //Command for defining whitelists per command
+        if (CommandUtils.griefPreventionEnabled) {
+
         }
-
-        for (Material mat : Material.values()) {
-            String name = mat.name();
-            materials.add(name);
-            materials.add("!" + name);
-        }
-        materials.add("");
-        tags.add("");
-
-
         new CommandTree("breakinradius")
-            .then(new LocationArgument("Location", LocationType.BLOCK_POSITION)
-                .then(new StringArgument("World")
-                    .then(new PlayerArgument("Player")
-                    .then(new IntegerArgument("Radius", 0)
-                        .executes((sender, args) -> {
-
-                            World world = Bukkit.getWorld((String) args.get("World"));
-                            Location location = (Location) args.get("Location");
-                            Block block = world.getBlockAt(location);
-                            int radius = (int) args.get("Radius");
-                            Player player = (Player) args.get("Player");
-                            ItemStack heldItem = player.getInventory().getItemInMainHand();
-                            Collection<ItemStack> drops = new ArrayList<>();
-
-                            if (CommandUtils.griefPreventionEnabled) {
-                                for (int x = -radius; x <= radius; x++) {
-                                    for (int y = -radius; y <= radius; y++) {
-                                        for (int z = -radius; z <= radius; z++) {
-                                            Block b = block.getRelative(x, y, z);
-                                            //Testing claim
-                                            Location relativeLocation = b.getLocation();
-                                            if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
-                                                drops.addAll(b.getDrops(heldItem));
-                                                b.setType(AIR);
-                                            }
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (int x = -radius; x <= radius; x++) {
-                                    for (int y = -radius; y <= radius; y++) {
-                                        for (int z = -radius; z <= radius; z++) {
-                                            Block b = block.getRelative(x, y, z);
-                                            drops.addAll(b.getDrops(heldItem));
-                                            b.setType(AIR);
-                                        }
-                                    }
-                                }
-                            }
-
-                            for (ItemStack item : mergeSimilarItemStacks(drops)){
-                                world.dropItemNaturally(location, item);
-                            }
-                        })
+            .then(locArg
+                .then(worldArg
+                    .then(playerArg
+                        .then(radiusArg
                             .then(new LiteralArgument("whitelistedblocks")
                                 .then(new ListArgumentBuilder<String>("Whitelisted Blocks")
                                     .withList(materials)
@@ -693,8 +664,8 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                             world.dropItemNaturally(location, item);
                                         }
                                     })))
-                    )
                         )
+                    )
                 )
             )
             .withPermission(this.getPermission())
