@@ -177,6 +177,7 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
                 .register(this.getNamespace());
+        //GriefPrevention disabled
         } else {
             new CommandTree("breakinradius")
                 .then(locArg
@@ -318,24 +319,13 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                 }
                                             }
 
-                                            World world = Bukkit.getWorld((String) args.get("World"));
-                                            Location location = (Location) args.get("Location");
+                                            World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                            Location location = args.getByArgument(locArg);
                                             Block origin = world.getBlockAt(location);
-                                            Player player = (Player) args.get("Player");
+                                            Player player = args.getByArgument(playerArg);
                                             ItemStack heldItem = player.getInventory().getItemInMainHand();
-                                            int radius = (int) args.getOrDefault("Radius", 0);
+                                            int radius = args.getByArgument(radiusArg);
                                             Collection<ItemStack> drops = new ArrayList<>();
-
-                                            //List<Predicate<Block>> whitelist = new ArrayList<>();
-
-                                        /*
-                                        //for (Tag<Material> tag : Bukkit.getTags("blocks", Material.class)) {
-                                        for (String input : inputTags) {
-                                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", NamespacedKey.fromString(input), Material.class);
-                                            whitelist.add(block -> tag.isTagged(block.getType()));
-                                        }
-
-                                         */
 
                                             if (whitelistMaterials.isEmpty()){
                                                 for (int x = -radius; x <= radius; x++){
@@ -343,15 +333,6 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                         for (int z = -radius; z <= radius; z++){
                                                             Block b = origin.getRelative(x, y, z);
                                                             Material blockType = b.getType();
-                                                        /*
-                                                        for (Predicate<Block> blockPredicate : whitelist) {
-                                                            if (blockPredicate.test(b)) {
-                                                                drops.addAll(b.getDrops(heldItem));
-                                                                b.setType(AIR);
-                                                                break;
-                                                            }
-                                                        }
-                                                         */
                                                             if (!blacklistMaterials.contains(blockType)) {
                                                                 //Testing claim
                                                                 Location relativeLocation = b.getLocation();
