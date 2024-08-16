@@ -89,6 +89,125 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                                     continue block;
                                                                 }
                                                             }
+                                                            //Testing claim
+                                                            Location relativeLocation = relative.getLocation();
+                                                            if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                                                drops.addAll(relative.getDrops(heldItem));
+                                                                relative.setType(Material.AIR);
+                                                            }
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        for (ItemStack item : mergeSimilarItemStacks(drops)){
+                                            world.dropItemNaturally(location, item);
+                                        }
+                                    })
+                                    .then(new ItemStackArgument("Drop")
+                                        .executes((sender, args) -> {
+                                            World world = Bukkit.getWorld((String) args.get("World"));
+                                            Location location = (Location) args.get("Location");
+                                            Block origin = world.getBlockAt(location);
+                                            ItemStack drop = ((ItemStack) args.get("Drop"));
+                                            Player player = (Player) args.get("Player");
+
+                                            int radius = (int) args.getOrDefault("Radius", 0);
+                                            String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
+                                            List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
+
+                                            for (int x = -radius; x <= radius; x++){
+                                                for (int y = -radius; y <= radius; y++){
+                                                    block: for (int z = -radius; z <= radius; z++){
+                                                        Block relative = origin.getRelative(x, y, z);
+                                                        for (Predicate<Block> predicateWhitelist : whitelist) {
+                                                            if (predicateWhitelist.test(relative)) {
+                                                                for (Predicate<Block> predicateBlacklist : blacklist) {
+                                                                    if (predicateBlacklist.test(relative)) {
+                                                                        continue block;
+                                                                    }
+                                                                }
+                                                                //Testing claim
+                                                                Location relativeLocation = relative.getLocation();
+                                                                if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                                                    drop.setAmount(drop.getAmount() + 1);
+                                                                    relative.setType(Material.AIR);
+                                                                }
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            drop.setAmount(drop.getAmount() - 1);
+                                            world.dropItemNaturally(location, drop);
+
+                                        })
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+        } else {
+            new CommandTree("breakinradius")
+                .then(new LocationArgument("Location", LocationType.BLOCK_POSITION)
+                    .then(new StringArgument("World")
+                        .then(new PlayerArgument("Player")
+                            .then(new IntegerArgument("Radius", 0)
+                                .executes((sender, args) -> {
+                                    World world = Bukkit.getWorld(args.getByClass("World", String.class));
+                                    Location location = args.getUnchecked("Location");
+                                    Block block = world.getBlockAt(location);
+                                    int radius = args.getUnchecked("Radius");
+                                    Player player = args.getUnchecked("Player");
+                                    ItemStack heldItem = player.getInventory().getItemInMainHand();
+                                    Collection<ItemStack> drops = new ArrayList<>();
+
+                                    for (int x = -radius; x <= radius; x++) {
+                                        for (int y = -radius; y <= radius; y++) {
+                                            for (int z = -radius; z <= radius; z++) {
+                                                Block b = block.getRelative(x, y, z);
+                                                drops.addAll(b.getDrops(heldItem));
+                                                b.setType(AIR);
+                                            }
+                                        }
+                                    }
+
+                                    for (ItemStack item : mergeSimilarItemStacks(drops)){
+                                        world.dropItemNaturally(location, item);
+                                    }
+                                })
+                                .then(whitelistedBlocksArgument
+                                    .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
+                                    .executes((sender, args) -> {
+                                        World world = Bukkit.getWorld((String) args.get("World"));
+                                        Location location = (Location) args.get("Location");
+                                        Block origin = world.getBlockAt(location);
+                                        Player player = (Player) args.get("Player");
+                                        ItemStack heldItem = player.getInventory().getItemInMainHand();
+                                        int radius = (int) args.getOrDefault("Radius", 0);
+                                        Collection<ItemStack> drops = new ArrayList<>();
+                                        String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
+                                        List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
+
+                                        for (int x = -radius; x <= radius; x++){
+                                            for (int y = -radius; y <= radius; y++){
+                                                block: for (int z = -radius; z <= radius; z++){
+                                                    Block relative = origin.getRelative(x, y, z);
+                                                    for (Predicate<Block> predicateWhitelist : whitelist) {
+                                                        if (predicateWhitelist.test(relative)) {
+                                                            for (Predicate<Block> predicateBlacklist : blacklist) {
+                                                                if (predicateBlacklist.test(relative)) {
+                                                                    continue block;
+                                                                }
+                                                            }
                                                             drops.addAll(relative.getDrops(heldItem));
                                                             relative.setType(Material.AIR);
                                                             break;

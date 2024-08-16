@@ -26,20 +26,23 @@ public class BreakAndReplantCommand extends Command implements Registerable {
 
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         StringArgument worldArg = new StringArgument("World");
+        PlayerArgument playerArg = new PlayerArgument("Player");
+        IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
+        BlockStateArgument blockArg = new BlockStateArgument("Original Block");
 
         new CommandTree("breakandreplant")
             .then(locArg
-                .then(new StringArgument("World")
-                    .then(new PlayerArgument("Player")
-                        .then(new IntegerArgument("Radius", 0)
-                            .then(new BlockStateArgument("Original Block")
+                .then(worldArg
+                    .then(playerArg
+                        .then(radiusArg
+                            .then(blockArg
                             .executes((sender, args) -> {
-                                World world = Bukkit.getWorld(args.getByClass("World", String.class));
-                                Location location = args.getUnchecked("Location");
+                                World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                Location location = args.getByArgument(locArg);
                                 Block block = world.getBlockAt(location);
-                                BlockData original = args.getUnchecked("Original Block");
-                                int radius = args.getUnchecked("Radius");
-                                Player player = args.getUnchecked("Player");
+                                BlockData original = args.getByArgument(blockArg);
+                                int radius = args.getByArgument(radiusArg);
+                                Player player = args.getByArgument(playerArg);
                                 ItemStack heldItem = player.getInventory().getItemInMainHand();
 
                                 Collection<ItemStack> drops = new ArrayList<>();
@@ -70,11 +73,11 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                         )
                         .then(new BlockStateArgument("Original Block")
                             .executes((sender, args) -> {
-                                World world = Bukkit.getWorld(args.getByClass("World", String.class));
-                                Location location = args.getUnchecked("Location");
+                                World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                Location location = args.getByArgument(locArg);
                                 Block block = world.getBlockAt(location);
-                                BlockData original = args.getUnchecked("Original Block");
-                                Player player = args.getUnchecked("Player");
+                                BlockData original = args.getByArgument(blockArg);
+                                Player player = args.getByArgument(playerArg);
                                 ItemStack heldItem = player.getInventory().getItemInMainHand();
 
 
