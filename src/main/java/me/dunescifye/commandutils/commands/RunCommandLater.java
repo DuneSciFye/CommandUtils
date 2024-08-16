@@ -23,8 +23,8 @@ public class RunCommandLater extends Command implements Registerable {
                 .then(new IntegerArgument("Ticks", 0)
                     .then(new GreedyStringArgument("Commands")
                         .executesPlayer((player, args) -> {
-                            String[] commands = ((String) args.get("Commands")).split(",,");
-                            int ticks = (Integer) args.get("Ticks");
+                            String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
+                            int ticks = args.getUnchecked("Ticks");
 
                             Server server = Bukkit.getServer();
                             ConsoleCommandSender console = server.getConsoleSender();
@@ -35,11 +35,11 @@ public class RunCommandLater extends Command implements Registerable {
                                 }
                             }, ticks);
 
-                            tasks.put((String) args.get("Command ID"), task);
+                            tasks.put(args.getUnchecked("Command ID"), task);
                         })
                         .executesConsole((sender, args) -> {
-                            String[] commands = ((String) args.get("Commands")).split(",,");
-                            int ticks = (Integer) args.get("Ticks");
+                            String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
+                            int ticks = args.getUnchecked("Ticks");
 
                             Server server = Bukkit.getServer();
                             ConsoleCommandSender console = server.getConsoleSender();

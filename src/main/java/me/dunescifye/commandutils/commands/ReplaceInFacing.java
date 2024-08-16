@@ -32,15 +32,15 @@ public class ReplaceInFacing extends Command implements Registerable {
                 .buildText()
             )
             .executes((sender, args) -> {
-                Player p = (Player) args.get("Player");
-                Location loc = (Location) args.get("Location");
+                Player p = args.getUnchecked("Player");
+                Location loc = args.getUnchecked("Location");
                 Block b = loc.getBlock();
-                int radius = (int) args.get("Radius");
+                int radius = args.getUnchecked("Radius");
                 List<Material> blocksFrom = args.getUnchecked("Blocks To Replace From");
                 List<Material> blocksTo = args.getUnchecked("Blocks To Replace To");
 
 
-                int depth = (int) args.get("Depth");
+                int depth = args.getUnchecked("Depth");
                 depth = depth < 1 ? 1 : depth -1;
                 double pitch = p.getLocation().getPitch();
                 int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;

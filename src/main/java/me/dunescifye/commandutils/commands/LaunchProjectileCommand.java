@@ -6,7 +6,7 @@ import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import org.bukkit.entity.DragonFireball;
 
-public class LaunchProjectile extends Command implements Registerable {
+public class LaunchProjectileCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

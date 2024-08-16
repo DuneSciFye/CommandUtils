@@ -18,7 +18,7 @@ public class ChanceRandomRunCommand extends Command implements Registerable {
         new CommandAPICommand("chancerandomrun")
             .withArguments(new GreedyStringArgument("Arguments"))
             .executes((sender, args) -> {
-                String input = (String) args.get("Arguments");
+                String input = args.getUnchecked("Arguments");
                 String[] list = input.split(",,");
 
                 Server server = Bukkit.getServer();

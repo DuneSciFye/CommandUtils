@@ -20,7 +20,7 @@ public class BoneMealBlockCommand extends Command implements Registerable {
             .withOptionalArguments(new IntegerArgument("Radius"))
             .withOptionalArguments(new BooleanArgument("Affect Target Block"))
             .executes((sender, args) -> {
-                Block block = Bukkit.getWorld(args.getByClass("World", String.class)).getBlockAt((Location) args.get("Location"));
+                Block block = Bukkit.getWorld(args.getByClass("World", String.class)).getBlockAt(args.getUnchecked("Location"));
                 int amount = args.getOrDefaultUnchecked("Amount", 1);
                 int radius = args.getOrDefaultUnchecked("Radius", 0);
                 boolean affectTargetBlock = args.getOrDefaultUnchecked("Affect Target Block", true);

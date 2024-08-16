@@ -13,7 +13,7 @@ import org.bukkit.util.Vector;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class LaunchFirework extends Command implements Registerable {
+public class LaunchFireworkCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

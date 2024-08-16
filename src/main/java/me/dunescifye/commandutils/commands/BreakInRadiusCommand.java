@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 import static me.dunescifye.commandutils.utils.Utils.mergeSimilarItemStacks;
 import static org.bukkit.Material.AIR;
 
-public class BreakInRadiusCommandCommand extends Command implements Registerable {
+public class BreakInRadiusCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

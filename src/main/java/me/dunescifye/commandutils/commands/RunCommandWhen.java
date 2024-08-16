@@ -33,14 +33,14 @@ public class RunCommandWhen extends Command implements Registerable {
                                         .then(new IntegerArgument("Interval")
                                             .then(new GreedyStringArgument("Commands")
                                                 .executes((sender, args) -> {
-                                                    Player p = (Player) args.get("Player");
-                                                    String compare1 = ((String) args.get("Compare 1")).replace("$", "%");
-                                                    String compare2 = ((String) args.get("Compare 2")).replace("$", "%");
-                                                    String compareMethod = (String) args.get("Compare Method");
-                                                    String commandID = (String) args.get("Command ID");
-                                                    int delay = (Integer) args.get("Initial Delay");
-                                                    int interval = (Integer) args.get("Interval");
-                                                    String[] commands = ((String) args.get("Commands")).replace("$", "%").split("\\|");
+                                                    Player p = args.getUnchecked("Player");
+                                                    String compare1 = args.getByClass("Compare 1", String.class).replace("$", "%");
+                                                    String compare2 = args.getByClass("Compare 2", String.class).replace("$", "%");
+                                                    String compareMethod = args.getUnchecked("Compare Method");
+                                                    String commandID = args.getUnchecked("Command ID");
+                                                    int delay = args.getUnchecked("Initial Delay");
+                                                    int interval = args.getUnchecked("Interval");
+                                                    String[] commands = ((String) args.getUnchecked("Commands")).replace("$", "%").split("\\|");
 
                                                     Server server = Bukkit.getServer();
                                                     ConsoleCommandSender console = server.getConsoleSender();

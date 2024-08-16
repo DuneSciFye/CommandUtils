@@ -16,7 +16,7 @@ public class BroadcastMessageCommand extends Command implements Registerable {
         new CommandAPICommand("broadcastmessage")
             .withArguments(new GreedyStringArgument("Message"))
             .executes((sender, args) -> {
-                String message = (String) args.get("Message");
+                String message = args.getUnchecked("Message");
 
                 final Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
 

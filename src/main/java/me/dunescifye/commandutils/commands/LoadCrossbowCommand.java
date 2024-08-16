@@ -11,7 +11,7 @@ import org.bukkit.inventory.meta.CrossbowMeta;
 
 import java.util.List;
 
-public class LoadCrossbow extends Command implements Registerable {
+public class LoadCrossbowCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

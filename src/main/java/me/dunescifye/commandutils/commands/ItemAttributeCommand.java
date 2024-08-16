@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class ItemAttribute extends Command implements Registerable {
+public class ItemAttributeCommand extends Command implements Registerable {
 
     private static List<String> getAllAttributes() {
         return Arrays.stream(Attribute.values())

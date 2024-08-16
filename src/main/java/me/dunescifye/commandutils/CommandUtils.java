@@ -42,14 +42,13 @@ public final class CommandUtils extends JavaPlugin {
 
         //Files first
 
-        //registerListeners();
         //CommandAPI.onEnable();
         commands.put("BlockCycle", new BlockCycleCommand());
         commands.put("BlockGravity", new BlockGravityCommand());
         commands.put("BoneMealBlock", new BoneMealBlockCommand());
         commands.put("BreakAndReplant", new BreakAndReplantCommand());
         commands.put("BreakInFacing", new BreakInFacingCommand());
-        commands.put("BreakInRadius", new BreakInRadiusCommandCommand());
+        commands.put("BreakInRadius", new BreakInRadiusCommand());
         commands.put("BreakInXYZ", new BreakInXYZCommand());
         commands.put("BroadcastMessage", new BroadcastMessageCommand());
         commands.put("ChanceRandomRun", new ChanceRandomRunCommand());
@@ -57,10 +56,10 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("Food", new FoodCommand());
         commands.put("God", new GodCommand());
         commands.put("HighlightBlocks", new HighlightBlocksCommand());
-        commands.put("ItemAttribute", new ItemAttribute());
-        commands.put("LaunchProjectile", new LaunchProjectile());
-        commands.put("LaunchFirework", new LaunchFirework());
-        commands.put("LoadCrossbow", new LoadCrossbow());
+        commands.put("ItemAttribute", new ItemAttributeCommand());
+        commands.put("LaunchProjectile", new LaunchProjectileCommand());
+        commands.put("LaunchFirework", new LaunchFireworkCommand());
+        commands.put("LoadCrossbow", new LoadCrossbowCommand());
         commands.put("PushEntity", new PushEntity());
         commands.put("RayTraceParticle", new RayTraceParticle());
         commands.put("RemoveItem", new RemoveItem());
@@ -81,7 +80,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("WeightedRandom", new WeightedRandomCommand());
         commands.put("While", new While());
         commands.put("Loop", new Loop());
-        commands.put("If", new If());
+        commands.put("If", new IfCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
@@ -93,6 +92,8 @@ public final class CommandUtils extends JavaPlugin {
         }
 
         Config.setup(this);
+
+        registerListeners();
 
 
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {

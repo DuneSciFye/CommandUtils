@@ -31,12 +31,12 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                         .then(new IntegerArgument("Radius", 0)
                             .then(new BlockStateArgument("Original Block")
                             .executes((sender, args) -> {
-                                World world = Bukkit.getWorld((String) args.get("World"));
-                                Location location = (Location) args.get("Location");
+                                World world = Bukkit.getWorld(args.getByClass("World", String.class));
+                                Location location = args.getUnchecked("Location");
                                 Block block = world.getBlockAt(location);
-                                BlockData original = (BlockData) args.get("Original Block");
-                                int radius = (int) args.get("Radius");
-                                Player player = (Player) args.get("Player");
+                                BlockData original = args.getUnchecked("Original Block");
+                                int radius = args.getUnchecked("Radius");
+                                Player player = args.getUnchecked("Player");
                                 ItemStack heldItem = player.getInventory().getItemInMainHand();
 
                                 Collection<ItemStack> drops = new ArrayList<>();
@@ -47,14 +47,14 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                                     for (int z = -radius; z <= radius; z++){
                                         Block b = block.getRelative(x, 0, z);
                                         BlockData blockData = b.getBlockData();
-                                        if (blockData instanceof Ageable) {
+                                        if (blockData instanceof Ageable ageable) {
                                             Collection<ItemStack> blockDrops = b.getDrops(heldItem);
                                             for (ItemStack drop : blockDrops) {
-                                                if (drop.getType().equals(blockData.getPlacementMaterial())) drop.setAmount(drop.getAmount() - 1);
+                                                if (drop.getType().equals(ageable.getPlacementMaterial())) drop.setAmount(drop.getAmount() - 1);
                                             }
                                             drops.addAll(blockDrops);
-                                            ((Ageable) blockData).setAge(0);
-                                            b.setBlockData(blockData);
+                                            ageable.setAge(0);
+                                            b.setBlockData(ageable);
                                         }
                                     }
                                 }
@@ -67,11 +67,11 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                         )
                         .then(new BlockStateArgument("Original Block")
                             .executes((sender, args) -> {
-                                World world = Bukkit.getWorld((String) args.get("World"));
-                                Location location = (Location) args.get("Location");
+                                World world = Bukkit.getWorld(args.getByClass("World", String.class));
+                                Location location = args.getUnchecked("Location");
                                 Block block = world.getBlockAt(location);
-                                BlockData original = (BlockData) args.get("Original Block");
-                                Player player = (Player) args.get("Player");
+                                BlockData original = args.getUnchecked("Original Block");
+                                Player player = args.getUnchecked("Player");
                                 ItemStack heldItem = player.getInventory().getItemInMainHand();
 
 
@@ -80,24 +80,16 @@ public class BreakAndReplantCommand extends Command implements Registerable {
 
                                 BlockData blockData = block.getBlockData();
                                 if (blockData instanceof Ageable) {
-                                    if (block.getType() == Material.SUGAR_CANE){
-                                        if (isNaturallyGenerated(block)){
-                                            System.out.println("yes");
-                                        } else {
-                                            System.out.println("no");
-                                        }
-                                    } else {
-
+                                    if (block.getType() != Material.SUGAR_CANE) {
                                         Collection<ItemStack> blockDrops = block.getDrops(heldItem);
                                         for (ItemStack drop : blockDrops) {
-                                            if (drop.getType().equals(blockData.getPlacementMaterial())) drop.setAmount(drop.getAmount() - 1);
+                                            if (drop.getType().equals(blockData.getPlacementMaterial()))
+                                                drop.setAmount(drop.getAmount() - 1);
                                         }
                                         drops.addAll(blockDrops);
                                         ((Ageable) blockData).setAge(0);
                                         block.setBlockData(blockData);
-
                                     }
-
                                     for (ItemStack item : drops){
                                         world.dropItemNaturally(location, item);
                                     }

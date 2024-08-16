@@ -23,7 +23,7 @@ public class FoodCommand extends Command implements Registerable {
                             .executes((sender, args) -> {
                                 Player p = args.getUnchecked("Player");
                                 int foodLevel = p.getFoodLevel();
-                                int addAmount = (int) args.get("Amount");
+                                int addAmount = args.getUnchecked("Amount");
                                 if (args.getByClass("Allow Overflow", Boolean.class) || foodLevel + addAmount < 20) {
                                     p.setFoodLevel(foodLevel + addAmount);
                                 } else {

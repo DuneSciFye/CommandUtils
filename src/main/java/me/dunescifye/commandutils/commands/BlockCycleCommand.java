@@ -110,8 +110,7 @@ public class BlockCycleCommand extends Command implements Registerable {
                 .then(new StringArgument("World")
                     .then(new LocationArgument("Location", LocationType.BLOCK_POSITION)
                         .executes((sender, args) -> {
-                            World world = Bukkit.getWorld((String) args.get("World"));
-                            Block b = world.getBlockAt((Location) args.get("Location"));
+                            Block b = Bukkit.getWorld(args.getByClass("World", String.class)).getBlockAt(args.getUnchecked("Location"));
                             BlockData blockData = b.getBlockData();
                             String material = b.getType().toString();
                             b.setType(Material.valueOf(material.startsWith("WAXED_") ? material.substring(6) : "WAXED_" + material));

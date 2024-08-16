@@ -13,7 +13,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public class If extends Command implements Configurable {
+public class IfCommand extends Command implements Configurable {
 
     @SuppressWarnings("ConstantConditions")
     public void register (YamlDocument config) {
