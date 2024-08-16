@@ -3,7 +3,6 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -11,7 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Collection;
 
-public class SendMessage extends Command implements Registerable {
+public class SendMessageCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
         public void register(){
         if (!this.getEnabled()) return;

@@ -13,17 +13,24 @@ public class BoneMealBlockCommand extends Command implements Registerable {
     public void register(){
         if (!this.getEnabled()) return;
 
+        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
+        StringArgument worldArg = new StringArgument("World");
+        IntegerArgument amountArg = new IntegerArgument("Amount");
+        IntegerArgument radiusArg = new IntegerArgument("Radius");
+        BooleanArgument affectTargetBlockArg = new BooleanArgument("Affect Target Block");
+
+
         new CommandAPICommand("bonemealblock")
-            .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))
-            .withArguments(new StringArgument("World"))
-            .withOptionalArguments(new IntegerArgument("Amount"))
-            .withOptionalArguments(new IntegerArgument("Radius"))
-            .withOptionalArguments(new BooleanArgument("Affect Target Block"))
+            .withArguments(locArg)
+            .withArguments(worldArg)
+            .withOptionalArguments(amountArg)
+            .withOptionalArguments(radiusArg)
+            .withOptionalArguments(affectTargetBlockArg)
             .executes((sender, args) -> {
-                Block block = Bukkit.getWorld(args.getByClass("World", String.class)).getBlockAt(args.getUnchecked("Location"));
-                int amount = args.getOrDefaultUnchecked("Amount", 1);
-                int radius = args.getOrDefaultUnchecked("Radius", 0);
-                boolean affectTargetBlock = args.getOrDefaultUnchecked("Affect Target Block", true);
+                Block block = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
+                int amount = args.getByArgumentOrDefault(amountArg, 1);
+                int radius = args.getByArgumentOrDefault(radiusArg, 0);
+                boolean affectTargetBlock = args.getByArgumentOrDefault(affectTargetBlockArg, true);
 
                 if (affectTargetBlock){
                     for (int x = -radius; x <= radius; x++){

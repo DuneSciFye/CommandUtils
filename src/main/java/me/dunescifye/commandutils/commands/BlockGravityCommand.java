@@ -20,14 +20,18 @@ public class BlockGravityCommand extends Command implements Registerable {
     public void register() {
         if (!this.getEnabled()) return;
 
+        StringArgument worldArg = new StringArgument("world");
+        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
+        BooleanArgument gravityArg = new BooleanArgument("Gravity Enabled");
+
         new CommandAPICommand("blockgravity")
-            .withArguments(new StringArgument("World"))
-            .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))
-            .withOptionalArguments(new BooleanArgument("Gravity Enabled"))
+            .withArguments(worldArg)
+            .withArguments(locArg)
+            .withOptionalArguments(gravityArg)
             .executes((sender, args) -> {
-                Block block = Bukkit.getWorld(args.getByClass("World", String.class)).getBlockAt((Location) args.get("Location"));
+                Block block = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
                 PersistentDataContainer blockContainer = new CustomBlockData(block, CommandUtils.getInstance());
-                if (args.getOrDefaultUnchecked("Gravity Enabled", false)) {
+                if (args.getByArgumentOrDefault(gravityArg, false)) {
                     blockContainer.remove(CommandUtils.noGravityKey);
                 } else {
                     blockContainer.set(CommandUtils.noGravityKey, PersistentDataType.BYTE, (byte) 1);

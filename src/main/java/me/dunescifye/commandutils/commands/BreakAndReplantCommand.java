@@ -24,8 +24,11 @@ public class BreakAndReplantCommand extends Command implements Registerable {
 
         if (!this.getEnabled()) return;
 
+        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
+        StringArgument worldArg = new StringArgument("World");
+
         new CommandTree("breakandreplant")
-            .then(new LocationArgument("Location", LocationType.BLOCK_POSITION)
+            .then(locArg
                 .then(new StringArgument("World")
                     .then(new PlayerArgument("Player")
                         .then(new IntegerArgument("Radius", 0)

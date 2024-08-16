@@ -7,7 +7,7 @@ import dev.jorel.commandapi.arguments.PlayerArgument;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class SetCursorItem extends Command implements Registerable {
+public class SetCursorItemCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

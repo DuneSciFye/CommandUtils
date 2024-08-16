@@ -67,8 +67,8 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("RunCommandLater", new RunCommandLaterCommand());
         commands.put("RunCommandWhen", new RunCommandWhenCommand());
         commands.put("SendBossBar", new SendBossBarCommand());
-        commands.put("SendMessage", new SendMessage());
-        commands.put("SetCursorItem", new SetCursorItem());
+        commands.put("SendMessage", new SendMessageCommand());
+        commands.put("SetCursorItem", new SetCursorItemCommand());
         commands.put("SetItem", new SetItem());
         commands.put("SetItemNBT", new SetItemNBT());
         commands.put("SetTNTSource", new SetTNTSource());
@@ -82,7 +82,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("Loop", new LoopCommand());
         commands.put("If", new IfCommand());
         commands.put("MobTarget", new MobTargetCommand());
-        commands.put("SendConditionMessage", new SendConditionMessage());
+        commands.put("SendConditionMessage", new SendConditionMessageCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
