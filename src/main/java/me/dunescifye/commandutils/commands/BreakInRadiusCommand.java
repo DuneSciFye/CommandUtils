@@ -457,8 +457,12 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                                         Block b = block.getRelative(x, y, z);
                                                                         Material blockType = b.getType();
                                                                         if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)){
-                                                                            drops.addAll(b.getDrops(heldItem));
-                                                                            b.setType(AIR);
+                                                                            //Testing claim
+                                                                            Location relativeLocation = b.getLocation();
+                                                                            if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                                                                drops.addAll(b.getDrops(heldItem));
+                                                                                b.setType(AIR);
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
@@ -473,8 +477,12 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                                         Block b = block.getRelative(x, y, z);
                                                                         Material blockType = b.getType();
                                                                         if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
-                                                                            drops.addAll(b.getDrops(heldItem));
-                                                                            b.setType(AIR);
+                                                                            //Testing claim
+                                                                            Location relativeLocation = b.getLocation();
+                                                                            if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                                                                drops.addAll(b.getDrops(heldItem));
+                                                                                b.setType(AIR);
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
@@ -486,8 +494,12 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                                         Block b = block.getRelative(x, y, z);
                                                                         Material blockType = b.getType();
                                                                         if ((whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) || whitelistMaterials.contains(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
-                                                                            drops.addAll(b.getDrops(heldItem));
-                                                                            b.setType(AIR);
+                                                                            //Testing claim
+                                                                            Location relativeLocation = b.getLocation();
+                                                                            if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                                                                drops.addAll(b.getDrops(heldItem));
+                                                                                b.setType(AIR);
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
@@ -537,6 +549,7 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                         Location location = (Location) args.get("Location");
                                                         Block block = world.getBlockAt(location);
                                                         ItemStack drop = ((ItemStack) args.get("Drop"));
+                                                        Player player = (Player) args.get("Player");
 
                                                         int radius = (int) args.getOrDefault("Radius", 0);
 
@@ -548,8 +561,12 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                                             Block b = block.getRelative(x, y, z);
                                                                             Material blockType = b.getType();
                                                                             if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
-                                                                                drop.setAmount(drop.getAmount() + 1);
-                                                                                b.setType(AIR);
+                                                                                //Testing claim
+                                                                                Location relativeLocation = b.getLocation();
+                                                                                if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                                                                    drop.setAmount(drop.getAmount() + 1);
+                                                                                    b.setType(AIR);
+                                                                                }
                                                                             }
                                                                         }
                                                                     }
@@ -561,8 +578,12 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                                             Block b = block.getRelative(x, y, z);
                                                                             Material blockType = b.getType();
                                                                             if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)){
-                                                                                drop.setAmount(drop.getAmount() + 1);
-                                                                                b.setType(AIR);
+                                                                                //Testing claim
+                                                                                Location relativeLocation = b.getLocation();
+                                                                                if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                                                                    drop.setAmount(drop.getAmount() + 1);
+                                                                                    b.setType(AIR);
+                                                                                }
                                                                             }
                                                                         }
                                                                     }
@@ -577,8 +598,12 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                                             Block b = block.getRelative(x, y, z);
                                                                             Material blockType = b.getType();
                                                                             if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)){
-                                                                                drop.setAmount(drop.getAmount() + 1);
-                                                                                b.setType(AIR);
+                                                                                //Testing claim
+                                                                                Location relativeLocation = b.getLocation();
+                                                                                if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                                                                    drop.setAmount(drop.getAmount() + 1);
+                                                                                    b.setType(AIR);
+                                                                                }
                                                                             }
                                                                         }
                                                                     }
@@ -590,8 +615,12 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                                             Block b = block.getRelative(x, y, z);
                                                                             Material blockType = b.getType();
                                                                             if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)){
-                                                                                drop.setAmount(drop.getAmount() + 1);
-                                                                                b.setType(AIR);
+                                                                                //Testing claim
+                                                                                Location relativeLocation = b.getLocation();
+                                                                                if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                                                                    drop.setAmount(drop.getAmount() + 1);
+                                                                                    b.setType(AIR);
+                                                                                }
                                                                             }
                                                                         }
                                                                     }
@@ -647,8 +676,12 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                             Block b = block.getRelative(x, y, z);
                                                             Material blockType = b.getType();
                                                             if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType))){
-                                                                drops.addAll(b.getDrops(heldItem));
-                                                                b.setType(AIR);
+                                                                //Testing claim
+                                                                Location relativeLocation = b.getLocation();
+                                                                if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                                                    drops.addAll(b.getDrops(heldItem));
+                                                                    b.setType(AIR);
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -660,8 +693,12 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                             Block b = block.getRelative(x, y, z);
                                                             Material blockType = b.getType();
                                                             if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType))){
-                                                                drops.addAll(b.getDrops(heldItem));
-                                                                b.setType(AIR);
+                                                                //Testing claim
+                                                                Location relativeLocation = b.getLocation();
+                                                                if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                                                    drops.addAll(b.getDrops(heldItem));
+                                                                    b.setType(AIR);
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -742,8 +779,12 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                                                         }
                                                          */
                                                             if (!blacklistMaterials.contains(blockType)) {
-                                                                drops.addAll(b.getDrops(heldItem));
-                                                                b.setType(Material.AIR);
+                                                                //Testing claim
+                                                                Location relativeLocation = b.getLocation();
+                                                                if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                                                    drops.addAll(b.getDrops(heldItem));
+                                                                    b.setType(Material.AIR);
+                                                                }
                                                             }
                                                         }
                                                     }

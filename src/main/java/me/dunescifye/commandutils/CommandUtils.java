@@ -69,10 +69,10 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("SendBossBar", new SendBossBarCommand());
         commands.put("SendMessage", new SendMessageCommand());
         commands.put("SetCursorItem", new SetCursorItemCommand());
-        commands.put("SetItem", new SetItem());
-        commands.put("SetItemNBT", new SetItemNBT());
-        commands.put("SetTNTSource", new SetTNTSource());
-        commands.put("SilentParticle", new SilentParticle());
+        commands.put("SetItem", new SetItemCommand());
+        commands.put("SetItemNBT", new SetItemNBTCommand());
+        commands.put("SetTNTSource", new SetTNTSourceCommand());
+        commands.put("SilentParticle", new SilentParticleCommand());
         commands.put("SpawnBlockBreaker", new SpawnBlockBreaker());
         commands.put("SpawnNoDamageEvokerFang", new SpawnNoDamageEvokerFang());
         commands.put("SpawnNoDamageFirework", new SpawnNoDamageFirework());

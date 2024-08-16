@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-public class SetItemNBT extends Command implements Registerable {
+public class SetItemNBTCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){

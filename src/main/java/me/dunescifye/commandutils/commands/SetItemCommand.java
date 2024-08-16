@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class SetItem extends Command implements Registerable {
+public class SetItemCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){

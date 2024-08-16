@@ -8,7 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-public class SilentParticle extends Command implements Registerable {
+public class SilentParticleCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){

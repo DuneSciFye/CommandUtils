@@ -8,7 +8,7 @@ import org.bukkit.entity.TNTPrimed;
 
 import java.util.Collection;
 
-public class SetTNTSource extends Command implements Registerable {
+public class SetTNTSourceCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){
