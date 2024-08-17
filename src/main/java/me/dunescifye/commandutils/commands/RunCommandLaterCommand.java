@@ -58,7 +58,8 @@ public class RunCommandLaterCommand extends Command implements Registerable {
             .then(new LiteralArgument("remove")
                 .then(new StringArgument("Command ID")
                     .executes((sender, args) -> {
-                        tasks.get((String) args.get("Command ID")).cancel();
+                        BukkitTask task = tasks.get(args.getByClass("Command ID", String.class));
+                        if (task != null) task.cancel();
                     })
                 )
             )

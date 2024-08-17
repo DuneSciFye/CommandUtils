@@ -24,7 +24,7 @@ public final class CommandUtils extends JavaPlugin {
     public static final NamespacedKey keyNoDamagePlayer = new NamespacedKey("lunaritems", "nodamageplayer");
     public static final NamespacedKey noGravityKey = new NamespacedKey("lunaritems", "nogravity");
     public static final NamespacedKey autoPickupKey = new NamespacedKey("commandutils", "autopickup");
-    public static boolean griefPreventionEnabled, placeholderAPIEnabled;
+    public static boolean griefPreventionEnabled = false, placeholderAPIEnabled = false;
     private static final HashMap<String, Command> commands = new HashMap<>();
     /*
     @Override
