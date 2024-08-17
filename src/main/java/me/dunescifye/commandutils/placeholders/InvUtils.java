@@ -4,6 +4,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.Utils;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -13,6 +14,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class InvUtils extends PlaceholderExpansion {
@@ -88,16 +90,21 @@ public class InvUtils extends PlaceholderExpansion {
                 return item.getType().toString();
             }
             case "nbt" -> {
-                String[] argsNbt = parts[1].split(nbtSeparator);
+                String[] args = parts[1].split(nbtSeparator);
                 if (p == null) {
                     return "null player";
                 }
-                ItemStack item = Utils.getInvItem(p.getInventory(), argsNbt[0]);
+
+                if (args.length == 0) {
+                    return "missing arguments";
+                }
+
+                ItemStack item = Utils.getInvItem(p.getInventory(), args[0]);
 
                 if (item == null || !item.hasItemMeta()) return "";
 
                 PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
-                NamespacedKey key = new NamespacedKey(argsNbt[1], argsNbt[2]);
+                NamespacedKey key = new NamespacedKey(args[1], args[2]);
 
                 if (!container.has(key)) return "";
 
@@ -108,7 +115,7 @@ public class InvUtils extends PlaceholderExpansion {
                 }
             }
 
-            case "amount" -> {
+            case "amount", "amt" -> {
                 if (p == null) {
                     return "null player";
                 }
@@ -116,7 +123,21 @@ public class InvUtils extends PlaceholderExpansion {
                 String[] args = parts[1].split(amountSeparator);
                 ItemStack item = Utils.getInvItem(p.getInventory(), args[0]);
 
-                if (item == null) return "";
+                if (item == null) {
+                    Material mat = Material.getMaterial(args[0].toUpperCase());
+                    if (mat == null) return "";
+
+                    int count = 0;
+
+                    for (ItemStack content : p.getInventory().getContents()) {
+                        if (content == null) continue;
+                        if (Objects.equals(content.getType(), mat)) {
+                            count += content.getAmount();
+                        }
+                    }
+
+                    return String.valueOf(count);
+                }
 
                 return String.valueOf(item.getAmount());
             }

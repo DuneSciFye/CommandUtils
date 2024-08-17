@@ -109,15 +109,29 @@ public class Config {
             //Placeholders
             if (CommandUtils.placeholderAPIEnabled) {
                 //Register Placeholders
-                if (config.getOptionalBoolean("Placeholders.StringUtils.Enabled").isPresent()) {
+                if (config.getOptionalBoolean("Placeholders.Enabled").isEmpty()) {
+                    config.set("Placeholders.Enabled", true);
+                }
+                if (config.getBoolean("Placeholders.Enabled")) {
+                    if (config.getOptionalBoolean("Placeholders.StringUtils.Enabled").isEmpty()) {
+                        config.set("Placeholders.StringUtils.Enabled", true);
+                    }
                     if (config.isBoolean("Placeholders.StringUtils.Enabled")) {
                         if (config.getBoolean("Placeholders.StringUtils.Enabled")) {
                             new StringUtils(CommandUtils.getInstance(), config).register();
                             Section placeholderSection = config.getSection("Placeholders.StringUtils");
+
+                            if (placeholderSection.getOptionalString("ArgumentSeparator").isEmpty()) {
+                                placeholderSection.set("ArgumentSeparator", ",");
+                            }
                             if (placeholderSection.isString("ArgumentSeparator")) {
                                 StringUtils.setSeparator(placeholderSection.getString("ArgumentSeparator"));
                             } else {
                                 logger.warning("Configuration Placeholders.StringUtils.ArgumentSeparator is not a string. Found " + placeholderSection.get("ArgumentSeparator"));
+                            }
+
+                            if (placeholderSection.getOptionalBoolean("AllowCustomSeparator").isEmpty()) {
+                                placeholderSection.set("AllowCustomSeparator", true);
                             }
                             if (placeholderSection.isBoolean("AllowCustomSeparator")) {
                                 StringUtils.setAllowCustomSeparator(placeholderSection.getBoolean("AllowCustomSeparator"));
@@ -125,25 +139,34 @@ public class Config {
                                 logger.warning("Configuration Placeholders.StringUtils.AllowCustomSeparator is not a boolean. Found " + placeholderSection.get("AllowCustomSeparator"));
                             }
                         }
-                        if (config.getBoolean("Placeholders.InvUtils.Enabled")) {
-                            new InvUtils(CommandUtils.getInstance(), config).register();
-                            Section placeholderSection = config.getSection("Placeholders.InvUtils");
-                            if (placeholderSection.isString("ArgumentSeparator")) {
-                                InvUtils.setFunctionSeparator(placeholderSection.getString("ArgumentSeparator"));
-                            } else {
-                                logger.warning("Configuration Placeholders.InvUtils.ArgumentSeparator is not a string. Found " + placeholderSection.get("ArgumentSeparator"));
-                            }
-                            if (placeholderSection.isBoolean("AllowCustomSeparator")) {
-                                InvUtils.setAllowCustomSeparator(placeholderSection.getBoolean("AllowCustomSeparator"));
-                            } else {
-                                logger.warning("Configuration Placeholders.InvUtils.AllowCustomSeparator is not a boolean. Found " + placeholderSection.get("AllowCustomSeparator"));
-                            }
-                        }
                     } else {
                         logger.warning("Configuration Placeholders.Enabled is not a boolean. Found " + config.getString("Placeholders.Enabled"));
                     }
-                } else {
-                    config.set("Placeholders.Enabled", true);
+                    if (config.getOptionalBoolean("Placeholders.InvUtils.Enabled").isEmpty()) {
+                        config.set("Placeholders.InvUtils.Enabled", true);
+                    }
+                    if (config.getBoolean("Placeholders.InvUtils.Enabled")) {
+                        new InvUtils(CommandUtils.getInstance(), config).register();
+                        Section placeholderSection = config.getSection("Placeholders.InvUtils");
+
+                        if (placeholderSection.getOptionalString("FunctionSeparator").isEmpty()) {
+                            placeholderSection.set("FunctionSeparator", "_");
+                        }
+                        if (placeholderSection.isString("FunctionSeparator")) {
+                            InvUtils.setFunctionSeparator(placeholderSection.getString("FunctionSeparator"));
+                        } else {
+                            logger.warning("Configuration Placeholders.InvUtils.FunctionSeparator is not a string. Found " + placeholderSection.get("FunctionSeparator"));
+                        }
+
+                        if (placeholderSection.getOptionalBoolean("AllowCustomSeparator").isEmpty()) {
+                            placeholderSection.set("AllowCustomSeparator", true);
+                        }
+                        if (placeholderSection.isBoolean("AllowCustomSeparator")) {
+                            InvUtils.setAllowCustomSeparator(placeholderSection.getBoolean("AllowCustomSeparator"));
+                        } else {
+                            logger.warning("Configuration Placeholders.InvUtils.AllowCustomSeparator is not a boolean. Found " + placeholderSection.get("AllowCustomSeparator"));
+                        }
+                    }
                 }
             }
 
