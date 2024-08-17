@@ -94,6 +94,8 @@ Commands:
     Enabled: true
     Aliases: []
     Permission: "commandutils.command.chancerandomruncommand"
+    ArgumentSeparator: ",,"
+    CommandSeparator: "\\|"
 
   ChangeVillagerProfession:
     Enabled: true
