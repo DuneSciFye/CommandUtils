@@ -21,6 +21,7 @@ import static org.bukkit.Bukkit.getServer;
 public class Utils {
 
     private static final Map<String, List<Predicate<Block>>> predicates = new HashMap<>();
+    private static final Collection<String> PREDICATES_LIST = new ArrayList<>();
 
     private static final List<Predicate<Block>> pickaxeBlacklist = Arrays.asList(
         block -> block.getType().equals(Material.SPAWNER),
@@ -41,6 +42,17 @@ public class Utils {
     static {
         predicates.put("pickaxeBlacklist", pickaxeBlacklist);
         predicates.put("pickaxeWhitelist", pickaxeWhitelist);
+
+        for (Tag<Material> tag : Bukkit.getTags("blocks", Material.class)) {
+            PREDICATES_LIST.add("#" + tag.getKey().asString());
+            PREDICATES_LIST.add("!#" + tag.getKey().asString());
+        }
+
+        for (Material mat : Material.values()) {
+            String name = mat.name();
+            PREDICATES_LIST.add(name);
+            PREDICATES_LIST.add("!" + name);
+        }
     }
 
     public static List<Predicate<Block>> getPredicate(String id){
@@ -75,11 +87,7 @@ public class Utils {
         List<String[]> lookup = getCoreProtect().blockLookup(block, 2147483647);
         if (lookup != null && !lookup.isEmpty()) {
             CoreProtectAPI.ParseResult parseResult = getCoreProtect().parseResult(lookup.get(0));
-            if(!parseResult.getPlayer().startsWith("#") && parseResult.getActionId() == 1 && !parseResult.isRolledBack()){
-                return false;
-            } else {
-                return true;
-            }
+            return parseResult.getPlayer().startsWith("#") || parseResult.getActionId() != 1 || parseResult.isRolledBack();
         }
         return true;
     }
@@ -269,4 +277,7 @@ public class Utils {
         }
     }
 
+    public static Collection<String> getPredicatesList() {
+        return PREDICATES_LIST;
+    }
 }
