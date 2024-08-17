@@ -21,22 +21,27 @@ public class BreakInFacingCommand extends Command implements Registerable {
 
         if (!this.getEnabled()) return;
 
+        StringArgument worldArg = new StringArgument("World");
+        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
+        IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
+        PlayerArgument playerArg = new PlayerArgument("Player");
+        IntegerArgument depthArg = new IntegerArgument("Depth", 0);
+
         if (CommandUtils.griefPreventionEnabled) {
             new CommandTree("breakinfacing")
-                .then(new LocationArgument("Location", LocationType.BLOCK_POSITION)
-                    .then(new StringArgument("World")
-                        .then(new PlayerArgument("Player")
-                            .then(new IntegerArgument("Radius", 0)
-                                .then(new IntegerArgument("Depth", 0)
+                .then(locArg
+                    .then(worldArg
+                        .then(playerArg
+                            .then(radiusArg
+                                .then(depthArg
                                     .executes((sender, args) -> {
-
-                                        World world = Bukkit.getWorld((String) args.getUnchecked("World"));
-                                        Location location = args.getUnchecked("Location");
+                                        World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                        Location location = args.getByArgument(locArg);
                                         Block block = world.getBlockAt(location);
-                                        int radius = args.getUnchecked("Radius");
-                                        Player player = args.getUnchecked("Player");
+                                        int radius = args.getByArgument(radiusArg);
+                                        Player player = args.getByArgument(playerArg);
                                         ItemStack heldItem = player.getInventory().getItemInMainHand();
-                                        int depth = args.getUnchecked("Depth");
+                                        int depth = args.getByArgument(depthArg);
                                         depth = depth < 1 ? 1 : depth -1;
                                         double pitch = player.getLocation().getPitch();
                                         int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
@@ -259,7 +264,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                         for (int z = zStart; z <= zEnd; z++) {
                                                                             Block b = block.getRelative(x, y, z);
                                                                             Material blockType = b.getType();
-                                                                            if (!blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
+                                                                            if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
                                                                                 drops.addAll(b.getDrops(heldItem));
                                                                                 b.setType(Material.AIR);
                                                                             }
@@ -272,7 +277,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                         for (int z = zStart; z <= zEnd; z++) {
                                                                             Block b = block.getRelative(x, y, z);
                                                                             Material blockType = b.getType();
-                                                                            if (!blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)) {
+                                                                            if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)) {
                                                                                 drops.addAll(b.getDrops(heldItem));
                                                                                 b.setType(Material.AIR);
                                                                             }
@@ -288,7 +293,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                         for (int z = zStart; z <= zEnd; z++) {
                                                                             Block b = block.getRelative(x, y, z);
                                                                             Material blockType = b.getType();
-                                                                            if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
+                                                                            if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
                                                                                 drops.addAll(b.getDrops(heldItem));
                                                                                 b.setType(Material.AIR);
                                                                             }
@@ -301,7 +306,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                         for (int z = zStart; z <= zEnd; z++) {
                                                                             Block b = block.getRelative(x, y, z);
                                                                             Material blockType = b.getType();
-                                                                            if ((whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) || whitelistMaterials.contains(blockType)) && !blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
+                                                                            if ((whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) || whitelistMaterials.contains(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
                                                                                 drops.addAll(b.getDrops(heldItem));
                                                                                 b.setType(Material.AIR);
                                                                             }
@@ -397,7 +402,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                             for (int z = zStart; z <= zEnd; z++) {
                                                                                 Block b = block.getRelative(x, y, z);
                                                                                 Material blockType = b.getType();
-                                                                                if (!blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
+                                                                                if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
                                                                                     drops.addAll(b.getDrops(heldItem));
                                                                                     b.setType(Material.AIR);
                                                                                 }
@@ -410,7 +415,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                             for (int z = zStart; z <= zEnd; z++) {
                                                                                 Block b = block.getRelative(x, y, z);
                                                                                 Material blockType = b.getType();
-                                                                                if (!blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)) {
+                                                                                if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)) {
                                                                                     drops.addAll(b.getDrops(heldItem));
                                                                                     b.setType(Material.AIR);
                                                                                 }
@@ -426,7 +431,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                             for (int z = zStart; z <= zEnd; z++) {
                                                                                 Block b = block.getRelative(x, y, z);
                                                                                 Material blockType = b.getType();
-                                                                                if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
+                                                                                if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
                                                                                     drops.addAll(b.getDrops(heldItem));
                                                                                     b.setType(Material.AIR);
                                                                                 }
@@ -439,7 +444,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                             for (int z = zStart; z <= zEnd; z++) {
                                                                                 Block b = block.getRelative(x, y, z);
                                                                                 Material blockType = b.getType();
-                                                                                if ((whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) || whitelistMaterials.contains(blockType)) && !blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
+                                                                                if ((whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) || whitelistMaterials.contains(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
                                                                                     drops.addAll(b.getDrops(heldItem));
                                                                                     b.setType(Material.AIR);
                                                                                 }
@@ -535,7 +540,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                                 for (int z = zStart; z <= zEnd; z++) {
                                                                                     Block b = block.getRelative(x, y, z);
                                                                                     Material blockType = b.getType();
-                                                                                    if (!blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
+                                                                                    if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
                                                                                         drop.setAmount(drop.getAmount() + 1);
                                                                                         b.setType(Material.AIR);
                                                                                     }
@@ -548,7 +553,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                                 for (int z = zStart; z <= zEnd; z++) {
                                                                                     Block b = block.getRelative(x, y, z);
                                                                                     Material blockType = b.getType();
-                                                                                    if (!blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)) {
+                                                                                    if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)) {
                                                                                         drop.setAmount(drop.getAmount() + 1);
                                                                                         b.setType(Material.AIR);
                                                                                     }
@@ -564,7 +569,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                                 for (int z = zStart; z <= zEnd; z++) {
                                                                                     Block b = block.getRelative(x, y, z);
                                                                                     Material blockType = b.getType();
-                                                                                    if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
+                                                                                    if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
                                                                                         drop.setAmount(drop.getAmount() + 1);
                                                                                         b.setType(Material.AIR);
                                                                                     }
@@ -577,7 +582,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                                 for (int z = zStart; z <= zEnd; z++) {
                                                                                     Block b = block.getRelative(x, y, z);
                                                                                     Material blockType = b.getType();
-                                                                                    if ( (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) || whitelistMaterials.contains(blockType) ) && !blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
+                                                                                    if ( (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) || whitelistMaterials.contains(blockType) ) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
                                                                                         drop.setAmount(drop.getAmount() + 1);
                                                                                         b.setType(Material.AIR);
                                                                                     }
@@ -671,7 +676,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                             for (int z = zStart; z <= zEnd; z++) {
                                                                                 Block b = block.getRelative(x, y, z);
                                                                                 Material blockType = b.getType();
-                                                                                if (!blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
+                                                                                if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
                                                                                     drops.add(new ItemStack(blockType));
                                                                                     b.setType(Material.AIR);
                                                                                 }
@@ -684,7 +689,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                             for (int z = zStart; z <= zEnd; z++) {
                                                                                 Block b = block.getRelative(x, y, z);
                                                                                 Material blockType = b.getType();
-                                                                                if (!blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)) {
+                                                                                if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && whitelistMaterials.contains(blockType) && !blacklistMaterials.contains(blockType)) {
                                                                                     drops.add(new ItemStack(blockType));
                                                                                     b.setType(Material.AIR);
                                                                                 }
@@ -700,7 +705,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                             for (int z = zStart; z <= zEnd; z++) {
                                                                                 Block b = block.getRelative(x, y, z);
                                                                                 Material blockType = b.getType();
-                                                                                if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
+                                                                                if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
                                                                                     drops.add(new ItemStack(blockType));
                                                                                     b.setType(Material.AIR);
                                                                                 }
@@ -713,7 +718,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                             for (int z = zStart; z <= zEnd; z++) {
                                                                                 Block b = block.getRelative(x, y, z);
                                                                                 Material blockType = b.getType();
-                                                                                if ((whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) || whitelistMaterials.contains(blockType)) && !blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
+                                                                                if ((whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) || whitelistMaterials.contains(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType)) && !blacklistMaterials.contains(blockType)) {
                                                                                     drops.add(new ItemStack(blockType));
                                                                                     b.setType(Material.AIR);
                                                                                 }
@@ -798,7 +803,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                             for (int z = zStart; z <= zEnd; z++) {
                                                                 Block b = block.getRelative(x, y, z);
                                                                 Material blockType = b.getType();
-                                                                if (!blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType))) {
+                                                                if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType))) {
                                                                     drops.addAll(b.getDrops(heldItem));
                                                                     b.setType(Material.AIR);
                                                                 }
@@ -811,7 +816,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                             for (int z = zStart; z <= zEnd; z++) {
                                                                 Block b = block.getRelative(x, y, z);
                                                                 Material blockType = b.getType();
-                                                                if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType))) {
+                                                                if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType))) {
                                                                     drops.addAll(b.getDrops(heldItem));
                                                                     b.setType(Material.AIR);
                                                                 }
@@ -890,7 +895,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                 for (int z = zStart; z <= zEnd; z++) {
                                                                     Block b = block.getRelative(x, y, z);
                                                                     Material blockType = b.getType();
-                                                                    if (!blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType))) {
+                                                                    if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType))) {
                                                                         drops.addAll(b.getDrops(heldItem));
                                                                         b.setType(Material.AIR);
                                                                     }
@@ -903,7 +908,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                 for (int z = zStart; z <= zEnd; z++) {
                                                                     Block b = block.getRelative(x, y, z);
                                                                     Material blockType = b.getType();
-                                                                    if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType))) {
+                                                                    if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType))) {
                                                                         drops.addAll(b.getDrops(heldItem));
                                                                         b.setType(Material.AIR);
                                                                     }
@@ -982,7 +987,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                     for (int z = zStart; z <= zEnd; z++) {
                                                                         Block b = block.getRelative(x, y, z);
                                                                         Material blockType = b.getType();
-                                                                        if (!blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType))) {
+                                                                        if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType))) {
                                                                             drop.setAmount(drop.getAmount() + 1);
                                                                             b.setType(Material.AIR);
                                                                         }
@@ -995,7 +1000,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                     for (int z = zStart; z <= zEnd; z++) {
                                                                         Block b = block.getRelative(x, y, z);
                                                                         Material blockType = b.getType();
-                                                                        if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && !blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType))) {
+                                                                        if (whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType)) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType))) {
                                                                             drop.setAmount(drop.getAmount() + 1);
                                                                             b.setType(Material.AIR);
                                                                         }
@@ -1073,7 +1078,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                 for (int z = zStart; z <= zEnd; z++) {
                                                                     Block b = block.getRelative(x, y, z);
                                                                     Material blockType = b.getType();
-                                                                    if (!blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType))) {
+                                                                    if (blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType))) {
                                                                         drops.add(new ItemStack(blockType));
                                                                         b.setType(Material.AIR);
                                                                     }
@@ -1086,7 +1091,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                 for (int z = zStart; z <= zEnd; z++) {
                                                                     Block b = block.getRelative(x, y, z);
                                                                     Material blockType = b.getType();
-                                                                    if ((whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType))) && !blacklistTags.stream().anyMatch(tag -> tag.isTagged(blockType))) {
+                                                                    if ((whitelistTags.stream().anyMatch(tag -> tag.isTagged(blockType))) && blacklistTags.stream().noneMatch(tag -> tag.isTagged(blockType))) {
                                                                         drops.add(new ItemStack(blockType));
                                                                         b.setType(Material.AIR);
                                                                     }

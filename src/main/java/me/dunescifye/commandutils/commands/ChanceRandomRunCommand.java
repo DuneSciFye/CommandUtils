@@ -15,10 +15,12 @@ public class ChanceRandomRunCommand extends Command implements Registerable {
     public void register(){
         if (!this.getEnabled()) return;
 
+        GreedyStringArgument argumentsArg = new GreedyStringArgument("Arguments");
+
         new CommandAPICommand("chancerandomrun")
-            .withArguments(new GreedyStringArgument("Arguments"))
+            .withArguments(argumentsArg)
             .executes((sender, args) -> {
-                String input = args.getUnchecked("Arguments");
+                String input = args.getByArgument(argumentsArg);
                 String[] list = input.split(",,");
 
                 Server server = Bukkit.getServer();
