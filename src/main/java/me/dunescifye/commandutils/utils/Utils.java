@@ -163,9 +163,60 @@ public class Utils {
         return null;
     }
 
-    public static void stringListToPredicate(List<String> strings, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist) {
+    public static void stringListToPredicate(List<String> predicates, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist) {
+        for (String predicate : predicates) {
+            //Blacklist
+            if (predicate.startsWith("!")) {
+                //Tags
+                if (predicate.startsWith("!#")) {
+                    predicate = predicate.substring(2);
+                    try {
+                        NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
+                        if (predicateKey != null) {
+                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
+                            if (tag != null) {
+                                blacklist.add(block -> tag.isTagged(block.getType()));
+                            }
+                        }
+                    } catch (
+                        IllegalArgumentException ignored) {
+                    }
+                }
+                //Blocks
+                else {
+                    predicate = predicate.substring(1);
+                    Material material = Material.getMaterial(predicate.toUpperCase());
+                    blacklist.add(block -> block.getType().equals(material));
+                }
+            }
+            //Whitelist
+            else {
+                //Tags
+                if (predicate.startsWith("#")) {
+                    predicate = predicate.substring(1);
+                    try {
+                        NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
+                        if (predicateKey != null) {
+                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
+                            if (tag != null) {
+                                whitelist.add(block -> tag.isTagged(block.getType()));
+                            }
+                        }
+                    } catch (
+                        IllegalArgumentException ignored) {
+                    }
+                }
+                //Blocks
+                else {
+                    Material material = Material.getMaterial(predicate.toUpperCase());
+                    whitelist.add(block -> block.getType().equals(material));
+                }
+            }
+        }
+    }
 
-        for (String predicate : config.getStringList("Whitelists." + key)) {
+    public static void stringListToPredicate(List<String> predicates, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist, Logger logger) {
+        for (String predicate : predicates) {
             //Blacklist
             if (predicate.startsWith("!")) {
                 //Tags
@@ -216,7 +267,6 @@ public class Utils {
                 }
             }
         }
-
     }
 
 }

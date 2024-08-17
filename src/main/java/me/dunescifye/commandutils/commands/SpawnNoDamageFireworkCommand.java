@@ -18,7 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class SpawnNoDamageFirework extends Command implements Registerable {
+public class SpawnNoDamageFireworkCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!this.getEnabled()) return;

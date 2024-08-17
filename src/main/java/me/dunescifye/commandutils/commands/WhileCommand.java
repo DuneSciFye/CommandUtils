@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public class While extends Command implements Configurable {
+public class WhileCommand extends Command implements Configurable {
 
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
         @SuppressWarnings("ConstantConditions")

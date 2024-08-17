@@ -8,7 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Waterlogged;
 
-public class Waterlog extends Command implements Registerable {
+public class WaterlogCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!this.getEnabled()) return;

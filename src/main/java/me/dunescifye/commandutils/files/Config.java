@@ -8,6 +8,7 @@ import me.dunescifye.commandutils.placeholders.StringUtils;
 import me.dunescifye.commandutils.commands.Command;
 import me.dunescifye.commandutils.commands.Configurable;
 import me.dunescifye.commandutils.commands.Registerable;
+import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -147,60 +148,12 @@ public class Config {
             }
 
             Section whitelistSection = config.getSection("Whitelists");
+
             for (Object objectKey : whitelistSection.getKeys()) {
                 if (objectKey instanceof String key) {
                     List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
-                    for (String predicate : config.getStringList("Whitelists." + key)) {
-                        //Blacklist
-                        if (predicate.startsWith("!")) {
-                            //Tags
-                            if (predicate.startsWith("!#")) {
-                                predicate = predicate.substring(2);
-                                try {
-                                    NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
-                                    if (predicateKey != null) {
-                                        Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
-                                        if (tag != null) {
-                                            blacklist.add(block -> tag.isTagged(block.getType()));
-                                        }
-                                    }
-                                } catch (
-                                    IllegalArgumentException e) {
-                                    logger.info("Invalid block tag: " + predicate);
-                                }
-                            }
-                            //Blocks
-                            else {
-                                predicate = predicate.substring(1);
-                                Material material = Material.getMaterial(predicate.toUpperCase());
-                                blacklist.add(block -> block.getType().equals(material));
-                            }
-                        }
-                        //Whitelist
-                        else {
-                            //Tags
-                            if (predicate.startsWith("#")) {
-                                predicate = predicate.substring(1);
-                                try {
-                                    NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
-                                    if (predicateKey != null) {
-                                        Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
-                                        if (tag != null) {
-                                            whitelist.add(block -> tag.isTagged(block.getType()));
-                                        }
-                                    }
-                                } catch (
-                                    IllegalArgumentException e) {
-                                    logger.info("Invalid block tag: " + predicate);
-                                }
-                            }
-                            //Blocks
-                            else {
-                                Material material = Material.getMaterial(predicate.toUpperCase());
-                                whitelist.add(block -> block.getType().equals(material));
-                            }
-                        }
-                    }
+
+                    Utils.stringListToPredicate(config.getStringList("Whitelists." + key), whitelist, blacklist, logger);
 
                     whitelists.put(key, whitelist);
                     blacklists.put(key, blacklist);

@@ -73,12 +73,12 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("SetItemNBT", new SetItemNBTCommand());
         commands.put("SetTNTSource", new SetTNTSourceCommand());
         commands.put("SilentParticle", new SilentParticleCommand());
-        commands.put("SpawnBlockBreaker", new SpawnBlockBreaker());
-        commands.put("SpawnNoDamageEvokerFang", new SpawnNoDamageEvokerFang());
-        commands.put("SpawnNoDamageFirework", new SpawnNoDamageFirework());
-        commands.put("Waterlog", new Waterlog());
+        commands.put("SpawnBlockBreaker", new SpawnBlockBreakerCommand());
+        commands.put("SpawnNoDamageEvokerFang", new SpawnNoDamageEvokerFangCommand());
+        commands.put("SpawnNoDamageFirework", new SpawnNoDamageFireworkCommand());
+        commands.put("Waterlog", new WaterlogCommand());
         commands.put("WeightedRandom", new WeightedRandomCommand());
-        commands.put("While", new While());
+        commands.put("While", new WhileCommand());
         commands.put("Loop", new LoopCommand());
         commands.put("If", new IfCommand());
         commands.put("MobTarget", new MobTargetCommand());

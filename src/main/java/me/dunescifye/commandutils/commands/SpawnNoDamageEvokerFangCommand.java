@@ -8,7 +8,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.metadata.FixedMetadataValue;
 
-public class SpawnNoDamageEvokerFang extends Command implements Registerable {
+public class SpawnNoDamageEvokerFangCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!this.getEnabled()) return;

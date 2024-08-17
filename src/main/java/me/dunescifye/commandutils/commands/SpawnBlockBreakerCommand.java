@@ -20,7 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class SpawnBlockBreaker extends Command implements Registerable {
+public class SpawnBlockBreakerCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!this.getEnabled()) return;
