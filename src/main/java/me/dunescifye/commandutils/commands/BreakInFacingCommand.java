@@ -31,12 +31,12 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                     .executes((sender, args) -> {
 
                                         World world = Bukkit.getWorld((String) args.getUnchecked("World"));
-                                        Location location = (Location) args.getUnchecked("Location");
+                                        Location location = args.getUnchecked("Location");
                                         Block block = world.getBlockAt(location);
-                                        int radius = (int) args.getUnchecked("Radius");
-                                        Player player = (Player) args.getUnchecked("Player");
+                                        int radius = args.getUnchecked("Radius");
+                                        Player player = args.getUnchecked("Player");
                                         ItemStack heldItem = player.getInventory().getItemInMainHand();
-                                        int depth = (int) args.getUnchecked("Depth");
+                                        int depth = args.getUnchecked("Depth");
                                         depth = depth < 1 ? 1 : depth -1;
                                         double pitch = player.getLocation().getPitch();
                                         int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
@@ -93,7 +93,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                 EnumSet<Material> whitelistMaterials = EnumSet.noneOf(Material.class);
                                                 EnumSet<Material> blacklistMaterials = EnumSet.noneOf(Material.class);
 
-                                                List<String> inputList = (List<String>) args.getUnchecked("Whitelisted Blocks");
+                                                List<String> inputList = args.getUnchecked("Whitelisted Blocks");
 
                                                 for (String input : inputList) {
                                                     if (input.startsWith("!")) {
@@ -107,11 +107,11 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                 }
 
                                                 World world = Bukkit.getWorld((String) args.getUnchecked("World"));
-                                                Location location = (Location) args.getUnchecked("Location");
+                                                Location location = args.getUnchecked("Location");
                                                 Block block = world.getBlockAt(location);
-                                                int radius = (int) args.getUnchecked("Radius");
-                                                Player player = (Player) args.getUnchecked("Player");
-                                                int depth = (int) args.getUnchecked("Depth");
+                                                int radius = args.getUnchecked("Radius");
+                                                Player player = args.getUnchecked("Player");
+                                                int depth = args.getUnchecked("Depth");
                                                 depth = depth < 1 ? 1 : depth -1;
                                                 ItemStack heldItem = player.getInventory().getItemInMainHand();
                                                 double pitch = player.getLocation().getPitch();
@@ -188,8 +188,8 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                         EnumSet<Material> whitelistMaterials = EnumSet.noneOf(Material.class);
                                                         EnumSet<Material> blacklistMaterials = EnumSet.noneOf(Material.class);
 
-                                                        List<String> inputTags = (List<String>) args.getUnchecked("Whitelisted Tags");
-                                                        List<String> inputMaterials = (List<String>) args.getUnchecked("Whitelisted Blocks");
+                                                        List<String> inputTags = args.getUnchecked("Whitelisted Tags");
+                                                        List<String> inputMaterials = args.getUnchecked("Whitelisted Blocks");
 
                                                         for (String input : inputTags) {
                                                             if (input.startsWith("!")) {
@@ -215,11 +215,11 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                         }
 
                                                         World world = Bukkit.getWorld((String) args.getUnchecked("World"));
-                                                        Location location = (Location) args.getUnchecked("Location");
+                                                        Location location = args.getUnchecked("Location");
                                                         Block block = world.getBlockAt(location);
-                                                        int radius = (int) args.getUnchecked("Radius");
-                                                        Player player = (Player) args.getUnchecked("Player");
-                                                        int depth = (int) args.getUnchecked("Depth");
+                                                        int radius = args.getUnchecked("Radius");
+                                                        Player player = args.getUnchecked("Player");
+                                                        int depth = args.getUnchecked("Depth");
                                                         depth = depth < 1 ? 1 : depth -1;
                                                         ItemStack heldItem = player.getInventory().getItemInMainHand();
                                                         double pitch = player.getLocation().getPitch();
@@ -323,8 +323,8 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                             EnumSet<Material> whitelistMaterials = EnumSet.noneOf(Material.class);
                                                             EnumSet<Material> blacklistMaterials = EnumSet.noneOf(Material.class);
 
-                                                            List<String> inputTags = (List<String>) args.getUnchecked("Whitelisted Tags");
-                                                            List<String> inputMaterials = (List<String>) args.getUnchecked("Whitelisted Blocks");
+                                                            List<String> inputTags = args.getUnchecked("Whitelisted Tags");
+                                                            List<String> inputMaterials = args.getUnchecked("Whitelisted Blocks");
 
                                                             for (String input : inputTags) {
                                                                 if (input.startsWith("!")) {
@@ -350,12 +350,12 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                             }
 
                                                             World world = Bukkit.getWorld((String) args.getUnchecked("World"));
-                                                            Location location = (Location) args.getUnchecked("Location");
+                                                            Location location = args.getUnchecked("Location");
                                                             Block block = world.getBlockAt(location);
-                                                            int radius = (int) args.getUnchecked("Radius");
-                                                            BlockData original = (BlockData) args.getUnchecked("Original Block");
-                                                            Player player = (Player) args.getUnchecked("Player");
-                                                            int depth = (int) args.getUnchecked("Depth");
+                                                            int radius = args.getUnchecked("Radius");
+                                                            BlockData original = args.getUnchecked("Original Block");
+                                                            Player player = args.getUnchecked("Player");
+                                                            int depth = args.getUnchecked("Depth");
                                                             depth = depth < 1 ? 1 : depth -1;
                                                             ItemStack heldItem = player.getInventory().getItemInMainHand();
                                                             double pitch = player.getLocation().getPitch();
@@ -461,8 +461,8 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                 EnumSet<Material> whitelistMaterials = EnumSet.noneOf(Material.class);
                                                                 EnumSet<Material> blacklistMaterials = EnumSet.noneOf(Material.class);
 
-                                                                List<String> inputTags = (List<String>) args.getUnchecked("Whitelisted Tags");
-                                                                List<String> inputMaterials = (List<String>) args.getUnchecked("Whitelisted Blocks");
+                                                                List<String> inputTags = args.getUnchecked("Whitelisted Tags");
+                                                                List<String> inputMaterials = args.getUnchecked("Whitelisted Blocks");
 
                                                                 for (String input : inputTags) {
                                                                     if (input.startsWith("!")) {
@@ -488,14 +488,14 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                 }
 
                                                                 World world = Bukkit.getWorld((String) args.getUnchecked("World"));
-                                                                Location location = (Location) args.getUnchecked("Location");
+                                                                Location location = args.getUnchecked("Location");
                                                                 Block block = world.getBlockAt(location);
-                                                                BlockData original = (BlockData) args.getUnchecked("Original Block");
-                                                                int radius = (int) args.getUnchecked("Radius");
-                                                                Player player = (Player) args.getUnchecked("Player");
-                                                                int depth = (int) args.getUnchecked("Depth");
+                                                                BlockData original = args.getUnchecked("Original Block");
+                                                                int radius = args.getUnchecked("Radius");
+                                                                Player player = args.getUnchecked("Player");
+                                                                int depth = args.getUnchecked("Depth");
                                                                 depth = depth < 1 ? 1 : depth -1;
-                                                                ItemStack drop = ((ItemStack) args.getUnchecked("Drop"));
+                                                                ItemStack drop = args.getUnchecked("Drop");
 
                                                                 double pitch = player.getLocation().getPitch();
                                                                 int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
@@ -601,8 +601,8 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                             EnumSet<Material> whitelistMaterials = EnumSet.noneOf(Material.class);
                                                             EnumSet<Material> blacklistMaterials = EnumSet.noneOf(Material.class);
 
-                                                            List<String> inputTags = (List<String>) args.getUnchecked("Whitelisted Tags");
-                                                            List<String> inputMaterials = (List<String>) args.getUnchecked("Whitelisted Blocks");
+                                                            List<String> inputTags = args.getUnchecked("Whitelisted Tags");
+                                                            List<String> inputMaterials = args.getUnchecked("Whitelisted Blocks");
 
                                                             for (String input : inputTags) {
                                                                 if (input.startsWith("!")) {
@@ -628,11 +628,11 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                             }
 
                                                             World world = Bukkit.getWorld((String) args.getUnchecked("World"));
-                                                            Location location = (Location) args.getUnchecked("Location");
+                                                            Location location = args.getUnchecked("Location");
                                                             Block block = world.getBlockAt(location);
-                                                            int radius = (int) args.getUnchecked("Radius");
-                                                            Player player = (Player) args.getUnchecked("Player");
-                                                            int depth = (int) args.getUnchecked("Depth");
+                                                            int radius = args.getUnchecked("Radius");
+                                                            Player player = args.getUnchecked("Player");
+                                                            int depth = args.getUnchecked("Depth");
                                                             depth = depth < 1 ? 1 : depth -1;
                                                             double pitch = player.getLocation().getPitch();
                                                             int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
@@ -741,7 +741,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                 Set<Tag<Material>> whitelistTags = new HashSet<>();
                                                 Set<Tag<Material>> blacklistTags = new HashSet<>();
 
-                                                List<String> inputTags = (List<String>) args.getUnchecked("Whitelisted Tags");
+                                                List<String> inputTags = args.getUnchecked("Whitelisted Tags");
 
                                                 for (String input : inputTags) {
                                                     if (input.startsWith("!")) {
@@ -755,11 +755,11 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                 }
 
                                                 World world = Bukkit.getWorld((String) args.getUnchecked("World"));
-                                                Location location = (Location) args.getUnchecked("Location");
+                                                Location location = args.getUnchecked("Location");
                                                 Block block = world.getBlockAt(location);
-                                                int radius = (int) args.getUnchecked("Radius");
-                                                Player player = (Player) args.getUnchecked("Player");
-                                                int depth = (int) args.getUnchecked("Depth");
+                                                int radius = args.getUnchecked("Radius");
+                                                Player player = args.getUnchecked("Player");
+                                                int depth = args.getUnchecked("Depth");
                                                 depth = depth < 1 ? 1 : depth -1;
                                                 double pitch = player.getLocation().getPitch();
                                                 ItemStack heldItem = player.getInventory().getItemInMainHand();
@@ -830,7 +830,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                     Set<Tag<Material>> whitelistTags = new HashSet<>();
                                                     Set<Tag<Material>> blacklistTags = new HashSet<>();
 
-                                                    List<String> inputTags = (List<String>) args.getUnchecked("Whitelisted Tags");
+                                                    List<String> inputTags = args.getUnchecked("Whitelisted Tags");
 
                                                     for (String input : inputTags) {
                                                         if (input.startsWith("!")) {
@@ -844,12 +844,12 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                     }
 
                                                     World world = Bukkit.getWorld((String) args.getUnchecked("World"));
-                                                    Location location = (Location) args.getUnchecked("Location");
+                                                    Location location = args.getUnchecked("Location");
                                                     Block block = world.getBlockAt(location);
-                                                    int radius = (int) args.getUnchecked("Radius");
-                                                    BlockData original = (BlockData) args.getUnchecked("Original Block");
-                                                    Player player = (Player) args.getUnchecked("Player");
-                                                    int depth = (int) args.getUnchecked("Depth");
+                                                    int radius = args.getUnchecked("Radius");
+                                                    BlockData original = args.getUnchecked("Original Block");
+                                                    Player player = args.getUnchecked("Player");
+                                                    int depth = args.getUnchecked("Depth");
                                                     depth = depth < 1 ? 1 : depth -1;
                                                     ItemStack heldItem = player.getInventory().getItemInMainHand();
                                                     double pitch = player.getLocation().getPitch();
@@ -922,7 +922,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                         Set<Tag<Material>> whitelistTags = new HashSet<>();
                                                         Set<Tag<Material>> blacklistTags = new HashSet<>();
 
-                                                        List<String> inputTags = (List<String>) args.getUnchecked("Whitelisted Tags");
+                                                        List<String> inputTags = args.getUnchecked("Whitelisted Tags");
 
                                                         for (String input : inputTags) {
                                                             if (input.startsWith("!")) {
@@ -936,14 +936,14 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                         }
 
                                                         World world = Bukkit.getWorld((String) args.getUnchecked("World"));
-                                                        Location location = (Location) args.getUnchecked("Location");
+                                                        Location location = args.getUnchecked("Location");
                                                         Block block = world.getBlockAt(location);
-                                                        BlockData original = (BlockData) args.getUnchecked("Original Block");
-                                                        int radius = (int) args.getUnchecked("Radius");
-                                                        Player player = (Player) args.getUnchecked("Player");
-                                                        int depth = (int) args.getUnchecked("Depth");
+                                                        BlockData original = args.getUnchecked("Original Block");
+                                                        int radius = args.getUnchecked("Radius");
+                                                        Player player = args.getUnchecked("Player");
+                                                        int depth = args.getUnchecked("Depth");
                                                         depth = depth < 1 ? 1 : depth -1;
-                                                        ItemStack drop = ((ItemStack) args.getUnchecked("Drop"));
+                                                        ItemStack drop = args.getUnchecked("Drop");
 
                                                         double pitch = player.getLocation().getPitch();
                                                         int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
@@ -1016,7 +1016,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                     Set<Tag<Material>> whitelistTags = new HashSet<>();
                                                     Set<Tag<Material>> blacklistTags = new HashSet<>();
 
-                                                    List<String> inputTags = (List<String>) args.getUnchecked("Whitelisted Tags");
+                                                    List<String> inputTags = args.getUnchecked("Whitelisted Tags");
 
                                                     for (String input : inputTags) {
                                                         if (input.startsWith("!")) {
@@ -1031,11 +1031,11 @@ public class BreakInFacingCommand extends Command implements Registerable {
 
 
                                                     World world = Bukkit.getWorld((String) args.getUnchecked("World"));
-                                                    Location location = (Location) args.getUnchecked("Location");
+                                                    Location location = args.getUnchecked("Location");
                                                     Block block = world.getBlockAt(location);
-                                                    int radius = (int) args.getUnchecked("Radius");
-                                                    Player player = (Player) args.getUnchecked("Player");
-                                                    int depth = (int) args.getUnchecked("Depth");
+                                                    int radius = args.getUnchecked("Radius");
+                                                    Player player = args.getUnchecked("Player");
+                                                    int depth = args.getUnchecked("Depth");
                                                     depth = depth < 1 ? 1 : depth -1;
                                                     double pitch = player.getLocation().getPitch();
                                                     int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;

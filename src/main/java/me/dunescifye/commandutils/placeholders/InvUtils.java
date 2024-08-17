@@ -43,6 +43,11 @@ public class InvUtils extends PlaceholderExpansion {
         return "1.0.0";
     }
 
+    @Override
+    public boolean persist() {
+        return true;
+    }
+
     public InvUtils(CommandUtils plugin, YamlDocument config) {
         Logger logger = plugin.getLogger();
         if (config.isString("Placeholders.InvUtils.Nbt.ArgsSeparator")) {

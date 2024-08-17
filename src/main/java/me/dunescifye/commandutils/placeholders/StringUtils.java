@@ -87,6 +87,11 @@ public class StringUtils extends PlaceholderExpansion {
     }
 
     @Override
+    public boolean persist() {
+        return true;
+    }
+
+    @Override
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String args) {
         String function, arguments = null;
 
