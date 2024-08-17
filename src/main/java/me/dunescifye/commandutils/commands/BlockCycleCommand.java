@@ -18,12 +18,17 @@ public class BlockCycleCommand extends Command implements Registerable {
     public void register() {
         if (!this.getEnabled()) return;
 
+        LiteralArgument oxidizeArg = new LiteralArgument("oxidize");
+        StringArgument worldArg = new StringArgument("World");
+        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
+        LiteralArgument waxArg = new LiteralArgument("wax");
+
         new CommandTree("blockcycle")
-            .then(new LiteralArgument("oxidize")
-                .then(new StringArgument("World")
-                    .then(new LocationArgument("Location", LocationType.BLOCK_POSITION)
+            .then(oxidizeArg
+                .then(worldArg
+                    .then(locArg
                         .executes((sender, args) -> {
-                            Block b = Bukkit.getWorld(args.getByClass("World", String.class)).getBlockAt(args.getUnchecked("Location"));
+                            Block b = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
                             Material material = b.getType();
                             BlockData blockData = b.getBlockData();
 
@@ -104,11 +109,11 @@ public class BlockCycleCommand extends Command implements Registerable {
                     )
                 )
             )
-            .then(new LiteralArgument("wax")
-                .then(new StringArgument("World")
-                    .then(new LocationArgument("Location", LocationType.BLOCK_POSITION)
+            .then(waxArg
+                .then(worldArg
+                    .then(locArg
                         .executes((sender, args) -> {
-                            Block b = Bukkit.getWorld(args.getByClass("World", String.class)).getBlockAt(args.getUnchecked("Location"));
+                            Block b = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
                             BlockData blockData = b.getBlockData();
                             String material = b.getType().toString();
                             b.setType(Material.valueOf(material.startsWith("WAXED_") ? material.substring(6) : "WAXED_" + material));
