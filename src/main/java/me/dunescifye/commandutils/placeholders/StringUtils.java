@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,6 +30,7 @@ import java.util.regex.Pattern;
 public class StringUtils extends PlaceholderExpansion {
 
     private static String separator = ",", elseIfKeyword, elseKeyword, conditionSeparator;
+    private static String functionSeparator = "_", nbtSeparator = ",", amountSeparator = ",";
     private static boolean allowCustomSeparator;
 
     public StringUtils(CommandUtils plugin, YamlDocument config) {
@@ -58,6 +60,23 @@ public class StringUtils extends PlaceholderExpansion {
         } else {
             logger.warning("Configuration Placeholders.StringUtils.If.ConditionSeparator is not a String. Using default value of `\"`");
             conditionSeparator = "\"";
+        }
+        if (config.isString("Placeholders.InvUtils.Nbt.ArgsSeparator")) {
+            nbtSeparator = config.getString("Placeholders.InvUtils.Nbt.ArgsSeparator");
+            if (nbtSeparator == null)
+                config.set("Placeholders.InvUtils.Nbt.ArgsSeparator", ",");
+        } else {
+            logger.warning("Configuration Placeholders.InvUtils.Nbt.ArgsSeparator is not a String. Using default value of `,`");
+            nbtSeparator = ",";
+        }
+
+        if (config.isString("Placeholders.InvUtils.Amount.ArgsSeparator")) {
+            amountSeparator = config.getString("Placeholders.InvUtils.Amount.ArgsSeparator");
+            if (amountSeparator == null)
+                config.set("Placeholders.InvUtils.Amount.ArgsSeparator", ",");
+        } else {
+            logger.warning("Configuration Placeholders.InvUtils.Amount.ArgsSeparator is not a String. Using default value of `,`");
+            amountSeparator = ",";
         }
     }
 
@@ -102,6 +121,7 @@ public class StringUtils extends PlaceholderExpansion {
             arguments = PlaceholderAPI.setBracketPlaceholders(player, parts[1]);
         }
 
+        Player p = player.getPlayer();
 
         for (int v = 0; v<2;v++){
             switch (function) {
@@ -303,25 +323,10 @@ public class StringUtils extends PlaceholderExpansion {
                         return arguments.toLowerCase();
                     }
                 }
-                case "nbt" -> {
-                    String[] argsNbt = org.apache.commons.lang3.StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
-                    ItemStack item = argsNbt[0].equals("-1") ? player.getPlayer().getInventory().getItemInMainHand() : player.getPlayer().getInventory().getItem(Integer.parseInt(argsNbt[0]));
-                    if (item != null) {
-                        if (item.hasItemMeta()) {
-                            NamespacedKey keyEiID = new NamespacedKey(argsNbt[1], argsNbt[2]);
-                            if (item.getItemMeta().getPersistentDataContainer().has(keyEiID)) {
-                                try {
-                                    return item.getItemMeta().getPersistentDataContainer().get(keyEiID, PersistentDataType.STRING);
-                                } catch (IllegalArgumentException e) {
-                                    return String.valueOf(item.getItemMeta().getPersistentDataContainer().get(keyEiID, PersistentDataType.DOUBLE));
-                                }
-                            }
-                        }
-                    }
-                    return "";
-                }
                 case "isgliding" -> {
-                    if (Objects.requireNonNull(player.getPlayer()).isGliding()) {
+                    if (p == null) return "null player";
+
+                    if (p.isGliding()) {
                         return "yes";
                     } else {
                         return "no";
@@ -417,7 +422,6 @@ public class StringUtils extends PlaceholderExpansion {
                     if (armorSetArgs == null) return "Invalid args.";
 
                     String armorSetID = armorSetArgs[0];
-                    Player p = player.getPlayer();
 
                     if (p == null || !p.isOnline()) return "false";
 
@@ -490,6 +494,72 @@ public class StringUtils extends PlaceholderExpansion {
 
                     //Else
                     return combinedSplit[combinedSplit.length - 1];
+                }
+                case "material", "mat" -> {
+
+                    if (p == null) {
+                        return "null player";
+                    }
+
+                    ItemStack item = Utils.getInvItem(p.getInventory(), parts[1]);
+
+                    if (item == null) {
+                        return "AIR";
+                    }
+
+                    return item.getType().toString();
+                }
+                case "nbt" -> {
+                    String[] argsNbt = parts[1].split(nbtSeparator);
+                    if (p == null) {
+                        return "null player";
+                    }
+
+                    if (argsNbt.length == 0) {
+                        return "missing arguments";
+                    }
+
+                    ItemStack item = Utils.getInvItem(p.getInventory(), argsNbt[0]);
+
+                    if (item == null || !item.hasItemMeta()) return "";
+
+                    PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+                    NamespacedKey key = new NamespacedKey(argsNbt[1], argsNbt[2]);
+
+                    if (!container.has(key)) return "";
+
+                    try {
+                        return item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
+                    } catch (IllegalArgumentException e) {
+                        return String.valueOf(item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.DOUBLE));
+                    }
+                }
+
+                case "amount", "amt" -> {
+                    if (p == null) {
+                        return "null player";
+                    }
+
+                    String[] argsAmt = parts[1].split(amountSeparator);
+                    ItemStack item = Utils.getInvItem(p.getInventory(), argsAmt[0]);
+
+                    if (item == null) {
+                        Material mat = Material.getMaterial(argsAmt[0].toUpperCase());
+                        if (mat == null) return "";
+
+                        int count = 0;
+
+                        for (ItemStack content : p.getInventory().getContents()) {
+                            if (content == null) continue;
+                            if (Objects.equals(content.getType(), mat)) {
+                                count += content.getAmount();
+                            }
+                        }
+
+                        return String.valueOf(count);
+                    }
+
+                    return String.valueOf(item.getAmount());
                 }
                 default -> {
                     separator = function.replace("\\_", "_");

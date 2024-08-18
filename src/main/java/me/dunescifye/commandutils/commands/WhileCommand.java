@@ -135,8 +135,9 @@ public class WhileCommand extends Command implements Configurable {
                     .then(new StringArgument("Command ID")
                         .executes((sender, args) -> {
                             String commandID = args.getUnchecked("Command ID");
-                            if (tasks.containsKey(commandID)) {
-                                tasks.remove(commandID).cancel();
+                            BukkitTask task = tasks.remove(commandID);
+                            if (task != null) {
+                                task.cancel();
                             }
                         })
                     )

@@ -3,16 +3,11 @@ package me.dunescifye.commandutils.files;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import me.dunescifye.commandutils.CommandUtils;
-import me.dunescifye.commandutils.placeholders.InvUtils;
 import me.dunescifye.commandutils.placeholders.StringUtils;
 import me.dunescifye.commandutils.commands.Command;
 import me.dunescifye.commandutils.commands.Configurable;
 import me.dunescifye.commandutils.commands.Registerable;
 import me.dunescifye.commandutils.utils.Utils;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Tag;
 import org.bukkit.block.Block;
 
 import java.io.File;
@@ -142,6 +137,7 @@ public class Config {
                     } else {
                         logger.warning("Configuration Placeholders.Enabled is not a boolean. Found " + config.getString("Placeholders.Enabled"));
                     }
+                    /*
                     if (config.getOptionalBoolean("Placeholders.InvUtils.Enabled").isEmpty()) {
                         config.set("Placeholders.InvUtils.Enabled", true);
                     }
@@ -167,6 +163,8 @@ public class Config {
                             logger.warning("Configuration Placeholders.InvUtils.AllowCustomSeparator is not a boolean. Found " + placeholderSection.get("AllowCustomSeparator"));
                         }
                     }
+
+                     */
                 }
             }
 
