@@ -445,7 +445,6 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                             continue block;
                                                                         }
                                                                     }
-                                                                    //Testing claim
                                                                     drops.addAll(relative.getDrops(heldItem));
                                                                     relative.setType(Material.AIR);
                                                                     break;
@@ -514,7 +513,6 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                                                 continue block;
                                                                             }
                                                                         }
-                                                                        //Testing claim
                                                                         drop.setAmount(drop.getAmount() + 1);
                                                                         relative.setType(Material.AIR);
                                                                         break;
