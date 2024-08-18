@@ -203,7 +203,10 @@ Commands:
   SetTNTSource:
     Enabled: true
     Aliases: []
-
+    #Allow selecting multiple tnt's at once to set source, requires restart
+    MultipleTNTs: true
+    #Allow selecting multiple sources at once, will be a random source if more than one source is provided, requires restart
+    MultipleSources: false
   SilentParticle:
     Enabled: true
     Aliases: []

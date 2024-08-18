@@ -70,7 +70,7 @@ public class RunCommandWhenCommand extends Command implements Registerable {
                                                                     return;
                                                                 }
                                                                 if (!Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2))) {
-                                                                    this    .cancel();
+                                                                    this.cancel();
                                                                     for (String command : commands)
                                                                         server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(p, command));
                                                                 }
