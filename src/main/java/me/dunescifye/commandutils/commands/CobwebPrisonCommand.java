@@ -13,22 +13,28 @@ public class CobwebPrisonCommand extends Command implements Registerable {
     public void register() {
         if (!this.getEnabled()) return;
 
+        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
+        StringArgument worldArg = new StringArgument("World");
+        PlayerArgument playerArg = new PlayerArgument("Player");
+        IntegerArgument radiusArg = new IntegerArgument("Radius");
+        IntegerArgument heightArg = new IntegerArgument("Height");
+
         new CommandAPICommand("cobwebprison")
-            .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))
-            .withArguments(new StringArgument("World"))
-            .withArguments(new PlayerArgument("Player"))
-            .withArguments(new IntegerArgument("Radius"))
-            .withArguments(new IntegerArgument("Height"))
+            .withArguments(locArg)
+            .withArguments(worldArg)
+            .withArguments(playerArg)
+            .withArguments(radiusArg)
+            .withArguments(heightArg)
             .executes((sender, args) -> {
-                World world = Bukkit.getWorld(args.getByClass("World", String.class));
-                Block block = world.getBlockAt(args.getUnchecked("Location"));
+                World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                Block block = world.getBlockAt(args.getByArgument(locArg));
                 Location loc = block.getLocation();
                 int startX = loc.getBlockX();
                 int startY = loc.getBlockY();
                 int startZ = loc.getBlockZ();
-                String p = args.getByClass("Player", Player.class).getName();
-                int radius = args.getUnchecked("Radius");
-                int height = args.getUnchecked("Height");
+                String p = args.getByArgument(playerArg).getName();
+                int radius = args.getByArgument(radiusArg);
+                int height = args.getByArgument(heightArg);
 
                 Server server = Bukkit.getServer();
                 ConsoleCommandSender commandSender = Bukkit.getConsoleSender();
@@ -59,7 +65,7 @@ public class CobwebPrisonCommand extends Command implements Registerable {
                 for (int x = startX -radius; x <= startX + radius; x++) {
                     for (int z = startZ - radius; z <= startZ + radius; z++) {
                         Block b = block.getRelative(x, startY + height, z);
-                        if (b.getType() == Material.AIR){
+                        if (b.getType() == Material.AIR) {
                             server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + x + " " + (startY + height) + " " + z + " COBWEB 100 true");
                         }
                     }

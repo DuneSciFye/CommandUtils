@@ -24,17 +24,20 @@ public class ChangeVillagerProfessionCommand extends Command implements Register
     public void register() {
         if (!this.getEnabled()) return;
 
+        EntitySelectorArgument.ManyEntities villagersArg = new EntitySelectorArgument.ManyEntities("Villagers");
+        StringArgument professionArg = new StringArgument("Profession");
+
         new CommandAPICommand("changevillagerprofession")
-            .withArguments(new EntitySelectorArgument.ManyEntities("Villagers"))
-            .withArguments(new StringArgument("Profession")
+            .withArguments(villagersArg)
+            .withArguments(professionArg
                 .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllVillagerProfession().toArray(new String[0])))
             )
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getUnchecked("Villagers");
-                assert entities != null;
+                Collection<Entity> entities = args.getByArgument(villagersArg);
+                String profession = args.getByArgument(professionArg);
                 for (Entity entity : entities) {
                     if (entity instanceof Villager villager) {
-                        villager.setProfession(Villager.Profession.valueOf(((String) args.get("Profession")).toUpperCase()));
+                        villager.setProfession(Villager.Profession.valueOf(profession.toUpperCase()));
                     }
                 }
             })
