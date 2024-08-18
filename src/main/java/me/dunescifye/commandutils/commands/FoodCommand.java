@@ -9,22 +9,29 @@ public class FoodCommand extends Command implements Registerable {
     public void register() {
         if (!this.getEnabled()) return;
 
+        LiteralArgument addArg = new LiteralArgument("add");
+        LiteralArgument removeArg = new LiteralArgument("remove");
+        LiteralArgument setArg = new LiteralArgument("set");
+        PlayerArgument playerArg = new PlayerArgument("Player");
+        IntegerArgument amountArg = new IntegerArgument("Amount");
+        BooleanArgument allowOverflowArg = new BooleanArgument("Allow Overflow");
+
         new CommandTree("food")
-            .then(new LiteralArgument("add")
-                .then(new PlayerArgument("Player")
-                    .then(new IntegerArgument("Amount")
+            .then(addArg
+                .then(playerArg
+                    .then(amountArg
                         .executes((sender, args) -> {
-                            Player p = args.getUnchecked("Player");
+                            Player p = args.getByArgument(playerArg);
                             int foodLevel = p.getFoodLevel();
-                            int addAmount = args.getUnchecked("Amount");
+                            int addAmount = args.getByArgument(amountArg);
                             p.setFoodLevel(Math.min(foodLevel + addAmount, 20));
                         })
-                        .then(new BooleanArgument("Allow Overflow")
+                        .then(allowOverflowArg
                             .executes((sender, args) -> {
-                                Player p = args.getUnchecked("Player");
+                                Player p = args.getByArgument(playerArg);
                                 int foodLevel = p.getFoodLevel();
-                                int addAmount = args.getUnchecked("Amount");
-                                if (args.getByClass("Allow Overflow", Boolean.class) || foodLevel + addAmount < 20) {
+                                int addAmount = args.getByArgument(amountArg);
+                                if (args.getByArgument(allowOverflowArg) || foodLevel + addAmount < 20) {
                                     p.setFoodLevel(foodLevel + addAmount);
                                 } else {
                                     p.setFoodLevel(20);
@@ -34,22 +41,22 @@ public class FoodCommand extends Command implements Registerable {
                     )
                 )
             )
-            .then(new LiteralArgument("remove")
-                .then(new PlayerArgument("Player")
-                    .then(new IntegerArgument("Amount")
+            .then(removeArg
+                .then(playerArg
+                    .then(amountArg
                         .executes((sender, args) -> {
-                            Player p = args.getUnchecked("Player");
-                            p.setFoodLevel(p.getFoodLevel() - args.getByClass("Amount", int.class));
+                            Player p = args.getByArgument(playerArg);
+                            p.setFoodLevel(p.getFoodLevel() - args.getByArgument(amountArg));
                         })
                     )
                 )
             )
-            .then(new LiteralArgument("set")
-                .then(new PlayerArgument("Player")
-                    .then(new IntegerArgument("Amount")
+            .then(setArg
+                .then(playerArg
+                    .then(amountArg
                         .executes((sender, args) -> {
-                            Player p = args.getUnchecked("Player");
-                            p.setFoodLevel(args.getUnchecked("Amount"));
+                            Player p = args.getByArgument(playerArg);
+                            p.setFoodLevel(args.getByArgument(amountArg));
                         })
                     )
                 )
