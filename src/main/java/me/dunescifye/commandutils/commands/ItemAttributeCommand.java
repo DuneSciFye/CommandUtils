@@ -36,34 +36,42 @@ public class ItemAttributeCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
+
         if (!this.getEnabled()) return;
+
+        LiteralArgument addArg = new LiteralArgument("add");
+        PlayerArgument playerArg = new PlayerArgument("Player");
+        IntegerArgument itemSlotArg = new IntegerArgument("Item Slot", -1, 36);
+        StringArgument attributeArg = new StringArgument("Attribute");
+        DoubleArgument valueArg = new DoubleArgument("Value");
+        StringArgument operationArg = new StringArgument("Operation");
+        StringArgument equipSlotArg = new StringArgument("Equipment Slot");
+
         new CommandTree("itemattribute")
-            .then(new LiteralArgument("add")
-                .then(new PlayerArgument("Player")
-                    .then(new IntegerArgument("Item Slot", -1, 36)
-                        .then(new StringArgument("Attribute")
+            .then(addArg
+                .then(playerArg
+                    .then(itemSlotArg
+                        .then(attributeArg
                             .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllAttributes().toArray(new String[0])))
-                            .then(new DoubleArgument("Value")
-                                .then(new StringArgument("Operation")
+                            .then(valueArg
+                                .then(operationArg
                                     .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllOperations().toArray(new String[0])))
-                                    .then(new StringArgument("Equipment Slot")
+                                    .then(equipSlotArg
                                         .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllEquipmentSlots().toArray(new String[0])))
                                         .executes((sender, args) -> {
-                                            Player p = (Player) args.get("Player");
-                                            int slot = (Integer) args.get("Item Slot");
+                                            Player p = args.getByArgument(playerArg);
+                                            int slot = args.getByArgument(itemSlotArg);
                                             ItemStack item = slot == -1 ? p.getInventory().getItemInMainHand() : p.getInventory().getItem(slot);
                                             if (item == null)
                                                 return;
 
                                             ItemMeta meta = item.getItemMeta();
-                                            if (meta == null)
-                                                return;
 
-                                            double amount = (Double) args.get("Value");
+                                            double amount = args.getByArgument(valueArg);
                                             UUID uuid = UUID.randomUUID();
-                                            Attribute attribute = Attribute.valueOf(args.get("Attribute").toString().toUpperCase());
-                                            AttributeModifier.Operation operation = AttributeModifier.Operation.valueOf(args.get("Operation").toString().toUpperCase());
-                                            EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(args.get("Equipment Slot").toString().toUpperCase());
+                                            Attribute attribute = Attribute.valueOf(args.getByArgument(attributeArg).toUpperCase());
+                                            AttributeModifier.Operation operation = AttributeModifier.Operation.valueOf(args.getByArgument(operationArg).toUpperCase());
+                                            EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(args.getByArgument(equipSlotArg).toUpperCase());
 
                                             AttributeModifier modifier = new AttributeModifier(uuid, uuid.toString(), amount, operation, equipmentSlot);
                                             meta.addAttributeModifier(attribute, modifier);

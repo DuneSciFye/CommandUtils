@@ -4,7 +4,6 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.wrappers.ParticleData;
-import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -13,7 +12,6 @@ import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 
 import static me.dunescifye.commandutils.CommandUtils.getInstance;
 
@@ -23,14 +21,17 @@ public class HighlightBlocksCommand extends Command implements Configurable {
     public void register (YamlDocument config){
         if (!this.getEnabled()) return;
 
-        Logger logger = CommandUtils.getInstance().getLogger();
-
         String stringParticle;
 
         if (config.getOptionalString("Commands.HighlightBlocks.DefaultParticle").isPresent()) {
-
+            if (config.isString("Commands.HighlightBlocks.DefaultParticle")) {
+                stringParticle = config.getString("Commands.HighlightBlocks.DefaultParticle");
+            } else {
+                stringParticle = "ELECTRIC_SPARK";
+            }
         } else {
-            logger.warning("");
+            stringParticle = "ELECTRIC_SPARK";
+            config.set("Commands.HighlightBlocks.DefaultParticle", "ELECTRIC_SPARK");
         }
 
         new CommandAPICommand("highlightblocks")
@@ -47,7 +48,7 @@ public class HighlightBlocksCommand extends Command implements Configurable {
                 int radius = args.getUnchecked("Radius");
                 Predicate<Block> predicate = args.getUnchecked("Block");
                 ParticleData<?> particleData = args.getUnchecked("Particle");
-                Particle particle = particleData == null ? Particle.ELECTRIC_SPARK : particleData.particle();
+                Particle particle = particleData == null ? Particle.valueOf(stringParticle) : particleData.particle();
 
                 for (int x = -radius; x <= radius; x++){
                     for (int y = -radius; y <= radius; y++){
