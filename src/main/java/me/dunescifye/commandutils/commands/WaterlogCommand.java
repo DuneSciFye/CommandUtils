@@ -12,15 +12,21 @@ public class WaterlogCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!this.getEnabled()) return;
+
+        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
+        StringArgument worldArg = new StringArgument("World");
+        BooleanArgument waterlogArg = new BooleanArgument("Waterlogged State");
+        IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
+
     //Arguments: World, X Y Z, waterlogOrNot
         new CommandAPICommand("waterlogblock")
-            .withArguments(new LocationArgument("Location", LocationType.BLOCK_POSITION))
-            .withArguments(new StringArgument("World"))
-            .withOptionalArguments(new BooleanArgument("Waterlogged State"))
-            .withOptionalArguments(new IntegerArgument("Radius", 0))
+            .withArguments(locArg)
+            .withArguments(worldArg)
+            .withOptionalArguments(waterlogArg)
+            .withOptionalArguments(radiusArg)
             .executes((sender, args) -> {
 
-                Block block = Bukkit.getWorld((String) args.get("World")).getBlockAt((Location) args.get("Location"));
+                Block block = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
                 int radius = (int) args.getOrDefault("Radius", 0);
 
                 for (int x = -radius; x <= radius; x++) {

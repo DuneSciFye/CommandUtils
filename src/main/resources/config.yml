@@ -227,6 +227,9 @@ Commands:
   WeightedRandom:
     Enabled: true
     Aliases: []
+    ArgumentSeparator: ",,"
+    CommandSeparator: "\\|"
+
 
   While:
     Enabled: true

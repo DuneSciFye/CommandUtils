@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.commands;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
+import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Logger;
 
 
 public class WeightedRandomCommand extends Command implements Configurable {
@@ -18,11 +20,42 @@ public class WeightedRandomCommand extends Command implements Configurable {
     public void register(YamlDocument config) {
         if (!this.getEnabled()) return;
 
+        Logger logger = CommandUtils.getInstance().getLogger();
+        Server server = Bukkit.getServer();
+        ConsoleCommandSender console = server.getConsoleSender();
+        String commandSeparator, argumentSeparator;
+
+        if (config.getOptionalString("Commands.WeightedRandom.CommandSeparator").isEmpty()) {
+            config.set("Commands.WeightedRandom.CommandSeparator", "\\|");
+            commandSeparator = "\\|";
+        } else {
+            if (config.isString("Commands.WeightedRandom.CommandSeparator")) {
+                commandSeparator = config.getString("Commands.WeightedRandom.CommandSeparator");
+            } else {
+                logger.warning("Configuration Commands.WeightedRandom.CommandSeparator is not a String. Using default value of `\\|`");
+                commandSeparator = "\\|";
+            }
+        }
+
+        if (config.getOptionalString("Commands.WeightedRandom.ArgumentSeparator").isEmpty()) {
+            config.set("Commands.WeightedRandom.ArgumentSeparator", ",,");
+            argumentSeparator = ",,";
+        } else {
+            if (config.isString("Commands.WeightedRandom.ArgumentSeparator")) {
+                argumentSeparator = config.getString("Commands.WeightedRandom.ArgumentSeparator");
+            } else {
+                logger.warning("Configuration Commands.WeightedRandom.ArgumentSeparator is not a String. Using default value of `,,`");
+                argumentSeparator = ",,";
+            }
+        }
+
+        GreedyStringArgument argumentsArg = new GreedyStringArgument("Arguments");
+
         new CommandAPICommand("weightedrandom")
-            .withArguments(new GreedyStringArgument("Arguments"))
+            .withArguments(argumentsArg)
             .executes((sender, args) -> {
-                String input = (String) args.get("Arguments");
-                String[] list = input.split(",,");
+                String input = args.getByArgument(argumentsArg);
+                String[] list = input.split(argumentSeparator);
                 int totalWeight = 0;
                 List<String> items = new ArrayList<>();
                 List<Integer> numbers = new ArrayList<>();
@@ -36,12 +69,9 @@ public class WeightedRandomCommand extends Command implements Configurable {
                 }
                 int random = ThreadLocalRandom.current().nextInt(1, totalWeight);
 
-                Server server = Bukkit.getServer();
-                ConsoleCommandSender console = server.getConsoleSender();
-
                 for (int i = 0; i < numbers.size(); i++) {
                     if (random <= numbers.get(i)) {
-                        String[] commands = items.get(i).split("\\|");
+                        String[] commands = items.get(i).split(commandSeparator);
                         for (String command : commands) {
                             if (!Objects.equals(command, "")) {
                                 server.dispatchCommand(console, command);
