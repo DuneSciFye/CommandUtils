@@ -69,10 +69,56 @@ public class HighlightBlocksCommand extends Command implements Configurable {
         ParticleArgument particleArg = new ParticleArgument("Particle");
         StringArgument whitelistedBlocksArgument = new StringArgument("Whitelisted Blocks");
         LiteralArgument whitelistArg = new LiteralArgument("whitelist");
+        BooleanArgument randomParticlesArg = new BooleanArgument("Random Particles");
 
         if (multipleBlocks) {
             if (multipleParticles) {
+                new CommandAPICommand("highlightblocks")
+                    .withArguments(locArg)
+                    .withArguments(worldArg)
+                    .withArguments(radiusArg)
+                    .withArguments(blockArg)
+                    .withOptionalArguments(new ListArgumentBuilder<ParticleData>())
+                    .withOptionalArguments(randomParticlesArg)
+                    .executes((sender, args) -> {
 
+                        World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                        Location location = args.getByArgument(locArg);
+                        Block block = world.getBlockAt(location);
+                        int radius = args.getByArgument(radiusArg);
+                        Predicate<Block> predicate = args.getByArgument(blockArg);
+                        ParticleData<?> particleData = args.getByArgument(particleArg);
+                        Particle particle = particleData == null ? Particle.valueOf(stringParticle) : particleData.particle();
+                        boolean randomParticles = args.getByArgument(randomParticlesArg);
+
+                        for (int x = -radius; x <= radius; x++) {
+                            for (int y = -radius; y <= radius; y++) {
+                                for (int z = -radius; z <= radius; z++) {
+                                    Block b = block.getRelative(x, y, z);
+                                    if (predicate.test(b)) {
+                                        new BukkitRunnable() {
+                                            int count = 0;
+
+                                            @Override
+                                            public void run() {
+                                                if (count >= 10) {
+                                                    cancel();
+                                                    return;
+                                                }
+
+                                                world.spawnParticle(particle, b.getX() + 0.5, b.getY() + 0.5, b.getZ() + 0.5, 3, 0, 0, 0, 0);
+
+                                                count += 1;
+                                            }
+                                        }.runTaskTimer(getInstance(), 0, 5);
+                                    }
+                                }
+                            }
+                        }
+                    })
+                    .withPermission(this.getPermission())
+                    .withAliases(this.getCommandAliases())
+                    .register(this.getNamespace());
             } else {
                 new CommandAPICommand("highlightblocks")
                     .withArguments(locArg)
