@@ -15,17 +15,22 @@ public class LoadCrossbowCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
+
         if (!this.getEnabled()) return;
 
+        PlayerArgument playerArg = new PlayerArgument("Player");
+        IntegerArgument slotArg = new IntegerArgument("Slot", 0, 36);
+        BooleanArgument loadedArg = new BooleanArgument("Loaded");
+
         new CommandAPICommand("loadcrossbow")
-            .withArguments(new PlayerArgument("Player"))
-            .withArguments(new IntegerArgument("Slot", 0, 36))
-            .withOptionalArguments(new BooleanArgument("Loaded"))
+            .withArguments(playerArg)
+            .withArguments(slotArg)
+            .withOptionalArguments(loadedArg)
             .executes((sender, args) -> {
-                Player p = args.getUnchecked("Player");
-                ItemStack item = p.getInventory().getItem(args.getUnchecked("Slot"));
+                Player p = args.getByArgument(playerArg);
+                ItemStack item = p.getInventory().getItem(args.getByArgument(slotArg));
                 if (item.getItemMeta() instanceof CrossbowMeta crossbowMeta) {
-                    if (args.getOrDefaultUnchecked("Loaded", true)) {
+                    if (args.getByArgumentOrDefault(loadedArg, true)) {
                         crossbowMeta.setChargedProjectiles(List.of(new ItemStack(Material.ARROW)));
                     } else {
                         crossbowMeta.setChargedProjectiles(List.of());
