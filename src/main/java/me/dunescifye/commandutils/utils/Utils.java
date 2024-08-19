@@ -22,6 +22,7 @@ public class Utils {
 
     private static final Map<String, List<Predicate<Block>>> predicates = new HashMap<>();
     private static final Collection<String> PREDICATES_LIST = new ArrayList<>();
+    private static final Collection<String> PARTICLES_LIST = new ArrayList<>();
 
     private static final List<Predicate<Block>> pickaxeBlacklist = Arrays.asList(
         block -> block.getType().equals(Material.SPAWNER),
@@ -52,6 +53,11 @@ public class Utils {
             String name = mat.name();
             PREDICATES_LIST.add(name);
             PREDICATES_LIST.add("!" + name);
+        }
+
+        //Particles List
+        for (Particle particle : Particle.values()) {
+            PARTICLES_LIST.add(particle.name());
         }
     }
 
@@ -277,7 +283,21 @@ public class Utils {
         }
     }
 
+    public static List<Particle> stringListToParticles(List<String> inputList) {
+        List<Particle> particles = new ArrayList<>();
+
+        for (String input : inputList) {
+            particles.add(Particle.valueOf(input));
+        }
+
+        return particles;
+    }
+
     public static Collection<String> getPredicatesList() {
         return PREDICATES_LIST;
+    }
+
+    public static Collection<String> getParticlesList() {
+        return PARTICLES_LIST;
     }
 }

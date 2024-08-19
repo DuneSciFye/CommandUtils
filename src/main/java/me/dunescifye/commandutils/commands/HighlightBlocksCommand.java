@@ -44,11 +44,11 @@ public class HighlightBlocksCommand extends Command implements Configurable {
             if (config.isBoolean("Commands.HighlightBlocks.MultipleBlocks")) {
                 multipleBlocks = config.getBoolean("Commands.HighlightBlocks.MultipleBlocks");
             } else {
-                multipleBlocks = true;
+                multipleBlocks = false;
             }
         } else {
-            multipleBlocks = true;
-            config.set("Commands.HighlightBlocks.MultipleBlocks", true);
+            multipleBlocks = false;
+            config.set("Commands.HighlightBlocks.MultipleBlocks", false);
         }
 
         if (config.getOptionalString("Commands.HighlightBlocks.MultipleParticles").isPresent()) {
@@ -73,49 +73,64 @@ public class HighlightBlocksCommand extends Command implements Configurable {
 
         if (multipleBlocks) {
             if (multipleParticles) {
-                new CommandAPICommand("highlightblocks")
-                    .withArguments(locArg)
-                    .withArguments(worldArg)
-                    .withArguments(radiusArg)
-                    .withArguments(blockArg)
-                    .withOptionalArguments(new ListArgumentBuilder<ParticleData>())
-                    .withOptionalArguments(randomParticlesArg)
-                    .executes((sender, args) -> {
+                new CommandTree("highlightblocks")
+                    .then(locArg
+                        .then(worldArg
+                            .then(radiusArg
+                                .then(whitelistArg
+                                    .then(new ListArgumentBuilder<String>("Whitelisted Blocks")
+                                        .withList(Utils.getPredicatesList())
+                                        .withStringMapper()
+                                        .buildText()
+                                        .executes((sender, args) -> {
+                                            List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
+                                            Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
+                                            World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                            Location location = args.getByArgument(locArg);
+                                            Block origin = world.getBlockAt(location);
+                                            int radius = args.getByArgument(radiusArg);
+                                            List<Particle> particles = Utils.stringListToParticles(args.getUnchecked("Particles"));
+                                            ParticleData<?> particleData = args.getByArgument(particleArg);
+                                            Particle particle = particleData == null ? Particle.valueOf(stringParticle) : particleData.particle();
 
-                        World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                        Location location = args.getByArgument(locArg);
-                        Block block = world.getBlockAt(location);
-                        int radius = args.getByArgument(radiusArg);
-                        Predicate<Block> predicate = args.getByArgument(blockArg);
-                        ParticleData<?> particleData = args.getByArgument(particleArg);
-                        Particle particle = particleData == null ? Particle.valueOf(stringParticle) : particleData.particle();
-                        boolean randomParticles = args.getByArgument(randomParticlesArg);
+                                            for (int x = -radius; x <= radius; x++) {
+                                                for (int y = -radius; y <= radius; y++) {
+                                                    block:
+                                                    for (int z = -radius; z <= radius; z++) {
+                                                        Block relative = origin.getRelative(x, y, z);
+                                                        for (Predicate<Block> predicateWhitelist : whitelist) {
+                                                            if (predicateWhitelist.test(relative)) {
+                                                                for (Predicate<Block> predicateBlacklist : blacklist) {
+                                                                    if (predicateBlacklist.test(relative)) {
+                                                                        continue block;
+                                                                    }
+                                                                }
+                                                                new BukkitRunnable() {
+                                                                    int count = 0;
 
-                        for (int x = -radius; x <= radius; x++) {
-                            for (int y = -radius; y <= radius; y++) {
-                                for (int z = -radius; z <= radius; z++) {
-                                    Block b = block.getRelative(x, y, z);
-                                    if (predicate.test(b)) {
-                                        new BukkitRunnable() {
-                                            int count = 0;
+                                                                    @Override
+                                                                    public void run() {
+                                                                        if (count >= 10) {
+                                                                            cancel();
+                                                                            return;
+                                                                        }
 
-                                            @Override
-                                            public void run() {
-                                                if (count >= 10) {
-                                                    cancel();
-                                                    return;
+                                                                        world.spawnParticle(particle, relative.getX() + 0.5, relative.getY() + 0.5, relative.getZ() + 0.5, 3, 0, 0, 0, 0);
+
+                                                                        count += 1;
+                                                                    }
+                                                                }.runTaskTimer(getInstance(), 0, 5);
+                                                            }
+                                                        }
+                                                    }
                                                 }
-
-                                                world.spawnParticle(particle, b.getX() + 0.5, b.getY() + 0.5, b.getZ() + 0.5, 3, 0, 0, 0, 0);
-
-                                                count += 1;
                                             }
-                                        }.runTaskTimer(getInstance(), 0, 5);
-                                    }
-                                }
-                            }
-                        }
-                    })
+                                        })
+                                    )
+                                )
+                            )
+                        )
+                    )
                     .withPermission(this.getPermission())
                     .withAliases(this.getCommandAliases())
                     .register(this.getNamespace());
@@ -172,7 +187,11 @@ public class HighlightBlocksCommand extends Command implements Configurable {
                     .withArguments(worldArg)
                     .withArguments(radiusArg)
                     .withArguments(blockArg)
-                    .withOptionalArguments(new ListArgumentBuilder<ParticleData>())
+                    .withOptionalArguments(new ListArgumentBuilder<String>("Particles")
+                        .withList(Utils.getParticlesList())
+                        .withStringMapper()
+                        .buildText()
+                    )
                     .withOptionalArguments(randomParticlesArg)
                     .executes((sender, args) -> {
 
@@ -183,7 +202,7 @@ public class HighlightBlocksCommand extends Command implements Configurable {
                         Predicate<Block> predicate = args.getByArgument(blockArg);
                         ParticleData<?> particleData = args.getByArgument(particleArg);
                         Particle particle = particleData == null ? Particle.valueOf(stringParticle) : particleData.particle();
-                        boolean randomParticles = args.getByArgument(randomParticlesArg);
+                        boolean randomParticles = args.getByArgumentOrDefault(randomParticlesArg, false);
 
                         for (int x = -radius; x <= radius; x++) {
                             for (int y = -radius; y <= radius; y++) {
