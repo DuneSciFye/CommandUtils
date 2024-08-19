@@ -123,6 +123,7 @@ Commands:
     Permission: "commandutils.command.highlightblockscommand"
     DefaultParticle: "ELECTRIC_SPARK"
     MultipleBlocks: true
+    MultipleParticles: false
 
   If:
     Enabled: true
