@@ -16,6 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
 import static me.dunescifye.commandutils.CommandUtils.getInstance;
@@ -173,6 +174,50 @@ public class HighlightBlocksCommand extends Command implements Configurable {
                                                     }
                                                 }
                                             }))
+                                            .then(randomParticlesArg
+                                                .executes((sender, args) -> {
+                                                    List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
+                                                    Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
+                                                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                                    Location location = args.getByArgument(locArg);
+                                                    Block origin = world.getBlockAt(location);
+                                                    int radius = args.getByArgument(radiusArg);
+                                                    List<Particle> particles = Utils.stringListToParticles(args.getUnchecked("Particles"));
+
+                                                    for (int x = -radius; x <= radius; x++) {
+                                                        for (int y = -radius; y <= radius; y++) {
+                                                            block:
+                                                            for (int z = -radius; z <= radius; z++) {
+                                                                Block relative = origin.getRelative(x, y, z);
+                                                                for (Predicate<Block> predicateWhitelist : whitelist) {
+                                                                    if (predicateWhitelist.test(relative)) {
+                                                                        for (Predicate<Block> predicateBlacklist : blacklist) {
+                                                                            if (predicateBlacklist.test(relative)) {
+                                                                                continue block;
+                                                                            }
+                                                                        }
+                                                                        new BukkitRunnable() {
+                                                                            int count = 0;
+
+                                                                            @Override
+                                                                            public void run() {
+                                                                                if (count >= 10) {
+                                                                                    cancel();
+                                                                                    return;
+                                                                                }
+
+                                                                                world.spawnParticle(particles.get(ThreadLocalRandom.current().nextInt(particles.size())), relative.getX() + 0.5, relative.getY() + 0.5, relative.getZ() + 0.5, 3, 0, 0, 0, 0);
+
+                                                                                count += 1;
+                                                                            }
+                                                                        }.runTaskTimer(getInstance(), 0, 5);
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                })
+                                            )
                                         )
                                     )
                                     .then(whitelistedBlocksArgument
@@ -254,26 +299,54 @@ public class HighlightBlocksCommand extends Command implements Configurable {
                         Particle particle = particleData == null ? Particle.valueOf(stringParticle) : particleData.particle();
                         boolean randomParticles = args.getByArgumentOrDefault(randomParticlesArg, false);
 
-                        for (int x = -radius; x <= radius; x++) {
-                            for (int y = -radius; y <= radius; y++) {
-                                for (int z = -radius; z <= radius; z++) {
-                                    Block b = block.getRelative(x, y, z);
-                                    if (predicate.test(b)) {
-                                        new BukkitRunnable() {
-                                            int count = 0;
+                        if (randomParticles) {
+                            for (int x = -radius; x <= radius; x++) {
+                                for (int y = -radius; y <= radius; y++) {
+                                    for (int z = -radius; z <= radius; z++) {
+                                        Block b = block.getRelative(x, y, z);
+                                        if (predicate.test(b)) {
+                                            new BukkitRunnable() {
+                                                int count = 0;
 
-                                            @Override
-                                            public void run() {
-                                                if (count >= 10) {
-                                                    cancel();
-                                                    return;
+                                                @Override
+                                                public void run() {
+                                                    if (count >= 10) {
+                                                        cancel();
+                                                        return;
+                                                    }
+
+
+                                                    world.spawnParticle(particle, b.getX() + 0.5, b.getY() + 0.5, b.getZ() + 0.5, 3, 0, 0, 0, 0);
+
+                                                    count += 1;
                                                 }
+                                            }.runTaskTimer(getInstance(), 0, 5);
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            for (int x = -radius; x <= radius; x++) {
+                                for (int y = -radius; y <= radius; y++) {
+                                    for (int z = -radius; z <= radius; z++) {
+                                        Block b = block.getRelative(x, y, z);
+                                        if (predicate.test(b)) {
+                                            new BukkitRunnable() {
+                                                int count = 0;
 
-                                                world.spawnParticle(particle, b.getX() + 0.5, b.getY() + 0.5, b.getZ() + 0.5, 3, 0, 0, 0, 0);
+                                                @Override
+                                                public void run() {
+                                                    if (count >= 10) {
+                                                        cancel();
+                                                        return;
+                                                    }
 
-                                                count += 1;
-                                            }
-                                        }.runTaskTimer(getInstance(), 0, 5);
+                                                    world.spawnParticle(particle, b.getX() + 0.5, b.getY() + 0.5, b.getZ() + 0.5, 3, 0, 0, 0, 0);
+
+                                                    count += 1;
+                                                }
+                                            }.runTaskTimer(getInstance(), 0, 5);
+                                        }
                                     }
                                 }
                             }
