@@ -102,6 +102,7 @@ public class Config {
             }
 
             //Placeholders
+            /*
             if (CommandUtils.placeholderAPIEnabled) {
                 //Register Placeholders
                 if (config.getOptionalBoolean("Placeholders.Enabled").isEmpty()) {
@@ -163,10 +164,9 @@ public class Config {
                             logger.warning("Configuration Placeholders.InvUtils.AllowCustomSeparator is not a boolean. Found " + placeholderSection.get("AllowCustomSeparator"));
                         }
                     }
-
-                     */
                 }
             }
+            */
 
             Section whitelistSection = config.getSection("Whitelists");
 

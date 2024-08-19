@@ -47,63 +47,67 @@ public class SetTNTSourceCommand extends Command implements Configurable {
         }
 
         //Multiple tnts, single source
-        if (multipleTNTs && !multipleSources) {
-            new CommandAPICommand("settntsource")
-                .withArguments(tntsArg)
-                .withArguments(entitySourceArg)
-                .executes((sender, args) -> {
-                    Collection<Entity> tnts = args.getByArgument(tntsArg);
-                    for (Entity entity : tnts) {
-                        if (entity instanceof TNTPrimed tnt)
-                            tnt.setSource(args.getByArgument(entitySourceArg));
-                    }
-                })
-                .withPermission(this.getPermission())
-                .withAliases(this.getCommandAliases())
-                .register(this.getNamespace());
-        } else if (multipleTNTs && multipleSources) {
-            new CommandAPICommand("settntsource")
-                .withArguments(tntsArg)
-                .withArguments(entitySourcesArg)
-                .executes((sender, args) -> {
-                    Collection<Entity> tnts = args.getByArgument(tntsArg);
-                    Collection<Entity> entities = args.getByArgument(entitySourcesArg);
-                    Entity[] sources = entities.toArray(new Entity[0]);
-                    for (Entity entity : tnts) {
+        if (multipleTNTs) {
+            if (multipleSources) {
+                new CommandAPICommand("settntsource")
+                    .withArguments(tntsArg)
+                    .withArguments(entitySourcesArg)
+                    .executes((sender, args) -> {
+                        Collection<Entity> tnts = args.getByArgument(tntsArg);
+                        Collection<Entity> entities = args.getByArgument(entitySourcesArg);
+                        Entity[] sources = entities.toArray(new Entity[0]);
+                        for (Entity entity : tnts) {
+                            if (entity instanceof TNTPrimed tnt)
+                                tnt.setSource(sources[ThreadLocalRandom.current().nextInt(sources.length)]);
+                        }
+                    })
+                    .withPermission(this.getPermission())
+                    .withAliases(this.getCommandAliases())
+                    .register(this.getNamespace());
+            } else {
+                new CommandAPICommand("settntsource")
+                    .withArguments(tntsArg)
+                    .withArguments(entitySourceArg)
+                    .executes((sender, args) -> {
+                        Collection<Entity> tnts = args.getByArgument(tntsArg);
+                        for (Entity entity : tnts) {
+                            if (entity instanceof TNTPrimed tnt)
+                                tnt.setSource(args.getByArgument(entitySourceArg));
+                        }
+                    })
+                    .withPermission(this.getPermission())
+                    .withAliases(this.getCommandAliases())
+                    .register(this.getNamespace());
+            }
+        } else {
+            if (multipleSources) {
+                new CommandAPICommand("settntsource")
+                    .withArguments(tntsArg)
+                    .withArguments(entitySourcesArg)
+                    .executes((sender, args) -> {
+                        Entity entity = args.getByArgument(tntArg);
+                        Collection<Entity> entities = args.getByArgument(entitySourcesArg);
+                        Entity[] sources = entities.toArray(new Entity[0]);
                         if (entity instanceof TNTPrimed tnt)
                             tnt.setSource(sources[ThreadLocalRandom.current().nextInt(sources.length)]);
-                    }
-                })
-                .withPermission(this.getPermission())
-                .withAliases(this.getCommandAliases())
-                .register(this.getNamespace());
-        } else if (!multipleTNTs && multipleSources) {
-            new CommandAPICommand("settntsource")
-                .withArguments(tntsArg)
-                .withArguments(entitySourcesArg)
-                .executes((sender, args) -> {
-                    Entity entity = args.getByArgument(tntArg);
-                    Collection<Entity> entities = args.getByArgument(entitySourcesArg);
-                    Entity[] sources = entities.toArray(new Entity[0]);
-                    if (entity instanceof TNTPrimed tnt)
-                        tnt.setSource(sources[ThreadLocalRandom.current().nextInt(sources.length)]);
-                })
-                .withPermission(this.getPermission())
-                .withAliases(this.getCommandAliases())
-                .register(this.getNamespace());
-        } else if (!multipleTNTs && !multipleSources) {
-            new CommandAPICommand("settntsource")
-                .withArguments(tntsArg)
-                .withArguments(entitySourcesArg)
-                .executes((sender, args) -> {
-                    Entity entity = args.getByArgument(tntArg);
-                    Entity source = args.getByArgument(entitySourceArg);
-                    if (entity instanceof TNTPrimed tnt)
-                        tnt.setSource(source);
-                })
-                .withPermission(this.getPermission())
-                .withAliases(this.getCommandAliases())
-                .register(this.getNamespace());
+                    })
+                    .withPermission(this.getPermission())
+                    .withAliases(this.getCommandAliases())
+                    .register(this.getNamespace());
+            } else {
+                new CommandAPICommand("settntsource")
+                    .withArguments(tntsArg)
+                    .withArguments(entitySourcesArg)
+                    .executes((sender, args) -> {
+                        Entity entity = args.getByArgument(tntArg);
+                        Entity source = args.getByArgument(entitySourceArg);
+                        if (entity instanceof TNTPrimed tnt)
+                            tnt.setSource(source);
+                    })
+                    .withPermission(this.getPermission())
+                    .withAliases(this.getCommandAliases())
+                    .register(this.getNamespace());
+            }
         }
     }
 
