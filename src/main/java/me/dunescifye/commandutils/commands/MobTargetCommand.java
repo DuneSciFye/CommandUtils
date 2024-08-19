@@ -13,14 +13,20 @@ public class MobTargetCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {
+
         if (!this.getEnabled()) return;
 
+        boolean multipleEntities, multipleTargets;
+
+        EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
+        EntitySelectorArgument.OneEntity targetArg = new EntitySelectorArgument.OneEntity("Target");
+
         new CommandTree("mobtarget")
-            .then(new EntitySelectorArgument.ManyEntities("Entity")
-                .then(new EntitySelectorArgument.OneEntity("Target")
+            .then(entitiesArg
+                .then(targetArg
                     .executes((sender, args) -> {
-                        Collection<Entity> entities = args.getUnchecked("Entity");
-                        Entity target = args.getUnchecked("Target");
+                        Collection<Entity> entities = args.getByArgument(entitiesArg);
+                        Entity target = args.getByArgument(targetArg);
                         if (!(target instanceof LivingEntity livingEntity)) return;
                         for (Entity entity : entities) {
                             if (entity instanceof Creature creature) {

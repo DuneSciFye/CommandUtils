@@ -10,13 +10,17 @@ public class LaunchProjectileCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
+
         if (!this.getEnabled()) return;
 
+        StringArgument projArg = new StringArgument("Projectile");
+        PlayerArgument playerArg = new PlayerArgument("Player");
+
         new CommandAPICommand("launchprojectile")
-            .withArguments(new StringArgument("Projectile")
+            .withArguments(projArg
                 .replaceSuggestions(ArgumentSuggestions.strings())
             )
-            .withOptionalArguments(new PlayerArgument("Player"))
+            .withOptionalArguments(playerArg)
             .executesPlayer((p, args) -> {
                 DragonFireball fireball = p.launchProjectile(DragonFireball.class);
             })
