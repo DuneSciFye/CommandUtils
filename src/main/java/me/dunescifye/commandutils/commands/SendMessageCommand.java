@@ -2,22 +2,20 @@ package me.dunescifye.commandutils.commands;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.commandutils.utils.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
-import java.util.List;
 
 public class SendMessageCommand extends Command implements Configurable {
     @SuppressWarnings("ConstantConditions")
     public void register(YamlDocument config) {
 
-        if (!this.getEnabled()) return;
+        if (!this.getEnabled())
+            return;
 
         boolean ampersandByDefault, parsePlaceholdersByDefault, colorCodesByDefault;
 
@@ -112,143 +110,6 @@ public class SendMessageCommand extends Command implements Configurable {
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
-
-        new CommandTree("sendmessage")
-            .then(playersArg
-                .then(greedyMessageArg
-                    .executes((sender, args) -> {
-                        Collection<Player> players = args.getByArgument(playersArg);
-                        String message = args.getByArgument(greedyMessageArg);
-                    })
-                )
-                .then(textArg
-                    .executes((sender, args) -> {
-                        Collection<Player> players = args.getByArgument(playersArg);
-                        String message = args.getByArgument(textArg);
-                    })
-                    .then(colorCodesArg
-                        .executes((sender, args) -> {
-                            Collection<Player> players = args.getByArgument(playersArg);
-                            String message = args.getByArgument(textArg);
-                        })
-                        .then(parsePlaceholdersArg
-                            .executes((sender, args) -> {
-                                Collection<Player> players = args.getByArgument(playersArg);
-                                String message = args.getByArgument(textArg);
-                            })
-                            .then(useAmpersandArg
-                                .executes((sender, args) -> {
-                                    Collection<Player> players = args.getByArgument(playersArg);
-                                    String message = args.getByArgument(textArg);
-                                })
-                            )
-                        )
-                    )
-                )
-            )
-            .then(new ListArgumentBuilder<String>("Players List")
-                .withList(Utils.getPlayersList())
-                .withStringMapper()
-                .buildText()
-                .then(greedyMessageArg
-                    .executes((sender, args) -> {
-                        List<String> players = args.getUnchecked("Players List");
-                        String message = args.getByArgument(greedyMessageArg);
-
-                        for (String name : players) {
-                            Player player = Bukkit.getPlayer(name);
-
-                            if (parsePlaceholdersByDefault) {
-                                message = PlaceholderAPI.setPlaceholders(player, message);
-                            }
-
-                            if (colorCodesByDefault) {
-                                if (ampersandByDefault) {
-                                    player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
-                                } else {
-                                    player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
-                                }
-                            } else {
-                                player.sendMessage(message);
-                            }
-                        }
-                    })
-                )
-                .then(textArg
-                    .executes((sender, args) -> {
-                        List<String> players = args.getUnchecked("Players List");
-                        String message = args.getByArgument(textArg);
-
-                        for (String name : players) {
-                            Player player = Bukkit.getPlayer(name);
-
-                            if (args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault)) {
-                                message = PlaceholderAPI.setPlaceholders(player, message);
-                            }
-
-                            if (args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault)) {
-                                if (ampersandByDefault) {
-                                    player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
-                                } else {
-                                    player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
-                                }
-                            } else {
-                                player.sendMessage(message);
-                            }
-                        }
-                    })
-                    .then(colorCodesArg
-                        .executes((sender, args) -> {
-                            List<String> players = args.getUnchecked("Players List");
-                            String message = args.getByArgument(textArg);
-
-                            for (String name : players) {
-                                Player player = Bukkit.getPlayer(name);
-                                if (parsePlaceholdersByDefault) {
-                                    message = PlaceholderAPI.setPlaceholders(player, message);
-                                }
-
-                                if (args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault)) {
-                                    if (ampersandByDefault) {
-                                        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
-                                    } else {
-                                        player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
-                                    }
-                                } else {
-                                    player.sendMessage(message);
-                                }
-                            }
-                        })
-                        .then(parsePlaceholdersArg
-                            .executes((sender, args) -> {
-                                List<String> players = args.getUnchecked("Players List");
-                                String message = args.getByArgument(textArg);
-
-                                for (String name : players) {
-                                    Player player = Bukkit.getPlayer(name);
-                                    if (args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault)) {
-                                        message = PlaceholderAPI.setPlaceholders(player, message);
-                                    }
-
-                                    if (args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault)) {
-                                        if (ampersandByDefault) {
-                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
-                                        } else {
-                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
-                                        }
-                                    } else {
-                                        player.sendMessage(message);
-                                    }
-                                }
-                            })
-                        )
-                    )
-                )
-            )
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
-
     }
 
     private void sendMessage(Collection<Player> players, String message, boolean parsePlaceholders, boolean useColorCodes, boolean useAmpersand) {
