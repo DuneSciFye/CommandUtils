@@ -16,16 +16,21 @@ public class SetItemCommand extends Command implements Registerable {
     public void register(){
 
         if (!this.getEnabled()) return;
+
+        PlayerArgument playerArg = new PlayerArgument("Player");
+        IntegerArgument slotArg = new IntegerArgument("Slot", 0, 40);
+        ItemStackArgument itemArg = new ItemStackArgument("Item");
+
         new CommandAPICommand("setitem")
-            .withArguments(new PlayerArgument("Player"))
-            .withArguments(new IntegerArgument("Slot", 0, 40))
-            .withArguments(new ItemStackArgument("Item"))
+            .withArguments(playerArg)
+            .withArguments(slotArg)
+            .withArguments(itemArg)
             .executes((sender, args) -> {
-                Player p = args.getUnchecked("Player");
-                int slot = args.getUnchecked("Slot");
+                Player p = args.getByArgument(playerArg);
+                int slot = args.getByArgument(slotArg);
 
                 ItemMeta meta = p.getInventory().getItem(slot).getItemMeta();
-                ItemStack item = args.getUnchecked("Item");
+                ItemStack item = args.getByArgument(itemArg);
                 ItemMeta newMeta = item.getItemMeta();
                 int customModelData = newMeta.getCustomModelData();
                 meta.setCustomModelData(customModelData);
@@ -40,13 +45,13 @@ public class SetItemCommand extends Command implements Registerable {
             .register(this.getNamespace());
 
         new CommandTree("setitem")
-            .then(new PlayerArgument("Player")
-                .then(new IntegerArgument("Slot", 0, 40)
+            .then(playerArg
+                .then(slotArg
                     .then(new LiteralArgument("material")
                         .then(new ItemStackArgument("Material")
                             .executes((sender, args) -> {
-                                Player p = (Player) args.get("Player");
-                                int slot = (int) args.get("Slot");
+                                Player p = args.getByArgument(playerArg);
+                                int slot = args.getByArgument(slotArg);
                                 ItemMeta meta = p.getInventory().getItem(slot).getItemMeta();
                                 ItemStack newItem = (ItemStack) args.get("Material");
                                 newItem.setItemMeta(meta);

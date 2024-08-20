@@ -5,7 +5,9 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
+import dev.jorel.commandapi.arguments.ListArgumentBuilder;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.dunescifye.commandutils.utils.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 
@@ -30,6 +32,17 @@ public class SendMessageCommand extends Command implements Configurable {
             config.set("Commands.SendMessage.MultiplePlayers", true);
         }
 
+        if (config.getOptionalString("Commands.SendMessage.LegacyAmpersand").isPresent()) {
+            if (config.isString("Commands.SendMessage.LegacyAmpersand")) {
+                legacyAmpersand = config.getBoolean("Commands.SendMessage.LegacyAmpersand");
+            } else {
+                legacyAmpersand = true;
+            }
+        } else {
+            legacyAmpersand = true;
+            config.set("Commands.SendMessage.LegacyAmpersand", true);
+        }
+
         EntitySelectorArgument.ManyPlayers playersArg = new EntitySelectorArgument.ManyPlayers("Players");
         EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         GreedyStringArgument messageArg = new GreedyStringArgument("Message");
@@ -38,12 +51,41 @@ public class SendMessageCommand extends Command implements Configurable {
 
         if (multiplePlayers) {
             new CommandAPICommand("sendmessage")
-                .withArguments(playersArg)
+                .withArguments(new ListArgumentBuilder<String>("Players")
+                    .withList(Utils.getPlayersList())
+                    .withStringMapper()
+                    .buildText())
                 .withArguments(messageArg)
                 .withOptionalArguments(colorCodes)
                 .withOptionalArguments(parsePlaceholders)
                 .executes((sender, args) -> {
                     Collection<Player> players = args.getByArgument(playersArg);
+                    for (Player player : players) {
+                        String message = args.getByArgument(messageArg);
+
+                        if (args.getByArgumentOrDefault(parsePlaceholders, true)) {
+                            message = PlaceholderAPI.setPlaceholders(player, message);
+                        }
+
+                        if (args.getByArgumentOrDefault(colorCodes, true)) {
+                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                        } else {
+                            player.sendMessage(message);
+                        }
+                    }
+
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+        } else {
+            new CommandAPICommand("sendmessage")
+                .withArguments(playersArg)
+                .withArguments(messageArg)
+                .withOptionalArguments(colorCodes)
+                .withOptionalArguments(parsePlaceholders)
+                .executes((sender, args) -> {
+                    Player player = args.getByArgument(playerArg);
                     for (Player player : players) {
                         String message = args.getByArgument(messageArg);
 

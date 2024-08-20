@@ -15,6 +15,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static org.bukkit.Bukkit.getServer;
 
@@ -299,5 +300,11 @@ public class Utils {
 
     public static Collection<String> getParticlesList() {
         return PARTICLES_LIST;
+    }
+
+    public static Collection<String> getPlayersList() {
+        return Bukkit.getOnlinePlayers().stream()
+            .map(Player::getName)
+            .collect(Collectors.toList());
     }
 }
