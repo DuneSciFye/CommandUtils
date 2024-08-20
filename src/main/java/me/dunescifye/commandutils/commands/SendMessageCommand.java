@@ -69,12 +69,16 @@ public class SendMessageCommand extends Command implements Configurable {
                         String message = args.getByArgument(greedyMessageArg);
 
                         for (Player player : players) {
-                            if (args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault)) {
+                            if (parsePlaceholdersByDefault) {
                                 message = PlaceholderAPI.setPlaceholders(player, message);
                             }
 
-                            if (args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault)) {
-                                player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                            if (colorCodesByDefault) {
+                                if (ampersandByDefault) {
+                                    player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                } else {
+                                    player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                                }
                             } else {
                                 player.sendMessage(message);
                             }
@@ -91,12 +95,60 @@ public class SendMessageCommand extends Command implements Configurable {
                                 }
 
                                 if (args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault)) {
-                                    player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                    if (ampersandByDefault) {
+                                        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                    } else {
+                                        player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                                    }
                                 } else {
                                     player.sendMessage(message);
                                 }
                             }
                         })
+                        .then(parsePlaceholdersArg
+                            .executes((sender, args) -> {
+                                Collection<Player> players = args.getByArgument(playersArg);
+                                String message = args.getByArgument(greedyMessageArg);
+
+                                for (Player player : players) {
+                                    if (args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault)) {
+                                        message = PlaceholderAPI.setPlaceholders(player, message);
+                                    }
+
+                                    if (args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault)) {
+                                        if (ampersandByDefault) {
+                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                        } else {
+                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                                        }
+                                    } else {
+                                        player.sendMessage(message);
+                                    }
+                                }
+                            })
+                            .then(useAmpersandArg
+                                .executes((sender, args) -> {
+                                    Collection<Player> players = args.getByArgument(playersArg);
+                                    String message = args.getByArgument(greedyMessageArg);
+
+                                    for (Player player : players) {
+                                        if (args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault)) {
+                                            message = PlaceholderAPI.setPlaceholders(player, message);
+                                        }
+
+                                        if (args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault)) {
+                                            if (args.getByArgumentOrDefault(useAmpersandArg, ampersandByDefault)) {
+                                                player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                            } else {
+                                                player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                                            }
+                                        } else {
+                                            player.sendMessage(message);
+                                        }
+                                    }
+                                })
+                            )
+                        )
                     )
                 )
                 .then(textArg
@@ -105,12 +157,16 @@ public class SendMessageCommand extends Command implements Configurable {
                         String message = args.getByArgument(textArg);
 
                         for (Player player : players) {
-                            if (args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault)) {
+                            if (parsePlaceholdersByDefault) {
                                 message = PlaceholderAPI.setPlaceholders(player, message);
                             }
 
-                            if (args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault)) {
-                                player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                            if (colorCodesByDefault) {
+                                if (ampersandByDefault) {
+                                    player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                } else {
+                                    player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                                }
                             } else {
                                 player.sendMessage(message);
                             }
@@ -127,7 +183,11 @@ public class SendMessageCommand extends Command implements Configurable {
                                 }
 
                                 if (args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault)) {
-                                    player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                    if (ampersandByDefault) {
+                                        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                    } else {
+                                        player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                                    }
                                 } else {
                                     player.sendMessage(message);
                                 }
@@ -144,7 +204,11 @@ public class SendMessageCommand extends Command implements Configurable {
                                     }
 
                                     if (args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault)) {
-                                        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                        if (ampersandByDefault) {
+                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                        } else {
+                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                                        }
                                     } else {
                                         player.sendMessage(message);
                                     }
@@ -153,7 +217,7 @@ public class SendMessageCommand extends Command implements Configurable {
                             .then(useAmpersandArg
                                 .executes((sender, args) -> {
                                     Collection<Player> players = args.getByArgument(playersArg);
-                                    String message = args.getByArgument(greedyMessageArg);
+                                    String message = args.getByArgument(textArg);
 
                                     for (Player player : players) {
                                         if (args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault)) {
