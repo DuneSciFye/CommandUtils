@@ -189,6 +189,10 @@ Commands:
   SendMessage:
     Enabled: true
     Aliases: []
+    MultiplePlayers: true
+    LegacyAmpersand: true
+    ParsePlaceholdersByDefault: true
+    ColorCodesByDefault: true
 
   SetCursorItem:
     Enabled: true

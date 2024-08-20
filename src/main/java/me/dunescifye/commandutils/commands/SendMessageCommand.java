@@ -15,11 +15,11 @@ import java.util.Collection;
 
 public class SendMessageCommand extends Command implements Configurable {
     @SuppressWarnings("ConstantConditions")
-        public void register(YamlDocument config){
+        public void register(YamlDocument config) {
 
         if (!this.getEnabled()) return;
 
-        boolean multiplePlayers, legacyAmpersand;
+        boolean multiplePlayers, legacyAmpersand, parsePlaceholdersByDefault, colorCodesByDefault;
 
         if (config.getOptionalString("Commands.SendMessage.MultiplePlayers").isPresent()) {
             if (config.isString("Commands.SendMessage.MultiplePlayers")) {
@@ -43,6 +43,28 @@ public class SendMessageCommand extends Command implements Configurable {
             config.set("Commands.SendMessage.LegacyAmpersand", true);
         }
 
+        if (config.getOptionalString("Commands.SendMessage.ParsePlaceholdersByDefault").isPresent()) {
+            if (config.isString("Commands.SendMessage.ParsePlaceholdersByDefault")) {
+                parsePlaceholdersByDefault = config.getBoolean("Commands.SendMessage.ParsePlaceholdersByDefault");
+            } else {
+                parsePlaceholdersByDefault = true;
+            }
+        } else {
+            parsePlaceholdersByDefault = true;
+            config.set("Commands.SendMessage.ParsePlaceholdersByDefault", true);
+        }
+
+        if (config.getOptionalString("Commands.SendMessage.ColorCodesByDefault").isPresent()) {
+            if (config.isString("Commands.SendMessage.ColorCodesByDefault")) {
+                colorCodesByDefault = config.getBoolean("Commands.SendMessage.ColorCodesByDefault");
+            } else {
+                colorCodesByDefault = true;
+            }
+        } else {
+            colorCodesByDefault = true;
+            config.set("Commands.SendMessage.ColorCodesByDefault", true);
+        }
+
         EntitySelectorArgument.ManyPlayers playersArg = new EntitySelectorArgument.ManyPlayers("Players");
         EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         GreedyStringArgument messageArg = new GreedyStringArgument("Message");
@@ -64,11 +86,11 @@ public class SendMessageCommand extends Command implements Configurable {
                         for (Player player : players) {
                             String message = args.getByArgument(messageArg);
 
-                            if (args.getByArgumentOrDefault(parsePlaceholders, true)) {
+                            if (args.getByArgumentOrDefault(parsePlaceholders, parsePlaceholdersByDefault)) {
                                 message = PlaceholderAPI.setPlaceholders(player, message);
                             }
 
-                            if (args.getByArgumentOrDefault(colorCodes, true)) {
+                            if (args.getByArgumentOrDefault(colorCodes, colorCodesByDefault)) {
                                 player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
                             } else {
                                 player.sendMessage(message);
@@ -93,11 +115,11 @@ public class SendMessageCommand extends Command implements Configurable {
                         for (Player player : players) {
                             String message = args.getByArgument(messageArg);
 
-                            if (args.getByArgumentOrDefault(parsePlaceholders, true)) {
+                            if (args.getByArgumentOrDefault(parsePlaceholders, parsePlaceholdersByDefault)) {
                                 message = PlaceholderAPI.setPlaceholders(player, message);
                             }
 
-                            if (args.getByArgumentOrDefault(colorCodes, true)) {
+                            if (args.getByArgumentOrDefault(colorCodes, colorCodesByDefault)) {
                                 player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
                             } else {
                                 player.sendMessage(message);
@@ -121,12 +143,37 @@ public class SendMessageCommand extends Command implements Configurable {
 
                         String message = args.getByArgument(messageArg);
 
-                        if (args.getByArgumentOrDefault(parsePlaceholders, true)) {
+                        if (args.getByArgumentOrDefault(parsePlaceholders, parsePlaceholdersByDefault)) {
                             message = PlaceholderAPI.setPlaceholders(player, message);
                         }
 
-                        if (args.getByArgumentOrDefault(colorCodes, true)) {
+                        if (args.getByArgumentOrDefault(colorCodes, colorCodesByDefault)) {
                             player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                        } else {
+                            player.sendMessage(message);
+                        }
+
+                    })
+                    .withPermission(this.getPermission())
+                    .withAliases(this.getCommandAliases())
+                    .register(this.getNamespace());
+            } else {
+                new CommandAPICommand("sendmessage")
+                    .withArguments(playersArg)
+                    .withArguments(messageArg)
+                    .withOptionalArguments(colorCodes)
+                    .withOptionalArguments(parsePlaceholders)
+                    .executes((sender, args) -> {
+                        Player player = args.getByArgument(playerArg);
+
+                        String message = args.getByArgument(messageArg);
+
+                        if (args.getByArgumentOrDefault(parsePlaceholders, parsePlaceholdersByDefault)) {
+                            message = PlaceholderAPI.setPlaceholders(player, message);
+                        }
+
+                        if (args.getByArgumentOrDefault(colorCodes, colorCodesByDefault)) {
+                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
                         } else {
                             player.sendMessage(message);
                         }
