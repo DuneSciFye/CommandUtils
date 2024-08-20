@@ -257,12 +257,62 @@ public class SendMessageCommand extends Command implements Configurable {
                             }
 
                             if (args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault)) {
-                                player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                if (ampersandByDefault) {
+                                    player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                } else {
+                                    player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                                }
                             } else {
                                 player.sendMessage(message);
                             }
                         }
                     })
+                    .then(colorCodesArg
+                        .executes((sender, args) -> {
+                            List<String> players = args.getUnchecked("Players List");
+                            String message = args.getByArgument(greedyMessageArg);
+
+                            for (String name : players) {
+                                Player player = Bukkit.getPlayer(name);
+                                if (parsePlaceholdersByDefault) {
+                                    message = PlaceholderAPI.setPlaceholders(player, message);
+                                }
+
+                                if (args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault)) {
+                                    if (ampersandByDefault) {
+                                        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                    } else {
+                                        player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                                    }
+                                } else {
+                                    player.sendMessage(message);
+                                }
+                            }
+                        })
+                        .then(parsePlaceholdersArg
+                            .executes((sender, args) -> {
+                                List<String> players = args.getUnchecked("Players List");
+                                String message = args.getByArgument(greedyMessageArg);
+
+                                for (String name : players) {
+                                    Player player = Bukkit.getPlayer(name);
+                                    if (args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault)) {
+                                        message = PlaceholderAPI.setPlaceholders(player, message);
+                                    }
+
+                                    if (args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault)) {
+                                        if (ampersandByDefault) {
+                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                        } else {
+                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                                        }
+                                    } else {
+                                        player.sendMessage(message);
+                                    }
+                                }
+                            })
+                        )
+                    )
                 )
                 .then(textArg
                     .executes((sender, args) -> {
@@ -277,7 +327,11 @@ public class SendMessageCommand extends Command implements Configurable {
                             }
 
                             if (args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault)) {
-                                player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                if (ampersandByDefault) {
+                                    player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                } else {
+                                    player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                                }
                             } else {
                                 player.sendMessage(message);
                             }
