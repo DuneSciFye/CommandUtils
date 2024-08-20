@@ -27,20 +27,8 @@ public class HighlightBlocksCommand extends Command implements Configurable {
     public void register (YamlDocument config){
         if (!this.getEnabled()) return;
 
-        String defaultParticle;
         double defaultParticleOffset, defaultParticleSpeed;
         int defaultParticleCount, numberOfIntervals, particleSpawnInterval;
-
-        if (config.getOptionalString("Commands.HighlightBlocks.DefaultParticle").isPresent()) {
-            if (config.isString("Commands.HighlightBlocks.DefaultParticle")) {
-                defaultParticle = config.getString("Commands.HighlightBlocks.DefaultParticle");
-            } else {
-                defaultParticle = "ELECTRIC_SPARK";
-            }
-        } else {
-            defaultParticle = "ELECTRIC_SPARK";
-            config.set("Commands.HighlightBlocks.DefaultParticle", "ELECTRIC_SPARK");
-        }
 
         if (config.getOptionalString("Commands.HighlightBlocks.DefaultParticleOffset").isPresent()) {
             if (config.isString("Commands.HighlightBlocks.DefaultParticleOffset")) {
@@ -117,23 +105,88 @@ public class HighlightBlocksCommand extends Command implements Configurable {
             .withArguments(worldArg)
             .withArguments(radiusArg)
             .withArguments(blockPredicateArg)
-            .withOptionalArguments(particleArg)
+            .withArguments(particleArg)
             .withOptionalArguments(particleCountArg)
             .withOptionalArguments(particleOffsetArg)
             .withOptionalArguments(particleSpeedArg)
             .withOptionalArguments(numberOfIntervalsArg)
             .withOptionalArguments(particleSpawnIntervalArg)
             .executes((sender, args) -> {
-
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 Location location = args.getByArgument(locArg);
-                Block block = world.getBlockAt(location);
+                Block origin = world.getBlockAt(location);
                 int radius = args.getByArgument(radiusArg);
                 Predicate<Block> predicate = args.getByArgument(blockPredicateArg);
                 ParticleData<?> particleData = args.getByArgument(particleArg);
-                Particle particle = particleData == null ? Particle.valueOf(defaultParticle) : particleData.particle();
 
-                spawnParticle(world, location, radius, predicate, particleData);
+                for (int x = -radius; x <= radius; x++) {
+                    for (int y = -radius; y <= radius; y++) {
+                        for (int z = -radius; z <= radius; z++) {
+                            Block relative = origin.getRelative(x, y, z);
+                            if (predicate.test(relative)) {
+                                spawnParticle(world, relative, particleData,
+                                    args.getByArgumentOrDefault(particleCountArg, defaultParticleCount),
+                                    args.getByArgumentOrDefault(particleOffsetArg, defaultParticleOffset),
+                                    args.getByArgumentOrDefault(particleSpeedArg, defaultParticleSpeed),
+                                    args.getByArgumentOrDefault(numberOfIntervalsArg, numberOfIntervals),
+                                    args.getByArgumentOrDefault(particleSpawnIntervalArg, particleSpawnInterval));
+                            }
+                        }
+                    }
+                }
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
+        new CommandAPICommand("highlightblocks")
+            .withArguments(locArg)
+            .withArguments(worldArg)
+            .withArguments(radiusArg)
+            .withArguments(whitelistArg)
+            .withArguments(new ListArgumentBuilder<String>("Whitelisted Blocks")
+                .withList(Utils.getPredicatesList())
+                .withStringMapper()
+                .buildText())
+            .withArguments(particleArg)
+            .withOptionalArguments(particleCountArg)
+            .withOptionalArguments(particleOffsetArg)
+            .withOptionalArguments(particleSpeedArg)
+            .withOptionalArguments(numberOfIntervalsArg)
+            .withOptionalArguments(particleSpawnIntervalArg)
+            .executes((sender, args) -> {
+                List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
+                Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
+
+                World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                Location location = args.getByArgument(locArg);
+                Block origin = world.getBlockAt(location);
+                int radius = args.getByArgument(radiusArg);
+                ParticleData<?> particleData = args.getByArgument(particleArg);
+
+                for (int x = -radius; x <= radius; x++) {
+                    for (int y = -radius; y <= radius; y++) {
+                        block:
+                        for (int z = -radius; z <= radius; z++) {
+                            Block relative = origin.getRelative(x, y, z);
+                            for (Predicate<Block> predicateWhitelist : whitelist) {
+                                if (predicateWhitelist.test(relative)) {
+                                    for (Predicate<Block> predicateBlacklist : blacklist) {
+                                        if (predicateBlacklist.test(relative)) {
+                                            continue block;
+                                        }
+                                    }
+                                    spawnParticle(world, relative, particleData,
+                                        args.getByArgumentOrDefault(particleCountArg, defaultParticleCount),
+                                        args.getByArgumentOrDefault(particleOffsetArg, defaultParticleOffset),
+                                        args.getByArgumentOrDefault(particleSpeedArg, defaultParticleSpeed),
+                                        args.getByArgumentOrDefault(numberOfIntervalsArg, numberOfIntervals),
+                                        args.getByArgumentOrDefault(particleSpawnIntervalArg, particleSpawnInterval));
+                                }
+                            }
+                        }
+                    }
+                }
 
             })
             .withPermission(this.getPermission())
@@ -662,62 +715,21 @@ public class HighlightBlocksCommand extends Command implements Configurable {
         }
     }
 
-    private void spawnParticle(World world, Location loc, int radius, Predicate<Block> predicate, ParticleData<?> particleData) {
-        Block origin = world.getBlockAt(loc);
-        Particle particle = particleData.particle();
+    private void spawnParticle(World world, Block block, ParticleData<?> particleData, int particleCount, double offset, double speed, int intervalAmount, int period) {
+        new BukkitRunnable() {
+            int count = 0;
 
-        for (int x = -radius; x <= radius; x++) {
-            for (int y = -radius; y <= radius; y++) {
-                for (int z = -radius; z <= radius; z++) {
-                    Block relative = origin.getRelative(x, y, z);
-                    if (predicate.test(origin)) {
-                        new BukkitRunnable() {
-                            int count = 0;
-
-                            @Override
-                            public void run() {
-                                if (count >= 10) {
-                                    cancel();
-                                    return;
-                                }
-
-                                world.spawnParticle(particle, relative.getX() + 0.5, relative.getY() + 0.5, relative.getZ() + 0.5, 3, 0, 0, 0, 0, particleData.data());
-
-                                count += 1;
-                            }
-                        }.runTaskTimer(getInstance(), 0, 5);
-                    }
+            @Override
+            public void run() {
+                if (count >= intervalAmount) {
+                    cancel();
+                    return;
                 }
+
+                world.spawnParticle(particleData.particle(), block.getX() + 0.5, block.getY() + 0.5, block.getZ() + 0.5, particleCount, offset, offset, offset, 0, particleData.data());
+
+                count += 1;
             }
-        }
-    }
-
-    private void spawnParticle(World world, Location loc, int radius, Predicate<Block> predicate, Particle particle) {
-        Block origin = world.getBlockAt(loc);
-
-        for (int x = -radius; x <= radius; x++) {
-            for (int y = -radius; y <= radius; y++) {
-                for (int z = -radius; z <= radius; z++) {
-                    Block relative = origin.getRelative(x, y, z);
-                    if (predicate.test(origin)) {
-                        new BukkitRunnable() {
-                            int count = 0;
-
-                            @Override
-                            public void run() {
-                                if (count >= 10) {
-                                    cancel();
-                                    return;
-                                }
-
-                                world.spawnParticle(particle, relative.getX() + 0.5, relative.getY() + 0.5, relative.getZ() + 0.5, 3, 0, 0, 0, 0);
-
-                                count += 1;
-                            }
-                        }.runTaskTimer(getInstance(), 0, 5);
-                    }
-                }
-            }
-        }
+        }.runTaskTimer(getInstance(), 0, period);
     }
 }
