@@ -50,43 +50,75 @@ public class SendMessageCommand extends Command implements Configurable {
         BooleanArgument parsePlaceholders = new BooleanArgument("Parse Placeholders");
 
         if (multiplePlayers) {
-            new CommandAPICommand("sendmessage")
-                .withArguments(new ListArgumentBuilder<String>("Players")
-                    .withList(Utils.getPlayersList())
-                    .withStringMapper()
-                    .buildText())
-                .withArguments(messageArg)
-                .withOptionalArguments(colorCodes)
-                .withOptionalArguments(parsePlaceholders)
-                .executes((sender, args) -> {
-                    Collection<Player> players = args.getByArgument(playersArg);
-                    for (Player player : players) {
-                        String message = args.getByArgument(messageArg);
+            if (legacyAmpersand) {
+                new CommandAPICommand("sendmessage")
+                    .withArguments(new ListArgumentBuilder<String>("Players")
+                        .withList(Utils.getPlayersList())
+                        .withStringMapper()
+                        .buildText())
+                    .withArguments(messageArg)
+                    .withOptionalArguments(colorCodes)
+                    .withOptionalArguments(parsePlaceholders)
+                    .executes((sender, args) -> {
+                        Collection<Player> players = args.getByArgument(playersArg);
+                        for (Player player : players) {
+                            String message = args.getByArgument(messageArg);
 
-                        if (args.getByArgumentOrDefault(parsePlaceholders, true)) {
-                            message = PlaceholderAPI.setPlaceholders(player, message);
+                            if (args.getByArgumentOrDefault(parsePlaceholders, true)) {
+                                message = PlaceholderAPI.setPlaceholders(player, message);
+                            }
+
+                            if (args.getByArgumentOrDefault(colorCodes, true)) {
+                                player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                            } else {
+                                player.sendMessage(message);
+                            }
                         }
 
-                        if (args.getByArgumentOrDefault(colorCodes, true)) {
-                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
-                        } else {
-                            player.sendMessage(message);
-                        }
-                    }
+                    })
+                    .withPermission(this.getPermission())
+                    .withAliases(this.getCommandAliases())
+                    .register(this.getNamespace());
+            } else {
+                new CommandAPICommand("sendmessage")
+                    .withArguments(new ListArgumentBuilder<String>("Players")
+                        .withList(Utils.getPlayersList())
+                        .withStringMapper()
+                        .buildText())
+                    .withArguments(messageArg)
+                    .withOptionalArguments(colorCodes)
+                    .withOptionalArguments(parsePlaceholders)
+                    .executes((sender, args) -> {
+                        Collection<Player> players = args.getByArgument(playersArg);
+                        for (Player player : players) {
+                            String message = args.getByArgument(messageArg);
 
-                })
-                .withPermission(this.getPermission())
-                .withAliases(this.getCommandAliases())
-                .register(this.getNamespace());
+                            if (args.getByArgumentOrDefault(parsePlaceholders, true)) {
+                                message = PlaceholderAPI.setPlaceholders(player, message);
+                            }
+
+                            if (args.getByArgumentOrDefault(colorCodes, true)) {
+                                player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                            } else {
+                                player.sendMessage(message);
+                            }
+                        }
+
+                    })
+                    .withPermission(this.getPermission())
+                    .withAliases(this.getCommandAliases())
+                    .register(this.getNamespace());
+            }
         } else {
-            new CommandAPICommand("sendmessage")
-                .withArguments(playersArg)
-                .withArguments(messageArg)
-                .withOptionalArguments(colorCodes)
-                .withOptionalArguments(parsePlaceholders)
-                .executes((sender, args) -> {
-                    Player player = args.getByArgument(playerArg);
-                    for (Player player : players) {
+            if (legacyAmpersand) {
+                new CommandAPICommand("sendmessage")
+                    .withArguments(playersArg)
+                    .withArguments(messageArg)
+                    .withOptionalArguments(colorCodes)
+                    .withOptionalArguments(parsePlaceholders)
+                    .executes((sender, args) -> {
+                        Player player = args.getByArgument(playerArg);
+
                         String message = args.getByArgument(messageArg);
 
                         if (args.getByArgumentOrDefault(parsePlaceholders, true)) {
@@ -98,12 +130,12 @@ public class SendMessageCommand extends Command implements Configurable {
                         } else {
                             player.sendMessage(message);
                         }
-                    }
 
-                })
-                .withPermission(this.getPermission())
-                .withAliases(this.getCommandAliases())
-                .register(this.getNamespace());
+                    })
+                    .withPermission(this.getPermission())
+                    .withAliases(this.getCommandAliases())
+                    .register(this.getNamespace());
+            }
         }
 
     }
