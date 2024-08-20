@@ -12,32 +12,43 @@ public class SilentParticleCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){
+
         if (!this.getEnabled()) return;
+
+        ParticleArgument particleArg = new ParticleArgument("Particle");
+        PlayerArgument playerArg = new PlayerArgument("Player");
+        IntegerArgument amountArg = new IntegerArgument("Amount");
+        DoubleArgument xOffsetArg = new DoubleArgument("X Offset");
+        DoubleArgument yOffsetArg = new DoubleArgument("Y Offset");
+        DoubleArgument zOffsetArg = new DoubleArgument("Z Offset");
+        StringArgument worldArg = new StringArgument("World");
+        LocationArgument locArg = new LocationArgument("Location");
+
         new CommandTree("silentparticle")
-            .then(new ParticleArgument("Particle")
-                .then(new PlayerArgument("Player")
+            .then(particleArg
+                .then(playerArg
                     .executes((sender, args) -> {
-                        Player p = args.getUnchecked("Player");
-                        ParticleData<?> particleData = args.getUnchecked("Particle");
+                        Player p = args.getByArgument(playerArg);
+                        ParticleData<?> particleData = args.getByArgument(particleArg);
                         p.spawnParticle(particleData.particle(), p.getLocation(), 1);
                     })
-                    .then(new IntegerArgument("Amount")
+                    .then(amountArg
                         .executes((sender, args) -> {
-                            Player p = args.getUnchecked("Player");
-                            ParticleData<?> particleData = args.getUnchecked("Particle");
-                            int amount = args.getUnchecked("Amount");
+                            Player p = args.getByArgument(playerArg);
+                            ParticleData<?> particleData = args.getByArgument(particleArg);
+                            int amount = args.getByArgument(amountArg);
                             p.spawnParticle(particleData.particle(), p.getLocation(), amount);
                         })
-                        .then(new DoubleArgument("X Offset")
-                            .then(new DoubleArgument("Y Offset")
-                                .then(new DoubleArgument("Z Offset")
+                        .then(xOffsetArg
+                            .then(yOffsetArg
+                                .then(zOffsetArg
                                     .executes((sender, args) -> {
-                                        Player p = args.getUnchecked("Player");
-                                        ParticleData<?> particleData = args.getUnchecked("Particle");
-                                        int amount = args.getUnchecked("Amount");
-                                        double xOffset = args.getUnchecked("X Offset");
-                                        double yOffset = args.getUnchecked("Y Offset");
-                                        double zOffset = args.getUnchecked("Z Offset");
+                                        Player p = args.getByArgument(playerArg);
+                                        ParticleData<?> particleData = args.getByArgument(particleArg);
+                                        int amount = args.getByArgument(amountArg);
+                                        double xOffset = args.getByArgument(xOffsetArg);
+                                        double yOffset = args.getByArgument(yOffsetArg);
+                                        double zOffset = args.getByArgument(zOffsetArg);
                                         p.spawnParticle(particleData.particle(), p.getLocation(), amount, xOffset, yOffset, zOffset, particleData.data());
                                     })
                                 )

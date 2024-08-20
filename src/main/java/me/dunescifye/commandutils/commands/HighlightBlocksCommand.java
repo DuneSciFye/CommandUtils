@@ -193,6 +193,58 @@ public class HighlightBlocksCommand extends Command implements Configurable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
+        new CommandAPICommand("highlightblocks")
+            .withArguments(locArg)
+            .withArguments(worldArg)
+            .withArguments(radiusArg)
+            .withArguments(whitelistedBlocksArgument
+                .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
+            )
+            .withArguments(particleArg)
+            .withOptionalArguments(particleCountArg)
+            .withOptionalArguments(particleOffsetArg)
+            .withOptionalArguments(particleSpeedArg)
+            .withOptionalArguments(numberOfIntervalsArg)
+            .withOptionalArguments(particleSpawnIntervalArg)
+            .executes((sender, args) -> {
+                String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
+                List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
+
+                World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                Location location = args.getByArgument(locArg);
+                Block origin = world.getBlockAt(location);
+                int radius = args.getByArgument(radiusArg);
+                ParticleData<?> particleData = args.getByArgument(particleArg);
+
+                for (int x = -radius; x <= radius; x++) {
+                    for (int y = -radius; y <= radius; y++) {
+                        block:
+                        for (int z = -radius; z <= radius; z++) {
+                            Block relative = origin.getRelative(x, y, z);
+                            for (Predicate<Block> predicateWhitelist : whitelist) {
+                                if (predicateWhitelist.test(relative)) {
+                                    for (Predicate<Block> predicateBlacklist : blacklist) {
+                                        if (predicateBlacklist.test(relative)) {
+                                            continue block;
+                                        }
+                                    }
+                                    spawnParticle(world, relative, particleData,
+                                        args.getByArgumentOrDefault(particleCountArg, defaultParticleCount),
+                                        args.getByArgumentOrDefault(particleOffsetArg, defaultParticleOffset),
+                                        args.getByArgumentOrDefault(particleSpeedArg, defaultParticleSpeed),
+                                        args.getByArgumentOrDefault(numberOfIntervalsArg, numberOfIntervals),
+                                        args.getByArgumentOrDefault(particleSpawnIntervalArg, particleSpawnInterval));
+                                }
+                            }
+                        }
+                    }
+                }
+
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
         if (multipleBlocks) {
             if (multipleParticles) {
                 new CommandTree("highlightblocks")
@@ -726,7 +778,7 @@ public class HighlightBlocksCommand extends Command implements Configurable {
                     return;
                 }
 
-                world.spawnParticle(particleData.particle(), block.getX() + 0.5, block.getY() + 0.5, block.getZ() + 0.5, particleCount, offset, offset, offset, 0, particleData.data());
+                world.spawnParticle(particleData.particle(), block.getX() + 0.5, block.getY() + 0.5, block.getZ() + 0.5, particleCount, offset, offset, offset, speed, particleData.data());
 
                 count += 1;
             }

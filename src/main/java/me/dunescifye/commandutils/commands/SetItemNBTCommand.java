@@ -35,10 +35,9 @@ public class SetItemNBTCommand extends Command implements Registerable {
                 String inputKey = args.getByArgument(keyArg);
                 String content = args.getByArgumentOrDefault(contentArg, "");
 
-                NamespacedKey key = new NamespacedKey(namespace, inputKey);
-
                 if (item == null) return;
 
+                NamespacedKey key = new NamespacedKey(namespace, inputKey);
                 ItemMeta meta = item.getItemMeta();
 
                 if (Utils.isNumeric(content)){

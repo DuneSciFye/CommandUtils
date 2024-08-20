@@ -155,6 +155,18 @@ Commands:
     Aliases: []
     Permission: "commandutils.command.loadcrossbowcommand"
 
+  Loop:
+    Enabled: true
+    Aliases: []
+
+  MobTarget:
+    Enabled: true
+    Aliases: []
+
+  OverrideEffect:
+    Enabled: true
+    Aliases: []
+
   ParsePlaceholder:
     Enabled: true
     Aliases: []

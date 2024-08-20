@@ -83,6 +83,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("If", new IfCommand());
         commands.put("MobTarget", new MobTargetCommand());
         commands.put("SendConditionMessage", new SendConditionMessageCommand());
+        commands.put("OverrideEffect", new OverrideEffectCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
