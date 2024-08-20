@@ -2,45 +2,34 @@ package me.dunescifye.commandutils.commands;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.BooleanArgument;
-import dev.jorel.commandapi.arguments.EntitySelectorArgument;
-import dev.jorel.commandapi.arguments.GreedyStringArgument;
-import dev.jorel.commandapi.arguments.ListArgumentBuilder;
+import dev.jorel.commandapi.CommandTree;
+import dev.jorel.commandapi.arguments.*;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.commandutils.utils.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.List;
 
 public class SendMessageCommand extends Command implements Configurable {
     @SuppressWarnings("ConstantConditions")
-        public void register(YamlDocument config) {
+    public void register(YamlDocument config) {
 
         if (!this.getEnabled()) return;
 
-        boolean multiplePlayers, legacyAmpersand, parsePlaceholdersByDefault, colorCodesByDefault;
+        boolean ampersandByDefault, parsePlaceholdersByDefault, colorCodesByDefault;
 
-        if (config.getOptionalString("Commands.SendMessage.MultiplePlayers").isPresent()) {
-            if (config.isString("Commands.SendMessage.MultiplePlayers")) {
-                multiplePlayers = config.getBoolean("Commands.SendMessage.MultiplePlayers");
+        if (config.getOptionalString("Commands.SendMessage.Use&ForColorCodesByDefault").isPresent()) {
+            if (config.isString("Commands.SendMessage.Use&ForColorCodesByDefault")) {
+                ampersandByDefault = config.getBoolean("Commands.SendMessage.Use&ForColorCodesByDefault");
             } else {
-                multiplePlayers = true;
+                ampersandByDefault = true;
             }
         } else {
-            multiplePlayers = true;
-            config.set("Commands.SendMessage.MultiplePlayers", true);
-        }
-
-        if (config.getOptionalString("Commands.SendMessage.LegacyAmpersand").isPresent()) {
-            if (config.isString("Commands.SendMessage.LegacyAmpersand")) {
-                legacyAmpersand = config.getBoolean("Commands.SendMessage.LegacyAmpersand");
-            } else {
-                legacyAmpersand = true;
-            }
-        } else {
-            legacyAmpersand = true;
-            config.set("Commands.SendMessage.LegacyAmpersand", true);
+            ampersandByDefault = true;
+            config.set("Commands.SendMessage.Use&ForColorCodesByDefault", true);
         }
 
         if (config.getOptionalString("Commands.SendMessage.ParsePlaceholdersByDefault").isPresent()) {
@@ -66,25 +55,88 @@ public class SendMessageCommand extends Command implements Configurable {
         }
 
         EntitySelectorArgument.ManyPlayers playersArg = new EntitySelectorArgument.ManyPlayers("Players");
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        GreedyStringArgument messageArg = new GreedyStringArgument("Message");
+        GreedyStringArgument greedyMessageArg = new GreedyStringArgument("Message");
+        TextArgument textArg = new TextArgument("Message");
         BooleanArgument colorCodes = new BooleanArgument("Color Codes");
         BooleanArgument parsePlaceholders = new BooleanArgument("Parse Placeholders");
 
-        if (multiplePlayers) {
-            if (legacyAmpersand) {
-                new CommandAPICommand("sendmessage")
-                    .withArguments(new ListArgumentBuilder<String>("Players")
-                        .withList(Utils.getPlayersList())
-                        .withStringMapper()
-                        .buildText())
-                    .withArguments(messageArg)
-                    .withOptionalArguments(colorCodes)
-                    .withOptionalArguments(parsePlaceholders)
+        new CommandTree("sendmessage")
+            .then(new EntitySelectorArgument.ManyPlayers("Players")
+                .then(greedyMessageArg
+                    .executes((sender, args) -> {
+                        System.out.println("a");
+                        Collection<Player> players = args.getUnchecked("Players");
+                        System.out.println("b");
+
+                        String message = args.getByArgument(greedyMessageArg);
+
+                        if (args.getByArgumentOrDefault(parsePlaceholders, parsePlaceholdersByDefault)) {
+                            if (args.getByArgumentOrDefault(colorCodes, colorCodesByDefault)) {
+                                for (Player player : players) {
+                                    message = PlaceholderAPI.setPlaceholders(player, message);
+                                    player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                }
+                            } else {
+                                for (Player player : players) {
+                                    message = PlaceholderAPI.setPlaceholders(player, message);
+                                    player.sendMessage(message);
+                                }
+                            }
+                        } else {
+                            if (args.getByArgumentOrDefault(colorCodes, colorCodesByDefault)) {
+                                for (Player player : players) {
+                                    player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                }
+                            } else {
+                                for (Player player : players) {
+                                    player.sendMessage(message);
+                                }
+                            }
+                        }
+                    })
+                )
+                .then(textArg
                     .executes((sender, args) -> {
                         Collection<Player> players = args.getByArgument(playersArg);
-                        for (Player player : players) {
-                            String message = args.getByArgument(messageArg);
+
+                        String message = args.getByArgument(textArg);
+
+                        if (args.getByArgumentOrDefault(parsePlaceholders, parsePlaceholdersByDefault)) {
+                            if (args.getByArgumentOrDefault(colorCodes, colorCodesByDefault)) {
+                                for (Player player : players) {
+                                    message = PlaceholderAPI.setPlaceholders(player, message);
+                                    player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                }
+                            } else {
+                                for (Player player : players) {
+                                    message = PlaceholderAPI.setPlaceholders(player, message);
+                                    player.sendMessage(message);
+                                }
+                            }
+                        } else {
+                            if (args.getByArgumentOrDefault(colorCodes, colorCodesByDefault)) {
+                                for (Player player : players) {
+                                    player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                }
+                            } else {
+                                for (Player player : players) {
+                                    player.sendMessage(message);
+                                }
+                            }
+                        }
+                    })
+                )
+            )
+            .then(new ListArgumentBuilder<String>("Players")
+                .withList(Utils.getPlayersList())
+                .withStringMapper()
+                .buildText()
+                .then(greedyMessageArg
+                    .executes((sender, args) -> {
+                        List<String> players = args.getUnchecked("Players");
+                        for (String name : players) {
+                            Player player = Bukkit.getPlayer(name);
+                            String message = args.getByArgument(greedyMessageArg);
 
                             if (args.getByArgumentOrDefault(parsePlaceholders, parsePlaceholdersByDefault)) {
                                 message = PlaceholderAPI.setPlaceholders(player, message);
@@ -96,95 +148,14 @@ public class SendMessageCommand extends Command implements Configurable {
                                 player.sendMessage(message);
                             }
                         }
-
                     })
-                    .withPermission(this.getPermission())
-                    .withAliases(this.getCommandAliases())
-                    .register(this.getNamespace());
-            } else {
-                new CommandAPICommand("sendmessage")
-                    .withArguments(new ListArgumentBuilder<String>("Players")
-                        .withList(Utils.getPlayersList())
-                        .withStringMapper()
-                        .buildText())
-                    .withArguments(messageArg)
-                    .withOptionalArguments(colorCodes)
-                    .withOptionalArguments(parsePlaceholders)
-                    .executes((sender, args) -> {
-                        Collection<Player> players = args.getByArgument(playersArg);
-                        for (Player player : players) {
-                            String message = args.getByArgument(messageArg);
-
-                            if (args.getByArgumentOrDefault(parsePlaceholders, parsePlaceholdersByDefault)) {
-                                message = PlaceholderAPI.setPlaceholders(player, message);
-                            }
-
-                            if (args.getByArgumentOrDefault(colorCodes, colorCodesByDefault)) {
-                                player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
-                            } else {
-                                player.sendMessage(message);
-                            }
-                        }
-
-                    })
-                    .withPermission(this.getPermission())
-                    .withAliases(this.getCommandAliases())
-                    .register(this.getNamespace());
-            }
-        } else {
-            if (legacyAmpersand) {
-                new CommandAPICommand("sendmessage")
-                    .withArguments(playersArg)
-                    .withArguments(messageArg)
-                    .withOptionalArguments(colorCodes)
-                    .withOptionalArguments(parsePlaceholders)
-                    .executes((sender, args) -> {
-                        Player player = args.getByArgument(playerArg);
-
-                        String message = args.getByArgument(messageArg);
-
-                        if (args.getByArgumentOrDefault(parsePlaceholders, parsePlaceholdersByDefault)) {
-                            message = PlaceholderAPI.setPlaceholders(player, message);
-                        }
-
-                        if (args.getByArgumentOrDefault(colorCodes, colorCodesByDefault)) {
-                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
-                        } else {
-                            player.sendMessage(message);
-                        }
-
-                    })
-                    .withPermission(this.getPermission())
-                    .withAliases(this.getCommandAliases())
-                    .register(this.getNamespace());
-            } else {
-                new CommandAPICommand("sendmessage")
-                    .withArguments(playersArg)
-                    .withArguments(messageArg)
-                    .withOptionalArguments(colorCodes)
-                    .withOptionalArguments(parsePlaceholders)
-                    .executes((sender, args) -> {
-                        Player player = args.getByArgument(playerArg);
-
-                        String message = args.getByArgument(messageArg);
-
-                        if (args.getByArgumentOrDefault(parsePlaceholders, parsePlaceholdersByDefault)) {
-                            message = PlaceholderAPI.setPlaceholders(player, message);
-                        }
-
-                        if (args.getByArgumentOrDefault(colorCodes, colorCodesByDefault)) {
-                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
-                        } else {
-                            player.sendMessage(message);
-                        }
-
-                    })
-                    .withPermission(this.getPermission())
-                    .withAliases(this.getCommandAliases())
-                    .register(this.getNamespace());
-            }
-        }
+                )
+            )
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
 
     }
+
 
 }

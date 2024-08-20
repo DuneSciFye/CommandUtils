@@ -189,8 +189,7 @@ Commands:
   SendMessage:
     Enabled: true
     Aliases: []
-    MultiplePlayers: true
-    LegacyAmpersand: true
+    Use&ForColorCodesByDefault: true
     ParsePlaceholdersByDefault: true
     ColorCodesByDefault: true
 
