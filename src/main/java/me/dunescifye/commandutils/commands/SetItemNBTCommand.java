@@ -13,23 +13,31 @@ public class SetItemNBTCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register(){
+
         if (!this.getEnabled()) return;
 
-        new CommandAPICommand("setitemnbt")
-            .withArguments(new PlayerArgument("Player"))
-            .withArguments(new IntegerArgument("Slot"))
-            .withArguments(new TextArgument("Namespace"))
-            .withArguments(new TextArgument("Key"))
-            .withOptionalArguments(new GreedyStringArgument("Content"))
-            .executes((sender, args) -> {
+        PlayerArgument playerArg = new PlayerArgument("Player");
+        IntegerArgument slotArg = new IntegerArgument("Slot");
+        TextArgument namespaceArg = new TextArgument("Namespace");
+        TextArgument keyArg = new TextArgument("Key");
+        GreedyStringArgument contentArg = new GreedyStringArgument("Content");
 
-                Player player = args.getUnchecked("Player");
-                ItemStack item = player.getInventory().getItem(args.getByClass("Slot", Integer.class));
-                String namespace = args.getUnchecked("Namespace");
-                String inputKey = args.getUnchecked("Key");
-                String content = args.getOrDefaultUnchecked("Content", "");
+        new CommandAPICommand("setitemnbt")
+            .withArguments(playerArg)
+            .withArguments(slotArg)
+            .withArguments(namespaceArg)
+            .withArguments(keyArg)
+            .withOptionalArguments(contentArg)
+            .executes((sender, args) -> {
+                Player player = args.getByArgument(playerArg);
+                ItemStack item = player.getInventory().getItem(args.getByArgument(slotArg));
+                String namespace = args.getByArgument(namespaceArg);
+                String inputKey = args.getByArgument(keyArg);
+                String content = args.getByArgumentOrDefault(contentArg, "");
 
                 NamespacedKey key = new NamespacedKey(namespace, inputKey);
+
+                if (item == null) return;
 
                 ItemMeta meta = item.getItemMeta();
 

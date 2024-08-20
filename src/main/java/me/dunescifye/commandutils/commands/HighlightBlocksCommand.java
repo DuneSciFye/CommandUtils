@@ -118,8 +118,22 @@ public class HighlightBlocksCommand extends Command implements Configurable {
             .withArguments(radiusArg)
             .withArguments(blockPredicateArg)
             .withOptionalArguments(particleArg)
-            .withOptionalArguments()
+            .withOptionalArguments(particleCountArg)
+            .withOptionalArguments(particleOffsetArg)
+            .withOptionalArguments(particleSpeedArg)
+            .withOptionalArguments(numberOfIntervalsArg)
+            .withOptionalArguments(particleSpawnIntervalArg)
             .executes((sender, args) -> {
+
+                World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                Location location = args.getByArgument(locArg);
+                Block block = world.getBlockAt(location);
+                int radius = args.getByArgument(radiusArg);
+                Predicate<Block> predicate = args.getByArgument(blockPredicateArg);
+                ParticleData<?> particleData = args.getByArgument(particleArg);
+                Particle particle = particleData == null ? Particle.valueOf(defaultParticle) : particleData.particle();
+
+                spawnParticle(world, location, radius, predicate, particleData);
 
             })
             .withPermission(this.getPermission())
@@ -648,21 +662,62 @@ public class HighlightBlocksCommand extends Command implements Configurable {
         }
     }
 
-    private void spawnParticle(World world, Particle particle, Block relative) {
-        new BukkitRunnable() {
-            int count = 0;
+    private void spawnParticle(World world, Location loc, int radius, Predicate<Block> predicate, ParticleData<?> particleData) {
+        Block origin = world.getBlockAt(loc);
+        Particle particle = particleData.particle();
 
-            @Override
-            public void run() {
-                if (count >= 10) {
-                    cancel();
-                    return;
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    Block relative = origin.getRelative(x, y, z);
+                    if (predicate.test(origin)) {
+                        new BukkitRunnable() {
+                            int count = 0;
+
+                            @Override
+                            public void run() {
+                                if (count >= 10) {
+                                    cancel();
+                                    return;
+                                }
+
+                                world.spawnParticle(particle, relative.getX() + 0.5, relative.getY() + 0.5, relative.getZ() + 0.5, 3, 0, 0, 0, 0, particleData.data());
+
+                                count += 1;
+                            }
+                        }.runTaskTimer(getInstance(), 0, 5);
+                    }
                 }
-
-                world.spawnParticle(particle, relative.getX() + 0.5, relative.getY() + 0.5, relative.getZ() + 0.5, 3, 0, 0, 0, 0);
-
-                count += 1;
             }
-        }.runTaskTimer(getInstance(), 0, 5);
+        }
+    }
+
+    private void spawnParticle(World world, Location loc, int radius, Predicate<Block> predicate, Particle particle) {
+        Block origin = world.getBlockAt(loc);
+
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    Block relative = origin.getRelative(x, y, z);
+                    if (predicate.test(origin)) {
+                        new BukkitRunnable() {
+                            int count = 0;
+
+                            @Override
+                            public void run() {
+                                if (count >= 10) {
+                                    cancel();
+                                    return;
+                                }
+
+                                world.spawnParticle(particle, relative.getX() + 0.5, relative.getY() + 0.5, relative.getZ() + 0.5, 3, 0, 0, 0, 0);
+
+                                count += 1;
+                            }
+                        }.runTaskTimer(getInstance(), 0, 5);
+                    }
+                }
+            }
+        }
     }
 }
