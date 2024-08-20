@@ -29,7 +29,7 @@ public class HighlightBlocksCommand extends Command implements Configurable {
 
         String defaultParticle;
         double defaultParticleOffset, defaultParticleSpeed;
-        int defaultParticleCount, highlightCount, highlightInterval;
+        int defaultParticleCount, numberOfIntervals, particleSpawnInterval;
 
         if (config.getOptionalString("Commands.HighlightBlocks.DefaultParticle").isPresent()) {
             if (config.isString("Commands.HighlightBlocks.DefaultParticle")) {
@@ -75,38 +75,56 @@ public class HighlightBlocksCommand extends Command implements Configurable {
             config.set("Commands.HighlightBlocks.DefaultParticleCount", 1);
         }
 
-        if (config.getOptionalString("Commands.HighlightBlocks.HighlightCount").isPresent()) {
-            if (config.isString("Commands.HighlightBlocks.HighlightCount")) {
-                highlightCount = config.getInt("Commands.HighlightBlocks.HighlightCount");
+        if (config.getOptionalString("Commands.HighlightBlocks.NumberOfIntervals").isPresent()) {
+            if (config.isString("Commands.HighlightBlocks.NumberOfIntervals")) {
+                numberOfIntervals = config.getInt("Commands.HighlightBlocks.NumberOfIntervals");
             } else {
-                highlightCount = 1;
+                numberOfIntervals = 40;
             }
         } else {
-            highlightCount = 1;
-            config.set("Commands.HighlightBlocks.HighlightCount", 1);
+            numberOfIntervals = 40;
+            config.set("Commands.HighlightBlocks.NumberOfIntervals", 40);
         }
 
-        if (config.getOptionalString("Commands.HighlightBlocks.HighlightInterval").isPresent()) {
-            if (config.isString("Commands.HighlightBlocks.HighlightInterval")) {
-                highlightInterval = config.getInt("Commands.HighlightBlocks.HighlightInterval");
+        if (config.getOptionalString("Commands.HighlightBlocks.PParticleSpawnInterval").isPresent()) {
+            if (config.isString("Commands.HighlightBlocks.PParticleSpawnInterval")) {
+                particleSpawnInterval = config.getInt("Commands.HighlightBlocks.PParticleSpawnInterval");
             } else {
-                highlightInterval = 1;
+                particleSpawnInterval = 2;
             }
         } else {
-            highlightInterval = 1;
-            config.set("Commands.HighlightBlocks.HighlightInterval", 1);
+            particleSpawnInterval = 2;
+            config.set("Commands.HighlightBlocks.PParticleSpawnInterval", 2);
         }
 
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         StringArgument worldArg = new StringArgument("World");
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
-        BlockPredicateArgument blockArg = new BlockPredicateArgument("Block");
+        BlockPredicateArgument blockPredicateArg = new BlockPredicateArgument("Block");
         ParticleArgument particleArg = new ParticleArgument("Particle");
         StringArgument whitelistedBlocksArgument = new StringArgument("Whitelisted Blocks");
         LiteralArgument whitelistArg = new LiteralArgument("whitelist");
         BooleanArgument randomParticlesArg = new BooleanArgument("Random Particles");
+        DoubleArgument particleOffsetArg = new DoubleArgument("Particle Offset");
+        DoubleArgument particleSpeedArg = new DoubleArgument("Particle Speed");
+        IntegerArgument particleCountArg = new IntegerArgument("Particle Count");
+        IntegerArgument numberOfIntervalsArg = new IntegerArgument("Number Of Intervals");
+        IntegerArgument particleSpawnIntervalArg = new IntegerArgument("Particle Spawn Interval");
 
 
+        new CommandAPICommand("highlightblocks")
+            .withArguments(locArg)
+            .withArguments(worldArg)
+            .withArguments(radiusArg)
+            .withArguments(blockPredicateArg)
+            .withOptionalArguments(particleArg)
+            .withOptionalArguments()
+            .executes((sender, args) -> {
+
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
 
         if (multipleBlocks) {
             if (multipleParticles) {

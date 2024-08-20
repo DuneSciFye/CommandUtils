@@ -122,8 +122,11 @@ Commands:
     Aliases: []
     Permission: "commandutils.command.highlightblockscommand"
     DefaultParticle: "ELECTRIC_SPARK"
-    MultipleBlocks: false
-    MultipleParticles: false
+    DefaultParticleOffset: 0.0
+    DefaultParticleSpeed: 0.0
+    DefaultParticleCount: 1
+    DefaultNumberOfIntervals: 40
+    DefaultParticleSpawnInterval: 2
 
   If:
     Enabled: true
@@ -192,6 +195,7 @@ Commands:
     Use&ForColorCodesByDefault: true
     ParsePlaceholdersByDefault: true
     ColorCodesByDefault: true
+    PlayersListArg: false
 
   SetCursorItem:
     Enabled: true
