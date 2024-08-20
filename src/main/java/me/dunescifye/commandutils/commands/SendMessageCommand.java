@@ -278,5 +278,41 @@ public class SendMessageCommand extends Command implements Configurable {
 
     }
 
+    private void sendMessage(Collection<Player> players, String message, boolean parsePlaceholders, boolean useColorCodes, boolean useAmpersand) {
+        if (parsePlaceholders) {
+            if (useColorCodes) {
+                if (useAmpersand) {
+                    for (Player player : players) {
+                        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                    }
+                } else {
+                    for (Player player : players) {
+                        player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                    }
+                }
+            } else {
+                for (Player player : players) {
+                    player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
+                }
+            }
+        } else {
+            if (useColorCodes) {
+                if (useAmpersand) {
+                    for (Player player : players) {
+                        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                    }
+                } else {
+                    for (Player player : players) {
+                        player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                    }
+                }
+            } else {
+                for (Player player : players) {
+                    player.sendMessage(message);
+                }
+            }
+        }
+    }
+
 
 }

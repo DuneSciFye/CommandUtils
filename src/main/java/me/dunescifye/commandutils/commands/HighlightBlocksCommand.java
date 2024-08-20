@@ -28,9 +28,8 @@ public class HighlightBlocksCommand extends Command implements Configurable {
         if (!this.getEnabled()) return;
 
         String defaultParticle;
-        boolean multipleBlocks, multipleParticles;
         double defaultParticleOffset, defaultParticleSpeed;
-        int defaultParticleCount, highlightTime, highlightInterval;
+        int defaultParticleCount, highlightCount, highlightInterval;
 
         if (config.getOptionalString("Commands.HighlightBlocks.DefaultParticle").isPresent()) {
             if (config.isString("Commands.HighlightBlocks.DefaultParticle")) {
@@ -76,26 +75,26 @@ public class HighlightBlocksCommand extends Command implements Configurable {
             config.set("Commands.HighlightBlocks.DefaultParticleCount", 1);
         }
 
-        if (config.getOptionalString("Commands.HighlightBlocks.MultipleBlocks").isPresent()) {
-            if (config.isBoolean("Commands.HighlightBlocks.MultipleBlocks")) {
-                multipleBlocks = config.getBoolean("Commands.HighlightBlocks.MultipleBlocks");
+        if (config.getOptionalString("Commands.HighlightBlocks.HighlightCount").isPresent()) {
+            if (config.isString("Commands.HighlightBlocks.HighlightCount")) {
+                highlightCount = config.getInt("Commands.HighlightBlocks.HighlightCount");
             } else {
-                multipleBlocks = false;
+                highlightCount = 1;
             }
         } else {
-            multipleBlocks = false;
-            config.set("Commands.HighlightBlocks.MultipleBlocks", false);
+            highlightCount = 1;
+            config.set("Commands.HighlightBlocks.HighlightCount", 1);
         }
 
-        if (config.getOptionalString("Commands.HighlightBlocks.MultipleParticles").isPresent()) {
-            if (config.isBoolean("Commands.HighlightBlocks.MultipleParticles")) {
-                multipleParticles = config.getBoolean("Commands.HighlightBlocks.MultipleParticles");
+        if (config.getOptionalString("Commands.HighlightBlocks.HighlightInterval").isPresent()) {
+            if (config.isString("Commands.HighlightBlocks.HighlightInterval")) {
+                highlightInterval = config.getInt("Commands.HighlightBlocks.HighlightInterval");
             } else {
-                multipleParticles = true;
+                highlightInterval = 1;
             }
         } else {
-            multipleParticles = true;
-            config.set("Commands.HighlightBlocks.MultipleParticles", true);
+            highlightInterval = 1;
+            config.set("Commands.HighlightBlocks.HighlightInterval", 1);
         }
 
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
@@ -629,5 +628,23 @@ public class HighlightBlocksCommand extends Command implements Configurable {
                     .register(this.getNamespace());
             }
         }
+    }
+
+    private void spawnParticle(World world, Particle particle, Block relative) {
+        new BukkitRunnable() {
+            int count = 0;
+
+            @Override
+            public void run() {
+                if (count >= 10) {
+                    cancel();
+                    return;
+                }
+
+                world.spawnParticle(particle, relative.getX() + 0.5, relative.getY() + 0.5, relative.getZ() + 0.5, 3, 0, 0, 0, 0);
+
+                count += 1;
+            }
+        }.runTaskTimer(getInstance(), 0, 5);
     }
 }
