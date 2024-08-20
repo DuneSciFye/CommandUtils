@@ -27,18 +27,53 @@ public class HighlightBlocksCommand extends Command implements Configurable {
     public void register (YamlDocument config){
         if (!this.getEnabled()) return;
 
-        String stringParticle;
+        String defaultParticle;
         boolean multipleBlocks, multipleParticles;
+        double defaultParticleOffset, defaultParticleSpeed;
+        int defaultParticleCount, highlightTime, highlightInterval;
 
         if (config.getOptionalString("Commands.HighlightBlocks.DefaultParticle").isPresent()) {
             if (config.isString("Commands.HighlightBlocks.DefaultParticle")) {
-                stringParticle = config.getString("Commands.HighlightBlocks.DefaultParticle");
+                defaultParticle = config.getString("Commands.HighlightBlocks.DefaultParticle");
             } else {
-                stringParticle = "ELECTRIC_SPARK";
+                defaultParticle = "ELECTRIC_SPARK";
             }
         } else {
-            stringParticle = "ELECTRIC_SPARK";
+            defaultParticle = "ELECTRIC_SPARK";
             config.set("Commands.HighlightBlocks.DefaultParticle", "ELECTRIC_SPARK");
+        }
+
+        if (config.getOptionalString("Commands.HighlightBlocks.DefaultParticleOffset").isPresent()) {
+            if (config.isString("Commands.HighlightBlocks.DefaultParticleOffset")) {
+                defaultParticleOffset = config.getDouble("Commands.HighlightBlocks.DefaultParticleOffset");
+            } else {
+                defaultParticleOffset = 0.0;
+            }
+        } else {
+            defaultParticleOffset = 0.0;
+            config.set("Commands.HighlightBlocks.DefaultParticleOffset", 0.0);
+        }
+
+        if (config.getOptionalString("Commands.HighlightBlocks.DefaultParticleSpeed").isPresent()) {
+            if (config.isString("Commands.HighlightBlocks.DefaultParticleSpeed")) {
+                defaultParticleSpeed = config.getDouble("Commands.HighlightBlocks.DefaultParticleSpeed");
+            } else {
+                defaultParticleSpeed = 0.0;
+            }
+        } else {
+            defaultParticleSpeed = 0.0;
+            config.set("Commands.HighlightBlocks.DefaultParticleSpeed", 0.0);
+        }
+
+        if (config.getOptionalString("Commands.HighlightBlocks.DefaultParticleCount").isPresent()) {
+            if (config.isString("Commands.HighlightBlocks.DefaultParticleCount")) {
+                defaultParticleCount = config.getInt("Commands.HighlightBlocks.DefaultParticleCount");
+            } else {
+                defaultParticleCount = 1;
+            }
+        } else {
+            defaultParticleCount = 1;
+            config.set("Commands.HighlightBlocks.DefaultParticleCount", 1);
         }
 
         if (config.getOptionalString("Commands.HighlightBlocks.MultipleBlocks").isPresent()) {
@@ -72,6 +107,8 @@ public class HighlightBlocksCommand extends Command implements Configurable {
         LiteralArgument whitelistArg = new LiteralArgument("whitelist");
         BooleanArgument randomParticlesArg = new BooleanArgument("Random Particles");
 
+
+
         if (multipleBlocks) {
             if (multipleParticles) {
                 new CommandTree("highlightblocks")
@@ -91,7 +128,7 @@ public class HighlightBlocksCommand extends Command implements Configurable {
                                             Block origin = world.getBlockAt(location);
                                             int radius = args.getByArgument(radiusArg);
                                             ParticleData<?> particleData = args.getByArgument(particleArg);
-                                            Particle particle = particleData == null ? Particle.valueOf(stringParticle) : particleData.particle();
+                                            Particle particle = particleData == null ? Particle.valueOf(defaultParticle) : particleData.particle();
 
                                             for (int x = -radius; x <= radius; x++) {
                                                 for (int y = -radius; y <= radius; y++) {
@@ -267,7 +304,7 @@ public class HighlightBlocksCommand extends Command implements Configurable {
                                         Block origin = world.getBlockAt(location);
                                         int radius = args.getByArgument(radiusArg);
                                         ParticleData<?> particleData = args.getByArgument(particleArg);
-                                        Particle particle = particleData == null ? Particle.valueOf(stringParticle) : particleData.particle();
+                                        Particle particle = particleData == null ? Particle.valueOf(defaultParticle) : particleData.particle();
 
                                         for (int x = -radius; x <= radius; x++) {
                                             for (int y = -radius; y <= radius; y++) {
@@ -418,7 +455,7 @@ public class HighlightBlocksCommand extends Command implements Configurable {
                                         Block origin = world.getBlockAt(location);
                                         int radius = args.getByArgument(radiusArg);
                                         ParticleData<?> particleData = args.getByArgument(particleArg);
-                                        Particle particle = particleData == null ? Particle.valueOf(stringParticle) : particleData.particle();
+                                        Particle particle = particleData == null ? Particle.valueOf(defaultParticle) : particleData.particle();
 
                                         for (int x = -radius; x <= radius; x++) {
                                             for (int y = -radius; y <= radius; y++) {
@@ -482,7 +519,7 @@ public class HighlightBlocksCommand extends Command implements Configurable {
                         int radius = args.getByArgument(radiusArg);
                         Predicate<Block> predicate = args.getByArgument(blockArg);
                         ParticleData<?> particleData = args.getByArgument(particleArg);
-                        Particle particle = particleData == null ? Particle.valueOf(stringParticle) : particleData.particle();
+                        Particle particle = particleData == null ? Particle.valueOf(defaultParticle) : particleData.particle();
                         boolean randomParticles = args.getByArgumentOrDefault(randomParticlesArg, false);
 
                         if (randomParticles) {
@@ -555,7 +592,7 @@ public class HighlightBlocksCommand extends Command implements Configurable {
                                             int radius = args.getByArgument(radiusArg);
                                             ParticleData<?> particleData = args.getByArgument(particleArg);
                                             Predicate<Block> predicate = args.getByArgument(blockArg);
-                                            Particle particle = particleData == null ? Particle.valueOf(stringParticle) : particleData.particle();
+                                            Particle particle = particleData == null ? Particle.valueOf(defaultParticle) : particleData.particle();
 
                                             for (int x = -radius; x <= radius; x++) {
                                                 for (int y = -radius; y <= radius; y++) {
