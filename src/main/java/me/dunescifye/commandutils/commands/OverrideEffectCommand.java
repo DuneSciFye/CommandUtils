@@ -30,27 +30,6 @@ public class OverrideEffectCommand extends Command implements Registerable {
         BooleanArgument ambientArg = new BooleanArgument("Ambient");
         BooleanArgument iconArg = new BooleanArgument("Show Icon");
 
-        new CommandTree("overrideeffect")
-            .then(overrideArg
-                .then(idArg
-                    .then(playerArg
-                        .then(effectArg
-                            .then(durationArg
-                                .then(amplifierArg
-                                )
-                            )
-                            .then(infiniteArg
-                                .then(amplifierArg
-                                )
-                            )
-                        )
-                    )
-                )
-            )
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
-
         new CommandAPICommand("overrideeffect")
             .withArguments(functionArg)
             .withArguments(idArg)
