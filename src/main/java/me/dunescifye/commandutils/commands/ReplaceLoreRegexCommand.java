@@ -63,43 +63,7 @@ public class ReplaceLoreRegexCommand extends Command implements Registerable {
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
-
-        new CommandTree("replacelore")
-            .then(playerArg
-                .then(slotArg
-                    .then(fromArg
-                        .then(toArg
-                            .executes((sender, args) -> {
-                                Player p = args.getByArgument(playerArg);
-                                int slot = args.getByArgument(slotArg);
-                                ItemStack item = p.getInventory().getItem(slot);
-                                @RegExp String from = args.getByArgument(fromArg);
-                                String to = args.getByArgument(toArg);
-                                updateLore(item, from, to);
-                            })
-                        )
-                    )
-                )
-                .then(textSlotArg
-                    .then(fromArg
-                        .then(toArg
-                            .executes((sender, args) -> {
-                                Player p = args.getByArgument(playerArg);
-                                String slot = args.getByArgument(textSlotArg);
-                                ItemStack item = Utils.getInvItem(p, slot);
-                                @RegExp String from = args.getByArgument(fromArg);
-                                String to = args.getByArgument(toArg);
-                                updateLore(item, from, to);
-                            })
-                        )
-                    )
-                )
-            )
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
     }
-
 
     public static void updateLore(ItemStack item, @RegExp String matcher, String replacement) {
         if (item == null || !item.hasItemMeta()) return;
