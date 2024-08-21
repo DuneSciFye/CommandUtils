@@ -194,6 +194,11 @@ Commands:
     Enabled: true
     Aliases: []
 
+  ReplaceLore:
+    Enabled: true
+    Aliases: []
+
+
   RunCommandLater:
     Enabled: true
     Aliases: []

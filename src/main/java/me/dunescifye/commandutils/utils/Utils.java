@@ -8,6 +8,7 @@ import net.coreprotect.CoreProtect;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
@@ -160,7 +161,8 @@ public class Utils {
         return true;
     }
 
-    public static ItemStack getInvItem(PlayerInventory inv, String input) {
+    public static ItemStack getInvItem(Player player, String input) {
+        PlayerInventory inv = player.getInventory();
         if (isInteger(input)) {
             int slot = Integer.parseInt(input);
             return slot == -1 ? inv.getItemInMainHand() : inv.getItem(slot);
@@ -171,6 +173,9 @@ public class Utils {
                 }
                 case "offhand", "off" -> {
                     return inv.getItemInOffHand();
+                }
+                case "cursor" -> {
+                    return player.getItemOnCursor();
                 }
             }
         }

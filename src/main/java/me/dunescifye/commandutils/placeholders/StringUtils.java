@@ -501,7 +501,7 @@ public class StringUtils extends PlaceholderExpansion {
                         return "null player";
                     }
 
-                    ItemStack item = Utils.getInvItem(p.getInventory(), parts[1]);
+                    ItemStack item = Utils.getInvItem(p, parts[1]);
 
                     if (item == null) {
                         return "AIR";
@@ -519,7 +519,7 @@ public class StringUtils extends PlaceholderExpansion {
                         return "missing arguments";
                     }
 
-                    ItemStack item = Utils.getInvItem(p.getInventory(), argsNbt[0]);
+                    ItemStack item = Utils.getInvItem(p, argsNbt[0]);
 
                     if (item == null || !item.hasItemMeta()) return "";
 
@@ -541,7 +541,7 @@ public class StringUtils extends PlaceholderExpansion {
                     }
 
                     String[] argsAmt = parts[1].split(amountSeparator);
-                    ItemStack item = Utils.getInvItem(p.getInventory(), argsAmt[0]);
+                    ItemStack item = Utils.getInvItem(p, argsAmt[0]);
 
                     if (item == null) {
                         Material mat = Material.getMaterial(argsAmt[0].toUpperCase());
