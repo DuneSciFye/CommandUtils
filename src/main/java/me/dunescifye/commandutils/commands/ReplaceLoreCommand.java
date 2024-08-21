@@ -1,5 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
+import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Utils;
@@ -24,6 +25,40 @@ public class ReplaceLoreCommand extends Command implements Registerable {
         MultiLiteralArgument textSlotArg = new MultiLiteralArgument("Slot", "main", "mainhand", "off", "offhand", "cursor");
         TextArgument fromArg = new TextArgument("Text To Find");
         TextArgument toArg = new TextArgument("New Text");
+
+        new CommandAPICommand("replacelore")
+            .withArguments(playerArg)
+            .withArguments(slotArg)
+            .withArguments(fromArg)
+            .withArguments(toArg)
+            .executes((sender, args) -> {
+                Player p = args.getByArgument(playerArg);
+                int slot = args.getByArgument(slotArg);
+                ItemStack item = p.getInventory().getItem(slot);
+                String from = args.getByArgument(fromArg);
+                String to = args.getByArgument(toArg);
+                updateLore(item, from, to);
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
+        new CommandAPICommand("replacelore")
+            .withArguments(playerArg)
+            .withArguments(textSlotArg)
+            .withArguments(fromArg)
+            .withArguments(toArg)
+            .executes((sender, args) -> {
+                Player p = args.getByArgument(playerArg);
+                String slot = args.getByArgument(textSlotArg);
+                ItemStack item = Utils.getInvItem(p, slot);
+                String from = args.getByArgument(fromArg);
+                String to = args.getByArgument(toArg);
+                updateLore(item, from, to);
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
 
         new CommandTree("replacelore")
             .then(playerArg
@@ -62,7 +97,9 @@ public class ReplaceLoreCommand extends Command implements Registerable {
     }
 
 
-    private void updateLore(ItemStack item, String matcher, String replacement){
+    private void updateLore(ItemStack item, String matcher, String replacement) {
+        if (item == null || !item.hasItemMeta()) return;
+
         ItemMeta meta = item.getItemMeta();
         List<Component> loreList = meta.lore();
 
