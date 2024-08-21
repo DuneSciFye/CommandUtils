@@ -40,6 +40,23 @@ public class BlockGravityCommand extends Command implements Registerable {
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
+
+        new CommandAPICommand("blockgravity")
+            .withArguments(locArg)
+            .withOptionalArguments(gravityArg)
+            .executes((sender, args) -> {
+                Location loc = args.getByArgument(locArg);
+                Block block = loc.getBlock();
+                PersistentDataContainer blockContainer = new CustomBlockData(block, CommandUtils.getInstance());
+                if (args.getByArgumentOrDefault(gravityArg, false)) {
+                    blockContainer.remove(CommandUtils.noGravityKey);
+                } else {
+                    blockContainer.set(CommandUtils.noGravityKey, PersistentDataType.BYTE, (byte) 1);
+                }
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
 }
