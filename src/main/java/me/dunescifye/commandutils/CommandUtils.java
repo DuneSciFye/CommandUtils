@@ -88,6 +88,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("ReplaceLore", new ReplaceLoreCommand());
         commands.put("ReplaceLoreRegex", new ReplaceLoreRegexCommand());
         commands.put("BroadcastConditionMessage", new BroadcastConditionMessageCommand());
+        commands.put("BreakInVein", new BreakInVeinCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {

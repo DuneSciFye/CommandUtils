@@ -80,6 +80,13 @@ Commands:
     Aliases: []
     Permission: "commandutils.command.breakinradiuscommand"
 
+  BreakInVein:
+    Enabled: true
+    Aliases: []
+    DefaultCheckClaim: true
+    DefaultMaxBlocks: 80
+    DefaultTriggerBlockBreakEvent: false
+
   BreakInXYZ:
     Enabled: true
     Aliases: []
