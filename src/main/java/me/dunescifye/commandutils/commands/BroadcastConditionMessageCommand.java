@@ -5,10 +5,13 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import dev.jorel.commandapi.arguments.TextArgument;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import java.util.Collection;
 
 public class BroadcastConditionMessageCommand extends Command implements Configurable {
 
@@ -76,6 +79,61 @@ public class BroadcastConditionMessageCommand extends Command implements Configu
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
+
+        new CommandAPICommand("broadcastconditionmessage")
+            .withArguments(messageArg)
+            .withArguments(compare1)
+            .withArguments(compareMethod
+                .replaceSuggestions(ArgumentSuggestions.strings("==", "!=", "contains", "!contains"))
+            )
+            .withArguments(compare2)
+            .executes((sender, args) -> {
+                String message = args.getByArgument(messageArg);
+
+                final Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
+
+                for (Player player : Bukkit.getOnlinePlayers())
+                    player.sendMessage(component);
+
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 
+    private void sendMessage(Collection<? extends Player> players, String message, boolean parsePlaceholders, boolean useColorCodes, boolean useAmpersand) {
+        if (parsePlaceholders) {
+            if (useColorCodes) {
+                if (useAmpersand) {
+                    for (Player player : players) {
+                        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                    }
+                } else {
+                    for (Player player : players) {
+                        player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                    }
+                }
+            } else {
+                for (Player player : players) {
+                    player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
+                }
+            }
+        } else {
+            if (useColorCodes) {
+                if (useAmpersand) {
+                    for (Player player : players) {
+                        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                    }
+                } else {
+                    for (Player player : players) {
+                        player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                    }
+                }
+            } else {
+                for (Player player : players) {
+                    player.sendMessage(message);
+                }
+            }
+        }
+    }
 }
