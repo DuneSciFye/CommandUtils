@@ -2,14 +2,18 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
+import me.dunescifye.commandutils.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
 public class ReplaceLoreCommand extends Command implements Registerable {
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {
 
@@ -27,7 +31,12 @@ public class ReplaceLoreCommand extends Command implements Registerable {
                     .then(fromArg
                         .then(toArg
                             .executes((sender, args) -> {
-
+                                Player p = args.getByArgument(playerArg);
+                                int slot = args.getByArgument(slotArg);
+                                ItemStack item = p.getInventory().getItem(slot);
+                                String from = args.getByArgument(fromArg);
+                                String to = args.getByArgument(toArg);
+                                updateLore(item, from, to);
                             })
                         )
                     )
@@ -36,7 +45,12 @@ public class ReplaceLoreCommand extends Command implements Registerable {
                     .then(fromArg
                         .then(toArg
                             .executes((sender, args) -> {
-
+                                Player p = args.getByArgument(playerArg);
+                                String slot = args.getByArgument(textSlotArg);
+                                ItemStack item = Utils.getInvItem(p, slot);
+                                String from = args.getByArgument(fromArg);
+                                String to = args.getByArgument(toArg);
+                                updateLore(item, from, to);
                             })
                         )
                     )
@@ -48,17 +62,19 @@ public class ReplaceLoreCommand extends Command implements Registerable {
     }
 
 
-    public static List<Component> updateLore(ItemStack item, String matcher, String replacement){
-        List<Component> loreList = item.lore();
+    public static void updateLore(ItemStack item, String matcher, String replacement){
+        ItemMeta meta = item.getItemMeta();
+        List<Component> loreList = meta.lore();
 
         TextReplacementConfig config = TextReplacementConfig.builder()
-            .match(" " + matcher + " ")
-            .replacement(" " + replacement + " ")
+            .matchLiteral(matcher)
+            .replacement(replacement)
             .build();
 
         if (loreList != null)
             loreList.replaceAll(component -> component.replaceText(config));
 
-        return loreList;
+        meta.lore(loreList);
+        item.setItemMeta(meta);
     }
 }
