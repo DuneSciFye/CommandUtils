@@ -166,6 +166,7 @@ Commands:
   OverrideEffect:
     Enabled: true
     Aliases: []
+    InfiniteDuration: true
 
   ParsePlaceholder:
     Enabled: true
@@ -174,6 +175,7 @@ Commands:
   PreciseEffect:
     Enabled: true
     Aliases: []
+    InfiniteTime: true
 
   PushEntity:
     Enabled: true

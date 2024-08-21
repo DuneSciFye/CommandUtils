@@ -1,19 +1,37 @@
 package me.dunescifye.commandutils.commands;
 
+import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
+import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class PreciseEffectCommand extends Command implements Registerable {
+import java.util.logging.Logger;
+
+public class PreciseEffectCommand extends Command implements Configurable {
 
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void register() {
+    public void register(YamlDocument config) {
 
         if (!this.getEnabled()) return;
+
+        Logger logger = CommandUtils.getInstance().getLogger();
+
+        boolean infiniteDuration;
+
+        if (config.getOptionalBoolean("Commands.PreciseEffect.InfiniteDuration").isEmpty()) {
+            config.set("Commands.PreciseEffect.InfiniteDuration", true);
+        }
+        if (config.isBoolean("Commands.PreciseEffect.InfiniteDuration")) {
+            infiniteDuration = config.getBoolean("Commands.PreciseEffect.InfiniteDuration");
+        } else {
+            infiniteDuration = true;
+            logger.warning("Configuration option Commands.PreciseEffect.InfiniteDuration is not a boolean! Found " + config.getString("Commands.PreciseEffect.InfiniteDuration"));
+        }
 
         PlayerArgument playerArg = new PlayerArgument("Player");
         PotionEffectArgument effectArg = new PotionEffectArgument("Effect");
