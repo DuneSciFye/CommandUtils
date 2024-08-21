@@ -77,7 +77,11 @@ public class SendMessageCommand extends Command implements Configurable {
             .withOptionalArguments(parsePlaceholdersArg)
             .withOptionalArguments(useAmpersandArg)
             .executes((sender, args) -> {
-                sendMessage(args.getByArgument(playersArg), args.getByArgument(textArg), args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault), args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault), args.getByArgumentOrDefault(useAmpersandArg, ampersandByDefault));
+                sendMessage(args.getByArgument(playersArg),
+                    args.getByArgument(textArg),
+                    args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault),
+                    args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault),
+                    args.getByArgumentOrDefault(useAmpersandArg, ampersandByDefault));
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
@@ -87,7 +91,11 @@ public class SendMessageCommand extends Command implements Configurable {
             .withArguments(playersArg)
             .withArguments(greedyMessageArg)
             .executes((sender, args) -> {
-                sendMessage(args.getByArgument(playersArg), args.getByArgument(greedyMessageArg), parsePlaceholdersByDefault, colorCodesByDefault, ampersandByDefault);
+                sendMessage(args.getByArgument(playersArg),
+                    args.getByArgument(greedyMessageArg),
+                    parsePlaceholdersByDefault,
+                    colorCodesByDefault,
+                    ampersandByDefault);
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
@@ -104,7 +112,11 @@ public class SendMessageCommand extends Command implements Configurable {
                 .withOptionalArguments(parsePlaceholdersArg)
                 .withOptionalArguments(useAmpersandArg)
                 .executes((sender, args) -> {
-                    sendMessage(args.getUnchecked("Players List"), args.getByArgument(textArg), args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault), args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault), args.getByArgumentOrDefault(useAmpersandArg, ampersandByDefault));
+                    sendMessage(args.getUnchecked("Players List"),
+                        args.getByArgument(textArg),
+                        args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault),
+                        args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault),
+                        args.getByArgumentOrDefault(useAmpersandArg, ampersandByDefault));
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -117,7 +129,11 @@ public class SendMessageCommand extends Command implements Configurable {
                     .buildText())
                 .withArguments(greedyMessageArg)
                 .executes((sender, args) -> {
-                    sendMessage(args.getUnchecked("Players List"), args.getByArgument(greedyMessageArg), parsePlaceholdersByDefault, colorCodesByDefault, ampersandByDefault);
+                    sendMessage(args.getUnchecked("Players List"),
+                        args.getByArgument(greedyMessageArg),
+                        parsePlaceholdersByDefault,
+                        colorCodesByDefault,
+                        ampersandByDefault);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())

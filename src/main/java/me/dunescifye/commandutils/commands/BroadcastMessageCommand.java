@@ -82,5 +82,36 @@ public class BroadcastMessageCommand extends Command implements Configurable {
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
+
+        new CommandAPICommand("broadcastmessage")
+            .withArguments(textArg)
+            .withOptionalArguments(colorCodesArg)
+            .withOptionalArguments(parsePlaceholdersArg)
+            .withOptionalArguments(useAmpersandArg)
+            .executes((sender, args) -> {
+                String message = args.getByArgument(textArg);
+
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault)) {
+                        message = PlaceholderAPI.setPlaceholders(player, message);
+                    }
+
+                    if (args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault)) {
+                        if (args.getByArgumentOrDefault(useAmpersandArg, ampersandByDefault)) {
+                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                        }
+                    } else {
+                        player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                    }
+                }
+
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+    }
+
+    private void sendMessage() {
+
     }
 }
