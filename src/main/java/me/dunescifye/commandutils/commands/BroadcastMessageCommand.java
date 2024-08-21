@@ -53,25 +53,10 @@ public class BroadcastMessageCommand extends Command implements Configurable {
             colorCodesByDefault = true;
             config.set("Commands.SendMessage.ColorCodesByDefault", true);
         }
-
-        GreedyStringArgument greedyStringArg = new GreedyStringArgument("Message");
         TextArgument textArg = new TextArgument("Message");
         BooleanArgument colorCodesArg = new BooleanArgument("Color Codes");
         BooleanArgument parsePlaceholdersArg = new BooleanArgument("Parse Placeholders");
         BooleanArgument useAmpersandArg = new BooleanArgument("Use Ampersand For Color Codes");
-
-        new CommandAPICommand("broadcastmessage")
-            .withArguments(greedyStringArg)
-            .executes((sender, args) -> {
-                sendMessage(args.getUnchecked("Players List"),
-                    args.getByArgument(greedyStringArg),
-                    parsePlaceholdersByDefault,
-                    colorCodesByDefault,
-                    ampersandByDefault);
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
 
         new CommandAPICommand("broadcastmessage")
             .withArguments(textArg)

@@ -23,11 +23,11 @@ public class SendMessageCommand extends Command implements Configurable {
             if (config.isString("Commands.SendMessage.PlayersListArg")) {
                 playersListArg = config.getBoolean("Commands.SendMessage.PlayersListArg");
             } else {
-                playersListArg = true;
+                playersListArg = false;
             }
         } else {
-            playersListArg = true;
-            config.set("Commands.SendMessage.PlayersListArg", true);
+            playersListArg = false;
+            config.set("Commands.SendMessage.PlayersListArg", false);
         }
 
         if (config.getOptionalString("Commands.SendMessage.Use&ForColorCodesByDefault").isPresent()) {

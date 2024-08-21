@@ -12,13 +12,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public class BroadcastConditionMessageCommand extends Command implements Configurable {
 
     @SuppressWarnings("ConstantConditions")
     public void register(YamlDocument config) {
 
-        if (!this.getEnabled()) return;
+        if (!this.getEnabled())
+            return;
 
         boolean ampersandByDefault, parsePlaceholdersByDefault, colorCodesByDefault;
 
@@ -55,40 +57,120 @@ public class BroadcastConditionMessageCommand extends Command implements Configu
             config.set("Commands.SendMessage.ColorCodesByDefault", true);
         }
 
-        GreedyStringArgument messageArg = new GreedyStringArgument("Message");
+        TextArgument messageArg = new TextArgument("Message");
         TextArgument compare1 = new TextArgument("Compare 1");
         TextArgument compareMethod = new TextArgument("Compare Method");
         TextArgument compare2 = new TextArgument("Compare 2");
 
         new CommandAPICommand("broadcastconditionmessage")
-            .withArguments(messageArg)
             .withArguments(compare1)
             .withArguments(compareMethod
-                .replaceSuggestions(ArgumentSuggestions.strings("==", "!=", "contains", "!contains"))
+                .replaceSuggestions(ArgumentSuggestions.strings("==", "!=", "contains", "!contains", "equals", ">", "<", ">=", "<="))
             )
             .withArguments(compare2)
-            .executes((sender, args) -> {
-                String message = args.getByArgument(messageArg);
-
-                final Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
-
-                for (Player player : Bukkit.getOnlinePlayers())
-                    player.sendMessage(component);
-
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
-
-        new CommandAPICommand("broadcastconditionmessage")
             .withArguments(messageArg)
-            .withArguments(compare1)
-            .withArguments(compareMethod
-                .replaceSuggestions(ArgumentSuggestions.strings("==", "!=", "contains", "!contains"))
-            )
-            .withArguments(compare2)
             .executes((sender, args) -> {
                 String message = args.getByArgument(messageArg);
+                String compare = args.getByArgument(compare1);
+                String compareTo = args.getByArgument(compare2);
+                Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+
+                switch (args.getByArgument(compareMethod)) {
+                    case "==", "equals" -> {
+                        if (parsePlaceholdersByDefault) {
+                            if (colorCodesByDefault) {
+                                if (ampersandByDefault) {
+                                    for (Player player : players) {
+                                        if (Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                                        }
+                                    }
+                                } else {
+                                    for (Player player : players) {
+                                        if (Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                                        }
+                                    }
+                                }
+                            } else {
+                                for (Player player : players) {
+                                    if (Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                        player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
+                                    }
+                                }
+                            }
+                        } else {
+                            if (colorCodesByDefault) {
+                                if (ampersandByDefault) {
+                                    for (Player player : players) {
+                                        if (Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                        }
+                                    }
+                                } else {
+                                    for (Player player : players) {
+                                        if (Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                                        }
+                                    }
+                                }
+                            } else {
+                                for (Player player : players) {
+                                    if (Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                        player.sendMessage(message);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    case "!=" -> {
+                        if (parsePlaceholdersByDefault) {
+                            if (colorCodesByDefault) {
+                                if (ampersandByDefault) {
+                                    for (Player player : players) {
+                                        if (!Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                                        }
+                                    }
+                                } else {
+                                    for (Player player : players) {
+                                        if (!Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                                        }
+                                    }
+                                }
+                            } else {
+                                for (Player player : players) {
+                                    if (!Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                        player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
+                                    }
+                                }
+                            }
+                        } else {
+                            if (colorCodesByDefault) {
+                                if (ampersandByDefault) {
+                                    for (Player player : players) {
+                                        if (!Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                        }
+                                    }
+                                } else {
+                                    for (Player player : players) {
+                                        if (!Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                                        }
+                                    }
+                                }
+                            } else {
+                                for (Player player : players) {
+                                    if (!Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                        player.sendMessage(message);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
                 final Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
 
@@ -101,39 +183,4 @@ public class BroadcastConditionMessageCommand extends Command implements Configu
             .register(this.getNamespace());
     }
 
-    private void sendMessage(Collection<? extends Player> players, String message, boolean parsePlaceholders, boolean useColorCodes, boolean useAmpersand) {
-        if (parsePlaceholders) {
-            if (useColorCodes) {
-                if (useAmpersand) {
-                    for (Player player : players) {
-                        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                    }
-                } else {
-                    for (Player player : players) {
-                        player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                    }
-                }
-            } else {
-                for (Player player : players) {
-                    player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
-                }
-            }
-        } else {
-            if (useColorCodes) {
-                if (useAmpersand) {
-                    for (Player player : players) {
-                        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
-                    }
-                } else {
-                    for (Player player : players) {
-                        player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
-                    }
-                }
-            } else {
-                for (Player player : players) {
-                    player.sendMessage(message);
-                }
-            }
-        }
-    }
 }
