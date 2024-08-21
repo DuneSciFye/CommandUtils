@@ -4,6 +4,8 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
+import dev.jorel.commandapi.arguments.TextArgument;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
@@ -51,18 +53,30 @@ public class BroadcastMessageCommand extends Command implements Configurable {
             config.set("Commands.SendMessage.ColorCodesByDefault", true);
         }
 
-        GreedyStringArgument messageArg = new GreedyStringArgument("Message");
-        BooleanArgument
+        GreedyStringArgument greedyStringArg = new GreedyStringArgument("Message");
+        TextArgument textArg = new TextArgument("Message");
+        BooleanArgument colorCodesArg = new BooleanArgument("Color Codes");
+        BooleanArgument parsePlaceholdersArg = new BooleanArgument("Parse Placeholders");
+        BooleanArgument useAmpersandArg = new BooleanArgument("Use Ampersand For Color Codes");
 
         new CommandAPICommand("broadcastmessage")
-            .withArguments(messageArg)
+            .withArguments(greedyStringArg)
             .executes((sender, args) -> {
-                String message = args.getByArgument(messageArg);
+                String message = args.getByArgument(textArg);
 
-                final Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault)) {
+                        message = PlaceholderAPI.setPlaceholders(player, message);
+                    }
 
-                for (Player player : Bukkit.getOnlinePlayers())
-                    player.sendMessage(component);
+                    if (args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault)) {
+                        if (args.getByArgumentOrDefault(useAmpersandArg, ampersandByDefault)) {
+                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                        }
+                    } else {
+                        player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                    }
+                }
 
             })
             .withPermission(this.getPermission())
