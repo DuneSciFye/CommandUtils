@@ -175,7 +175,7 @@ Commands:
   PreciseEffect:
     Enabled: true
     Aliases: []
-    InfiniteTime: true
+    InfiniteDuration: true
 
   PushEntity:
     Enabled: true

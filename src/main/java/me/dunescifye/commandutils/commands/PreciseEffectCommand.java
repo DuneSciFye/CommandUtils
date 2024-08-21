@@ -65,26 +65,28 @@ public class PreciseEffectCommand extends Command implements Configurable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        new CommandAPICommand("preciseeffect")
-            .withArguments(playerArg)
-            .withArguments(effectArg)
-            .withOptionalArguments(infiniteArg)
-            .withOptionalArguments(amplifierArg)
-            .withOptionalArguments(hideParticlesArg)
-            .withOptionalArguments(ambientArg)
-            .executes((sender, args) -> {
-                Player player = args.getByArgument(playerArg);
-                PotionEffectType effectType = args.getByArgument(effectArg);
-                int amplifier = args.getByArgumentOrDefault(amplifierArg, 0);
-                boolean hideParticles = args.getByArgumentOrDefault(hideParticlesArg, false);
-                boolean ambient = args.getByArgumentOrDefault(ambientArg, false);
-                boolean icon = args.getByArgumentOrDefault(iconArg, true);
+        if (infiniteDuration) {
+            new CommandAPICommand("preciseeffect")
+                .withArguments(playerArg)
+                .withArguments(effectArg)
+                .withOptionalArguments(infiniteArg)
+                .withOptionalArguments(amplifierArg)
+                .withOptionalArguments(hideParticlesArg)
+                .withOptionalArguments(ambientArg)
+                .executes((sender, args) -> {
+                    Player player = args.getByArgument(playerArg);
+                    PotionEffectType effectType = args.getByArgument(effectArg);
+                    int amplifier = args.getByArgumentOrDefault(amplifierArg, 0);
+                    boolean hideParticles = args.getByArgumentOrDefault(hideParticlesArg, false);
+                    boolean ambient = args.getByArgumentOrDefault(ambientArg, false);
+                    boolean icon = args.getByArgumentOrDefault(iconArg, true);
 
-                PotionEffect potionEffect = new PotionEffect(effectType, PotionEffect.INFINITE_DURATION, amplifier, ambient, hideParticles, icon);
-                player.addPotionEffect(potionEffect);
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
+                    PotionEffect potionEffect = new PotionEffect(effectType, PotionEffect.INFINITE_DURATION, amplifier, ambient, hideParticles, icon);
+                    player.addPotionEffect(potionEffect);
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+        }
     }
 }
