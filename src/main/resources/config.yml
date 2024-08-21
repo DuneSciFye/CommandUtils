@@ -198,6 +198,9 @@ Commands:
     Enabled: true
     Aliases: []
 
+  ReplaceLoreRegex:
+    Enabled: true
+    Aliases: []
 
   RunCommandLater:
     Enabled: true

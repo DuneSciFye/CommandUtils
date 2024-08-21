@@ -86,6 +86,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("OverrideEffect", new OverrideEffectCommand());
         commands.put("PreciseEffect", new PreciseEffectCommand());
         commands.put("ReplaceLore", new ReplaceLoreCommand());
+        commands.put("ReplaceLoreRegex", new ReplaceLoreRegexCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
