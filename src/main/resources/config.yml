@@ -90,6 +90,10 @@ Commands:
     Aliases: []
     Permission: "commandutils.command.broadcastmessagecommand"
 
+  BroadcastConditionMessage:
+    Enabled: true
+    Aliases: []
+
   ChanceRandomRun:
     Enabled: true
     Aliases: []
