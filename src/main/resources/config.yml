@@ -171,6 +171,10 @@ Commands:
     Enabled: true
     Aliases: []
 
+  PreciseEffect:
+    Enabled: true
+    Aliases: []
+
   PushEntity:
     Enabled: true
     Aliases: []
