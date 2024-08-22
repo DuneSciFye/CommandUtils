@@ -85,7 +85,7 @@ Commands:
     Aliases: []
     DefaultCheckClaim: true
     DefaultMaxBlocks: 80
-    DefaultTriggerBlockBreakEvent: false
+    DefaultTriggerBlockBreakEvent: true
 
   BreakInXYZ:
     Enabled: true
