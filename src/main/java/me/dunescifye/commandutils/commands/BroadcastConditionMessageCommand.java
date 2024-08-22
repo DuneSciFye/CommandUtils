@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.commands;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
+import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.TextArgument;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
@@ -61,6 +62,9 @@ public class BroadcastConditionMessageCommand extends Command implements Configu
         TextArgument compare1 = new TextArgument("Compare 1");
         TextArgument compareMethod = new TextArgument("Compare Method");
         TextArgument compare2 = new TextArgument("Compare 2");
+        BooleanArgument useColorCodesArg = new BooleanArgument("Use Color Codes");
+        BooleanArgument parsePlaceholdersArg = new BooleanArgument("Parse Placeholders");
+        BooleanArgument useAmpersandArg = new BooleanArgument("Use Ampersand For Color Codes");
 
         new CommandAPICommand("broadcastconditionmessage")
             .withArguments(compare1)
@@ -69,434 +73,81 @@ public class BroadcastConditionMessageCommand extends Command implements Configu
             )
             .withArguments(compare2)
             .withArguments(messageArg)
+            .withOptionalArguments(useAmpersandArg)
+            .withOptionalArguments(parsePlaceholdersArg)
+            .withOptionalArguments(useAmpersandArg)
             .executes((sender, args) -> {
                 String message = args.getByArgument(messageArg);
                 String compare = args.getByArgument(compare1);
                 String compareTo = args.getByArgument(compare2);
+                boolean useColorCodes = args.getByArgumentOrDefault(useColorCodesArg, colorCodesByDefault);
+                boolean parsePlaceholders = args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault);
+                boolean useAmpersand = args.getByArgumentOrDefault(useAmpersandArg, ampersandByDefault);
+
                 Collection<? extends Player> players = Bukkit.getOnlinePlayers();
 
                 switch (args.getByArgument(compareMethod)) {
                     case "==", "equals" -> {
-                        if (parsePlaceholdersByDefault) {
-                            if (colorCodesByDefault) {
-                                if (ampersandByDefault) {
-                                    for (Player player : players) {
-                                        if (Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                                        }
-                                    }
-                                } else {
-                                    for (Player player : players) {
-                                        if (Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (Player player : players) {
-                                    if (Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                        player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
-                                    }
-                                }
-                            }
-                        } else {
-                            if (colorCodesByDefault) {
-                                if (ampersandByDefault) {
-                                    for (Player player : players) {
-                                        if (Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
-                                        }
-                                    }
-                                } else {
-                                    for (Player player : players) {
-                                        if (Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (Player player : players) {
-                                    if (Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                        player.sendMessage(message);
-                                    }
-                                }
+                        for (Player player : players) {
+                            if (Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                sendMessage(player, message, useColorCodes, parsePlaceholders, useAmpersand);
                             }
                         }
                     }
                     case "!=", "different" -> {
-                        if (parsePlaceholdersByDefault) {
-                            if (colorCodesByDefault) {
-                                if (ampersandByDefault) {
-                                    for (Player player : players) {
-                                        if (!Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                                        }
-                                    }
-                                } else {
-                                    for (Player player : players) {
-                                        if (!Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (Player player : players) {
-                                    if (!Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                        player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
-                                    }
-                                }
-                            }
-                        } else {
-                            if (colorCodesByDefault) {
-                                if (ampersandByDefault) {
-                                    for (Player player : players) {
-                                        if (!Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
-                                        }
-                                    }
-                                } else {
-                                    for (Player player : players) {
-                                        if (!Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (Player player : players) {
-                                    if (!Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                        player.sendMessage(message);
-                                    }
-                                }
+                        for (Player player : players) {
+                            if (!Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                sendMessage(player, message, useColorCodes, parsePlaceholders, useAmpersand);
                             }
                         }
                     }
                     case "contains" -> {
-                        if (parsePlaceholdersByDefault) {
-                            if (colorCodesByDefault) {
-                                if (ampersandByDefault) {
-                                    for (Player player : players) {
-                                        if (PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                                        }
-                                    }
-                                } else {
-                                    for (Player player : players) {
-                                        if (PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (Player player : players) {
-                                    if (PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                        player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
-                                    }
-                                }
-                            }
-                        } else {
-                            if (colorCodesByDefault) {
-                                if (ampersandByDefault) {
-                                    for (Player player : players) {
-                                        if (PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
-                                        }
-                                    }
-                                } else {
-                                    for (Player player : players) {
-                                        if (PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (Player player : players) {
-                                    if (PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                        player.sendMessage(message);
-                                    }
-                                }
+                        for (Player player : players) {
+                            if (PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                sendMessage(player, message, useColorCodes, parsePlaceholders, useAmpersand);
                             }
                         }
                     }
                     case "!contains" -> {
-                        if (parsePlaceholdersByDefault) {
-                            if (colorCodesByDefault) {
-                                if (ampersandByDefault) {
-                                    for (Player player : players) {
-                                        if (!PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                                        }
-                                    }
-                                } else {
-                                    for (Player player : players) {
-                                        if (!PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (Player player : players) {
-                                    if (!PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                        player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
-                                    }
-                                }
-                            }
-                        } else {
-                            if (colorCodesByDefault) {
-                                if (ampersandByDefault) {
-                                    for (Player player : players) {
-                                        if (!PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
-                                        }
-                                    }
-                                } else {
-                                    for (Player player : players) {
-                                        if (!PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (Player player : players) {
-                                    if (!PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
-                                        player.sendMessage(message);
-                                    }
-                                }
+                        for (Player player : players) {
+                            if (!PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                sendMessage(player, message, useColorCodes, parsePlaceholders, useAmpersand);
                             }
                         }
                     }
                     case ">" -> {
-                        if (parsePlaceholdersByDefault) {
-                            if (colorCodesByDefault) {
-                                if (ampersandByDefault) {
-                                    for (Player player : players) {
-                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) > Double.parseDouble(part2)) {
-                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                                        }
-                                    }
-                                } else {
-                                    for (Player player : players) {
-                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) > Double.parseDouble(part2)) {
-                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (Player player : players) {
-                                    String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                    String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                    if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) > Double.parseDouble(part2)) {
-                                        player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
-                                    }
-                                }
-                            }
-                        } else {
-                            if (colorCodesByDefault) {
-                                if (ampersandByDefault) {
-                                    for (Player player : players) {
-                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) > Double.parseDouble(part2)) {
-                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
-                                        }
-                                    }
-                                } else {
-                                    for (Player player : players) {
-                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) > Double.parseDouble(part2)) {
-                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (Player player : players) {
-                                    String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                    String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                    if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) > Double.parseDouble(part2)) {
-                                        player.sendMessage(message);
-                                    }
-                                }
+                        for (Player player : players) {
+                            String part1 = PlaceholderAPI.setPlaceholders(player, compare);
+                            String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
+                            if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) > Double.parseDouble(part2)) {
+                                sendMessage(player, message, useColorCodes, parsePlaceholders, useAmpersand);
                             }
                         }
                     }
                     case ">=" -> {
-                        if (parsePlaceholdersByDefault) {
-                            if (colorCodesByDefault) {
-                                if (ampersandByDefault) {
-                                    for (Player player : players) {
-                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) >= Double.parseDouble(part2)) {
-                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                                        }
-                                    }
-                                } else {
-                                    for (Player player : players) {
-                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) >= Double.parseDouble(part2)) {
-                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (Player player : players) {
-                                    String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                    String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                    if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) >= Double.parseDouble(part2)) {
-                                        player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
-                                    }
-                                }
-                            }
-                        } else {
-                            if (colorCodesByDefault) {
-                                if (ampersandByDefault) {
-                                    for (Player player : players) {
-                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) >= Double.parseDouble(part2)) {
-                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
-                                        }
-                                    }
-                                } else {
-                                    for (Player player : players) {
-                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) >= Double.parseDouble(part2)) {
-                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (Player player : players) {
-                                    String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                    String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                    if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) >= Double.parseDouble(part2)) {
-                                        player.sendMessage(message);
-                                    }
-                                }
+                        for (Player player : players) {
+                            String part1 = PlaceholderAPI.setPlaceholders(player, compare);
+                            String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
+                            if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) >= Double.parseDouble(part2)) {
+                                sendMessage(player, message, useColorCodes, parsePlaceholders, useAmpersand);
                             }
                         }
                     }
                     case "<" -> {
-                        if (parsePlaceholdersByDefault) {
-                            if (colorCodesByDefault) {
-                                if (ampersandByDefault) {
-                                    for (Player player : players) {
-                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) < Double.parseDouble(part2)) {
-                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                                        }
-                                    }
-                                } else {
-                                    for (Player player : players) {
-                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) < Double.parseDouble(part2)) {
-                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (Player player : players) {
-                                    String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                    String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                    if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) < Double.parseDouble(part2)) {
-                                        player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
-                                    }
-                                }
-                            }
-                        } else {
-                            if (colorCodesByDefault) {
-                                if (ampersandByDefault) {
-                                    for (Player player : players) {
-                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) < Double.parseDouble(part2)) {
-                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
-                                        }
-                                    }
-                                } else {
-                                    for (Player player : players) {
-                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) < Double.parseDouble(part2)) {
-                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (Player player : players) {
-                                    String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                    String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                    if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) < Double.parseDouble(part2)) {
-                                        player.sendMessage(message);
-                                    }
-                                }
+                        for (Player player : players) {
+                            String part1 = PlaceholderAPI.setPlaceholders(player, compare);
+                            String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
+                            if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) < Double.parseDouble(part2)) {
+                                sendMessage(player, message, useColorCodes, parsePlaceholders, useAmpersand);
                             }
                         }
                     }
                     case "<=" -> {
-                        if (parsePlaceholdersByDefault) {
-                            if (colorCodesByDefault) {
-                                if (ampersandByDefault) {
-                                    for (Player player : players) {
-                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) <= Double.parseDouble(part2)) {
-                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                                        }
-                                    }
-                                } else {
-                                    for (Player player : players) {
-                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) <= Double.parseDouble(part2)) {
-                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (Player player : players) {
-                                    String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                    String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                    if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) <= Double.parseDouble(part2)) {
-                                        player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
-                                    }
-                                }
-                            }
-                        } else {
-                            if (colorCodesByDefault) {
-                                if (ampersandByDefault) {
-                                    for (Player player : players) {
-                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) <= Double.parseDouble(part2)) {
-                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
-                                        }
-                                    }
-                                } else {
-                                    for (Player player : players) {
-                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) <= Double.parseDouble(part2)) {
-                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
-                                        }
-                                    }
-                                }
-                            } else {
-                                for (Player player : players) {
-                                    String part1 = PlaceholderAPI.setPlaceholders(player, compare);
-                                    String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
-                                    if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) <= Double.parseDouble(part2)) {
-                                        player.sendMessage(message);
-                                    }
-                                }
+                        for (Player player : players) {
+                            String part1 = PlaceholderAPI.setPlaceholders(player, compare);
+                            String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
+                            if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) <= Double.parseDouble(part2)) {
+                                sendMessage(player, message, useColorCodes, parsePlaceholders, useAmpersand);
                             }
                         }
                     }
@@ -511,6 +162,30 @@ public class BroadcastConditionMessageCommand extends Command implements Configu
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
+    }
+
+    private void sendMessage(Player player, String message, boolean parsePlaceholders, boolean useColorCodes, boolean useAmpersand) {
+        if (parsePlaceholders) {
+            if (useColorCodes) {
+                if (useAmpersand) {
+                        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                } else {
+                    player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                }
+            } else {
+                player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
+            }
+        } else {
+            if (useColorCodes) {
+                if (useAmpersand) {
+                    player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                } else {
+                    player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                }
+            } else {
+                player.sendMessage(message);
+            }
+        }
     }
 
 }
