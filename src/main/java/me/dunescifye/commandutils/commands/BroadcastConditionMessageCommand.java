@@ -3,7 +3,6 @@ package me.dunescifye.commandutils.commands;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
-import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import dev.jorel.commandapi.arguments.TextArgument;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
@@ -65,7 +64,7 @@ public class BroadcastConditionMessageCommand extends Command implements Configu
         new CommandAPICommand("broadcastconditionmessage")
             .withArguments(compare1)
             .withArguments(compareMethod
-                .replaceSuggestions(ArgumentSuggestions.strings("==", "!=", "contains", "!contains", "equals", ">", "<", ">=", "<="))
+                .replaceSuggestions(ArgumentSuggestions.strings("==", "!=", "different", "contains", "!contains", "equals", ">", "<", ">=", "<="))
             )
             .withArguments(compare2)
             .withArguments(messageArg)
@@ -123,7 +122,7 @@ public class BroadcastConditionMessageCommand extends Command implements Configu
                             }
                         }
                     }
-                    case "!=" -> {
+                    case "!=", "different" -> {
                         if (parsePlaceholdersByDefault) {
                             if (colorCodesByDefault) {
                                 if (ampersandByDefault) {
@@ -164,6 +163,100 @@ public class BroadcastConditionMessageCommand extends Command implements Configu
                             } else {
                                 for (Player player : players) {
                                     if (!Objects.equals(PlaceholderAPI.setPlaceholders(player, compare), PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                        player.sendMessage(message);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    case "contains" -> {
+                        if (parsePlaceholdersByDefault) {
+                            if (colorCodesByDefault) {
+                                if (ampersandByDefault) {
+                                    for (Player player : players) {
+                                        if (PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                                        }
+                                    }
+                                } else {
+                                    for (Player player : players) {
+                                        if (PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                                        }
+                                    }
+                                }
+                            } else {
+                                for (Player player : players) {
+                                    if (PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                        player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
+                                    }
+                                }
+                            }
+                        } else {
+                            if (colorCodesByDefault) {
+                                if (ampersandByDefault) {
+                                    for (Player player : players) {
+                                        if (PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                        }
+                                    }
+                                } else {
+                                    for (Player player : players) {
+                                        if (PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                                        }
+                                    }
+                                }
+                            } else {
+                                for (Player player : players) {
+                                    if (PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                        player.sendMessage(message);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    case "!contains" -> {
+                        if (parsePlaceholdersByDefault) {
+                            if (colorCodesByDefault) {
+                                if (ampersandByDefault) {
+                                    for (Player player : players) {
+                                        if (!PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                                        }
+                                    }
+                                } else {
+                                    for (Player player : players) {
+                                        if (!PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                                        }
+                                    }
+                                }
+                            } else {
+                                for (Player player : players) {
+                                    if (!PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                        player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
+                                    }
+                                }
+                            }
+                        } else {
+                            if (colorCodesByDefault) {
+                                if (ampersandByDefault) {
+                                    for (Player player : players) {
+                                        if (!PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                        }
+                                    }
+                                } else {
+                                    for (Player player : players) {
+                                        if (!PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                                        }
+                                    }
+                                }
+                            } else {
+                                for (Player player : players) {
+                                    if (!PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
                                         player.sendMessage(message);
                                     }
                                 }
