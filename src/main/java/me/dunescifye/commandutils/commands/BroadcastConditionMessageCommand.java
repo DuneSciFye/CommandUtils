@@ -7,6 +7,7 @@ import dev.jorel.commandapi.arguments.TextArgument;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -257,6 +258,124 @@ public class BroadcastConditionMessageCommand extends Command implements Configu
                             } else {
                                 for (Player player : players) {
                                     if (!PlaceholderAPI.setPlaceholders(player, compare).contains(PlaceholderAPI.setPlaceholders(player, compareTo))) {
+                                        player.sendMessage(message);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    case ">" -> {
+                        if (parsePlaceholdersByDefault) {
+                            if (colorCodesByDefault) {
+                                if (ampersandByDefault) {
+                                    for (Player player : players) {
+                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
+                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
+                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) > Double.parseDouble(part2)) {
+                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                                        }
+                                    }
+                                } else {
+                                    for (Player player : players) {
+                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
+                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
+                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) > Double.parseDouble(part2)) {
+                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                                        }
+                                    }
+                                }
+                            } else {
+                                for (Player player : players) {
+                                    String part1 = PlaceholderAPI.setPlaceholders(player, compare);
+                                    String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
+                                    if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) > Double.parseDouble(part2)) {
+                                        player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
+                                    }
+                                }
+                            }
+                        } else {
+                            if (colorCodesByDefault) {
+                                if (ampersandByDefault) {
+                                    for (Player player : players) {
+                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
+                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
+                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) > Double.parseDouble(part2)) {
+                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                        }
+                                    }
+                                } else {
+                                    for (Player player : players) {
+                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
+                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
+                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) > Double.parseDouble(part2)) {
+                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                                        }
+                                    }
+                                }
+                            } else {
+                                for (Player player : players) {
+                                    String part1 = PlaceholderAPI.setPlaceholders(player, compare);
+                                    String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
+                                    if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) > Double.parseDouble(part2)) {
+                                        player.sendMessage(message);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    case ">=" -> {
+                        if (parsePlaceholdersByDefault) {
+                            if (colorCodesByDefault) {
+                                if (ampersandByDefault) {
+                                    for (Player player : players) {
+                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
+                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
+                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) >= Double.parseDouble(part2)) {
+                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                                        }
+                                    }
+                                } else {
+                                    for (Player player : players) {
+                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
+                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
+                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) >= Double.parseDouble(part2)) {
+                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
+                                        }
+                                    }
+                                }
+                            } else {
+                                for (Player player : players) {
+                                    String part1 = PlaceholderAPI.setPlaceholders(player, compare);
+                                    String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
+                                    if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) >= Double.parseDouble(part2)) {
+                                        player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
+                                    }
+                                }
+                            }
+                        } else {
+                            if (colorCodesByDefault) {
+                                if (ampersandByDefault) {
+                                    for (Player player : players) {
+                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
+                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
+                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) >= Double.parseDouble(part2)) {
+                                            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
+                                        }
+                                    }
+                                } else {
+                                    for (Player player : players) {
+                                        String part1 = PlaceholderAPI.setPlaceholders(player, compare);
+                                        String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
+                                        if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) >= Double.parseDouble(part2)) {
+                                            player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+                                        }
+                                    }
+                                }
+                            } else {
+                                for (Player player : players) {
+                                    String part1 = PlaceholderAPI.setPlaceholders(player, compare);
+                                    String part2 = PlaceholderAPI.setPlaceholders(player, compareTo);
+                                    if (NumberUtils.isCreatable(part1) && NumberUtils.isCreatable(part2) && Double.parseDouble(part1) >= Double.parseDouble(part2)) {
                                         player.sendMessage(message);
                                     }
                                 }
