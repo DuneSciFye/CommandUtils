@@ -1018,6 +1018,142 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                 world.dropItemNaturally(location, item);
                                             }
                                         })
+                                        .then(dropArg
+                                            .executes((sender, args) -> {
+                                                List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
+                                                Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
+
+                                                World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                                Location location = args.getByArgument(locArg);
+                                                Block origin = world.getBlockAt(location);
+                                                int radius = args.getByArgument(radiusArg);
+                                                Player player = args.getByArgument(playerArg);
+                                                int depth = args.getByArgument(depthArg);
+                                                depth = depth < 1 ? 1 : depth -1;
+                                                ItemStack drop = args.getByArgument(dropArg);
+
+                                                double pitch = player.getLocation().getPitch();
+                                                int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
+                                                if (pitch < -45) {
+                                                    yStart = 0;
+                                                    yEnd = depth;
+                                                } else if (pitch > 45) {
+                                                    yStart = -depth;
+                                                    yEnd = 0;
+                                                } else {
+                                                    switch (player.getFacing()) {
+                                                        case NORTH:
+                                                            zStart = -depth;
+                                                            zEnd = 0;
+                                                            break;
+                                                        case SOUTH:
+                                                            zStart = 0;
+                                                            zEnd = depth;
+                                                            break;
+                                                        case WEST:
+                                                            xStart = -depth;
+                                                            xEnd = 0;
+                                                            break;
+                                                        case EAST:
+                                                            xStart = 0;
+                                                            xEnd = depth;
+                                                            break;
+                                                    }
+                                                }
+
+                                                for (int x = xStart; x <= xEnd; x++) {
+                                                    for (int y = yStart; y <= yEnd; y++) {
+                                                        block:
+                                                        for (int z = zStart; z <= zEnd; z++) {
+                                                            Block relative = origin.getRelative(x, y, z);
+                                                            for (Predicate<Block> predicateWhitelist : whitelist) {
+                                                                if (predicateWhitelist.test(relative)) {
+                                                                    for (Predicate<Block> predicateBlacklist : blacklist) {
+                                                                        if (predicateBlacklist.test(relative)) {
+                                                                            continue block;
+                                                                        }
+                                                                    }
+                                                                    drop.setAmount(drop.getAmount() + 1);
+                                                                    relative.setType(Material.AIR);
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                drop.setAmount(drop.getAmount() - 1);
+                                                world.dropItemNaturally(location, drop);
+                                            })
+                                        )
+                                        .then(forceDropArg
+                                            .executes((sender, args) -> {
+                                                List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
+                                                Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
+
+                                                World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                                Location location = args.getByArgument(locArg);
+                                                Block origin = world.getBlockAt(location);
+                                                int radius = args.getByArgument(radiusArg);
+                                                Player player = args.getByArgument(playerArg);
+                                                int depth = args.getByArgument(depthArg);
+                                                depth = depth < 1 ? 1 : depth -1;
+                                                double pitch = player.getLocation().getPitch();
+                                                int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
+                                                if (pitch < -45) {
+                                                    yStart = 0;
+                                                    yEnd = depth;
+                                                } else if (pitch > 45) {
+                                                    yStart = -depth;
+                                                    yEnd = 0;
+                                                } else {
+                                                    switch (player.getFacing()) {
+                                                        case NORTH:
+                                                            zStart = -depth;
+                                                            zEnd = 0;
+                                                            break;
+                                                        case SOUTH:
+                                                            zStart = 0;
+                                                            zEnd = depth;
+                                                            break;
+                                                        case WEST:
+                                                            xStart = -depth;
+                                                            xEnd = 0;
+                                                            break;
+                                                        case EAST:
+                                                            xStart = 0;
+                                                            xEnd = depth;
+                                                            break;
+                                                    }
+                                                }
+                                                Collection<ItemStack> drops = new ArrayList<>();
+
+                                                for (int x = xStart; x <= xEnd; x++) {
+                                                    for (int y = yStart; y <= yEnd; y++) {
+                                                        block:
+                                                        for (int z = zStart; z <= zEnd; z++) {
+                                                            Block relative = origin.getRelative(x, y, z);
+                                                            for (Predicate<Block> predicateWhitelist : whitelist) {
+                                                                if (predicateWhitelist.test(relative)) {
+                                                                    for (Predicate<Block> predicateBlacklist : blacklist) {
+                                                                        if (predicateBlacklist.test(relative)) {
+                                                                            continue block;
+                                                                        }
+                                                                    }
+                                                                    drops.add(new ItemStack(relative.getType()));
+                                                                    relative.setType(Material.AIR);
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                for (ItemStack item : mergeSimilarItemStacks(drops)) {
+                                                    world.dropItemNaturally(location, item);
+                                                }
+                                            })
+                                        )
                                     )
                                 )
                             )
