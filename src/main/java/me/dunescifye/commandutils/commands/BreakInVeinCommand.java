@@ -146,6 +146,75 @@ public class BreakInVeinCommand extends Command implements Configurable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
+
+        new CommandAPICommand("breakinvein")
+            .withArguments(locArg)
+            .withOptionalArguments(blockArg)
+            .withOptionalArguments(maxBlocksArg)
+            .executes((sender, args) -> {
+                Location loc = args.getByArgument(locArg);
+                World world = loc.getWorld();
+                Block block = loc.getBlock();
+
+                Predicate<Block> defaultPredicate = b -> b.getType().equals(block.getType());
+                predicate = args.getByArgumentOrDefault(blockArg, defaultPredicate);
+                maxSize = args.getByArgumentOrDefault(maxBlocksArg, defaultMaxBlocks);
+
+                getVeinOres(block);
+
+                for (ItemStack item : mergeSimilarItemStacks(drops)) {
+                    world.dropItemNaturally(block.getLocation(), item);
+                }
+
+                drops.clear();
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
+        new CommandAPICommand("breakinvein")
+            .withArguments(locArg)
+            .withArguments(playerArg)
+            .withOptionalArguments(blockArg)
+            .withOptionalArguments(triggerBlockBreakArg)
+            .withOptionalArguments(maxBlocksArg)
+            .withOptionalArguments(checkClaimArg)
+            .executes((sender, args) -> {
+                Location loc = args.getByArgument(locArg);
+                World world = loc.getWorld();
+                Block block = loc.getBlock();
+                player = args.getByArgument(playerArg);
+                item = player.getInventory().getItemInMainHand();
+
+                if (player.hasMetadata("ignoreBlockBreak")) return;
+
+                Predicate<Block> defaultPredicate = b -> b.getType().equals(block.getType());
+                predicate = args.getByArgumentOrDefault(blockArg, defaultPredicate);
+                maxSize = args.getByArgumentOrDefault(maxBlocksArg, defaultMaxBlocks);
+                boolean checkClaim = CommandUtils.griefPreventionEnabled ? args.getByArgumentOrDefault(checkClaimArg, defaultCheckClaim) : false;
+                triggerBlockBreak = args.getByArgumentOrDefault(triggerBlockBreakArg, defaultTriggerBlockBreakEvent);
+                player.setMetadata("ignoreBlockBreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
+
+                if (checkClaim) {
+                    getVeinOresCheckClaim(block);
+                } else {
+                    getVeinOres(block);
+                }
+
+                for (ItemStack item : mergeSimilarItemStacks(drops)) {
+                    world.dropItemNaturally(block.getLocation(), item);
+                }
+
+                drops.clear();
+                item = null;
+                player.removeMetadata("ignoreBlockBreak", CommandUtils.getInstance());
+                player = null;
+                triggerBlockBreak = false;
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
     }
 
     private Collection<ItemStack> drops = new ArrayList<>();
