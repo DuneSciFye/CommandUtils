@@ -169,6 +169,7 @@ Commands:
   Loop:
     Enabled: true
     Aliases: []
+    CommandSeparator: ",,"
 
   MobTarget:
     Enabled: true

@@ -4,11 +4,14 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
+import dev.jorel.commandapi.arguments.TextArgument;
 import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.logging.Logger;
 
 public class LoopCommand extends Command implements Configurable {
 
@@ -16,16 +19,34 @@ public class LoopCommand extends Command implements Configurable {
     public void register(YamlDocument config) {
         if (!this.getEnabled()) return;
 
-        String commandSeparator = config.getString("Commands.IfCommand.CommandSeparator");
+        Logger logger = CommandUtils.getInstance().getLogger();
+        String commandSeparator;
+
+        if (config.getOptionalString("Commands.Loop.CommandSeparator").isEmpty()) {
+            config.set("Commands.Loop.CommandSeparator", ",,");
+            commandSeparator = ",,";
+        } else {
+            if (config.isString("Commands.Loop.CommandSeparator")) {
+                commandSeparator = config.getString("Commands.Loop.CommandSeparator");
+            } else {
+                logger.warning("Configuration Commands.Loop.CommandSeparator is not a String. Using default value of `,,` Found " + config.getString("Commands.Loop.CommandSeparator"));
+                commandSeparator = ",,";
+            }
+        }
+
+        IntegerArgument loopAmountArg = new IntegerArgument("Loop Amount");
+        IntegerArgument delayArg = new IntegerArgument("Delay In Ticks");
+        IntegerArgument periodArg = new IntegerArgument("Period In Ticks");
+        TextArgument commandsArg = new TextArgument("Commands");
 
         new CommandAPICommand("loopcommand")
-            .withArguments(new IntegerArgument("Loop Amount"))
-            .withArguments(new IntegerArgument("Delay In Ticks"))
-            .withArguments(new IntegerArgument("Period In Ticks"))
-            .withArguments(new GreedyStringArgument("Commands"))
+            .withArguments(loopAmountArg)
+            .withArguments(delayArg)
+            .withArguments(periodArg)
+            .withArguments(commandsArg)
             .executes((sender, args) -> {
-                int maxCount = args.getUnchecked("Loop Amount");
-                String commandsInput = args.getUnchecked("Commands");
+                int maxCount = args.getByArgument(loopAmountArg);
+                String commandsInput = args.getByArgument(commandsArg);
                 String[] commands = commandsInput.split(commandSeparator);
                 Server server = Bukkit.getServer();
                 ConsoleCommandSender console = server.getConsoleSender();
@@ -44,7 +65,7 @@ public class LoopCommand extends Command implements Configurable {
 
                         count ++;
                     }
-                }.runTaskTimer(CommandUtils.getInstance(), args.getUnchecked("Delay In Ticks"), args.getUnchecked("Period In Ticks"));
+                }.runTaskTimer(CommandUtils.getInstance(), args.getByArgument(delayArg), args.getByArgument(periodArg));
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
