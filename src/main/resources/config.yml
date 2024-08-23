@@ -174,6 +174,8 @@ Commands:
   MobTarget:
     Enabled: true
     Aliases: []
+    #Allow multiple entities in the target selector argument, would randomly choose one
+    AllowMultipleTargets: false
 
   OverrideEffect:
     Enabled: true
