@@ -99,10 +99,10 @@ public class HighlightBlocksCommand extends Command implements Configurable {
         IntegerArgument numberOfIntervalsArg = new IntegerArgument("Number Of Intervals");
         IntegerArgument particleSpawnIntervalArg = new IntegerArgument("Particle Spawn Interval");
 
-
+        //Single Block Predicate
         new CommandAPICommand("highlightblocks")
-            .withArguments(locArg)
             .withArguments(worldArg)
+            .withArguments(locArg)
             .withArguments(radiusArg)
             .withArguments(blockPredicateArg)
             .withArguments(particleArg)
@@ -139,9 +139,10 @@ public class HighlightBlocksCommand extends Command implements Configurable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
+        //Command defined block predicates
         new CommandAPICommand("highlightblocks")
-            .withArguments(locArg)
             .withArguments(worldArg)
+            .withArguments(locArg)
             .withArguments(radiusArg)
             .withArguments(whitelistArg)
             .withArguments(new ListArgumentBuilder<String>("Whitelisted Blocks")
@@ -195,7 +196,61 @@ public class HighlightBlocksCommand extends Command implements Configurable {
 
         new CommandAPICommand("highlightblocks")
             .withArguments(locArg)
+            .withArguments(radiusArg)
+            .withArguments(whitelistArg)
+            .withArguments(new ListArgumentBuilder<String>("Whitelisted Blocks")
+                .withList(Utils.getPredicatesList())
+                .withStringMapper()
+                .buildText())
+            .withArguments(particleArg)
+            .withOptionalArguments(particleCountArg)
+            .withOptionalArguments(particleOffsetArg)
+            .withOptionalArguments(particleSpeedArg)
+            .withOptionalArguments(numberOfIntervalsArg)
+            .withOptionalArguments(particleSpawnIntervalArg)
+            .executes((sender, args) -> {
+                List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
+                Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
+
+                Location location = args.getByArgument(locArg);
+                World world = location.getWorld();
+                Block origin = location.getBlock();
+                int radius = args.getByArgument(radiusArg);
+                ParticleData<?> particleData = args.getByArgument(particleArg);
+
+                for (int x = -radius; x <= radius; x++) {
+                    for (int y = -radius; y <= radius; y++) {
+                        block:
+                        for (int z = -radius; z <= radius; z++) {
+                            Block relative = origin.getRelative(x, y, z);
+                            for (Predicate<Block> predicateWhitelist : whitelist) {
+                                if (predicateWhitelist.test(relative)) {
+                                    for (Predicate<Block> predicateBlacklist : blacklist) {
+                                        if (predicateBlacklist.test(relative)) {
+                                            continue block;
+                                        }
+                                    }
+                                    spawnParticle(world, relative, particleData,
+                                        args.getByArgumentOrDefault(particleCountArg, defaultParticleCount),
+                                        args.getByArgumentOrDefault(particleOffsetArg, defaultParticleOffset),
+                                        args.getByArgumentOrDefault(particleSpeedArg, defaultParticleSpeed),
+                                        args.getByArgumentOrDefault(numberOfIntervalsArg, numberOfIntervals),
+                                        args.getByArgumentOrDefault(particleSpawnIntervalArg, particleSpawnInterval));
+                                }
+                            }
+                        }
+                    }
+                }
+
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
+        //Config defined block predicates
+        new CommandAPICommand("highlightblocks")
             .withArguments(worldArg)
+            .withArguments(locArg)
             .withArguments(radiusArg)
             .withArguments(whitelistedBlocksArgument
                 .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
@@ -213,6 +268,57 @@ public class HighlightBlocksCommand extends Command implements Configurable {
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 Location location = args.getByArgument(locArg);
                 Block origin = world.getBlockAt(location);
+                int radius = args.getByArgument(radiusArg);
+                ParticleData<?> particleData = args.getByArgument(particleArg);
+
+                for (int x = -radius; x <= radius; x++) {
+                    for (int y = -radius; y <= radius; y++) {
+                        block:
+                        for (int z = -radius; z <= radius; z++) {
+                            Block relative = origin.getRelative(x, y, z);
+                            for (Predicate<Block> predicateWhitelist : whitelist) {
+                                if (predicateWhitelist.test(relative)) {
+                                    for (Predicate<Block> predicateBlacklist : blacklist) {
+                                        if (predicateBlacklist.test(relative)) {
+                                            continue block;
+                                        }
+                                    }
+                                    spawnParticle(world, relative, particleData,
+                                        args.getByArgumentOrDefault(particleCountArg, defaultParticleCount),
+                                        args.getByArgumentOrDefault(particleOffsetArg, defaultParticleOffset),
+                                        args.getByArgumentOrDefault(particleSpeedArg, defaultParticleSpeed),
+                                        args.getByArgumentOrDefault(numberOfIntervalsArg, numberOfIntervals),
+                                        args.getByArgumentOrDefault(particleSpawnIntervalArg, particleSpawnInterval));
+                                }
+                            }
+                        }
+                    }
+                }
+
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
+        new CommandAPICommand("highlightblocks")
+            .withArguments(locArg)
+            .withArguments(radiusArg)
+            .withArguments(whitelistedBlocksArgument
+                .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
+            )
+            .withArguments(particleArg)
+            .withOptionalArguments(particleCountArg)
+            .withOptionalArguments(particleOffsetArg)
+            .withOptionalArguments(particleSpeedArg)
+            .withOptionalArguments(numberOfIntervalsArg)
+            .withOptionalArguments(particleSpawnIntervalArg)
+            .executes((sender, args) -> {
+                String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
+                List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
+
+                Location location = args.getByArgument(locArg);
+                World world = location.getWorld();
+                Block origin = location.getBlock();
                 int radius = args.getByArgument(radiusArg);
                 ParticleData<?> particleData = args.getByArgument(particleArg);
 

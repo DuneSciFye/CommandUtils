@@ -57,54 +57,5 @@ public class FoodCommand extends Command implements Registerable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-
-        new CommandTree("food")
-            .then(addArg
-                .then(playerArg
-                    .then(amountArg
-                        .executes((sender, args) -> {
-                            Player p = args.getByArgument(playerArg);
-                            int foodLevel = p.getFoodLevel();
-                            int addAmount = args.getByArgument(amountArg);
-                            p.setFoodLevel(Math.min(foodLevel + addAmount, 20));
-                        })
-                        .then(allowOverflowArg
-                            .executes((sender, args) -> {
-                                Player p = args.getByArgument(playerArg);
-                                int foodLevel = p.getFoodLevel();
-                                int addAmount = args.getByArgument(amountArg);
-                                if (args.getByArgument(allowOverflowArg) || foodLevel + addAmount < 20) {
-                                    p.setFoodLevel(foodLevel + addAmount);
-                                } else {
-                                    p.setFoodLevel(20);
-                                }
-                            })
-                        )
-                    )
-                )
-            )
-            .then(removeArg
-                .then(playerArg
-                    .then(amountArg
-                        .executes((sender, args) -> {
-                            Player p = args.getByArgument(playerArg);
-                            p.setFoodLevel(p.getFoodLevel() - args.getByArgument(amountArg));
-                        })
-                    )
-                )
-            )
-            .then(setArg
-                .then(playerArg
-                    .then(amountArg
-                        .executes((sender, args) -> {
-                            Player p = args.getByArgument(playerArg);
-                            p.setFoodLevel(args.getByArgument(amountArg));
-                        })
-                    )
-                )
-            )
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
     }
 }
