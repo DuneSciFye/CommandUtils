@@ -4,6 +4,10 @@ Download the latest version from the github release page or from spigotmc: https
 
 Simply upload the jar file to the plugins folder and plugman reload/restart your server!
 
+Suggest new commands in our discord
+Post issues in the issues tab on github
+Received support in the discord
+
 List of commands:
 /blockcycle {oxidize/wax} {world} {location (x y z)} 
 /blockgravity {world} {location} {gravity enabled} 
