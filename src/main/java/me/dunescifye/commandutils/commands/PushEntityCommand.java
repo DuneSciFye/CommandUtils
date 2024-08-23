@@ -1,10 +1,10 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandTree;
-import dev.jorel.commandapi.arguments.DoubleArgument;
-import dev.jorel.commandapi.arguments.EntitySelectorArgument;
-import dev.jorel.commandapi.arguments.LocationArgument;
+import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 
@@ -14,59 +14,80 @@ public class PushEntityCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
+
         if (!this.getEnabled()) return;
 
-        new CommandTree("pushentity")
-            .then(new EntitySelectorArgument.ManyEntities("Entity")
-                .then(new LocationArgument("Location")
-                    .executes((sender, args) -> {
-                        Collection<Entity> entities = args.getUnchecked("Entity");
-                        Location location = args.getUnchecked("Location");
-                        Vector vector = location.toVector();
-                        for (Entity entity : entities) {
-                            if (entity.getWorld() != location.getWorld()) continue;
-                            entity.setVelocity(vector.subtract(entity.getLocation().toVector()).normalize());
-                        }
-                    })
-                    .then(new DoubleArgument("Multiplier")
-                        .executes((sender, args) -> {
-                            Collection<Entity> entities = args.getUnchecked("Entity");
-                            Location location = args.getUnchecked("Location");
-                            Vector vector = location.toVector();
-                            Double multiplier = args.getUnchecked("Multiplier");
-                            for (Entity entity : entities) {
-                                if (entity.getWorld() != location.getWorld()) continue;
-                                entity.setVelocity(vector.subtract(entity.getLocation().toVector()).normalize().multiply(multiplier));
-                            }
-                        })
-                    )
-                )
-                .then(new EntitySelectorArgument.OneEntity("Target")
-                    .executes((sender, args) -> {
-                        Collection<Entity> entities = args.getUnchecked("Entity");
-                        Entity target = args.getUnchecked("Target");
-                        Vector vector = target.getLocation().toVector();
-                        for (Entity entity : entities) {
-                            if (entity.getWorld() != target.getWorld()) continue;
-                            entity.setVelocity(vector.subtract(target.getLocation().toVector()).normalize());
-                        }
-                    })
-                    .then(new DoubleArgument("Multiplier")
-                        .executes((sender, args) -> {
-                            Collection<Entity> entities = args.getUnchecked("Entity");
-                            Entity target = args.getUnchecked("Target");
-                            Vector vector = target.getLocation().toVector();
-                            Double multiplier = args.getUnchecked("Multiplier");
-                            for (Entity entity : entities) {
-                                if (entity.getWorld() != target.getWorld()) continue;
-                                entity.setVelocity(vector.subtract(target.getLocation().toVector()).normalize().multiply(multiplier));
-                            }
-                        })
-                    )
-                )
-            )
+        EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
+        LocationArgument locArg = new LocationArgument("Location");
+        DoubleArgument multiplierArg = new DoubleArgument("Multiplier");
+        EntitySelectorArgument.OneEntity targetArg = new EntitySelectorArgument.OneEntity("Target");
+        StringArgument worldArg = new StringArgument("World");
+
+        new CommandAPICommand("pushentity")
+            .withArguments(entitiesArg)
+            .withArguments(worldArg)
+            .withArguments(locArg)
+            .withOptionalArguments(multiplierArg)
+            .executes((sender, args) -> {
+                Collection<Entity> entities = args.getByArgument(entitiesArg);
+                Location location = args.getByArgument(locArg);
+                World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                Vector vector = location.toVector();
+                double multiplier = args.getByArgumentOrDefault(multiplierArg, 1.0);
+
+                for (Entity entity : entities) {
+                    if (entity.getWorld() != world) continue;
+
+                    entity.setVelocity(vector.subtract(entity.getLocation().toVector()).normalize().multiply(multiplier));
+                }
+            })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
+
+        //No World Arg
+        new CommandAPICommand("pushentity")
+            .withArguments(entitiesArg)
+            .withArguments(locArg)
+            .withOptionalArguments(multiplierArg)
+            .executes((sender, args) -> {
+                Collection<Entity> entities = args.getByArgument(entitiesArg);
+                Location location = args.getByArgument(locArg);
+                World world = location.getWorld();
+                Vector vector = location.toVector();
+                double multiplier = args.getByArgumentOrDefault(multiplierArg, 1.0);
+
+                for (Entity entity : entities) {
+                    if (entity.getWorld() != world) continue;
+
+                    entity.setVelocity(vector.subtract(entity.getLocation().toVector()).normalize().multiply(multiplier));
+                }
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
+        //Target for location
+        new CommandAPICommand("pushentity")
+            .withArguments(entitiesArg)
+            .withArguments(targetArg)
+            .withOptionalArguments(multiplierArg)
+            .executes((sender, args) -> {
+                Collection<Entity> entities = args.getByArgument(entitiesArg);
+                Entity target = args.getByArgument(targetArg);
+                World world = target.getWorld();
+                Vector vector = target.getLocation().toVector();
+                double multiplier = args.getByArgumentOrDefault(multiplierArg, 1.0);
+
+                for (Entity entity : entities) {
+                    if (entity.getWorld() != world) continue;
+                    entity.setVelocity(vector.subtract(entity.getLocation().toVector()).normalize().multiply(multiplier));
+                }
+
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
     }
 }
