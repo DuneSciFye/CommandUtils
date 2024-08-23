@@ -1,5 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
+import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
@@ -17,30 +18,41 @@ public class LaunchFireworkCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
+
         if (!this.getEnabled()) return;
-        new CommandTree("launchfirework")
-            .then(new PlayerArgument("Player")
-                .then(new IntegerArgument("Ticks To Detonate")
-                    .executes((sender, args) -> {
-                        Player p = args.getUnchecked("Player");
-                        assert p != null;
-                        Location loc = p.getEyeLocation();
-                        Vector direction = loc.getDirection();
 
-                        Firework firework = p.getWorld().spawn(loc, Firework.class);
-                        FireworkMeta fwm = firework.getFireworkMeta();
-                        fwm.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(ThreadLocalRandom.current().nextInt(0, 256), ThreadLocalRandom.current().nextInt(0, 256), ThreadLocalRandom.current().nextInt(0, 256))).build());
-                        fwm.setPower(1);
-                        firework.setFireworkMeta(fwm);
+        PlayerArgument playerArg = new PlayerArgument("Player");
+        IntegerArgument ticksToDetonateArg = new IntegerArgument("Ticks To Detonate");
+        IntegerArgument fireworkPowerArg = new IntegerArgument("Firework Power");
+        IntegerArgument redColorArg = new IntegerArgument("Red RGB");
+        IntegerArgument greenColorArg = new IntegerArgument("Green RGB");
+        IntegerArgument blueColorArg = new IntegerArgument("Blue RGB");
 
-                        firework.setVelocity(direction);
-                        firework.setShotAtAngle(true);
-                    })
-                )
-            )
+        new CommandAPICommand("launchfirework")
+            .withArguments(playerArg)
+            .withArguments(ticksToDetonateArg)
+            .withOptionalArguments(redColorArg)
+            .withOptionalArguments(greenColorArg)
+            .withOptionalArguments(blueColorArg)
+            .withOptionalArguments(fireworkPowerArg)
+            .executes((sender, args) -> {
+                Player p = args.getByArgument(playerArg);
+                Location loc = p.getEyeLocation();
+                Vector direction = loc.getDirection();
+
+                Firework firework = p.getWorld().spawn(loc, Firework.class);
+                FireworkMeta fwm = firework.getFireworkMeta();
+                fwm.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(ThreadLocalRandom.current().nextInt(0, 256), ThreadLocalRandom.current().nextInt(0, 256), ThreadLocalRandom.current().nextInt(0, 256))).build());
+                fwm.setPower(1);
+                firework.setFireworkMeta(fwm);
+
+                firework.setVelocity(direction);
+                firework.setShotAtAngle(true);
+            })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
+
     }
 
 }

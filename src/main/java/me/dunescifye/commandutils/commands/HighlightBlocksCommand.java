@@ -139,6 +139,45 @@ public class HighlightBlocksCommand extends Command implements Configurable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
+        //No world, single block predicate
+        new CommandAPICommand("highlightblocks")
+            .withArguments(locArg)
+            .withArguments(radiusArg)
+            .withArguments(blockPredicateArg)
+            .withArguments(particleArg)
+            .withOptionalArguments(particleCountArg)
+            .withOptionalArguments(particleOffsetArg)
+            .withOptionalArguments(particleSpeedArg)
+            .withOptionalArguments(numberOfIntervalsArg)
+            .withOptionalArguments(particleSpawnIntervalArg)
+            .executes((sender, args) -> {
+                Location location = args.getByArgument(locArg);
+                World world = location.getWorld();
+                Block origin = location.getBlock();
+                int radius = args.getByArgument(radiusArg);
+                Predicate<Block> predicate = args.getByArgument(blockPredicateArg);
+                ParticleData<?> particleData = args.getByArgument(particleArg);
+
+                for (int x = -radius; x <= radius; x++) {
+                    for (int y = -radius; y <= radius; y++) {
+                        for (int z = -radius; z <= radius; z++) {
+                            Block relative = origin.getRelative(x, y, z);
+                            if (predicate.test(relative)) {
+                                spawnParticle(world, relative, particleData,
+                                    args.getByArgumentOrDefault(particleCountArg, defaultParticleCount),
+                                    args.getByArgumentOrDefault(particleOffsetArg, defaultParticleOffset),
+                                    args.getByArgumentOrDefault(particleSpeedArg, defaultParticleSpeed),
+                                    args.getByArgumentOrDefault(numberOfIntervalsArg, numberOfIntervals),
+                                    args.getByArgumentOrDefault(particleSpawnIntervalArg, particleSpawnInterval));
+                            }
+                        }
+                    }
+                }
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
         //Command defined block predicates
         new CommandAPICommand("highlightblocks")
             .withArguments(worldArg)
@@ -194,6 +233,7 @@ public class HighlightBlocksCommand extends Command implements Configurable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
+        //No world, command defined block predicates
         new CommandAPICommand("highlightblocks")
             .withArguments(locArg)
             .withArguments(radiusArg)
@@ -300,6 +340,7 @@ public class HighlightBlocksCommand extends Command implements Configurable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
+        //No world, config defined block predicates
         new CommandAPICommand("highlightblocks")
             .withArguments(locArg)
             .withArguments(radiusArg)
