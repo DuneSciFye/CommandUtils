@@ -25,6 +25,73 @@ public class BlockGravityCommand extends Command implements Registerable {
         IntegerArgument yArg = new IntegerArgument("Y");
         IntegerArgument zArg = new IntegerArgument("Z");
 
+        
+        new CommandAPICommand("blockgravity")
+            .withArguments(worldArg)
+            .withArguments(locArg)
+            .withOptionalArguments(gravityArg)
+            .withOptionalArguments(radiusArg)
+            .executes((sender, args) -> {
+                Block origin = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
+                int radius = args.getByArgumentOrDefault(radiusArg, 0);
+
+                if (args.getByArgumentOrDefault(gravityArg, false)) {
+                    for (int x = -radius; x <= radius; x++) {
+                        for (int y = -radius; y <= radius; y++) {
+                            for (int z = -radius; z <= radius; z++) {
+                                Block relative = origin.getRelative(x, y, z);
+                                new CustomBlockData(relative, CommandUtils.getInstance()).remove(CommandUtils.noGravityKey);
+                            }
+                        }
+                    }
+                } else {
+                    for (int x = -radius; x <= radius; x++) {
+                        for (int y = -radius; y <= radius; y++) {
+                            for (int z = -radius; z <= radius; z++) {
+                                Block relative = origin.getRelative(x, y, z);
+                                new CustomBlockData(relative, CommandUtils.getInstance()).set(CommandUtils.noGravityKey, PersistentDataType.BYTE, (byte) 1);
+                            }
+                        }
+                    }
+                }
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
+        new CommandAPICommand("blockgravity")
+            .withArguments(locArg)
+            .withOptionalArguments(gravityArg)
+            .withOptionalArguments(radiusArg)
+            .executes((sender, args) -> {
+                Block origin = args.getByArgument(locArg).getBlock();
+                int radius = args.getByArgumentOrDefault(radiusArg, 0);
+
+                if (args.getByArgumentOrDefault(gravityArg, false)) {
+                    for (int x = -radius; x <= radius; x++) {
+                        for (int y = -radius; y <= radius; y++) {
+                            for (int z = -radius; z <= radius; z++) {
+                                Block relative = origin.getRelative(x, y, z);
+                                new CustomBlockData(relative, CommandUtils.getInstance()).remove(CommandUtils.noGravityKey);
+                            }
+                        }
+                    }
+                } else {
+                    for (int x = -radius; x <= radius; x++) {
+                        for (int y = -radius; y <= radius; y++) {
+                            for (int z = -radius; z <= radius; z++) {
+                                Block relative = origin.getRelative(x, y, z);
+                                new CustomBlockData(relative, CommandUtils.getInstance()).set(CommandUtils.noGravityKey, PersistentDataType.BYTE, (byte) 1);
+                            }
+                        }
+                    }
+                }
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
+        //
         new CommandAPICommand("blockgravity")
             .withArguments(worldArg)
             .withArguments(locArg)
