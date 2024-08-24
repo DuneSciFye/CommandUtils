@@ -28,7 +28,7 @@ public class WeightedRandomCommand extends Command implements Configurable {
         if (config.getOptionalString("Commands.WeightedRandom.CommandSeparator").isEmpty()) {
             config.set("Commands.WeightedRandom.CommandSeparator", "\\|");
         }
-        if (config.isBoolean("Commands.WeightedRandom.CommandSeparator")) {
+        if (config.isString("Commands.WeightedRandom.CommandSeparator")) {
             commandSeparator = config.getString("Commands.WeightedRandom.CommandSeparator");
         } else {
             commandSeparator = "\\|";
@@ -38,7 +38,7 @@ public class WeightedRandomCommand extends Command implements Configurable {
         if (config.getOptionalString("Commands.WeightedRandom.ArgumentSeparator").isEmpty()) {
             config.set("Commands.WeightedRandom.ArgumentSeparator", ",,");
         }
-        if (config.isBoolean("Commands.WeightedRandom.ArgumentSeparator")) {
+        if (config.isString("Commands.WeightedRandom.ArgumentSeparator")) {
             argumentSeparator = config.getString("Commands.WeightedRandom.ArgumentSeparator");
         } else {
             argumentSeparator = ",,";

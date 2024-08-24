@@ -33,7 +33,7 @@ public class WhileCommand extends Command implements Configurable {
             if (config.getOptionalString("Commands.While.CommandSeparator").isEmpty()) {
                 config.set("Commands.While.CommandSeparator", "\\|");
             }
-            if (config.isBoolean("Commands.While.CommandSeparator")) {
+            if (config.isString("Commands.While.CommandSeparator")) {
                 commandSeparator = config.getString("Commands.While.CommandSeparator");
             } else {
                 commandSeparator = "\\|";
@@ -43,7 +43,7 @@ public class WhileCommand extends Command implements Configurable {
             if (config.getOptionalString("Commands.While.PlaceholderSurrounder").isEmpty()) {
                 config.set("Commands.While.PlaceholderSurrounder", "$");
             }
-            if (config.isBoolean("Commands.While.PlaceholderSurrounder")) {
+            if (config.isString("Commands.While.PlaceholderSurrounder")) {
                 placeholderSurrounder = config.getString("Commands.While.PlaceholderSurrounder");
             } else {
                 placeholderSurrounder = "$";
