@@ -64,35 +64,59 @@ public class SendMessageCommand extends Command implements Configurable {
         }
 
         EntitySelectorArgument.ManyPlayers playersArg = new EntitySelectorArgument.ManyPlayers("Players");
-        GreedyStringArgument greedyMessageArg = new GreedyStringArgument("Message");
         TextArgument textArg = new TextArgument("Message");
+        GreedyStringArgument greedyStringArg = new GreedyStringArgument("Message");
         BooleanArgument colorCodesArg = new BooleanArgument("Color Codes");
         BooleanArgument parsePlaceholdersArg = new BooleanArgument("Parse Placeholders");
         BooleanArgument useAmpersandArg = new BooleanArgument("Use Ampersand For Color Codes");
-
+        /*
         new CommandAPICommand("sendmessage")
             .withArguments(playersArg)
+            .withArguments(colorCodesArg)
+            .withArguments(parsePlaceholdersArg)
+            .withArguments(useAmpersandArg)
             .withArguments(textArg)
-            .withOptionalArguments(colorCodesArg)
-            .withOptionalArguments(parsePlaceholdersArg)
-            .withOptionalArguments(useAmpersandArg)
             .executes((sender, args) -> {
                 sendMessage(args.getByArgument(playersArg),
                     args.getByArgument(textArg),
-                    args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault),
-                    args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault),
-                    args.getByArgumentOrDefault(useAmpersandArg, ampersandByDefault));
+                    args.getByArgument(parsePlaceholdersArg),
+                    args.getByArgument(colorCodesArg),
+                    args.getByArgument(useAmpersandArg));
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
+        if (playersListArg) {
+            new CommandAPICommand("sendmessage")
+                .withArguments(new ListArgumentBuilder<String>("Players List")
+                    .withList(Utils.getPlayersList())
+                    .withStringMapper()
+                    .buildText())
+                .withArguments(colorCodesArg)
+                .withArguments(parsePlaceholdersArg)
+                .withArguments(useAmpersandArg)
+                .withArguments(textArg)
+                .executes((sender, args) -> {
+                    sendMessage(args.getUnchecked("Players List"),
+                        args.getByArgument(textArg),
+                        args.getByArgument(parsePlaceholdersArg),
+                        args.getByArgument(colorCodesArg),
+                        args.getByArgument(useAmpersandArg));
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+        }
+
+         */
+
         new CommandAPICommand("sendmessage")
             .withArguments(playersArg)
-            .withArguments(greedyMessageArg)
+            .withArguments(greedyStringArg)
             .executes((sender, args) -> {
                 sendMessage(args.getByArgument(playersArg),
-                    args.getByArgument(greedyMessageArg),
+                    args.getByArgument(greedyStringArg),
                     parsePlaceholdersByDefault,
                     colorCodesByDefault,
                     ampersandByDefault);
@@ -107,33 +131,52 @@ public class SendMessageCommand extends Command implements Configurable {
                     .withList(Utils.getPlayersList())
                     .withStringMapper()
                     .buildText())
-                .withArguments(textArg)
-                .withOptionalArguments(colorCodesArg)
-                .withOptionalArguments(parsePlaceholdersArg)
-                .withOptionalArguments(useAmpersandArg)
+                .withArguments(greedyStringArg)
                 .executes((sender, args) -> {
                     sendMessage(args.getUnchecked("Players List"),
-                        args.getByArgument(textArg),
-                        args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault),
-                        args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault),
-                        args.getByArgumentOrDefault(useAmpersandArg, ampersandByDefault));
+                        args.getByArgument(greedyStringArg),
+                        parsePlaceholdersByDefault,
+                        colorCodesByDefault,
+                        ampersandByDefault);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
                 .register(this.getNamespace());
+        }
 
+        new CommandAPICommand("sendmessage")
+            .withArguments(colorCodesArg)
+            .withArguments(parsePlaceholdersArg)
+            .withArguments(useAmpersandArg)
+            .withArguments(playersArg)
+            .withArguments(greedyStringArg)
+            .executes((sender, args) -> {
+                sendMessage(args.getByArgument(playersArg),
+                    args.getByArgument(greedyStringArg),
+                    args.getByArgument(parsePlaceholdersArg),
+                    args.getByArgument(colorCodesArg),
+                    args.getByArgument(useAmpersandArg));
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
+        if (playersListArg) {
             new CommandAPICommand("sendmessage")
+                .withArguments(colorCodesArg)
+                .withArguments(parsePlaceholdersArg)
+                .withArguments(useAmpersandArg)
                 .withArguments(new ListArgumentBuilder<String>("Players List")
                     .withList(Utils.getPlayersList())
                     .withStringMapper()
                     .buildText())
-                .withArguments(greedyMessageArg)
+                .withArguments(greedyStringArg)
                 .executes((sender, args) -> {
                     sendMessage(args.getUnchecked("Players List"),
-                        args.getByArgument(greedyMessageArg),
-                        parsePlaceholdersByDefault,
-                        colorCodesByDefault,
-                        ampersandByDefault);
+                        args.getByArgument(greedyStringArg),
+                        args.getByArgument(parsePlaceholdersArg),
+                        args.getByArgument(colorCodesArg),
+                        args.getByArgument(useAmpersandArg));
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
