@@ -20,8 +20,8 @@ public class WaterlogCommand extends Command implements Registerable {
 
     //Arguments: World, X Y Z, waterlogOrNot
         new CommandAPICommand("waterlogblock")
-            .withArguments(locArg)
             .withArguments(worldArg)
+            .withArguments(locArg)
             .withOptionalArguments(waterlogArg)
             .withOptionalArguments(radiusArg)
             .executes((sender, args) -> {

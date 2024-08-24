@@ -144,44 +144,6 @@ public class SendMessageCommand extends Command implements Configurable {
                 .register(this.getNamespace());
         }
 
-        new CommandAPICommand("sendmessage")
-            .withArguments(colorCodesArg)
-            .withArguments(parsePlaceholdersArg)
-            .withArguments(useAmpersandArg)
-            .withArguments(playersArg)
-            .withArguments(greedyStringArg)
-            .executes((sender, args) -> {
-                sendMessage(args.getByArgument(playersArg),
-                    args.getByArgument(greedyStringArg),
-                    args.getByArgument(parsePlaceholdersArg),
-                    args.getByArgument(colorCodesArg),
-                    args.getByArgument(useAmpersandArg));
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
-
-        if (playersListArg) {
-            new CommandAPICommand("sendmessage")
-                .withArguments(colorCodesArg)
-                .withArguments(parsePlaceholdersArg)
-                .withArguments(useAmpersandArg)
-                .withArguments(new ListArgumentBuilder<String>("Players List")
-                    .withList(Utils.getPlayersList())
-                    .withStringMapper()
-                    .buildText())
-                .withArguments(greedyStringArg)
-                .executes((sender, args) -> {
-                    sendMessage(args.getUnchecked("Players List"),
-                        args.getByArgument(greedyStringArg),
-                        args.getByArgument(parsePlaceholdersArg),
-                        args.getByArgument(colorCodesArg),
-                        args.getByArgument(useAmpersandArg));
-                })
-                .withPermission(this.getPermission())
-                .withAliases(this.getCommandAliases())
-                .register(this.getNamespace());
-        }
     }
 
     private void sendMessage(Collection<Player> players, String message, boolean parsePlaceholders, boolean useColorCodes, boolean useAmpersand) {

@@ -117,14 +117,14 @@ public class BreakInVeinCommand extends Command implements Configurable {
                 player = args.getByArgument(playerArg);
                 item = player.getInventory().getItemInMainHand();
 
-                if (player.hasMetadata("ignoreBlockBreak")) return;
+                //if (player.hasMetadata("ignoreBlockBreak")) return;
 
                 Predicate<Block> defaultPredicate = b -> b.getType().equals(block.getType());
                 predicate = args.getByArgumentOrDefault(blockArg, defaultPredicate);
                 maxSize = args.getByArgumentOrDefault(maxBlocksArg, defaultMaxBlocks);
                 boolean checkClaim = CommandUtils.griefPreventionEnabled ? args.getByArgumentOrDefault(checkClaimArg, defaultCheckClaim) : false;
                 triggerBlockBreak = args.getByArgumentOrDefault(triggerBlockBreakArg, defaultTriggerBlockBreakEvent);
-                player.setMetadata("ignoreBlockBreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
+                //player.setMetadata("ignoreBlockBreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
 
                 if (checkClaim) {
                     getVeinOresCheckClaim(block);
@@ -138,7 +138,7 @@ public class BreakInVeinCommand extends Command implements Configurable {
 
                 drops.clear();
                 item = null;
-                player.removeMetadata("ignoreBlockBreak", CommandUtils.getInstance());
+                //player.removeMetadata("ignoreBlockBreak", CommandUtils.getInstance());
                 player = null;
                 triggerBlockBreak = false;
             })
