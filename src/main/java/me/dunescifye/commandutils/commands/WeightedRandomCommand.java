@@ -27,26 +27,22 @@ public class WeightedRandomCommand extends Command implements Configurable {
 
         if (config.getOptionalString("Commands.WeightedRandom.CommandSeparator").isEmpty()) {
             config.set("Commands.WeightedRandom.CommandSeparator", "\\|");
-            commandSeparator = "\\|";
+        }
+        if (config.isBoolean("Commands.WeightedRandom.CommandSeparator")) {
+            commandSeparator = config.getString("Commands.WeightedRandom.CommandSeparator");
         } else {
-            if (config.isString("Commands.WeightedRandom.CommandSeparator")) {
-                commandSeparator = config.getString("Commands.WeightedRandom.CommandSeparator");
-            } else {
-                logger.warning("Configuration Commands.WeightedRandom.CommandSeparator is not a String. Using default value of `\\|`");
-                commandSeparator = "\\|";
-            }
+            commandSeparator = "\\|";
+            logger.warning("Configuration option Commands.WeightedRandom.CommandSeparator is not a String! Found " + config.getString("Commands.WeightedRandom.CommandSeparator"));
         }
 
         if (config.getOptionalString("Commands.WeightedRandom.ArgumentSeparator").isEmpty()) {
             config.set("Commands.WeightedRandom.ArgumentSeparator", ",,");
-            argumentSeparator = ",,";
+        }
+        if (config.isBoolean("Commands.WeightedRandom.ArgumentSeparator")) {
+            argumentSeparator = config.getString("Commands.WeightedRandom.ArgumentSeparator");
         } else {
-            if (config.isString("Commands.WeightedRandom.ArgumentSeparator")) {
-                argumentSeparator = config.getString("Commands.WeightedRandom.ArgumentSeparator");
-            } else {
-                logger.warning("Configuration Commands.WeightedRandom.ArgumentSeparator is not a String. Using default value of `,,`");
-                argumentSeparator = ",,";
-            }
+            argumentSeparator = ",,";
+            logger.warning("Configuration option Commands.WeightedRandom.ArgumentSeparator is not a String! Found " + config.getString("Commands.WeightedRandom.ArgumentSeparator"));
         }
 
         GreedyStringArgument argumentsArg = new GreedyStringArgument("Arguments");
