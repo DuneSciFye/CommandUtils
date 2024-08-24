@@ -27,16 +27,43 @@ public class WaterlogCommand extends Command implements Registerable {
             .executes((sender, args) -> {
 
                 Block block = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
-                int radius = (int) args.getOrDefault("Radius", 0);
+                int radius = args.getByArgumentOrDefault(radiusArg, 0);
 
                 for (int x = -radius; x <= radius; x++) {
                     for (int y = -radius; y <= radius; y++) {
                         for (int z = -radius; z <= radius; z++) {
                             Block b = block.getRelative(x, y, z);
                             BlockData blockData = b.getBlockData();
-                            if (blockData instanceof Waterlogged) {
-                                ((Waterlogged) blockData).setWaterlogged((Boolean) args.getOrDefault("Waterlogged State", true));
+                            if (blockData instanceof Waterlogged waterlogged) {
+                                waterlogged.setWaterlogged(args.getByArgumentOrDefault(waterlogArg, true));
                                 b.setBlockData(blockData);
+                            }
+                        }
+                    }
+                }
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
+        //Arguments: X Y Z, Waterlogged
+        new CommandAPICommand("waterlogblock")
+            .withArguments(locArg)
+            .withOptionalArguments(waterlogArg)
+            .withOptionalArguments(radiusArg)
+            .executes((sender, args) -> {
+
+                Block block = args.getByArgument(locArg).getBlock();
+                int radius = args.getByArgumentOrDefault(radiusArg, 0);
+
+                for (int x = -radius; x <= radius; x++) {
+                    for (int y = -radius; y <= radius; y++) {
+                        for (int z = -radius; z <= radius; z++) {
+                            Block b = block.getRelative(x, y, z);
+                            BlockData blockData = b.getBlockData();
+                            if (blockData instanceof Waterlogged waterlogged) {
+                                waterlogged.setWaterlogged(args.getByArgumentOrDefault(waterlogArg, true));
+                                b.setBlockData(waterlogged);
                             }
                         }
                     }
