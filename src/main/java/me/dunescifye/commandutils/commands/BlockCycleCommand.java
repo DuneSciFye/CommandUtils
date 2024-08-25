@@ -93,6 +93,26 @@ public class BlockCycleCommand extends Command implements Registerable {
                     case WAXED_EXPOSED_CUT_COPPER -> b.setType(Material.WAXED_WEATHERED_CUT_COPPER);
                     case WAXED_WEATHERED_CUT_COPPER -> b.setType(Material.WAXED_OXIDIZED_CUT_COPPER);
                     case WAXED_OXIDIZED_CUT_COPPER -> b.setType(Material.WAXED_CUT_COPPER);
+                    case CHISELED_COPPER -> b.setType(Material.EXPOSED_CHISELED_COPPER);
+                    case EXPOSED_CHISELED_COPPER -> b.setType(Material.WEATHERED_CHISELED_COPPER);
+                    case WEATHERED_CHISELED_COPPER -> b.setType(Material.OXIDIZED_CHISELED_COPPER);
+                    case OXIDIZED_CHISELED_COPPER -> b.setType(Material.CHISELED_COPPER);
+                    case COPPER_GRATE -> b.setType(Material.EXPOSED_COPPER_GRATE);
+                    case EXPOSED_COPPER_GRATE -> b.setType(Material.WEATHERED_COPPER_GRATE);
+                    case WEATHERED_COPPER_GRATE -> b.setType(Material.OXIDIZED_COPPER_GRATE);
+                    case OXIDIZED_COPPER_GRATE -> b.setType(Material.COPPER_GRATE);
+                    case COPPER_DOOR -> b.setType(Material.EXPOSED_COPPER_DOOR);
+                    case EXPOSED_COPPER_DOOR -> b.setType(Material.WEATHERED_COPPER_DOOR);
+                    case WEATHERED_COPPER_DOOR -> b.setType(Material.OXIDIZED_COPPER_DOOR);
+                    case OXIDIZED_COPPER_DOOR -> b.setType(Material.COPPER_DOOR);
+                    case COPPER_TRAPDOOR -> b.setType(Material.EXPOSED_COPPER_TRAPDOOR);
+                    case EXPOSED_COPPER_TRAPDOOR -> b.setType(Material.WEATHERED_COPPER_TRAPDOOR);
+                    case WEATHERED_COPPER_TRAPDOOR -> b.setType(Material.OXIDIZED_COPPER_TRAPDOOR);
+                    case OXIDIZED_COPPER_TRAPDOOR -> b.setType(Material.COPPER_TRAPDOOR);
+                    case COPPER_BULB -> b.setType(Material.EXPOSED_COPPER_BULB);
+                    case EXPOSED_COPPER_BULB -> b.setType(Material.WEATHERED_COPPER_BULB);
+                    case WEATHERED_COPPER_BULB -> b.setType(Material.OXIDIZED_COPPER_BULB);
+                    case OXIDIZED_COPPER_BULB -> b.setType(Material.COPPER_BULB);
                 }
 
                 BlockData newBlockData = b.getBlockData();
@@ -180,6 +200,26 @@ public class BlockCycleCommand extends Command implements Registerable {
                     case WAXED_EXPOSED_CUT_COPPER -> b.setType(Material.WAXED_WEATHERED_CUT_COPPER);
                     case WAXED_WEATHERED_CUT_COPPER -> b.setType(Material.WAXED_OXIDIZED_CUT_COPPER);
                     case WAXED_OXIDIZED_CUT_COPPER -> b.setType(Material.WAXED_CUT_COPPER);
+                    case CHISELED_COPPER -> b.setType(Material.EXPOSED_CHISELED_COPPER);
+                    case EXPOSED_CHISELED_COPPER -> b.setType(Material.WEATHERED_CHISELED_COPPER);
+                    case WEATHERED_CHISELED_COPPER -> b.setType(Material.OXIDIZED_CHISELED_COPPER);
+                    case OXIDIZED_CHISELED_COPPER -> b.setType(Material.CHISELED_COPPER);
+                    case COPPER_GRATE -> b.setType(Material.EXPOSED_COPPER_GRATE);
+                    case EXPOSED_COPPER_GRATE -> b.setType(Material.WEATHERED_COPPER_GRATE);
+                    case WEATHERED_COPPER_GRATE -> b.setType(Material.OXIDIZED_COPPER_GRATE);
+                    case OXIDIZED_COPPER_GRATE -> b.setType(Material.COPPER_GRATE);
+                    case COPPER_DOOR -> b.setType(Material.EXPOSED_COPPER_DOOR);
+                    case EXPOSED_COPPER_DOOR -> b.setType(Material.WEATHERED_COPPER_DOOR);
+                    case WEATHERED_COPPER_DOOR -> b.setType(Material.OXIDIZED_COPPER_DOOR);
+                    case OXIDIZED_COPPER_DOOR -> b.setType(Material.COPPER_DOOR);
+                    case COPPER_TRAPDOOR -> b.setType(Material.EXPOSED_COPPER_TRAPDOOR);
+                    case EXPOSED_COPPER_TRAPDOOR -> b.setType(Material.WEATHERED_COPPER_TRAPDOOR);
+                    case WEATHERED_COPPER_TRAPDOOR -> b.setType(Material.OXIDIZED_COPPER_TRAPDOOR);
+                    case OXIDIZED_COPPER_TRAPDOOR -> b.setType(Material.COPPER_TRAPDOOR);
+                    case COPPER_BULB -> b.setType(Material.EXPOSED_COPPER_BULB);
+                    case EXPOSED_COPPER_BULB -> b.setType(Material.WEATHERED_COPPER_BULB);
+                    case WEATHERED_COPPER_BULB -> b.setType(Material.OXIDIZED_COPPER_BULB);
+                    case OXIDIZED_COPPER_BULB -> b.setType(Material.COPPER_BULB);
                 }
 
                 BlockData newBlockData = b.getBlockData();
