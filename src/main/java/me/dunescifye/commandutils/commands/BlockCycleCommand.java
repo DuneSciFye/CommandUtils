@@ -26,7 +26,12 @@ public class BlockCycleCommand extends Command implements Registerable {
         LiteralArgument waxArg = new LiteralArgument("wax");
 
         /**
-         * @params oxidize, world, loc
+         * Switches Oxidization States of Copper
+         * @author DuneSciFye
+         * @since 1.0.0
+         * @param oxidize Identifier for this subcommand
+         * @param World World of the Block
+         * @param Location Location of the Block
          */
         new CommandAPICommand("blockcycle")
             .withArguments(oxidizeArg)
@@ -110,7 +115,11 @@ public class BlockCycleCommand extends Command implements Registerable {
             .register(this.getNamespace());
 
         /**
-         * @params oxidize, loc
+         * Switches Oxidization States of Copper
+         * @author DuneSciFye
+         * @since 1.0.0
+         * @param oxidize Identifier for this subcommand
+         * @param Location Location of the Block
          */
         new CommandAPICommand("blockcycle")
             .withArguments(oxidizeArg)
@@ -192,7 +201,12 @@ public class BlockCycleCommand extends Command implements Registerable {
             .register(this.getNamespace());
 
         /**
-         * @params wax, world, loc
+         * Toggles Wax of Copper
+         * @author DuneSciFye
+         * @since 1.0.0
+         * @param wax Identifier for this subcommand
+         * @param World World of the Block
+         * @param Location Location of the Block
          */
         new CommandAPICommand("blockcycle")
             .withArguments(waxArg)
@@ -241,7 +255,11 @@ public class BlockCycleCommand extends Command implements Registerable {
             .register(this.getNamespace());
 
         /**
-         * @params wax, loc
+         * Toggles Wax of Copper
+         * @author DuneSciFye
+         * @since 1.0.0
+         * @param wax Identifier for this subcommand
+         * @param Location Location of the Block
          */
         new CommandAPICommand("blockcycle")
             .withArguments(waxArg)
