@@ -24,6 +24,9 @@ public class BreakInFacingCommand extends Command implements Registerable {
         StringArgument worldArg = new StringArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
+        IntegerArgument xArg = new IntegerArgument("X");
+        IntegerArgument yArg = new IntegerArgument("Y");
+        IntegerArgument zArg = new IntegerArgument("Z");
         PlayerArgument playerArg = new PlayerArgument("Player");
         IntegerArgument depthArg = new IntegerArgument("Depth", 0);
         LiteralArgument whitelistArg = new LiteralArgument("whitelist");
