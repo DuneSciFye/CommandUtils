@@ -80,6 +80,13 @@ public class Utils {
         }
         return mergedStacksMap.values();
     }
+
+    public static void dropAllItemStacks(Collection<ItemStack> itemStacks, World world, Location location) {
+        for (ItemStack item : mergeSimilarItemStacks(itemStacks)) {
+            world.dropItemNaturally(location, item);
+        }
+    }
+
     public static boolean isNumeric(String str) {
         try {
             Double.parseDouble(str);
