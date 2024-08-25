@@ -186,5 +186,62 @@ public class BoneMealBlockCommand extends Command implements Registerable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
+        /**
+         * Bonemeals Blocks in a Radius
+         * @author DuneSciFye
+         * @since 1.0.0
+         * @param Location Location of the Center Block
+         * @param Amount Number of Times to Bonemeal
+         * @param X Direction in X to Bonemeal in
+         * @param Y Direction in Y to Bonemeal in
+         * @param Z Direction in Z to Bonemeal in
+         * @param AffectTargetBlock If the Center Block is Bonemealed
+         */
+        new CommandAPICommand("bonemealblock")
+            .withArguments(locArg)
+            .withOptionalArguments(amountArg)
+            .withOptionalArguments(xArg)
+            .withOptionalArguments(yArg)
+            .withOptionalArguments(zArg)
+            .withOptionalArguments(affectTargetBlockArg)
+            .executes((sender, args) -> {
+                Block block = args.getByArgument(locArg).getBlock();
+                int amount = args.getByArgumentOrDefault(amountArg, 1);
+                int xRadius = args.getByArgumentOrDefault(xArg, 0);
+                int yRadius = args.getByArgumentOrDefault(yArg, 0);
+                int zRadius = args.getByArgumentOrDefault(zArg, 0);
+                boolean affectTargetBlock = args.getByArgumentOrDefault(affectTargetBlockArg, true);
+
+                if (affectTargetBlock){
+                    for (int x = -xRadius; x <= xRadius; x++) {
+                        for (int y = -yRadius; y <= yRadius; y++) {
+                            for (int z = -zRadius; z <= zRadius; z++) {
+                                Block b = block.getRelative(x, y, z);
+                                for (int i = 0; i < amount; i++) {
+                                    b.applyBoneMeal(BlockFace.UP);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    for (int x = -xRadius; x <= xRadius; x++) {
+                        for (int y = -yRadius; y <= yRadius; y++) {
+                            for (int z = -zRadius; z <= zRadius; z++) {
+                                if (x == 0 && y == 0 && z == 0) {
+                                    continue;
+                                }
+                                Block b = block.getRelative(x, y, z);
+                                for (int i = 0; i < amount; i++) {
+                                    b.applyBoneMeal(BlockFace.UP);
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
     }
 }
