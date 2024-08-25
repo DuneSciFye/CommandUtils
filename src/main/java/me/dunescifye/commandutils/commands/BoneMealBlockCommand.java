@@ -17,8 +17,14 @@ public class BoneMealBlockCommand extends Command implements Registerable {
         StringArgument worldArg = new StringArgument("World");
         IntegerArgument amountArg = new IntegerArgument("Amount");
         IntegerArgument radiusArg = new IntegerArgument("Radius");
+        IntegerArgument xArg = new IntegerArgument("X");
+        IntegerArgument yArg = new IntegerArgument("Y");
+        IntegerArgument zArg = new IntegerArgument("Z");
         BooleanArgument affectTargetBlockArg = new BooleanArgument("Affect Target Block");
 
+        /**
+         *
+         */
         new CommandAPICommand("bonemealblock")
             .withArguments(worldArg)
             .withArguments(locArg)

@@ -5,7 +5,6 @@ import dev.jorel.commandapi.arguments.*;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
 
 public class CobwebPrisonCommand extends Command implements Registerable {
 
