@@ -211,31 +211,29 @@ public class BlockCycleCommand extends Command implements Registerable {
                 Slab.Type type = null;
 
                 if (blockData instanceof Stairs stairs) {
-                    Stairs.Shape shape = stairs.getShape();
-                    BlockFace facing = stairs.getFacing();
-                    boolean waterlogged = stairs.isWaterlogged();
-                    Bisected.Half half = stairs.getHalf();
-
-                    b.setType(newMat);
-
-                    BlockData newBlockData = b.getBlockData();
-                    ((Stairs) newBlockData).setShape(shape);
-                    ((Stairs) newBlockData).setFacing(facing);
-                    ((Stairs) newBlockData).setWaterlogged(waterlogged);
-                    ((Stairs) newBlockData).setHalf(half);
-                    b.setBlockData(newBlockData);
+                    shape = stairs.getShape();
+                    waterlogged = stairs.isWaterlogged();
+                    facing = stairs.getFacing();
+                    half = stairs.getHalf();
                 } else if (blockData instanceof Slab slab) {
-                    Slab.Type type = slab.getType();
-                    boolean waterlogged = slab.isWaterlogged();
+                    type = slab.getType();
+                    waterlogged = slab.isWaterlogged();
+                }
 
-                    b.setType(newMat);
+                b.setType(newMat);
 
-                    BlockData newBlockData = b.getBlockData();
-                    ((Slab) newBlockData).setType(type);
-                    ((Slab) newBlockData).setWaterlogged(waterlogged);
-                    b.setBlockData(newBlockData);
-                } else {
-                    b.setType(newMat);
+                BlockData newBlockData = b.getBlockData();
+
+                if (newBlockData instanceof Stairs newStairs) {
+                    newStairs.setFacing(facing);
+                    newStairs.setShape(shape);
+                    newStairs.setWaterlogged(waterlogged);
+                    newStairs.setHalf(half);
+                    b.setBlockData(newStairs);
+                } else if (newBlockData instanceof Slab newSlab) {
+                    newSlab.setType(type);
+                    newSlab.setWaterlogged(waterlogged);
+                    b.setBlockData(newSlab);
                 }
             })
             .withPermission(this.getPermission())
@@ -253,32 +251,37 @@ public class BlockCycleCommand extends Command implements Registerable {
                 BlockData blockData = b.getBlockData();
                 String material = b.getType().toString();
                 Material newMat = Material.valueOf(material.startsWith("WAXED_") ? material.substring(6) : "WAXED_" + material);
+
+                Stairs.Shape shape = null;
+                boolean waterlogged = false;
+                BlockFace facing = null;
+                Bisected.Half half = null;
+                Slab.Type type = null;
+
                 if (blockData instanceof Stairs stairs) {
-                    Stairs.Shape shape = stairs.getShape();
-                    BlockFace facing = stairs.getFacing();
-                    boolean waterlogged = stairs.isWaterlogged();
-                    Bisected.Half half = stairs.getHalf();
-
-                    b.setType(newMat);
-
-                    BlockData newBlockData = b.getBlockData();
-                    ((Stairs) newBlockData).setShape(shape);
-                    ((Stairs) newBlockData).setFacing(facing);
-                    ((Stairs) newBlockData).setWaterlogged(waterlogged);
-                    ((Stairs) newBlockData).setHalf(half);
-                    b.setBlockData(newBlockData);
+                    shape = stairs.getShape();
+                    waterlogged = stairs.isWaterlogged();
+                    facing = stairs.getFacing();
+                    half = stairs.getHalf();
                 } else if (blockData instanceof Slab slab) {
-                    Slab.Type type = slab.getType();
-                    boolean waterlogged = slab.isWaterlogged();
+                    type = slab.getType();
+                    waterlogged = slab.isWaterlogged();
+                }
 
-                    b.setType(newMat);
+                b.setType(newMat);
 
-                    BlockData newBlockData = b.getBlockData();
-                    ((Slab) newBlockData).setType(type);
-                    ((Slab) newBlockData).setWaterlogged(waterlogged);
-                    b.setBlockData(newBlockData);
-                } else {
-                    b.setType(newMat);
+                BlockData newBlockData = b.getBlockData();
+
+                if (newBlockData instanceof Stairs newStairs) {
+                    newStairs.setFacing(facing);
+                    newStairs.setShape(shape);
+                    newStairs.setWaterlogged(waterlogged);
+                    newStairs.setHalf(half);
+                    b.setBlockData(newStairs);
+                } else if (newBlockData instanceof Slab newSlab) {
+                    newSlab.setType(type);
+                    newSlab.setWaterlogged(waterlogged);
+                    b.setBlockData(newSlab);
                 }
             })
             .withPermission(this.getPermission())
