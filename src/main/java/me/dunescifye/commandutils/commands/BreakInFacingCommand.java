@@ -1696,6 +1696,85 @@ public class BreakInFacingCommand extends Command implements Registerable {
                 .withAliases(this.getCommandAliases())
                 .register(this.getNamespace());
             /**
+             * Breaks Blocks in Direction Player is Facing without GriefPrevention
+             * @author DuneSciFye
+             * @since 1.0.0
+             * @param World World of the blocks
+             * @param Location Location of the Center Block
+             * @param Player Player who is Breaking the Blocks
+             * @param X Direction in X to Break in
+             * @param Y Direction in Y to Break in
+             * @param Z Direction in Z to Break in
+             * @param Depth Number of Blocks to Break Forward in
+             */
+            new CommandAPICommand("breakinfacing")
+                .withArguments(worldArg)
+                .withArguments(locArg)
+                .withArguments(playerArg)
+                .withArguments(xArg)
+                .withArguments(yArg)
+                .withArguments(zArg)
+                .withArguments(depthArg)
+                .executes((sender, args) -> {
+                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                    Location location = args.getByArgument(locArg);
+                    Block block = world.getBlockAt(location);
+                    int xRadius = args.getByArgument(xArg);
+                    int yRadius = args.getByArgument(yArg);
+                    int zRadius = args.getByArgument(zArg);
+                    Player player = args.getByArgument(playerArg);
+                    ItemStack heldItem = player.getInventory().getItemInMainHand();
+                    int depth = args.getByArgument(depthArg);
+                    depth = depth < 1 ? 1 : depth -1;
+                    double pitch = player.getLocation().getPitch();
+                    int xStart = -xRadius, yStart = -yRadius, zStart = -zRadius, xEnd = xRadius, yEnd = yRadius, zEnd = zRadius;
+                    if (pitch < -45) {
+                        yStart = 0;
+                        yEnd = depth;
+                    } else if (pitch > 45) {
+                        yStart = -depth;
+                        yEnd = 0;
+                    } else {
+                        switch (player.getFacing()) {
+                            case NORTH:
+                                zStart = -depth;
+                                zEnd = 0;
+                                break;
+                            case SOUTH:
+                                zStart = 0;
+                                zEnd = depth;
+                                break;
+                            case WEST:
+                                xStart = -depth;
+                                xEnd = 0;
+                                break;
+                            case EAST:
+                                xStart = 0;
+                                xEnd = depth;
+                                break;
+                        }
+                    }
+                    Collection<ItemStack> drops = new ArrayList<>();
+
+
+                    for (int x = xStart; x <= xEnd; x++) {
+                        for (int y = yStart; y <= yEnd; y++) {
+                            for (int z = zStart; z <= zEnd; z++) {
+                                Block relative = block.getRelative(x, y, z);
+                                drops.addAll(relative.getDrops(heldItem));
+                                relative.setType(Material.AIR);
+                            }
+                        }
+                    }
+
+                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
+                        world.dropItemNaturally(location, item);
+                    }
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+            /**
              * Breaks Blocks in Direction Player is Facing without GriefPrevention, Command Defined Predicates
              * @author DuneSciFye
              * @since 1.0.0
@@ -2252,557 +2331,6 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         world.dropItemNaturally(location, item);
                     }
                 })
-                .withPermission(this.getPermission())
-                .withAliases(this.getCommandAliases())
-                .register(this.getNamespace());
-
-            new CommandTree("breakinfacing")
-                .then(worldArg
-                    .then(locArg
-                        .then(playerArg
-                            .then(radiusArg
-                                .then(depthArg
-                                    .executes((sender, args) -> {
-                                        World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                                        Location location = args.getByArgument(locArg);
-                                        Block block = world.getBlockAt(location);
-                                        int radius = args.getByArgument(radiusArg);
-                                        Player player = args.getByArgument(playerArg);
-                                        ItemStack heldItem = player.getInventory().getItemInMainHand();
-                                        int depth = args.getByArgument(depthArg);
-                                        depth = depth < 1 ? 1 : depth -1;
-                                        double pitch = player.getLocation().getPitch();
-                                        int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
-                                        if (pitch < -45) {
-                                            yStart = 0;
-                                            yEnd = depth;
-                                        } else if (pitch > 45) {
-                                            yStart = -depth;
-                                            yEnd = 0;
-                                        } else {
-                                            switch (player.getFacing()) {
-                                                case NORTH:
-                                                    zStart = -depth;
-                                                    zEnd = 0;
-                                                    break;
-                                                case SOUTH:
-                                                    zStart = 0;
-                                                    zEnd = depth;
-                                                    break;
-                                                case WEST:
-                                                    xStart = -depth;
-                                                    xEnd = 0;
-                                                    break;
-                                                case EAST:
-                                                    xStart = 0;
-                                                    xEnd = depth;
-                                                    break;
-                                            }
-                                        }
-                                        Collection<ItemStack> drops = new ArrayList<>();
-
-
-                                        for (int x = xStart; x <= xEnd; x++) {
-                                            for (int y = yStart; y <= yEnd; y++) {
-                                                for (int z = zStart; z <= zEnd; z++) {
-                                                    Block relative = block.getRelative(x, y, z);
-                                                    drops.addAll(relative.getDrops(heldItem));
-                                                    relative.setType(Material.AIR);
-                                                }
-                                            }
-                                        }
-
-                                        for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                                            world.dropItemNaturally(location, item);
-                                        }
-                                    })
-                                    .then(whitelistArg
-                                        .then(new ListArgumentBuilder<String>("Whitelisted Blocks")
-                                            .withList(Utils.getPredicatesList())
-                                            .withStringMapper()
-                                            .buildText()
-                                            .executes((sender, args) -> {
-                                                List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
-                                                Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
-
-                                                World world = Bukkit.getWorld((String) args.getUnchecked("World"));
-                                                Location location = args.getUnchecked("Location");
-                                                Block origin = world.getBlockAt(location);
-                                                int radius = args.getUnchecked("Radius");
-                                                Player player = args.getUnchecked("Player");
-                                                int depth = args.getUnchecked("Depth");
-                                                depth = depth < 1 ? 1 : depth -1;
-                                                ItemStack heldItem = player.getInventory().getItemInMainHand();
-                                                double pitch = player.getLocation().getPitch();
-                                                int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
-                                                if (pitch < -45) {
-                                                    yStart = 0;
-                                                    yEnd = depth;
-                                                } else if (pitch > 45) {
-                                                    yStart = -depth;
-                                                    yEnd = 0;
-                                                } else {
-                                                    switch (player.getFacing()) {
-                                                        case NORTH:
-                                                            zStart = -depth;
-                                                            zEnd = 0;
-                                                            break;
-                                                        case SOUTH:
-                                                            zStart = 0;
-                                                            zEnd = depth;
-                                                            break;
-                                                        case WEST:
-                                                            xStart = -depth;
-                                                            xEnd = 0;
-                                                            break;
-                                                        case EAST:
-                                                            xStart = 0;
-                                                            xEnd = depth;
-                                                            break;
-                                                    }
-                                                }
-                                                Collection<ItemStack> drops = new ArrayList<>();
-
-                                                for (int x = xStart; x <= xEnd; x++) {
-                                                    for (int y = yStart; y <= yEnd; y++) {
-                                                        block:
-                                                        for (int z = zStart; z <= zEnd; z++) {
-                                                            Block relative = origin.getRelative(x, y, z);
-                                                            for (Predicate<Block> predicateWhitelist : whitelist) {
-                                                                if (predicateWhitelist.test(relative)) {
-                                                                    for (Predicate<Block> predicateBlacklist : blacklist) {
-                                                                        if (predicateBlacklist.test(relative)) {
-                                                                            continue block;
-                                                                        }
-                                                                    }
-                                                                    drops.addAll(relative.getDrops(heldItem));
-                                                                    relative.setType(Material.AIR);
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                                                    world.dropItemNaturally(location, item);
-                                                }
-                                            })
-                                            .then(dropArg
-                                                .executes((sender, args) -> {
-                                                    List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
-                                                    Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
-
-                                                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                                                    Location location = args.getByArgument(locArg);
-                                                    Block origin = world.getBlockAt(location);
-                                                    int radius = args.getByArgument(radiusArg);
-                                                    Player player = args.getByArgument(playerArg);
-                                                    int depth = args.getByArgument(depthArg);
-                                                    depth = depth < 1 ? 1 : depth -1;
-                                                    ItemStack drop = args.getByArgument(dropArg);
-
-                                                    double pitch = player.getLocation().getPitch();
-                                                    int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
-                                                    if (pitch < -45) {
-                                                        yStart = 0;
-                                                        yEnd = depth;
-                                                    } else if (pitch > 45) {
-                                                        yStart = -depth;
-                                                        yEnd = 0;
-                                                    } else {
-                                                        switch (player.getFacing()) {
-                                                            case NORTH:
-                                                                zStart = -depth;
-                                                                zEnd = 0;
-                                                                break;
-                                                            case SOUTH:
-                                                                zStart = 0;
-                                                                zEnd = depth;
-                                                                break;
-                                                            case WEST:
-                                                                xStart = -depth;
-                                                                xEnd = 0;
-                                                                break;
-                                                            case EAST:
-                                                                xStart = 0;
-                                                                xEnd = depth;
-                                                                break;
-                                                        }
-                                                    }
-
-                                                    for (int x = xStart; x <= xEnd; x++) {
-                                                        for (int y = yStart; y <= yEnd; y++) {
-                                                            block:
-                                                            for (int z = zStart; z <= zEnd; z++) {
-                                                                Block relative = origin.getRelative(x, y, z);
-                                                                for (Predicate<Block> predicateWhitelist : whitelist) {
-                                                                    if (predicateWhitelist.test(relative)) {
-                                                                        for (Predicate<Block> predicateBlacklist : blacklist) {
-                                                                            if (predicateBlacklist.test(relative)) {
-                                                                                continue block;
-                                                                            }
-                                                                        }
-                                                                        drop.setAmount(drop.getAmount() + 1);
-                                                                        relative.setType(Material.AIR);
-                                                                        break;
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-
-                                                    drop.setAmount(drop.getAmount() - 1);
-                                                    world.dropItemNaturally(location, drop);
-                                                })
-                                            )
-                                            .then(forceDropArg
-                                                .executes((sender, args) -> {
-                                                    List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
-                                                    Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
-
-                                                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                                                    Location location = args.getByArgument(locArg);
-                                                    Block origin = world.getBlockAt(location);
-                                                    int radius = args.getByArgument(radiusArg);
-                                                    Player player = args.getByArgument(playerArg);
-                                                    int depth = args.getByArgument(depthArg);
-                                                    depth = depth < 1 ? 1 : depth -1;
-                                                    double pitch = player.getLocation().getPitch();
-                                                    int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
-                                                    if (pitch < -45) {
-                                                        yStart = 0;
-                                                        yEnd = depth;
-                                                    } else if (pitch > 45) {
-                                                        yStart = -depth;
-                                                        yEnd = 0;
-                                                    } else {
-                                                        switch (player.getFacing()) {
-                                                            case NORTH:
-                                                                zStart = -depth;
-                                                                zEnd = 0;
-                                                                break;
-                                                            case SOUTH:
-                                                                zStart = 0;
-                                                                zEnd = depth;
-                                                                break;
-                                                            case WEST:
-                                                                xStart = -depth;
-                                                                xEnd = 0;
-                                                                break;
-                                                            case EAST:
-                                                                xStart = 0;
-                                                                xEnd = depth;
-                                                                break;
-                                                        }
-                                                    }
-                                                    Collection<ItemStack> drops = new ArrayList<>();
-
-                                                    for (int x = xStart; x <= xEnd; x++) {
-                                                        for (int y = yStart; y <= yEnd; y++) {
-                                                            block:
-                                                            for (int z = zStart; z <= zEnd; z++) {
-                                                                Block relative = origin.getRelative(x, y, z);
-                                                                for (Predicate<Block> predicateWhitelist : whitelist) {
-                                                                    if (predicateWhitelist.test(relative)) {
-                                                                        for (Predicate<Block> predicateBlacklist : blacklist) {
-                                                                            if (predicateBlacklist.test(relative)) {
-                                                                                continue block;
-                                                                            }
-                                                                        }
-                                                                        drops.add(new ItemStack(relative.getType()));
-                                                                        relative.setType(Material.AIR);
-                                                                        break;
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-
-                                                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                                                        world.dropItemNaturally(location, item);
-                                                    }
-                                                })
-                                            )
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
-                .then(locArg
-                    .then(playerArg
-                        .then(radiusArg
-                            .then(depthArg
-                                .executes((sender, args) -> {
-                                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                                    Location location = args.getByArgument(locArg);
-                                    Block block = world.getBlockAt(location);
-                                    int radius = args.getByArgument(radiusArg);
-                                    Player player = args.getByArgument(playerArg);
-                                    ItemStack heldItem = player.getInventory().getItemInMainHand();
-                                    int depth = args.getByArgument(depthArg);
-                                    depth = depth < 1 ? 1 : depth -1;
-                                    double pitch = player.getLocation().getPitch();
-                                    int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
-                                    if (pitch < -45) {
-                                        yStart = 0;
-                                        yEnd = depth;
-                                    } else if (pitch > 45) {
-                                        yStart = -depth;
-                                        yEnd = 0;
-                                    } else {
-                                        switch (player.getFacing()) {
-                                            case NORTH:
-                                                zStart = -depth;
-                                                zEnd = 0;
-                                                break;
-                                            case SOUTH:
-                                                zStart = 0;
-                                                zEnd = depth;
-                                                break;
-                                            case WEST:
-                                                xStart = -depth;
-                                                xEnd = 0;
-                                                break;
-                                            case EAST:
-                                                xStart = 0;
-                                                xEnd = depth;
-                                                break;
-                                        }
-                                    }
-                                    Collection<ItemStack> drops = new ArrayList<>();
-
-
-                                    for (int x = xStart; x <= xEnd; x++) {
-                                        for (int y = yStart; y <= yEnd; y++) {
-                                            for (int z = zStart; z <= zEnd; z++) {
-                                                Block relative = block.getRelative(x, y, z);
-                                                drops.addAll(relative.getDrops(heldItem));
-                                                relative.setType(Material.AIR);
-                                            }
-                                        }
-                                    }
-
-                                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                                        world.dropItemNaturally(location, item);
-                                    }
-                                })
-                                .then(whitelistArg
-                                    .then(new ListArgumentBuilder<String>("Whitelisted Blocks")
-                                        .withList(Utils.getPredicatesList())
-                                        .withStringMapper()
-                                        .buildText()
-                                        .executes((sender, args) -> {
-                                            List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
-                                            Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
-
-                                            World world = Bukkit.getWorld((String) args.getUnchecked("World"));
-                                            Location location = args.getUnchecked("Location");
-                                            Block origin = world.getBlockAt(location);
-                                            int radius = args.getUnchecked("Radius");
-                                            Player player = args.getUnchecked("Player");
-                                            int depth = args.getUnchecked("Depth");
-                                            depth = depth < 1 ? 1 : depth -1;
-                                            ItemStack heldItem = player.getInventory().getItemInMainHand();
-                                            double pitch = player.getLocation().getPitch();
-                                            int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
-                                            if (pitch < -45) {
-                                                yStart = 0;
-                                                yEnd = depth;
-                                            } else if (pitch > 45) {
-                                                yStart = -depth;
-                                                yEnd = 0;
-                                            } else {
-                                                switch (player.getFacing()) {
-                                                    case NORTH:
-                                                        zStart = -depth;
-                                                        zEnd = 0;
-                                                        break;
-                                                    case SOUTH:
-                                                        zStart = 0;
-                                                        zEnd = depth;
-                                                        break;
-                                                    case WEST:
-                                                        xStart = -depth;
-                                                        xEnd = 0;
-                                                        break;
-                                                    case EAST:
-                                                        xStart = 0;
-                                                        xEnd = depth;
-                                                        break;
-                                                }
-                                            }
-                                            Collection<ItemStack> drops = new ArrayList<>();
-
-                                            for (int x = xStart; x <= xEnd; x++) {
-                                                for (int y = yStart; y <= yEnd; y++) {
-                                                    block:
-                                                    for (int z = zStart; z <= zEnd; z++) {
-                                                        Block relative = origin.getRelative(x, y, z);
-                                                        for (Predicate<Block> predicateWhitelist : whitelist) {
-                                                            if (predicateWhitelist.test(relative)) {
-                                                                for (Predicate<Block> predicateBlacklist : blacklist) {
-                                                                    if (predicateBlacklist.test(relative)) {
-                                                                        continue block;
-                                                                    }
-                                                                }
-                                                                drops.addAll(relative.getDrops(heldItem));
-                                                                relative.setType(Material.AIR);
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                            for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                                                world.dropItemNaturally(location, item);
-                                            }
-                                        })
-                                        .then(dropArg
-                                            .executes((sender, args) -> {
-                                                List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
-                                                Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
-
-                                                World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                                                Location location = args.getByArgument(locArg);
-                                                Block origin = world.getBlockAt(location);
-                                                int radius = args.getByArgument(radiusArg);
-                                                Player player = args.getByArgument(playerArg);
-                                                int depth = args.getByArgument(depthArg);
-                                                depth = depth < 1 ? 1 : depth -1;
-                                                ItemStack drop = args.getByArgument(dropArg);
-
-                                                double pitch = player.getLocation().getPitch();
-                                                int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
-                                                if (pitch < -45) {
-                                                    yStart = 0;
-                                                    yEnd = depth;
-                                                } else if (pitch > 45) {
-                                                    yStart = -depth;
-                                                    yEnd = 0;
-                                                } else {
-                                                    switch (player.getFacing()) {
-                                                        case NORTH:
-                                                            zStart = -depth;
-                                                            zEnd = 0;
-                                                            break;
-                                                        case SOUTH:
-                                                            zStart = 0;
-                                                            zEnd = depth;
-                                                            break;
-                                                        case WEST:
-                                                            xStart = -depth;
-                                                            xEnd = 0;
-                                                            break;
-                                                        case EAST:
-                                                            xStart = 0;
-                                                            xEnd = depth;
-                                                            break;
-                                                    }
-                                                }
-
-                                                for (int x = xStart; x <= xEnd; x++) {
-                                                    for (int y = yStart; y <= yEnd; y++) {
-                                                        block:
-                                                        for (int z = zStart; z <= zEnd; z++) {
-                                                            Block relative = origin.getRelative(x, y, z);
-                                                            for (Predicate<Block> predicateWhitelist : whitelist) {
-                                                                if (predicateWhitelist.test(relative)) {
-                                                                    for (Predicate<Block> predicateBlacklist : blacklist) {
-                                                                        if (predicateBlacklist.test(relative)) {
-                                                                            continue block;
-                                                                        }
-                                                                    }
-                                                                    drop.setAmount(drop.getAmount() + 1);
-                                                                    relative.setType(Material.AIR);
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                drop.setAmount(drop.getAmount() - 1);
-                                                world.dropItemNaturally(location, drop);
-                                            })
-                                        )
-                                        .then(forceDropArg
-                                            .executes((sender, args) -> {
-                                                List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
-                                                Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
-
-                                                World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                                                Location location = args.getByArgument(locArg);
-                                                Block origin = world.getBlockAt(location);
-                                                int radius = args.getByArgument(radiusArg);
-                                                Player player = args.getByArgument(playerArg);
-                                                int depth = args.getByArgument(depthArg);
-                                                depth = depth < 1 ? 1 : depth -1;
-                                                double pitch = player.getLocation().getPitch();
-                                                int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
-                                                if (pitch < -45) {
-                                                    yStart = 0;
-                                                    yEnd = depth;
-                                                } else if (pitch > 45) {
-                                                    yStart = -depth;
-                                                    yEnd = 0;
-                                                } else {
-                                                    switch (player.getFacing()) {
-                                                        case NORTH:
-                                                            zStart = -depth;
-                                                            zEnd = 0;
-                                                            break;
-                                                        case SOUTH:
-                                                            zStart = 0;
-                                                            zEnd = depth;
-                                                            break;
-                                                        case WEST:
-                                                            xStart = -depth;
-                                                            xEnd = 0;
-                                                            break;
-                                                        case EAST:
-                                                            xStart = 0;
-                                                            xEnd = depth;
-                                                            break;
-                                                    }
-                                                }
-                                                Collection<ItemStack> drops = new ArrayList<>();
-
-                                                for (int x = xStart; x <= xEnd; x++) {
-                                                    for (int y = yStart; y <= yEnd; y++) {
-                                                        block:
-                                                        for (int z = zStart; z <= zEnd; z++) {
-                                                            Block relative = origin.getRelative(x, y, z);
-                                                            for (Predicate<Block> predicateWhitelist : whitelist) {
-                                                                if (predicateWhitelist.test(relative)) {
-                                                                    for (Predicate<Block> predicateBlacklist : blacklist) {
-                                                                        if (predicateBlacklist.test(relative)) {
-                                                                            continue block;
-                                                                        }
-                                                                    }
-                                                                    drops.add(new ItemStack(relative.getType()));
-                                                                    relative.setType(Material.AIR);
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                                                    world.dropItemNaturally(location, item);
-                                                }
-                                            })
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
                 .register(this.getNamespace());
