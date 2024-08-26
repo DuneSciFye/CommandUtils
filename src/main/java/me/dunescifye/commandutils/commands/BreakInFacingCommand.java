@@ -1624,6 +1624,78 @@ public class BreakInFacingCommand extends Command implements Registerable {
                 .withAliases(this.getCommandAliases())
                 .register(this.getNamespace());
             /**
+             * Breaks Blocks in Direction Player is Facing without GriefPrevention
+             * @author DuneSciFye
+             * @since 1.0.0
+             * @param Location Location of the Center Block
+             * @param Player Player who is Breaking the Blocks
+             * @param Radius Radius of the blocks to break
+             * @param Depth Number of Blocks to Break Forward in
+             */
+            new CommandAPICommand("breakinfacing")
+                .withArguments(worldArg)
+                .withArguments(locArg)
+                .withArguments(playerArg)
+                .withArguments(radiusArg)
+                .withArguments(depthArg)
+                .executes((sender, args) -> {
+                    Location location = args.getByArgument(locArg);
+                    World world = location.getWorld();
+                    Block block = location.getBlock();
+                    int radius = args.getByArgument(radiusArg);
+                    Player player = args.getByArgument(playerArg);
+                    ItemStack heldItem = player.getInventory().getItemInMainHand();
+                    int depth = args.getByArgument(depthArg);
+                    depth = depth < 1 ? 1 : depth -1;
+                    double pitch = player.getLocation().getPitch();
+                    int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
+                    if (pitch < -45) {
+                        yStart = 0;
+                        yEnd = depth;
+                    } else if (pitch > 45) {
+                        yStart = -depth;
+                        yEnd = 0;
+                    } else {
+                        switch (player.getFacing()) {
+                            case NORTH:
+                                zStart = -depth;
+                                zEnd = 0;
+                                break;
+                            case SOUTH:
+                                zStart = 0;
+                                zEnd = depth;
+                                break;
+                            case WEST:
+                                xStart = -depth;
+                                xEnd = 0;
+                                break;
+                            case EAST:
+                                xStart = 0;
+                                xEnd = depth;
+                                break;
+                        }
+                    }
+                    Collection<ItemStack> drops = new ArrayList<>();
+
+
+                    for (int x = xStart; x <= xEnd; x++) {
+                        for (int y = yStart; y <= yEnd; y++) {
+                            for (int z = zStart; z <= zEnd; z++) {
+                                Block relative = block.getRelative(x, y, z);
+                                drops.addAll(relative.getDrops(heldItem));
+                                relative.setType(Material.AIR);
+                            }
+                        }
+                    }
+
+                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
+                        world.dropItemNaturally(location, item);
+                    }
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+            /**
              * Breaks Blocks in Direction Player is Facing without GriefPrevention, Command Defined Predicates
              * @author DuneSciFye
              * @since 1.0.0
