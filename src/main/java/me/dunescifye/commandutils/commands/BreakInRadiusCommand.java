@@ -560,6 +560,65 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
                 .register(this.getNamespace());
+            /**
+             * Breaks Blocks in Radius with GriefPrevention Support, Config Defined Predicates, Custom Item Drops
+             * @author DuneSciFye
+             * @since 1.0.0
+             * @param Location Location of the Center Block
+             * @param Player Player who is Breaking the Blocks
+             * @param Radius Radius to Break Blocks In
+             * @param Predicate Config Defined Predicate
+             * @param ItemStack Item to Drop
+             */
+            new CommandAPICommand("breakinradius")
+                .withArguments(locArg)
+                .withArguments(playerArg)
+                .withArguments(radiusArg)
+                .withArguments(whitelistedBlocksArgument
+                    .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
+                )
+                .withArguments(dropArg)
+                .executes((sender, args) -> {
+                    Location location = args.getByArgument(locArg);
+                    World world = location.getWorld();
+                    Block origin = location.getBlock();
+                    int radius = args.getByArgument(radiusArg);
+                    Player player = args.getByArgument(playerArg);
+                    ItemStack drop = args.getByArgument(dropArg);
+                    String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
+                    List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
+
+                    for (int x = -radius; x <= radius; x++) {
+                        for (int y = -radius; y <= radius; y++) {
+                            block:
+                            for (int z = -radius; z <= radius; z++) {
+                                Block relative = origin.getRelative(x, y, z);
+                                for (Predicate<Block> predicateWhitelist : whitelist) {
+                                    if (predicateWhitelist.test(relative)) {
+                                        for (Predicate<Block> predicateBlacklist : blacklist) {
+                                            if (predicateBlacklist.test(relative)) {
+                                                continue block;
+                                            }
+                                        }
+                                        //Testing claim
+                                        Location relativeLocation = relative.getLocation();
+                                        if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                            drop.setAmount(drop.getAmount() + 1);
+                                            relative.setType(Material.AIR);
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    drop.setAmount(drop.getAmount() - 1);
+                    world.dropItemNaturally(location, drop);
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
 
         } else {
             new CommandTree("breakinradius")
