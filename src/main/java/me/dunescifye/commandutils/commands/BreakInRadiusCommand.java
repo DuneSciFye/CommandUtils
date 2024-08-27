@@ -621,6 +621,50 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                 .register(this.getNamespace());
 
         } else {
+
+
+            /**
+             * Breaks Blocks in Radius without GriefPrevention Support, Breaks all Blocks
+             * @author DuneSciFye
+             * @since 1.0.0
+             * @param World World of the Blocks
+             * @param Location Location of the Center Block
+             * @param Player Player who is Breaking the Blocks
+             * @param Radius Radius to Break Blocks In
+             */
+            new CommandAPICommand("breakinradius")
+                .withArguments(worldArg)
+                .withArguments(locArg)
+                .withArguments(playerArg)
+                .withArguments(radiusArg)
+                .executes((sender, args) -> {
+                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                    Location location = args.getByArgument(locArg);
+                    Block block = world.getBlockAt(location);
+                    int radius = args.getByArgument(radiusArg);
+                    Player player = args.getByArgument(playerArg);
+                    ItemStack heldItem = player.getInventory().getItemInMainHand();
+                    Collection<ItemStack> drops = new ArrayList<>();
+
+                    for (int x = -radius; x <= radius; x++) {
+                        for (int y = -radius; y <= radius; y++) {
+                            for (int z = -radius; z <= radius; z++) {
+                                Block b = block.getRelative(x, y, z);
+                                drops.addAll(b.getDrops(heldItem));
+                                b.setType(AIR);
+                            }
+                        }
+                    }
+
+                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
+                        world.dropItemNaturally(location, item);
+                    }
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+
+
             new CommandTree("breakinradius")
                 .then(worldArg
                     .then(locArg
