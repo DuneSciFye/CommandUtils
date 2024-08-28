@@ -123,6 +123,10 @@ Commands:
     Aliases: []
     Permission: "commandutils.command.foodcommand"
 
+  GetPlayerHead:
+    Enabled: true
+    Aliases: []
+
   God:
     Enabled: true
     Aliases: []

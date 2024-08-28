@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.commands;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
+import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import dev.jorel.commandapi.arguments.TextArgument;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -52,23 +53,20 @@ public class BroadcastMessageCommand extends Command implements Configurable {
             colorCodesByDefault = true;
             config.set("Commands.SendMessage.ColorCodesByDefault", true);
         }
-        TextArgument textArg = new TextArgument("Message");
+        GreedyStringArgument greedyStringArg = new GreedyStringArgument("Message");
         BooleanArgument colorCodesArg = new BooleanArgument("Color Codes");
         BooleanArgument parsePlaceholdersArg = new BooleanArgument("Parse Placeholders");
         BooleanArgument useAmpersandArg = new BooleanArgument("Use Ampersand For Color Codes");
 
         new CommandAPICommand("broadcastmessage")
-            .withArguments(textArg)
-            .withOptionalArguments(colorCodesArg)
-            .withOptionalArguments(parsePlaceholdersArg)
-            .withOptionalArguments(useAmpersandArg)
+            .withArguments(greedyStringArg)
             .executes((sender, args) -> {
 
                 sendMessage(Bukkit.getOnlinePlayers(),
-                    args.getByArgument(textArg),
-                    args.getByArgumentOrDefault(parsePlaceholdersArg, parsePlaceholdersByDefault),
-                    args.getByArgumentOrDefault(colorCodesArg, colorCodesByDefault),
-                    args.getByArgumentOrDefault(useAmpersandArg, ampersandByDefault));
+                    args.getByArgument(greedyStringArg),
+                    parsePlaceholdersByDefault,
+                    colorCodesByDefault,
+                    ampersandByDefault);
 
             })
             .withPermission(this.getPermission())

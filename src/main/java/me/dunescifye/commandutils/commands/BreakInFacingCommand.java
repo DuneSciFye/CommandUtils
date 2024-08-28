@@ -841,7 +841,12 @@ public class BreakInFacingCommand extends Command implements Registerable {
                     }
 
                     drop.setAmount(drop.getAmount() - 1);
-                    world.dropItemNaturally(location, drop);
+                    int amount = drop.getAmount();
+                    while (amount > 64) {
+                        drop.setAmount(64);
+                        world.dropItemNaturally(location, drop);
+                        amount -= 64;
+                    }
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -875,6 +880,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                     Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
 
                     Location location = args.getByArgument(locArg);
+                    World world = location.getWorld();
                     Block origin = location.getBlock();
                     int radius = args.getByArgument(radiusArg);
                     Player player = args.getByArgument(playerArg);
@@ -937,7 +943,12 @@ public class BreakInFacingCommand extends Command implements Registerable {
                     }
 
                     drop.setAmount(drop.getAmount() - 1);
-                    location.getWorld().dropItemNaturally(location, drop);
+                    int amount = drop.getAmount();
+                    while (amount > 64) {
+                        drop.setAmount(64);
+                        world.dropItemNaturally(location, drop);
+                        amount -= 64;
+                    }
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -1042,7 +1053,12 @@ public class BreakInFacingCommand extends Command implements Registerable {
                     }
 
                     drop.setAmount(drop.getAmount() - 1);
-                    world.dropItemNaturally(location, drop);
+                    int amount = drop.getAmount();
+                    while (amount > 64) {
+                        drop.setAmount(64);
+                        world.dropItemNaturally(location, drop);
+                        amount -= 64;
+                    }
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -1080,6 +1096,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                     Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
 
                     Location location = args.getByArgument(locArg);
+                    World world = location.getWorld();
                     Block origin = location.getBlock();
                     int xRadius = args.getByArgument(xArg);
                     int yRadius = args.getByArgument(yArg);
@@ -1144,7 +1161,12 @@ public class BreakInFacingCommand extends Command implements Registerable {
                     }
 
                     drop.setAmount(drop.getAmount() - 1);
-                    location.getWorld().dropItemNaturally(location, drop);
+                    int amount = drop.getAmount();
+                    while (amount > 64) {
+                        drop.setAmount(64);
+                        world.dropItemNaturally(location, drop);
+                        amount -= 64;
+                    }
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -1616,9 +1638,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                        world.dropItemNaturally(location, item);
-                    }
+                    dropAllItemStacks(drops, world, location);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -1688,9 +1708,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                        world.dropItemNaturally(location, item);
-                    }
+                    dropAllItemStacks(drops, world, location);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -1767,9 +1785,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                        world.dropItemNaturally(location, item);
-                    }
+                    dropAllItemStacks(drops, world, location);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -1845,9 +1861,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                        world.dropItemNaturally(location, item);
-                    }
+                    dropAllItemStacks(drops, world, location);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -1939,9 +1953,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                        world.dropItemNaturally(location, item);
-                    }
+                    dropAllItemStacks(drops, world, location);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -2032,9 +2044,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                        world.dropItemNaturally(location, item);
-                    }
+                    dropAllItemStacks(drops, world, location);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -2133,9 +2143,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                        world.dropItemNaturally(location, item);
-                    }
+                    dropAllItemStacks(drops, world, location);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -2232,9 +2240,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                        world.dropItemNaturally(location, item);
-                    }
+                    dropAllItemStacks(drops, world, location);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -2329,7 +2335,12 @@ public class BreakInFacingCommand extends Command implements Registerable {
                     }
 
                     drop.setAmount(drop.getAmount() - 1);
-                    world.dropItemNaturally(location, drop);
+                    int amount = drop.getAmount();
+                    while (amount > 64) {
+                        drop.setAmount(64);
+                        world.dropItemNaturally(location, drop);
+                        amount -= 64;
+                    }
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -2421,7 +2432,12 @@ public class BreakInFacingCommand extends Command implements Registerable {
                     }
 
                     drop.setAmount(drop.getAmount() - 1);
-                    world.dropItemNaturally(location, drop);
+                    int amount = drop.getAmount();
+                    while (amount > 64) {
+                        drop.setAmount(64);
+                        world.dropItemNaturally(location, drop);
+                        amount -= 64;
+                    }
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -2521,7 +2537,12 @@ public class BreakInFacingCommand extends Command implements Registerable {
                     }
 
                     drop.setAmount(drop.getAmount() - 1);
-                    world.dropItemNaturally(location, drop);
+                    int amount = drop.getAmount();
+                    while (amount > 64) {
+                        drop.setAmount(64);
+                        world.dropItemNaturally(location, drop);
+                        amount -= 64;
+                    }
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -2620,7 +2641,12 @@ public class BreakInFacingCommand extends Command implements Registerable {
                     }
 
                     drop.setAmount(drop.getAmount() - 1);
-                    world.dropItemNaturally(location, drop);
+                    int amount = drop.getAmount();
+                    while (amount > 64) {
+                        drop.setAmount(64);
+                        world.dropItemNaturally(location, drop);
+                        amount -= 64;
+                    }
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -2712,9 +2738,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                        world.dropItemNaturally(location, item);
-                    }
+                    dropAllItemStacks(drops, world, location);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -2804,9 +2828,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                        world.dropItemNaturally(location, item);
-                    }
+                    dropAllItemStacks(drops, world, location);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -2905,9 +2927,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                        world.dropItemNaturally(location, item);
-                    }
+                    dropAllItemStacks(drops, world, location);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -3003,9 +3023,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                        world.dropItemNaturally(location, item);
-                    }
+                    dropAllItemStacks(drops, world, location);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())

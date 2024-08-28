@@ -83,6 +83,12 @@ public class Utils {
 
     public static void dropAllItemStacks(Collection<ItemStack> itemStacks, World world, Location location) {
         for (ItemStack item : mergeSimilarItemStacks(itemStacks)) {
+            int amount = item.getAmount();
+            while (amount > 64) {
+                item.setAmount(64);
+                world.dropItemNaturally(location, item);
+                amount -= 64;
+            }
             world.dropItemNaturally(location, item);
         }
     }

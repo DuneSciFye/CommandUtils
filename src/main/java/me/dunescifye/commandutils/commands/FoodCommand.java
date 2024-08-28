@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 public class FoodCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
+
         if (!this.getEnabled()) return;
 
         LiteralArgument addArg = new LiteralArgument("add");
