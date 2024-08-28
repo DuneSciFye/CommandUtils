@@ -505,6 +505,59 @@ public class RemoveInRadius extends Command implements Registerable {
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
                 .register(this.getNamespace());
+
+
+            /**
+             * Removes Blocks in Radius without GriefPrevention Support, Config Defined Predicates
+             * @author DuneSciFye
+             * @since 1.0.3
+             * @param World World of the Blocks
+             * @param Location Location of the Center Block
+             * @param Radius Radius to Break Blocks In
+             * @param Player Player who is Breaking the Blocks
+             * @param Predicate Config Defined Predicate
+             */
+            new CommandAPICommand("removeinradius")
+                .withArguments(worldArg)
+                .withArguments(locArg)
+                .withArguments(radiusArg)
+                .withArguments(playerArg)
+                .withArguments(whitelistedBlocksArgument
+                    .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
+                )
+                .executes((sender, args) -> {
+                    String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
+                    List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
+
+                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                    Location location = args.getByArgument(locArg);
+                    Block origin = world.getBlockAt(location);
+                    Player player = args.getByArgument(playerArg);
+                    int radius = args.getByArgument(radiusArg);
+
+                    for (int x = -radius; x <= radius; x++) {
+                        for (int y = -radius; y <= radius; y++) {
+                            block:
+                            for (int z = -radius; z <= radius; z++) {
+                                Block relative = origin.getRelative(x, y, z);
+                                for (Predicate<Block> predicateWhitelist : whitelist) {
+                                    if (predicateWhitelist.test(relative)) {
+                                        for (Predicate<Block> predicateBlacklist : blacklist) {
+                                            if (predicateBlacklist.test(relative)) {
+                                                continue block;
+                                            }
+                                        }
+                                        relative.setType(Material.AIR);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
         }
 
     }
