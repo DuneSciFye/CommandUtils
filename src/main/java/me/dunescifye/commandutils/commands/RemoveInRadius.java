@@ -171,6 +171,65 @@ public class RemoveInRadius extends Command implements Registerable {
                 .register(this.getNamespace());
 
             /**
+             * Removes Blocks in Radius with GriefPrevention Support, Command Defined Predicates
+             * @author DuneSciFye
+             * @since 1.0.3
+             * @param Location Location of the Center Block
+             * @param Radius Radius to Break Blocks In
+             * @param Player Player who is Breaking the Blocks
+             * @param whitelist Literal Arg
+             * @param Predicates List of Predicates
+             */
+            new CommandAPICommand("removeinradius")
+                .withArguments(locArg)
+                .withArguments(radiusArg)
+                .withArguments(playerArg)
+                .withOptionalArguments(whitelistArg
+                    .combineWith(
+                        new ListArgumentBuilder<String>("Whitelisted Blocks")
+                            .withList(Utils.getPredicatesList())
+                            .withStringMapper()
+                            .buildText()
+                    )
+                )
+                .executes((sender, args) -> {
+                    List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
+                    Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
+
+                    Location location = args.getByArgument(locArg);
+                    Block origin = location.getBlock();
+                    Player player = args.getByArgument(playerArg);
+                    int radius = args.getByArgument(radiusArg);
+
+                    for (int x = -radius; x <= radius; x++) {
+                        for (int y = -radius; y <= radius; y++) {
+                            block:
+                            for (int z = -radius; z <= radius; z++) {
+                                Block relative = origin.getRelative(x, y, z);
+                                for (Predicate<Block> predicateWhitelist : whitelist) {
+                                    if (predicateWhitelist.test(relative)) {
+                                        for (Predicate<Block> predicateBlacklist : blacklist) {
+                                            if (predicateBlacklist.test(relative)) {
+                                                continue block;
+                                            }
+                                        }
+                                        //Testing claim
+                                        Location relativeLocation = relative.getLocation();
+                                        if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                            relative.setType(Material.AIR);
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+
+            /**
              * Removes Blocks in Radius with GriefPrevention Support, Config Defined Predicates
              * @author DuneSciFye
              * @since 1.0.3
