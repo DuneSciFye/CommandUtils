@@ -621,6 +621,64 @@ public class RemoveInRadius extends Command implements Registerable {
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
                 .register(this.getNamespace());
+            /**
+             * Removes Blocks in Radius with GriefPrevention Support, Config Defined Predicates
+             * @author DuneSciFye
+             * @since 1.0.3
+             * @param Location Location of the Center Block
+             * @param X Direction in X to Break in
+             * @param Y Direction in Y to Break in
+             * @param Z Direction in Z to Break in
+             * @param Player Player who is Breaking the Blocks
+             * @param Predicate Config Defined Predicate
+             */
+            new CommandAPICommand("removeinradius")
+                .withArguments(locArg)
+                .withArguments(xArg)
+                .withArguments(yArg)
+                .withArguments(zArg)
+                .withArguments(playerArg)
+                .withArguments(whitelistedBlocksArgument
+                    .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
+                )
+                .executes((sender, args) -> {
+                    String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
+                    List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
+
+                    Location location = args.getByArgument(locArg);
+                    Block origin = location.getBlock();
+                    Player player = args.getByArgument(playerArg);
+                    int xRadius = args.getByArgument(xArg);
+                    int yRadius = args.getByArgument(yArg);
+                    int zRadius = args.getByArgument(zArg);
+
+                    for (int x = -xRadius; x <= xRadius; x++) {
+                        for (int y = -yRadius; y <= yRadius; y++) {
+                            block:
+                            for (int z = -zRadius; z <= zRadius; z++) {
+                                Block relative = origin.getRelative(x, y, z);
+                                for (Predicate<Block> predicateWhitelist : whitelist) {
+                                    if (predicateWhitelist.test(relative)) {
+                                        for (Predicate<Block> predicateBlacklist : blacklist) {
+                                            if (predicateBlacklist.test(relative)) {
+                                                continue block;
+                                            }
+                                        }
+                                        //Testing claim
+                                        Location relativeLocation = relative.getLocation();
+                                        if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                            relative.setType(Material.AIR);
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
         } else {
             /**
              * Remove Blocks in Radius without GriefPrevention Support
