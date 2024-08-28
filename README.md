@@ -29,3 +29,6 @@ List of commands:
 /waterlogblock {location} {world} {waterlogged state} {radius} 
 /weightedrandom {args} 
 /while {player} {compare 1} {compare method} {compare 2} {initial delay} {interval} {commands} 
+
+Picture of commands in game:
+![image](https://github.com/user-attachments/assets/b45c83ab-943c-4642-a210-c6050692aa4a)
