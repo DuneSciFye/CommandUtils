@@ -927,6 +927,65 @@ public class RemoveInRadius extends Command implements Registerable {
                 .withAliases(this.getCommandAliases())
                 .register(this.getNamespace());
 
+            /**
+             * Removes Blocks in Radius without GriefPrevention Support, Command Defined Predicates
+             * @author DuneSciFye
+             * @since 1.0.0
+             * @param World World of the Blocks
+             * @param Location Location of the Center Block
+             * @param Player Player who is Breaking the Blocks
+             * @param X Direction in X to Break in
+             * @param Y Direction in Y to Break in
+             * @param Z Direction in Z to Break in
+             * @param whitelist Literal Arg
+             * @param Predicates List of Predicates
+             */
+            new CommandAPICommand("removeinradius")
+                .withArguments(worldArg)
+                .withArguments(locArg)
+                .withArguments(xArg)
+                .withArguments(yArg)
+                .withArguments(zArg)
+                .withArguments(playerArg)
+                .withArguments(whitelistArg)
+                .withArguments(new ListArgumentBuilder<String>("Whitelisted Blocks")
+                    .withList(Utils.getPredicatesList())
+                    .withStringMapper()
+                    .buildText())
+                .executes((sender, args) -> {
+                    List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
+                    Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
+
+                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                    Location location = args.getByArgument(locArg);
+                    Block origin = world.getBlockAt(location);
+                    int xRadius = args.getByArgument(xArg);
+                    int yRadius = args.getByArgument(yArg);
+                    int zRadius = args.getByArgument(zArg);
+
+                    for (int x = -xRadius; x <= xRadius; x++) {
+                        for (int y = -yRadius; y <= yRadius; y++) {
+                            block:
+                            for (int z = -zRadius; z <= zRadius; z++) {
+                                Block relative = origin.getRelative(x, y, z);
+                                for (Predicate<Block> predicateWhitelist : whitelist) {
+                                    if (predicateWhitelist.test(relative)) {
+                                        for (Predicate<Block> predicateBlacklist : blacklist) {
+                                            if (predicateBlacklist.test(relative)) {
+                                                continue block;
+                                            }
+                                        }
+                                        relative.setType(Material.AIR);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
 
             /**
              * Removes Blocks in Radius without GriefPrevention Support, Config Defined Predicates
