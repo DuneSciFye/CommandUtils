@@ -27,8 +27,10 @@ public class RemoveInRadius extends Command implements Registerable {
         StringArgument worldArg = new StringArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
+        IntegerArgument xArg = new IntegerArgument("X");
+        IntegerArgument yArg = new IntegerArgument("Y");
+        IntegerArgument zArg = new IntegerArgument("Z");
         PlayerArgument playerArg = new PlayerArgument("Player");
-        ItemStackArgument dropArg = new ItemStackArgument("Drop");
         LiteralArgument whitelistArg = new LiteralArgument("whitelist");
 
         //With Griefprevention
@@ -57,6 +59,51 @@ public class RemoveInRadius extends Command implements Registerable {
                     for (int x = -radius; x <= radius; x++) {
                         for (int y = -radius; y <= radius; y++) {
                             for (int z = -radius; z <= radius; z++) {
+                                Block b = block.getRelative(x, y, z);
+                                //Testing claim
+                                Location relativeLocation = b.getLocation();
+                                if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                    b.setType(AIR);
+                                }
+                            }
+                        }
+                    }
+
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+
+            /**
+             * Remove Blocks in Radius with GriefPrevention Support
+             * @author DuneSciFye
+             * @since 1.0.3
+             * @param World World of the Blocks
+             * @param Location Location of the Center Block
+             * @param X Direction in X to Break in
+             * @param Y Direction in Y to Break in
+             * @param Z Direction in Z to Break in
+             * @param Player Player who is Breaking the Blocks
+             */
+            new CommandAPICommand("removeinradius")
+                .withArguments(worldArg)
+                .withArguments(locArg)
+                .withArguments(xArg)
+                .withArguments(yArg)
+                .withArguments(zArg)
+                .withArguments(playerArg)
+                .executes((sender, args) -> {
+                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                    Location location = args.getByArgument(locArg);
+                    Block block = world.getBlockAt(location);
+                    int xRadius = args.getByArgument(xArg);
+                    int yRadius = args.getByArgument(yArg);
+                    int zRadius = args.getByArgument(zArg);
+                    Player player = args.getByArgument(playerArg);
+
+                    for (int x = -xRadius; x <= xRadius; x++) {
+                        for (int y = -yRadius; y <= yRadius; y++) {
+                            for (int z = -zRadius; z <= zRadius; z++) {
                                 Block b = block.getRelative(x, y, z);
                                 //Testing claim
                                 Location relativeLocation = b.getLocation();
@@ -533,6 +580,54 @@ public class RemoveInRadius extends Command implements Registerable {
                     Location location = args.getByArgument(locArg);
                     Block origin = world.getBlockAt(location);
                     Player player = args.getByArgument(playerArg);
+                    int radius = args.getByArgument(radiusArg);
+
+                    for (int x = -radius; x <= radius; x++) {
+                        for (int y = -radius; y <= radius; y++) {
+                            block:
+                            for (int z = -radius; z <= radius; z++) {
+                                Block relative = origin.getRelative(x, y, z);
+                                for (Predicate<Block> predicateWhitelist : whitelist) {
+                                    if (predicateWhitelist.test(relative)) {
+                                        for (Predicate<Block> predicateBlacklist : blacklist) {
+                                            if (predicateBlacklist.test(relative)) {
+                                                continue block;
+                                            }
+                                        }
+                                        relative.setType(Material.AIR);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+
+            /**
+             * Removes Blocks in Radius without GriefPrevention Support, Config Defined Predicates
+             * @author DuneSciFye
+             * @since 1.0.3
+             * @param Location Location of the Center Block
+             * @param Radius Radius to Break Blocks In
+             * @param Player Player who is Breaking the Blocks
+             * @param Predicate Config Defined Predicate
+             */
+            new CommandAPICommand("removeinradius")
+                .withArguments(locArg)
+                .withArguments(radiusArg)
+                .withArguments(playerArg)
+                .withArguments(whitelistedBlocksArgument
+                    .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
+                )
+                .executes((sender, args) -> {
+                    String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
+                    List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
+
+                    Location location = args.getByArgument(locArg);
+                    Block origin = location.getBlock();
                     int radius = args.getByArgument(radiusArg);
 
                     for (int x = -radius; x <= radius; x++) {
