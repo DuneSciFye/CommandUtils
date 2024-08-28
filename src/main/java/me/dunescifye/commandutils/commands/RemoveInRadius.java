@@ -32,11 +32,10 @@ public class RemoveInRadius extends Command implements Registerable {
 
         //With Griefprevention
         if (CommandUtils.griefPreventionEnabled) {
-
             /**
              * Remove Blocks in Radius with GriefPrevention Support
              * @author DuneSciFye
-             * @since 1.0.0
+             * @since 1.0.3
              * @param World World of the Blocks
              * @param Location Location of the Center Block
              * @param Radius Radius to Break Blocks In
@@ -73,9 +72,45 @@ public class RemoveInRadius extends Command implements Registerable {
                 .register(this.getNamespace());
 
             /**
+             * Remove Blocks in Radius with GriefPrevention Support
+             * @author DuneSciFye
+             * @since 1.0.3
+             * @param Location Location of the Center Block
+             * @param Radius Radius to Break Blocks In
+             * @param Player Player who is Breaking the Blocks
+             */
+            new CommandAPICommand("removeinradius")
+                .withArguments(locArg)
+                .withArguments(radiusArg)
+                .withArguments(playerArg)
+                .executes((sender, args) -> {
+                    Location location = args.getByArgument(locArg);
+                    Block block = location.getBlock();
+                    int radius = args.getByArgument(radiusArg);
+                    Player player = args.getByArgument(playerArg);
+
+                    for (int x = -radius; x <= radius; x++) {
+                        for (int y = -radius; y <= radius; y++) {
+                            for (int z = -radius; z <= radius; z++) {
+                                Block b = block.getRelative(x, y, z);
+                                //Testing claim
+                                Location relativeLocation = b.getLocation();
+                                if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                    b.setType(AIR);
+                                }
+                            }
+                        }
+                    }
+
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+
+            /**
              * Removes Blocks in Radius with GriefPrevention Support, Command Defined Predicates
              * @author DuneSciFye
-             * @since 1.0.0
+             * @since 1.0.3
              * @param World World of the Blocks
              * @param Location Location of the Center Block
              * @param Radius Radius to Break Blocks In
@@ -88,11 +123,14 @@ public class RemoveInRadius extends Command implements Registerable {
                 .withArguments(locArg)
                 .withArguments(radiusArg)
                 .withArguments(playerArg)
-                .withArguments(whitelistArg)
-                .withArguments(new ListArgumentBuilder<String>("Whitelisted Blocks")
-                    .withList(Utils.getPredicatesList())
-                    .withStringMapper()
-                    .buildText())
+                .withOptionalArguments(whitelistArg
+                    .combineWith(
+                        new ListArgumentBuilder<String>("Whitelisted Blocks")
+                            .withList(Utils.getPredicatesList())
+                            .withStringMapper()
+                            .buildText()
+                    )
+                )
                 .executes((sender, args) -> {
                     List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
                     Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
@@ -132,11 +170,10 @@ public class RemoveInRadius extends Command implements Registerable {
                 .register(this.getNamespace());
         } else {
 
-
             /**
-             * Remove Blocks in Radius with GriefPrevention Support
+             * Remove Blocks in Radius without GriefPrevention Support
              * @author DuneSciFye
-             * @since 1.0.0
+             * @since 1.0.3
              * @param World World of the Blocks
              * @param Location Location of the Center Block
              * @param Radius Radius to Break Blocks In
@@ -168,7 +205,38 @@ public class RemoveInRadius extends Command implements Registerable {
                 .register(this.getNamespace());
 
             /**
-             * Removes Blocks in Radius with GriefPrevention Support, Command Defined Predicates
+             * Remove Blocks in Radius without GriefPrevention Support
+             * @author DuneSciFye
+             * @since 1.0.3
+             * @param Location Location of the Center Block
+             * @param Radius Radius to Break Blocks In
+             * @param Player Player who is Breaking the Blocks
+             */
+            new CommandAPICommand("removeinradius")
+                .withArguments(locArg)
+                .withArguments(radiusArg)
+                .withOptionalArguments(playerArg)
+                .executes((sender, args) -> {
+                    Location location = args.getByArgument(locArg);
+                    Block block = location.getBlock();
+                    int radius = args.getByArgument(radiusArg);
+
+                    for (int x = -radius; x <= radius; x++) {
+                        for (int y = -radius; y <= radius; y++) {
+                            for (int z = -radius; z <= radius; z++) {
+                                Block b = block.getRelative(x, y, z);
+                                b.setType(AIR);
+                            }
+                        }
+                    }
+
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+
+            /**
+             * Removes Blocks in Radius without GriefPrevention Support, Command Defined Predicates
              * @author DuneSciFye
              * @since 1.0.0
              * @param World World of the Blocks
