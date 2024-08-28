@@ -1,5 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
+import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.CommandUtils;
@@ -29,6 +30,59 @@ public class BreakInXYZCommand extends Command implements Registerable {
         LiteralArgument whitelistArg = new LiteralArgument("whitelist");
 
         if (CommandUtils.griefPreventionEnabled) {
+
+            /**
+             * Breaks Blocks in defined X, Y, and Z with GriefPrevention Support
+             * @author DuneSciFye
+             * @since 1.0.0
+             * @param World World of the Blocks
+             * @param Location Location of the Center Block
+             * @param Player Player who is Breaking the Blocks
+             * @param X Direction in X to Break in
+             * @param Y Direction in Y to Break in
+             * @param Z Direction in Z to Break in
+             */
+            new CommandAPICommand("breakinxyz")
+                .withArguments(worldArg)
+                .withArguments(locArg)
+                .withArguments(playerArg)
+                .withArguments(radiusXArg)
+                .withArguments(radiusYArg)
+                .withArguments(radiusZArg)
+                .executes((sender, args) -> {
+                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                    Location location = args.getByArgument(locArg);
+                    Block block = world.getBlockAt(location);
+                    Player player = args.getByArgument(playerArg);
+                    ItemStack heldItem = player.getInventory().getItemInMainHand();
+                    int radiusX = args.getByArgument(radiusXArg);
+                    int radiusY = args.getByArgument(radiusYArg);
+                    int radiusZ = args.getByArgument(radiusZArg);
+                    Collection<ItemStack> drops = new ArrayList<>();
+
+
+                    for (int x = -radiusX; x <= radiusX; x++) {
+                        for (int y = -radiusY; y <= radiusY; y++) {
+                            for (int z = -radiusZ; z <= radiusZ; z++) {
+                                Block relative = block.getRelative(x, y, z);
+                                //Testing claim
+                                Location relativeLocation = relative.getLocation();
+                                if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                    drops.addAll(relative.getDrops(heldItem));
+                                    relative.setType(Material.AIR);
+                                }
+                            }
+                        }
+                    }
+
+                    for (ItemStack item : mergeSimilarItemStacks(drops)) {
+                        world.dropItemNaturally(location, item);
+                    }
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+
             new CommandTree("breakinxyz")
                 .then(worldArg
                     .then(locArg
