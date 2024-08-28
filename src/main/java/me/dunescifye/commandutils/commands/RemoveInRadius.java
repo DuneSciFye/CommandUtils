@@ -10,14 +10,11 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static me.dunescifye.commandutils.utils.Utils.dropAllItemStacks;
 import static org.bukkit.Material.AIR;
 
 public class RemoveInRadius extends Command implements Registerable {
@@ -42,14 +39,14 @@ public class RemoveInRadius extends Command implements Registerable {
              * @since 1.0.0
              * @param World World of the Blocks
              * @param Location Location of the Center Block
-             * @param Player Player who is Breaking the Blocks
              * @param Radius Radius to Break Blocks In
+             * @param Player Player who is Breaking the Blocks
              */
             new CommandAPICommand("removeinradius")
                 .withArguments(worldArg)
                 .withArguments(locArg)
-                .withArguments(playerArg)
                 .withArguments(radiusArg)
+                .withArguments(playerArg)
                 .executes((sender, args) -> {
                     World world = Bukkit.getWorld(args.getByArgument(worldArg));
                     Location location = args.getByArgument(locArg);
@@ -81,16 +78,16 @@ public class RemoveInRadius extends Command implements Registerable {
              * @since 1.0.0
              * @param World World of the Blocks
              * @param Location Location of the Center Block
-             * @param Player Player who is Breaking the Blocks
              * @param Radius Radius to Break Blocks In
+             * @param Player Player who is Breaking the Blocks
              * @param whitelist Literal Arg
              * @param Predicates List of Predicates
              */
             new CommandAPICommand("removeinradius")
                 .withArguments(worldArg)
                 .withArguments(locArg)
-                .withArguments(playerArg)
                 .withArguments(radiusArg)
+                .withArguments(playerArg)
                 .withArguments(whitelistArg)
                 .withArguments(new ListArgumentBuilder<String>("Whitelisted Blocks")
                     .withList(Utils.getPredicatesList())
@@ -129,6 +126,42 @@ public class RemoveInRadius extends Command implements Registerable {
                             }
                         }
                     }
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+        } else {
+
+
+            /**
+             * Remove Blocks in Radius with GriefPrevention Support
+             * @author DuneSciFye
+             * @since 1.0.0
+             * @param World World of the Blocks
+             * @param Location Location of the Center Block
+             * @param Radius Radius to Break Blocks In
+             * @param Player Player who is Breaking the Blocks
+             */
+            new CommandAPICommand("removeinradius")
+                .withArguments(worldArg)
+                .withArguments(locArg)
+                .withArguments(radiusArg)
+                .withOptionalArguments(playerArg)
+                .executes((sender, args) -> {
+                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                    Location location = args.getByArgument(locArg);
+                    Block block = world.getBlockAt(location);
+                    int radius = args.getByArgument(radiusArg);
+
+                    for (int x = -radius; x <= radius; x++) {
+                        for (int y = -radius; y <= radius; y++) {
+                            for (int z = -radius; z <= radius; z++) {
+                                Block b = block.getRelative(x, y, z);
+                                b.setType(AIR);
+                            }
+                        }
+                    }
+
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
