@@ -23,6 +23,7 @@ public class PushEntityCommand extends Command implements Registerable {
         EntitySelectorArgument.OneEntity targetArg = new EntitySelectorArgument.OneEntity("Target");
         StringArgument worldArg = new StringArgument("World");
 
+        /*
         new CommandAPICommand("pushentity")
             .withArguments(entitiesArg)
             .withArguments(worldArg)
@@ -44,6 +45,8 @@ public class PushEntityCommand extends Command implements Registerable {
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
+
+         */
 
         //No World Arg
         new CommandAPICommand("pushentity")
