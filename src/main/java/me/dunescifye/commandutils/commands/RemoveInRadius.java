@@ -746,6 +746,84 @@ public class RemoveInRadius extends Command implements Registerable {
                 .register(this.getNamespace());
 
             /**
+             * Remove Blocks in Radius without GriefPrevention Support
+             * @author DuneSciFye
+             * @since 1.0.3
+             * @param World World of the Blocks
+             * @param Location Location of the Center Block
+             * @param X Direction in X to Break in
+             * @param Y Direction in Y to Break in
+             * @param Z Direction in Z to Break in
+             * @param Player Player who is Breaking the Blocks
+             */
+            new CommandAPICommand("removeinradius")
+                .withArguments(worldArg)
+                .withArguments(locArg)
+                .withArguments(xArg)
+                .withArguments(yArg)
+                .withArguments(zArg)
+                .withOptionalArguments(playerArg)
+                .executes((sender, args) -> {
+                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                    Location location = args.getByArgument(locArg);
+                    Block block = world.getBlockAt(location);
+                    int xRadius = args.getByArgument(xArg);
+                    int yRadius = args.getByArgument(yArg);
+                    int zRadius = args.getByArgument(zArg);
+
+                    for (int x = -xRadius; x <= xRadius; x++) {
+                        for (int y = -yRadius; y <= yRadius; y++) {
+                            for (int z = -zRadius; z <= zRadius; z++) {
+                                Block b = block.getRelative(x, y, z);
+                                b.setType(AIR);
+                            }
+                        }
+                    }
+
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+
+
+            /**
+             * Remove Blocks in Radius without GriefPrevention Support
+             * @author DuneSciFye
+             * @since 1.0.3
+             * @param Location Location of the Center Block
+             * @param X Direction in X to Break in
+             * @param Y Direction in Y to Break in
+             * @param Z Direction in Z to Break in
+             * @param Player Player who is Breaking the Blocks
+             */
+            new CommandAPICommand("removeinradius")
+                .withArguments(locArg)
+                .withArguments(xArg)
+                .withArguments(yArg)
+                .withArguments(zArg)
+                .withOptionalArguments(playerArg)
+                .executes((sender, args) -> {
+                    Location location = args.getByArgument(locArg);
+                    Block block = location.getBlock();
+                    int xRadius = args.getByArgument(xArg);
+                    int yRadius = args.getByArgument(yArg);
+                    int zRadius = args.getByArgument(zArg);
+
+                    for (int x = -xRadius; x <= xRadius; x++) {
+                        for (int y = -yRadius; y <= yRadius; y++) {
+                            for (int z = -zRadius; z <= zRadius; z++) {
+                                Block b = block.getRelative(x, y, z);
+                                b.setType(AIR);
+                            }
+                        }
+                    }
+
+                })
+                .withPermission(this.getPermission())
+                .withAliases(this.getCommandAliases())
+                .register(this.getNamespace());
+
+            /**
              * Removes Blocks in Radius without GriefPrevention Support, Command Defined Predicates
              * @author DuneSciFye
              * @since 1.0.0
