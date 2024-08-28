@@ -22,6 +22,7 @@ public class BreakInRadiusCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
+
         if (!this.getEnabled()) return;
 
         StringArgument whitelistedBlocksArgument = new StringArgument("Whitelisted Blocks");

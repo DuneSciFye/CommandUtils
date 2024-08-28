@@ -90,6 +90,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("BroadcastConditionMessage", new BroadcastConditionMessageCommand());
         commands.put("BreakInVein", new BreakInVeinCommand());
         commands.put("GetPlayerHead", new GetPlayerHeadCommand());
+        commands.put("RemoveInRadius", new RemoveInRadius());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {

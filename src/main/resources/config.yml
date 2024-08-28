@@ -201,6 +201,10 @@ Commands:
     Enabled: true
     Aliases: []
 
+  RemoveInRadius:
+    Enabled: true
+    Aliases: []
+
   RemoveItem:
     Enabled: true
     Aliases: []
