@@ -214,13 +214,11 @@ public class RemoveInRadius extends Command implements Registerable {
                 .withArguments(locArg)
                 .withArguments(radiusArg)
                 .withArguments(playerArg)
-                .withOptionalArguments(whitelistArg
-                    .combineWith(
-                        new ListArgumentBuilder<String>("Whitelisted Blocks")
-                            .withList(Utils.getPredicatesList())
-                            .withStringMapper()
-                            .buildText()
-                    )
+                .withArguments(whitelistArg)
+                .withArguments(new ListArgumentBuilder<String>("Whitelisted Blocks")
+                    .withList(Utils.getPredicatesList())
+                    .withStringMapper()
+                    .buildText()
                 )
                 .executes((sender, args) -> {
                     List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
@@ -274,13 +272,11 @@ public class RemoveInRadius extends Command implements Registerable {
                 .withArguments(locArg)
                 .withArguments(radiusArg)
                 .withArguments(playerArg)
-                .withOptionalArguments(whitelistArg
-                    .combineWith(
-                        new ListArgumentBuilder<String>("Whitelisted Blocks")
-                            .withList(Utils.getPredicatesList())
-                            .withStringMapper()
-                            .buildText()
-                    )
+                .withArguments(whitelistArg)
+                .withArguments(new ListArgumentBuilder<String>("Whitelisted Blocks")
+                    .withList(Utils.getPredicatesList())
+                    .withStringMapper()
+                    .buildText()
                 )
                 .executes((sender, args) -> {
                     List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
@@ -339,13 +335,11 @@ public class RemoveInRadius extends Command implements Registerable {
                 .withArguments(yArg)
                 .withArguments(zArg)
                 .withArguments(playerArg)
-                .withOptionalArguments(whitelistArg
-                    .combineWith(
-                        new ListArgumentBuilder<String>("Whitelisted Blocks")
-                            .withList(Utils.getPredicatesList())
-                            .withStringMapper()
-                            .buildText()
-                    )
+                .withArguments(whitelistArg)
+                .withArguments(new ListArgumentBuilder<String>("Whitelisted Blocks")
+                    .withList(Utils.getPredicatesList())
+                    .withStringMapper()
+                    .buildText()
                 )
                 .executes((sender, args) -> {
                     List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
@@ -405,13 +399,11 @@ public class RemoveInRadius extends Command implements Registerable {
                 .withArguments(yArg)
                 .withArguments(zArg)
                 .withArguments(playerArg)
-                .withOptionalArguments(whitelistArg
-                    .combineWith(
-                        new ListArgumentBuilder<String>("Whitelisted Blocks")
-                            .withList(Utils.getPredicatesList())
-                            .withStringMapper()
-                            .buildText()
-                    )
+                .withArguments(whitelistArg)
+                .withArguments(new ListArgumentBuilder<String>("Whitelisted Blocks")
+                    .withList(Utils.getPredicatesList())
+                    .withStringMapper()
+                    .buildText()
                 )
                 .executes((sender, args) -> {
                     List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
@@ -693,7 +685,7 @@ public class RemoveInRadius extends Command implements Registerable {
                 .withArguments(worldArg)
                 .withArguments(locArg)
                 .withArguments(radiusArg)
-                .withOptionalArguments(playerArg)
+                .withArguments(playerArg)
                 .executes((sender, args) -> {
                     World world = Bukkit.getWorld(args.getByArgument(worldArg));
                     Location location = args.getByArgument(locArg);
@@ -725,7 +717,7 @@ public class RemoveInRadius extends Command implements Registerable {
             new CommandAPICommand("removeinradius")
                 .withArguments(locArg)
                 .withArguments(radiusArg)
-                .withOptionalArguments(playerArg)
+                .withArguments(playerArg)
                 .executes((sender, args) -> {
                     Location location = args.getByArgument(locArg);
                     Block block = location.getBlock();
@@ -762,7 +754,7 @@ public class RemoveInRadius extends Command implements Registerable {
                 .withArguments(xArg)
                 .withArguments(yArg)
                 .withArguments(zArg)
-                .withOptionalArguments(playerArg)
+                .withArguments(playerArg)
                 .executes((sender, args) -> {
                     World world = Bukkit.getWorld(args.getByArgument(worldArg));
                     Location location = args.getByArgument(locArg);
@@ -801,7 +793,7 @@ public class RemoveInRadius extends Command implements Registerable {
                 .withArguments(xArg)
                 .withArguments(yArg)
                 .withArguments(zArg)
-                .withOptionalArguments(playerArg)
+                .withArguments(playerArg)
                 .executes((sender, args) -> {
                     Location location = args.getByArgument(locArg);
                     Block block = location.getBlock();

@@ -155,15 +155,14 @@ Commands:
     Aliases: []
     Permission: "commandutils.command.itemattributecommand"
 
-  LaunchDragonFireball:
-    Enabled: true
-    Aliases: []
-    Permission: "commandutils.command.launchdragonfireballcommand"
-
   LaunchFirework:
     Enabled: true
     Aliases: []
     Permission: "commandutils.command.launchfireworkcommand"
+
+  LaunchTNT:
+    Enabled: true
+    Aliases: []
 
   LoadCrossbow:
     Enabled: true

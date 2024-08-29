@@ -4,10 +4,7 @@ import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
 import me.dunescifye.commandutils.commands.*;
 import me.dunescifye.commandutils.files.Config;
-import me.dunescifye.commandutils.listeners.BlockDropItemListener;
-import me.dunescifye.commandutils.listeners.EntityChangeBlockListener;
-import me.dunescifye.commandutils.listeners.EntityDamageByEntityListener;
-import me.dunescifye.commandutils.listeners.GodModeListener;
+import me.dunescifye.commandutils.listeners.*;
 import me.dunescifye.commandutils.commands.Command;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -91,6 +88,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("BreakInVein", new BreakInVeinCommand());
         commands.put("GetPlayerHead", new GetPlayerHeadCommand());
         commands.put("RemoveInRadius", new RemoveInRadius());
+        commands.put("LaunchTNT", new LaunchTNTCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
@@ -130,6 +128,7 @@ public final class CommandUtils extends JavaPlugin {
         new EntityChangeBlockListener().entityChangeBlockHandler(this);
         new BlockDropItemListener().blockDropItemHandler(this);
         new GodModeListener().registerEvents(this);
+        new EntityExplodeListener().entityExplodeHandler(this);
     }
     public static CommandUtils getInstance(){
         return plugin;
