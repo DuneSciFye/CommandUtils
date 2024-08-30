@@ -561,6 +561,21 @@ public class StringUtils extends PlaceholderExpansion {
 
                     return String.valueOf(item.getAmount());
                 }
+                case "distance" -> {
+                    String[] distanceArgs = arguments.split("_", 2);
+
+                    if (distanceArgs.length != 2) return "Missing arguments.";
+
+                    String[] coords1 = distanceArgs[0].split(",", 3);
+                    String[] coords2 = distanceArgs[1].split(",", 3);
+
+                    if (coords1.length != 3 && coords2.length != 3) return "Missing arguments.";
+
+                    World world = Bukkit.getWorlds().get(0);
+
+                    Location loc1 = new Location(world, coords1[0], coords1[1], coords1[2]);
+
+                }
                 default -> {
                     separator = function.replace("\\_", "_");
                     String[] temp = arguments.split("_", 2);

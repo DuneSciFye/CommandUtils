@@ -2,7 +2,9 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
+import dev.jorel.commandapi.arguments.LocationArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
+import dev.jorel.commandapi.arguments.StringArgument;
 import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -15,6 +17,8 @@ public class LaunchTNTCommand extends Command implements Registerable {
     public void register() {
 
         PlayerArgument playerArg = new PlayerArgument("Player");
+        StringArgument worldArg = new StringArgument("World");
+        LocationArgument locArg = new LocationArgument("Location");
         BooleanArgument breakBlocksArg = new BooleanArgument("Break Blocks");
 
         /**
@@ -47,8 +51,7 @@ public class LaunchTNTCommand extends Command implements Registerable {
          * @since 1.0.0
          * @param world The world of the block
          * @param loc The coordinates of the block
-         * @param gravity If the block should have gravity or not
-         * @param radius How many surrounding blocks should it also affect
+         * @param Boolean If the tnt should break blocks or not. Default true
          */
         new CommandAPICommand("launchtnt")
             .withArguments(playerArg)
