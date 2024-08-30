@@ -113,11 +113,18 @@ public class Utils {
     }
 
     public static boolean isInsideClaim(final Player player, final Location blockLocation) {
+        if (!CommandUtils.griefPreventionEnabled) return true;
         final DataStore dataStore = GriefPrevention.instance.dataStore;
         return dataStore.getClaimAt(blockLocation, false, dataStore.getPlayerData(player.getUniqueId()).lastClaim) != null;
     }
     public static boolean isWilderness(Location location) {
+        if (!CommandUtils.griefPreventionEnabled) return true;
         return GriefPrevention.instance.dataStore.getClaimAt(location, true, null) == null;
+    }
+
+    public static boolean isInClaimOrWilderness(final Player player, final Location location) {
+        if (!CommandUtils.griefPreventionEnabled) return true;
+        return isInsideClaim(player, location) || isWilderness(location);
     }
 
     private static CoreProtectAPI getCoreProtect() {
