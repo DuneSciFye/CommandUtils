@@ -324,4 +324,17 @@ public class Utils {
             .map(Player::getName)
             .collect(Collectors.toList());
     }
+
+    public static boolean testBlock(Block b, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist) {
+        for (Predicate<Block> predicateWhitelist : whitelist) {
+            if (predicateWhitelist.test(b)) {
+                for (Predicate<Block> predicateBlacklist : blacklist) {
+                    if (predicateBlacklist.test(b)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+    }
 }

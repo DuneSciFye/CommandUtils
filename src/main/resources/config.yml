@@ -213,6 +213,10 @@ Commands:
     Enabled: true
     Aliases: []
 
+  ReplaceInRadius:
+    Enabled: true
+    Aliases: []
+
   ReplaceLore:
     Enabled: true
     Aliases: []

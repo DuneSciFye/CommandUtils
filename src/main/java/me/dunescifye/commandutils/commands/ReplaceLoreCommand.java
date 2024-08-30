@@ -1,7 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Utils;
 import net.kyori.adventure.text.Component;

@@ -89,6 +89,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("GetPlayerHead", new GetPlayerHeadCommand());
         commands.put("RemoveInRadius", new RemoveInRadius());
         commands.put("LaunchTNT", new LaunchTNTCommand());
+        commands.put("ReplaceInRadius", new ReplaceInRadiusCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {

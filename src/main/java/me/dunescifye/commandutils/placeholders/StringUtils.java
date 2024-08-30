@@ -590,9 +590,24 @@ public class StringUtils extends PlaceholderExpansion {
 
                     if (coords1.length != 3 && coords2.length != 3) return "Missing arguments.";
 
+                    int[] num1 = new int[3];
+                    int[] num2 = new int[3];
+
+                    try {
+                        for (int i = 0; i < coords1.length; i++) {
+                            num1[i] = Integer.parseInt(coords1[i]);
+                            num2[i] = Integer.parseInt(coords2[i]);
+                        }
+                    } catch (NumberFormatException e) {
+                        return "Invalid Number for Coordinates provided";
+                    }
+
                     World world = Bukkit.getWorlds().get(0);
 
-                    Location loc1 = new Location(world, coords1[0], coords1[1], coords1[2]);
+                    Location loc1 = new Location(world, num1[0], num1[1], num1[2]);
+                    Location loc2 = new Location(world, num2[0], num2[1], num2[2]);
+                    double distance = loc1.distance(loc2);
+                    return String.valueOf(distance);
 
                 }
                 default -> {
