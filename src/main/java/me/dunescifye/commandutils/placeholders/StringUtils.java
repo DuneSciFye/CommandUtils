@@ -9,8 +9,10 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -348,31 +350,48 @@ public class StringUtils extends PlaceholderExpansion {
 
                     if (inventoryInfoArgs == null || inventoryInfoArgs.length < 2) return "Invalid arguments";
 
+                    if (p == null) return "Invalid Player";
+
+                    PlayerInventory inv = p.getInventory();
                     String invSlot = inventoryInfoArgs[0];
 
                     ItemStack itemStack = switch (invSlot) {
-                        case "-1" -> player.getPlayer().getInventory().getItemInMainHand();
-                        case "cursor" -> player.getPlayer().getItemOnCursor();
-                        default -> player.getPlayer().getInventory().getItem(Integer.parseInt(invSlot));
+                        case "-1", "mainhand", "main" -> inv.getItemInMainHand();
+                        case "40", "offhand", "off" -> inv.getItemInOffHand();
+                        case "cursor" -> p.getItemOnCursor();
+                        default -> inv.getItem(Integer.parseInt(invSlot));
                     };
 
-                    if (itemStack == null) return "null";
+                    if (itemStack == null) return "Null Item";
                     ItemMeta itemMeta = itemStack.getItemMeta();
 
                     String infoType = inventoryInfoArgs[1];
 
                     switch (infoType) {
-                        case "armortrim":
+                        case "armortrim", "trim" -> {
                             if (itemMeta instanceof ArmorMeta armorMeta) {
-                                if (armorMeta.hasTrim()) return armorMeta.getTrim().getPattern().getKey().getKey();
+                                if (armorMeta.hasTrim())
+                                    return armorMeta.getTrim().getPattern().getKey().getKey();
                             }
-                            return "null";
-                        case "material":
+                            return "Null Armor Trim";
+                        }
+                        case "material", "mat" -> {
                             return itemStack.getType().toString();
-                        case "amount":
+                        }
+                        case "amount", "amt" -> {
                             return String.valueOf(itemStack.getAmount());
-                        default:
+                        }
+                        case "enchantlevel", "enchantlvl", "enchantmentlvl", "enchantmentlevel" -> {
+                            String enchantName = inventoryInfoArgs[2];
+                            NamespacedKey key = NamespacedKey.fromString(enchantName);
+                            if (key == null) return "Invalid Enchant Name";
+                            Enchantment enchant = Registry.ENCHANTMENT.get(key);
+                            if (enchant == null) return "Invalid Enchant Name";
+                            return String.valueOf(itemStack.getEnchantmentLevel(enchant));
+                        }
+                        default -> {
                             return "Invalid infotype";
+                        }
                     }
                 }
                 case "slottovanilla" -> {
