@@ -70,6 +70,45 @@ public class ReplaceInRadiusCommand extends Command implements Registerable {
             .register(this.getNamespace());
 
         /**
+         * Replaces Blocks in a Radius
+         * @author DuneSciFye
+         * @since 1.0.4
+         * @param Location Location of the Center Block
+         * @param Integer Radius of the Blocks to go out
+         * @param Predicates List of Predicates to Replace From
+         * @param Materials List of Blocks to Replace To
+         */
+        new CommandAPICommand("replaceinfacing")
+            .withArguments(locArg)
+            .withArguments(radiusArg)
+            .withArguments(new ListArgumentBuilder<String>("Blocks To Replace From")
+                .withList(Utils.getPredicatesList())
+                .withStringMapper()
+                .buildText()
+            )
+            .withArguments(new ListArgumentBuilder<Material>("Blocks To Replace To")
+                .withList(List.of(Material.values()))
+                .withMapper(material -> material.name().toLowerCase())
+                .buildText()
+            )
+            .executes((sender, args) -> {
+                List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
+                Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"), whitelist, blacklist);
+
+                replaceInRadius(
+                    args.getByArgument(locArg).getBlock(),
+                    args.getByArgument(radiusArg),
+                    whitelist,
+                    blacklist,
+                    args.getUnchecked("Blocks To Replace To")
+                );
+
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
+        /**
          * Replaces Blocks in a Radius, Config Defined Predicates
          * @author DuneSciFye
          * @since 1.0.4
@@ -109,21 +148,19 @@ public class ReplaceInRadiusCommand extends Command implements Registerable {
             .register(this.getNamespace());
 
         /**
-         * Replaces Blocks in a Radius
+         * Replaces Blocks in a Radius, Config Defined Predicates
          * @author DuneSciFye
          * @since 1.0.4
          * @param Location Location of the Center Block
          * @param Integer Radius of the Blocks to go out
-         * @param Predicates List of Predicates to Replace From
+         * @param Predicate Config Defined Predicate
          * @param Materials List of Blocks to Replace To
          */
         new CommandAPICommand("replaceinfacing")
             .withArguments(locArg)
             .withArguments(radiusArg)
-            .withArguments(new ListArgumentBuilder<String>("Blocks To Replace From")
-                .withList(Utils.getPredicatesList())
-                .withStringMapper()
-                .buildText()
+            .withArguments(whitelistedBlocksArgument
+                .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
             )
             .withArguments(new ListArgumentBuilder<Material>("Blocks To Replace To")
                 .withList(List.of(Material.values()))
@@ -131,8 +168,8 @@ public class ReplaceInRadiusCommand extends Command implements Registerable {
                 .buildText()
             )
             .executes((sender, args) -> {
-                List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
-                Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"), whitelist, blacklist);
+                String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
+                List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
 
                 replaceInRadius(
                     args.getByArgument(locArg).getBlock(),
