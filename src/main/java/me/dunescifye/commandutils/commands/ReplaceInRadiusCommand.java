@@ -1,6 +1,7 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.files.Config;
 import me.dunescifye.commandutils.utils.Utils;
@@ -28,6 +29,65 @@ public class ReplaceInRadiusCommand extends Command implements Registerable {
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
         StringArgument whitelistedBlocksArgument = new StringArgument("Blocks To Replace From");
 
+        new CommandTree("replaceinfacing")
+            .then(worldArg
+                .then(locArg
+                    .then(radiusArg
+                        .then(new ListArgumentBuilder<String>("Blocks To Replace From")
+                            .withList(Utils.getPredicatesList())
+                            .withStringMapper()
+                            .buildText()
+                            .then(new ListArgumentBuilder<Material>("Blocks To Replace To")
+                                .withList(List.of(Material.values()))
+                                .withMapper(material -> material.name().toLowerCase())
+                                .buildText()
+                                .executes((sender, args) -> {
+                                    List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
+                                    Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"), whitelist, blacklist);
+
+                                    replaceInRadius(
+                                        Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg)),
+                                        args.getByArgument(radiusArg),
+                                        whitelist,
+                                        blacklist,
+                                        args.getUnchecked("Blocks To Replace To")
+                                    );
+                                })
+                            )
+                        )
+                    )
+                )
+            )
+            .then(locArg
+                .then(radiusArg
+                    .then(new ListArgumentBuilder<String>("Blocks To Replace From")
+                        .withList(Utils.getPredicatesList())
+                        .withStringMapper()
+                        .buildText()
+                        .then(new ListArgumentBuilder<Material>("Blocks To Replace To")
+                            .withList(List.of(Material.values()))
+                            .withMapper(material -> material.name().toLowerCase())
+                            .buildText()
+                            .executes((sender, args) -> {
+                                List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
+                                Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"), whitelist, blacklist);
+
+                                replaceInRadius(
+                                    args.getByArgument(locArg).getBlock(),
+                                    args.getByArgument(radiusArg),
+                                    whitelist,
+                                    blacklist,
+                                    args.getUnchecked("Blocks To Replace To")
+                                );
+                            })
+                        )
+                    )
+                )
+            )
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
         /**
          * Replaces Blocks in a Radius, Command Defined Predicates
          * @author DuneSciFye
@@ -53,16 +113,6 @@ public class ReplaceInRadiusCommand extends Command implements Registerable {
                 .buildText()
             )
             .executes((sender, args) -> {
-                List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
-                Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"), whitelist, blacklist);
-
-                replaceInRadius(
-                    Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg)),
-                    args.getByArgument(radiusArg),
-                    whitelist,
-                    blacklist,
-                    args.getUnchecked("Blocks To Replace To")
-                );
 
             })
             .withPermission(this.getPermission())
