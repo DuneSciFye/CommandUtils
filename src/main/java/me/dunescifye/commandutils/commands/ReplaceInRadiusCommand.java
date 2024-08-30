@@ -535,6 +535,80 @@ public class ReplaceInRadiusCommand extends Command implements Registerable {
                         )
                     )
                 )
+                .then(xArg
+                    .then(yArg
+                        .then(zArg
+                            .then(new ListArgumentBuilder<String>("Blocks To Replace From")
+                                .withList(Utils.getPredicatesList())
+                                .withStringMapper()
+                                .buildText()
+                                .then(new ListArgumentBuilder<Material>("Blocks To Replace To")
+                                    .withList(List.of(Material.values()))
+                                    .withMapper(material -> material.name().toLowerCase())
+                                    .buildText()
+                                    /**
+                                     * Replaces Blocks in a Radius, Command Defined Predicates
+                                     * @author DuneSciFye
+                                     * @since 1.0.4
+                                     * @param Location Location of the Center Block
+                                     * @param X Direction in X to Replace in
+                                     * @param Y Direction in Y to Replace in
+                                     * @param Z Direction in Z to Replace in
+                                     * @param Predicates List of Predicates to Replace From
+                                     * @param Materials List of Blocks to Replace To
+                                     */
+                                    .executes((sender, args) -> {
+                                        List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
+                                        Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"), whitelist, blacklist);
+
+                                        replaceInRadius(
+                                            args.getByArgument(locArg).getBlock(),
+                                            args.getByArgument(xArg),
+                                            args.getByArgument(yArg),
+                                            args.getByArgument(zArg),
+                                            whitelist,
+                                            blacklist,
+                                            args.getUnchecked("Blocks To Replace To")
+                                        );
+                                    })
+                                )
+                            )
+                            .then(whitelistedBlocksArgument
+                                .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
+                                .then(new ListArgumentBuilder<Material>("Blocks To Replace To")
+                                    .withList(List.of(Material.values()))
+                                    .withMapper(material -> material.name().toLowerCase())
+                                    .buildText()
+                                    /**
+                                     * Replaces Blocks in a Radius, Config Defined Predicates
+                                     * @author DuneSciFye
+                                     * @since 1.0.4
+                                     * @param Location Location of the Center Block
+                                     * @param X Direction in X to Replace in
+                                     * @param Y Direction in Y to Replace in
+                                     * @param Z Direction in Z to Replace in
+                                     * @param Predicate Config Defined Predicate
+                                     * @param Materials List of Blocks to Replace To
+                                     */
+                                    .executes((sender, args) -> {
+                                        String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
+                                        List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
+
+                                        replaceInRadius(
+                                            args.getByArgument(locArg).getBlock(),
+                                            args.getByArgument(xArg),
+                                            args.getByArgument(yArg),
+                                            args.getByArgument(zArg),
+                                            whitelist,
+                                            blacklist,
+                                            args.getUnchecked("Blocks To Replace To")
+                                        );
+                                    })
+                                )
+                            )
+                        )
+                    )
+                )
             )
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
