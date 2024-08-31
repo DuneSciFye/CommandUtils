@@ -91,6 +91,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("LaunchTNT", new LaunchTNTCommand());
         commands.put("ReplaceInRadius", new ReplaceInRadiusCommand());
         commands.put("SpawnGuardianBeam", new SpawnGuardianBeamCommand());
+        commands.put("Oxygen", new OxygenCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {

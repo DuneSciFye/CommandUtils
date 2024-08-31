@@ -22,11 +22,10 @@ public class FoodCommand extends Command implements Registerable {
          * Modifies a Player's Food Level
          * @author DuneSciFye
          * @since 1.0.3
-         * @param Location Location of Center Block
-         * @param Player Player to run SCore command for
-         * @param Radius Radius of the Prison
-         * @param Height Height of the Prison
-         * @param Duration How long the cobwebs will last for in Ticks
+         * @param Function Function to do
+         * @param Players Players to Target
+         * @param Amount Amount to Edit
+         * @param AllowOverflow If Over/Under Max/Min Values are Allowed
          */
         new CommandAPICommand("food")
             .withArguments(functionArg)
@@ -37,7 +36,6 @@ public class FoodCommand extends Command implements Registerable {
                 Collection<Player> players = args.getByArgument(playersArg);
                 int amount = args.getByArgument(amountArg);
                 boolean allowOverflow = args.getByArgumentOrDefault(allowOverflowArg, false);
-
 
                 for (Player p : players) {
                     int foodLevel = p.getFoodLevel();
