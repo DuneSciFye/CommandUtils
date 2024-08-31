@@ -261,6 +261,10 @@ Commands:
     Enabled: true
     Aliases: []
 
+  SetFireTicks:
+    Enabled: true
+    Aliases: []
+
   SetItem:
     Enabled: true
     Aliases: []
