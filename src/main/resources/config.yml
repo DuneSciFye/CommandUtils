@@ -261,6 +261,10 @@ Commands:
     Enabled: true
     Aliases: []
 
+  SetCanBreatheUnderwater:
+    Enabled: true
+    Aliases: []
+
   SetCursorItem:
     Enabled: true
     Aliases: []
