@@ -897,4 +897,77 @@ public abstract class Laser {
             return packetSpawnLiving.newInstance(entity);
         }
 
+        public static Object createPacketEntitySpawnNormal(Object entity) throws ReflectiveOperationException {
+            return packetSpawnNormal.newInstance(entity);
+        }
+
+        public static void initGuardianWatcher(Object watcher, int targetId) throws ReflectiveOperationException {
+            tryWatcherSet(watcher, watcherObject1, (byte) 32);
+            tryWatcherSet(watcher, watcherObject2, Boolean.FALSE);
+            tryWatcherSet(watcher, watcherObject3, targetId);
+        }
+
+        public static void setCrystalWatcher(Object watcher, Location target) throws ReflectiveOperationException {
+            Object blockPosition =
+                blockPositionConstructor.newInstance(target.getBlockX(), target.getBlockY(), target.getBlockZ());
+            tryWatcherSet(watcher, watcherObject4, version < 13 ? com.google.common.base.Optional.of(blockPosition) : Optional.of(blockPosition));
+            tryWatcherSet(watcher, watcherObject5, Boolean.FALSE);
+        }
+
+        public static Object[] createPacketsRemoveEntities(int... entitiesId) throws ReflectiveOperationException {
+            Object[] packets;
+            if (version == 17 && versionMinor == 0) {
+                packets = new Object[entitiesId.length];
+                for (int i = 0; i < entitiesId.length; i++) {
+                    packets[i] = packetRemove.newInstance(entitiesId[i]);
+                }
+            }else {
+                packets = new Object[] { packetRemove.newInstance(entitiesId) };
+            }
+            return packets;
+        }
+
+        public static Object createPacketMoveEntity(Location location, int entityId) throws ReflectiveOperationException {
+            Object packet = packetTeleport.newInstance();
+            setField(packet, "a", entityId);
+            setField(packet, "b", location.getX());
+            setField(packet, "c", location.getY());
+            setField(packet, "d", location.getZ());
+            setField(packet, "e", (byte) (location.getYaw() * 256.0F / 360.0F));
+            setField(packet, "f", (byte) (location.getPitch() * 256.0F / 360.0F));
+            setField(packet, "g", true);
+            return packet;
+        }
+
+        public static void setEntityIDs(Object entity, UUID uuid, int id) throws ReflectiveOperationException {
+            setUUID.invoke(entity, uuid);
+            setID.invoke(entity, id);
+        }
+
+        public static void moveFakeEntity(Object entity, Location location) throws ReflectiveOperationException {
+            setLocation.invoke(entity, location.getX(), location.getY(), location.getZ(), location.getPitch(), location.getYaw());
+        }
+
+        public static Object createPacketMoveEntity(Object entity) throws ReflectiveOperationException {
+            return packetTeleport.newInstance(entity);
+        }
+
+        public static Object createPacketTeamCreate(String teamName, UUID... entities) throws ReflectiveOperationException {
+            Object packet;
+            if (version < 17) {
+                packet = packetTeam.newInstance();
+                setField(packet, "a", teamName);
+                setField(packet, "i", 0);
+                setField(packet, "f", "never");
+                Collection<String> players = (Collection<String>) getField(packetTeam, "h", packet);
+                for (UUID entity : entities) players.add(entity.toString());
+            }else {
+                Object team = createTeam.newInstance(createScoreboard.newInstance(), teamName);
+                setTeamPush.invoke(team, pushNever);
+                Collection<String> players = (Collection<String>) getTeamPlayers.invoke(team);
+                for (UUID entity : entities) players.add(entity.toString());
+                packet = createTeamPacket.invoke(null, team, true);
+            }
+            return packet;
+        }
 }
