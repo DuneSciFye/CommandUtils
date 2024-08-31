@@ -60,66 +60,74 @@ public class SilentParticleCommand extends Command implements Registerable {
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
+        /**
+         * Summons Particles, no Console messages
+         * @author DuneSciFye
+         * @since 1.0.0
+         * @param Particle Particle to Spawn
+         * @param World World to Spawn Particles in
+         * @param Location Location to Spawn Particles in
+         * @param Amount Amount of Particles to Spawn
+         * @param XOffset Delta in the X Direction to Spawn Particles
+         * @param YOffset Delta in the Y Direction to Spawn Particles
+         * @param ZOffset Delta in the Z Direction to Spawn Particles
+         */
+        new CommandAPICommand("silentparticle")
+            .withArguments(particleArg)
+            .withArguments(worldArg)
+            .withArguments(locArg)
+            .withOptionalArguments(amountArg)
+            .withOptionalArguments(xOffsetArg)
+            .withOptionalArguments(yOffsetArg)
+            .withOptionalArguments(zOffsetArg)
+            .executes((sender, args) -> {
+                ParticleData<?> particleData = args.getByArgument(particleArg);
 
-        new CommandTree("silentparticle")
-            .then(particleArg
-                .then(playerArg
-                    .executes((sender, args) -> {
-                        Player p = args.getByArgument(playerArg);
-                        ParticleData<?> particleData = args.getByArgument(particleArg);
-                        p.spawnParticle(particleData.particle(), p.getLocation(), 1);
-                    })
-                    .then(amountArg
-                        .executes((sender, args) -> {
-                            Player p = args.getByArgument(playerArg);
-                            ParticleData<?> particleData = args.getByArgument(particleArg);
-                            int amount = args.getByArgument(amountArg);
-                            p.spawnParticle(particleData.particle(), p.getLocation(), amount);
-                        })
-                        .then(xOffsetArg
-                            .then(yOffsetArg
-                                .then(zOffsetArg
-                                )
-                            )
-                        )
-                    )
-                )
-                .then(worldArg
-                    .then(locArg
-                        .executes((sender, args) -> {
-                            ParticleData<?> particleData = args.getUnchecked("Particle");
-                            World world = Bukkit.getWorld(args.getByClass("World", String.class));
-                            Location location = args.getUnchecked("Location");
-                            world.spawnParticle(particleData.particle(), location, 1, particleData.data());
-                        })
-                        .then(amountArg
-                            .executes((sender, args) -> {
-                                ParticleData<?> particleData = args.getUnchecked("Particle");
-                                World world = Bukkit.getWorld(args.getByClass("World", String.class));
-                                Location location = args.getUnchecked("Location");
-                                int amount = args.getUnchecked("Amount");
-                                world.spawnParticle(particleData.particle(), location, amount, particleData.data());
-                            })
-                            .then(new DoubleArgument("X Offset")
-                                .then(new DoubleArgument("Y Offset")
-                                    .then(new DoubleArgument("Z Offset")
-                                        .executes((sender, args) -> {
-                                            ParticleData<?> particleData = args.getUnchecked("Particle");
-                                            World world = Bukkit.getWorld(args.getByClass("World", String.class));
-                                            Location location = args.getUnchecked("Location");
-                                            int amount = args.getUnchecked("Amount");
-                                            double xOffset = args.getUnchecked("X Offset");
-                                            double yOffset = args.getUnchecked("Y Offset");
-                                            double zOffset = args.getUnchecked("Z Offset");
-                                            world.spawnParticle(particleData.particle(), location, amount, xOffset, yOffset, zOffset, particleData.data());
-                                        })
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
-            )
+                Bukkit.getWorld(args.getByArgument(worldArg)).spawnParticle(
+                    particleData.particle(),
+                    args.getByArgument(locArg),
+                    args.getByArgumentOrDefault(amountArg, 1),
+                    args.getByArgumentOrDefault(xOffsetArg, 0.0),
+                    args.getByArgumentOrDefault(yOffsetArg, 0.0),
+                    args.getByArgumentOrDefault(zOffsetArg, 0.0),
+                    particleData.data()
+                );
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+        /**
+         * Summons Particles, no Console messages
+         * @author DuneSciFye
+         * @since 1.0.0
+         * @param Particle Particle to Spawn
+         * @param Location Location to Spawn Particles in
+         * @param Amount Amount of Particles to Spawn
+         * @param XOffset Delta in the X Direction to Spawn Particles
+         * @param YOffset Delta in the Y Direction to Spawn Particles
+         * @param ZOffset Delta in the Z Direction to Spawn Particles
+         */
+        new CommandAPICommand("silentparticle")
+            .withArguments(particleArg)
+            .withArguments(locArg)
+            .withOptionalArguments(amountArg)
+            .withOptionalArguments(xOffsetArg)
+            .withOptionalArguments(yOffsetArg)
+            .withOptionalArguments(zOffsetArg)
+            .executes((sender, args) -> {
+                ParticleData<?> particleData = args.getByArgument(particleArg);
+                Location loc = args.getByArgument(locArg);
+
+                loc.getWorld().spawnParticle(
+                    particleData.particle(),
+                    loc,
+                    args.getByArgumentOrDefault(amountArg, 1),
+                    args.getByArgumentOrDefault(xOffsetArg, 0.0),
+                    args.getByArgumentOrDefault(yOffsetArg, 0.0),
+                    args.getByArgumentOrDefault(zOffsetArg, 0.0),
+                    particleData.data()
+                );
+            })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
