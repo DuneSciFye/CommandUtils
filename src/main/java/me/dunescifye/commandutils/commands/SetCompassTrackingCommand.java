@@ -18,6 +18,7 @@ public class SetCompassTrackingCommand extends Command implements Registerable {
         if (!this.getEnabled()) return;
 
         PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OneEntity targetArg = new EntitySelectorArgument.OneEntity("Target");
         IntegerArgument slotArg = new IntegerArgument("Slot");
         MultiLiteralArgument textSlotArg = new MultiLiteralArgument("Slot", "main", "mainhand", "off", "offhand", "cursor");
         StringArgument worldArg = new StringArgument("World");
@@ -148,6 +149,63 @@ public class SetCompassTrackingCommand extends Command implements Registerable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
+
+        /**
+         * Sets a Compass to Track Location
+         * @author DuneSciFye
+         * @since 1.0.5
+         * @param Player Player to get Inventory
+         * @param Slot Integer Slot to get Compass from
+         * @param Entity Target Location to Track
+         */
+        new CommandAPICommand("setcompasstracking")
+            .withArguments(playerArg)
+            .withArguments(slotArg)
+            .withArguments(targetArg)
+            .executes((sender, args) -> {
+
+                Player p = args.getByArgument(playerArg);
+                ItemStack item = p.getInventory().getItem(args.getByArgument(slotArg));
+
+                if (item.getItemMeta() instanceof CompassMeta compassMeta) {
+                    compassMeta.setLodestone(args.getByArgument(targetArg).getLocation());
+                    compassMeta.setLodestoneTracked(true);
+                    item.setItemMeta(compassMeta);
+                }
+
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
+        /**
+         * Sets a Compass to Track Location
+         * @author DuneSciFye
+         * @since 1.0.5
+         * @param Player Player to get Inventory
+         * @param Slot Text Slot to get Compass from
+         * @param Entity Target Location to Track
+         */
+        new CommandAPICommand("setcompasstracking")
+            .withArguments(playerArg)
+            .withArguments(textSlotArg)
+            .withArguments(targetArg)
+            .executes((sender, args) -> {
+                ItemStack item = Utils.getInvItem(
+                    args.getByArgument(playerArg),
+                    args.getByArgument(textSlotArg)
+                );
+
+                if (item.getItemMeta() instanceof CompassMeta compassMeta) {
+                    compassMeta.setLodestone(args.getByArgument(targetArg).getLocation());
+                    compassMeta.setLodestoneTracked(true);
+                    item.setItemMeta(compassMeta);
+                }
+
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
 
     }
 }

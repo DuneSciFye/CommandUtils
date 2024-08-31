@@ -54,7 +54,14 @@ public class WaterlogCommand extends Command implements Registerable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        //Arguments: X Y Z, Waterlogged
+        /**
+         * Waterlogs Blocks
+         * @author DuneSciFye
+         * @since 1.0.0
+         * @param Location Coordinates of Center Block
+         * @param Boolean If Blocks will be Waterlogged
+         * @param Radius How many Blocks to go out
+         */
         new CommandAPICommand("waterlogblock")
             .withArguments(locArg)
             .withOptionalArguments(waterlogArg)
