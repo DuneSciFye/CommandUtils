@@ -1,7 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.MultiLiteralArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
@@ -9,7 +8,6 @@ import dev.jorel.commandapi.arguments.TextArgument;
 import me.dunescifye.commandutils.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.intellij.lang.annotations.RegExp;
@@ -30,35 +28,54 @@ public class ReplaceLoreRegexCommand extends Command implements Registerable {
         TextArgument fromArg = new TextArgument("Text To Find");
         TextArgument toArg = new TextArgument("New Text");
 
+        /**
+         * Replaces Lore of Item using Regex
+         * @author DuneSciFye
+         * @since 1.0.3
+         * @param Player Player to get Inventory
+         * @param Slot Slot Number
+         * @param From Text to Search for
+         * @param To Text to Replace to
+         */
         new CommandAPICommand("replaceloreregex")
             .withArguments(playerArg)
             .withArguments(slotArg)
             .withArguments(fromArg)
             .withArguments(toArg)
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
-                int slot = args.getByArgument(slotArg);
-                ItemStack item = p.getInventory().getItem(slot);
-                @RegExp String from = args.getByArgument(fromArg);
-                String to = args.getByArgument(toArg);
-                updateLore(item, from, to);
+                updateLore(
+                    args.getByArgument(playerArg).getInventory().getItem(args.getByArgument(slotArg)),
+                    args.getByArgument(fromArg),
+                    args.getByArgument(toArg)
+                );
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
+        /**
+         * Replaces Lore of Item using Regex
+         * @author DuneSciFye
+         * @since 1.0.3
+         * @param Player Player to get Inventory
+         * @param Slot Slot Text
+         * @param From Text to Search for
+         * @param To Text to Replace to
+         */
         new CommandAPICommand("replaceloreregex")
             .withArguments(playerArg)
             .withArguments(textSlotArg)
             .withArguments(fromArg)
             .withArguments(toArg)
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
-                String slot = args.getByArgument(textSlotArg);
-                ItemStack item = Utils.getInvItem(p, slot);
-                @RegExp String from = args.getByArgument(fromArg);
-                String to = args.getByArgument(toArg);
-                updateLore(item, from, to);
+                updateLore(
+                    Utils.getInvItem(
+                        args.getByArgument(playerArg),
+                        args.getByArgument(textSlotArg)
+                    ),
+                    args.getByArgument(fromArg),
+                    args.getByArgument(toArg)
+                );
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())

@@ -17,8 +17,7 @@ public class ReplaceLoreCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        if (!this.getEnabled())
-            return;
+        if (!this.getEnabled()) return;
 
         PlayerArgument playerArg = new PlayerArgument("Player");
         IntegerArgument slotArg = new IntegerArgument("Slot");
@@ -26,35 +25,54 @@ public class ReplaceLoreCommand extends Command implements Registerable {
         TextArgument fromArg = new TextArgument("Text To Find");
         TextArgument toArg = new TextArgument("New Text");
 
+        /**
+         * Replaces Lore of Item
+         * @author DuneSciFye
+         * @since 1.0.3
+         * @param Player Player to get Inventory
+         * @param Slot Slot Number
+         * @param From Text to Search for
+         * @param To Text to Replace to
+         */
         new CommandAPICommand("replacelore")
             .withArguments(playerArg)
             .withArguments(slotArg)
             .withArguments(fromArg)
             .withArguments(toArg)
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
-                int slot = args.getByArgument(slotArg);
-                ItemStack item = p.getInventory().getItem(slot);
-                String from = args.getByArgument(fromArg);
-                String to = args.getByArgument(toArg);
-                updateLore(item, from, to);
+                updateLore(
+                    args.getByArgument(playerArg).getInventory().getItem(args.getByArgument(slotArg)),
+                    args.getByArgument(fromArg),
+                    args.getByArgument(toArg)
+                );
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
+        /**
+         * Replaces Lore of Item
+         * @author DuneSciFye
+         * @since 1.0.3
+         * @param Player Player to get Inventory
+         * @param Slot Slot Text
+         * @param From Text to Search for
+         * @param To Text to Replace to
+         */
         new CommandAPICommand("replacelore")
             .withArguments(playerArg)
             .withArguments(textSlotArg)
             .withArguments(fromArg)
             .withArguments(toArg)
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
-                String slot = args.getByArgument(textSlotArg);
-                ItemStack item = Utils.getInvItem(p, slot);
-                String from = args.getByArgument(fromArg);
-                String to = args.getByArgument(toArg);
-                updateLore(item, from, to);
+                updateLore(
+                    Utils.getInvItem(
+                        args.getByArgument(playerArg),
+                        args.getByArgument(textSlotArg)
+                    ),
+                    args.getByArgument(fromArg),
+                    args.getByArgument(toArg)
+                );
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())

@@ -32,11 +32,12 @@ public class PreciseEffectCommand extends Command implements Configurable {
          * Gives Potion Effect with more Options
          * @author DuneSciFye
          * @since 1.0.4
-         * @param Player Player to give effect to
-         * @param Slot Slot of Item
-         * @param Namespace String of Namespace
-         * @param Key String of Key
-         * @param Content Content to set NBT to
+         * @param Entities Entities to give Effect to
+         * @param Effect Effect to give
+         * @param Duration How long to give Effect for, in Ticks
+         * @param Amplifier How strong the Effect is
+         * @param HideParticles If Particles are Hidden
+         * @param Ambient If Particle is a Beacon Effect
          */
         new CommandAPICommand("preciseeffect")
             .withArguments(entitiesArg)
@@ -67,7 +68,17 @@ public class PreciseEffectCommand extends Command implements Configurable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        //Infinite Effect
+        /**
+         * Gives Potion Effect with more Options
+         * @author DuneSciFye
+         * @since 1.0.4
+         * @param Entities Entities to give Effect to
+         * @param Effect Effect to give
+         * @param Infinite Literal Argument infinite
+         * @param Amplifier How strong the Effect is
+         * @param HideParticles If Particles are Hidden
+         * @param Ambient If Particle is a Beacon Effect
+         */
         new CommandAPICommand("preciseeffect")
             .withArguments(entitiesArg)
             .withArguments(effectArg)
