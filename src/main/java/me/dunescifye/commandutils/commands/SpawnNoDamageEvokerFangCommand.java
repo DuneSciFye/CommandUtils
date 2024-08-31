@@ -22,6 +22,12 @@ public class SpawnNoDamageEvokerFangCommand extends Command implements Registera
         StringArgument worldArg = new StringArgument("world");
         LocationArgument locArg = new LocationArgument("Location");
 
+        /**
+         * Summons an Evoker Fang that does no damage
+         * @author DuneSciFye
+         * @since 1.0.0
+         * @param Location Location of where to Spawn Evoker Fang
+         */
         new CommandAPICommand("spawnnodamageevokerfang")
             .withArguments(locArg)
             .executes((sender, args) -> {
@@ -33,6 +39,13 @@ public class SpawnNoDamageEvokerFangCommand extends Command implements Registera
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
+        /**
+         * Summons an Evoker Fang that does no damage
+         * @author DuneSciFye
+         * @since 1.0.0
+         * @param World World to Spawn Evoker Fang
+         * @param Location Location of where to Spawn Evoker Fang
+         */
         new CommandAPICommand("spawnnodamageevokerfang")
             .withArguments(worldArg)
             .withArguments(locArg)

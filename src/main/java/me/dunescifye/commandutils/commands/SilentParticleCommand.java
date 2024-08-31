@@ -1,5 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
+import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.wrappers.ParticleData;
@@ -24,6 +25,42 @@ public class SilentParticleCommand extends Command implements Registerable {
         StringArgument worldArg = new StringArgument("World");
         LocationArgument locArg = new LocationArgument("Location");
 
+        /**
+         * Summons Particles, no Console messages
+         * @author DuneSciFye
+         * @since 1.0.0
+         * @param Particle Particle to Spawn
+         * @param Player Player to Spawn Particles At
+         * @param Amount Amount of Particles to Spawn
+         * @param XOffset Delta in the X Direction to Spawn Particles
+         * @param YOffset Delta in the Y Direction to Spawn Particles
+         * @param ZOffset Delta in the Z Direction to Spawn Particles
+         */
+        new CommandAPICommand("silentparticle")
+            .withArguments(particleArg)
+            .withArguments(playerArg)
+            .withOptionalArguments(amountArg)
+            .withOptionalArguments(xOffsetArg)
+            .withOptionalArguments(yOffsetArg)
+            .withOptionalArguments(zOffsetArg)
+            .executes((sender, args) -> {
+                Player p = args.getByArgument(playerArg);
+                ParticleData<?> particleData = args.getByArgument(particleArg);
+
+                p.spawnParticle(
+                    particleData.particle(),
+                    p.getLocation(),
+                    args.getByArgumentOrDefault(amountArg, 1),
+                    args.getByArgumentOrDefault(xOffsetArg, 0.0),
+                    args.getByArgumentOrDefault(yOffsetArg, 0.0),
+                    args.getByArgumentOrDefault(zOffsetArg, 0.0),
+                    particleData.data()
+                );
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
         new CommandTree("silentparticle")
             .then(particleArg
                 .then(playerArg
@@ -42,29 +79,20 @@ public class SilentParticleCommand extends Command implements Registerable {
                         .then(xOffsetArg
                             .then(yOffsetArg
                                 .then(zOffsetArg
-                                    .executes((sender, args) -> {
-                                        Player p = args.getByArgument(playerArg);
-                                        ParticleData<?> particleData = args.getByArgument(particleArg);
-                                        int amount = args.getByArgument(amountArg);
-                                        double xOffset = args.getByArgument(xOffsetArg);
-                                        double yOffset = args.getByArgument(yOffsetArg);
-                                        double zOffset = args.getByArgument(zOffsetArg);
-                                        p.spawnParticle(particleData.particle(), p.getLocation(), amount, xOffset, yOffset, zOffset, particleData.data());
-                                    })
                                 )
                             )
                         )
                     )
                 )
-                .then(new StringArgument("World")
-                    .then(new LocationArgument("Location")
+                .then(worldArg
+                    .then(locArg
                         .executes((sender, args) -> {
                             ParticleData<?> particleData = args.getUnchecked("Particle");
                             World world = Bukkit.getWorld(args.getByClass("World", String.class));
                             Location location = args.getUnchecked("Location");
                             world.spawnParticle(particleData.particle(), location, 1, particleData.data());
                         })
-                        .then(new IntegerArgument("Amount")
+                        .then(amountArg
                             .executes((sender, args) -> {
                                 ParticleData<?> particleData = args.getUnchecked("Particle");
                                 World world = Bukkit.getWorld(args.getByClass("World", String.class));

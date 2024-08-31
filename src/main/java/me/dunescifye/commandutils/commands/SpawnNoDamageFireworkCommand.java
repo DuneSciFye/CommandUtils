@@ -40,24 +40,9 @@ public class SpawnNoDamageFireworkCommand extends Command implements Registerabl
             .withArguments(ticksToDetonateArg)
             .withOptionalArguments(playerArg)
             .executes((sender, args) -> {
-                World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                Location loc = args.getByArgument(locArg);
-                Firework fw = (Firework) world.spawnEntity(loc, EntityType.FIREWORK);
-                FireworkMeta fwm = fw.getFireworkMeta();
+                Firework fw = (Firework) Bukkit.getWorld(args.getByArgument(worldArg)).spawnEntity(args.getByArgument(locArg), EntityType.FIREWORK);
 
-                fwm.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(ThreadLocalRandom.current().nextInt(0, 256), ThreadLocalRandom.current().nextInt(0, 256), ThreadLocalRandom.current().nextInt(0, 256))).build());
-
-                fw.setFireworkMeta(fwm);
-                fw.setMetadata("nodamage", new FixedMetadataValue(CommandUtils.getInstance(), true));
-                fw.setTicksToDetonate(args.getByArgument(ticksToDetonateArg));
-
-                Player noDamagePlayer = args.getByArgument(playerArg);
-
-                if (noDamagePlayer != null) {
-                    PersistentDataContainer container = fw.getPersistentDataContainer();
-                    container.set(CommandUtils.keyNoDamagePlayer, PersistentDataType.STRING, noDamagePlayer.getName());
-                }
-
+                spawnFirework(fw, args.getByArgument(ticksToDetonateArg), args.getByArgument(playerArg));
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
@@ -78,24 +63,26 @@ public class SpawnNoDamageFireworkCommand extends Command implements Registerabl
             .executes((sender, args) -> {
                 Location loc = args.getByArgument(locArg);
                 Firework fw = (Firework) loc.getWorld().spawnEntity(loc, EntityType.FIREWORK);
-                FireworkMeta fwm = fw.getFireworkMeta();
-
-                fwm.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(ThreadLocalRandom.current().nextInt(0, 256), ThreadLocalRandom.current().nextInt(0, 256), ThreadLocalRandom.current().nextInt(0, 256))).build());
-
-                fw.setFireworkMeta(fwm);
-                fw.setMetadata("nodamage", new FixedMetadataValue(CommandUtils.getInstance(), true));
-                fw.setTicksToDetonate(args.getByArgument(ticksToDetonateArg));
-
-                Player noDamagePlayer = args.getByArgument(playerArg);
-
-                if (noDamagePlayer != null) {
-                    PersistentDataContainer container = fw.getPersistentDataContainer();
-                    container.set(CommandUtils.keyNoDamagePlayer, PersistentDataType.STRING, noDamagePlayer.getName());
-                }
-
+                spawnFirework(fw, args.getByArgument(ticksToDetonateArg), args.getByArgument(playerArg));
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
+
+    }
+
+    private void spawnFirework(Firework fw, int ticksToDetonate, Player noDamagePlayer) {
+        FireworkMeta fwm = fw.getFireworkMeta();
+
+        fwm.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(ThreadLocalRandom.current().nextInt(0, 256), ThreadLocalRandom.current().nextInt(0, 256), ThreadLocalRandom.current().nextInt(0, 256))).build());
+
+        fw.setFireworkMeta(fwm);
+        fw.setMetadata("nodamage", new FixedMetadataValue(CommandUtils.getInstance(), true));
+        fw.setTicksToDetonate(ticksToDetonate);
+
+        if (noDamagePlayer != null) {
+            PersistentDataContainer container = fw.getPersistentDataContainer();
+            container.set(CommandUtils.keyNoDamagePlayer, PersistentDataType.STRING, noDamagePlayer.getName());
+        }
     }
 }
