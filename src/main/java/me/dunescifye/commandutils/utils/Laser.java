@@ -1,5 +1,6 @@
 package me.dunescifye.commandutils.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -9,10 +10,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
 
 public abstract class Laser {
 
@@ -610,5 +615,86 @@ public abstract class Laser {
          * Start and end locations are automatically rounded to integers (block locations).
          */
         ENDER_CRYSTAL;
+
+        /**
+         * Creates a new Laser instance, {@link GuardianLaser} or {@link CrystalLaser} depending on this enum value.
+         * @param start Location where laser will starts
+         * @param end Location where laser will ends
+         * @param duration Duration of laser in seconds (<i>-1 if infinite</i>)
+         * @param distance Distance where laser will be visible
+         * @throws ReflectiveOperationException if a reflection exception occurred during Laser creation
+         * @see Laser#start(Plugin) to start the laser
+         * @see Laser#durationInTicks() to make the duration in ticks
+         * @see Laser#executeEnd(Runnable) to add Runnable-s to execute when the laser will stop
+         */
+        public Laser create(Location start, Location end, int duration, int distance) throws ReflectiveOperationException {
+            switch (this) {
+                case ENDER_CRYSTAL:
+                    return new CrystalLaser(start, end, duration, distance);
+                case GUARDIAN:
+                    return new GuardianLaser(start, end, duration, distance);
+            }
+            throw new IllegalStateException();
+        }
+    }
+
+    private static class Packets {
+        private static AtomicInteger lastIssuedEID = new AtomicInteger(2000000000);
+
+        static int generateEID() {
+            return lastIssuedEID.getAndIncrement();
+        }
+
+        private static Logger logger;
+        private static int version;
+        private static int versionMinor;
+        private static String npack = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
+        private static String cpack = Bukkit.getServer().getClass().getPackage().getName() + ".";
+        private static ProtocolMappings mappings;
+
+        private static int crystalID = 51; // pre-1.13
+
+        private static Object crystalType;
+        private static Object squidType;
+        private static Object guardianType;
+
+        private static Constructor<?> crystalConstructor;
+        private static Constructor<?> squidConstructor;
+        private static Constructor<?> guardianConstructor;
+
+        private static Object watcherObject1; // invisilibity
+        private static Object watcherObject2; // spikes
+        private static Object watcherObject3; // attack id
+        private static Object watcherObject4; // crystal target
+        private static Object watcherObject5; // crystal base plate
+
+        private static Constructor<?> watcherConstructor;
+        private static Method watcherSet;
+        private static Method watcherRegister;
+        private static Method watcherDirty;
+        private static Method watcherPack;
+
+        private static Constructor<?> blockPositionConstructor;
+
+        private static Constructor<?> packetSpawnLiving;
+        private static Constructor<?> packetSpawnNormal;
+        private static Constructor<?> packetRemove;
+        private static Constructor<?> packetTeleport;
+        private static Constructor<?> packetMetadata;
+        private static Class<?> packetTeam;
+
+        private static Method createTeamPacket;
+        private static Constructor<?> createTeam;
+        private static Constructor<?> createScoreboard;
+        private static Method setTeamPush;
+        private static Object pushNever;
+        private static Method getTeamPlayers;
+
+        private static Method getHandle;
+        private static Field playerConnection;
+        private static Method sendPacket;
+        private static Method setLocation;
+        private static Method setUUID;
+        private static Method setID;
 
 }
