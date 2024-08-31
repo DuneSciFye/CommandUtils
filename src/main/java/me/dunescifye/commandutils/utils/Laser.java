@@ -1113,4 +1113,75 @@ public abstract class Laser {
                 this(major, watcherFlags, watcherSpikes, watcherTargetEntity, watcherTargetLocation, watcherBasePlate, squidID, guardianID, null, "SQUID", "END_CRYSTAL", null, null);
             }
 
+            private ProtocolMappings(int major,
+                                     String watcherFlags, String watcherSpikes, String watcherTargetEntity, String watcherTargetLocation, String watcherBasePlate,
+                                     int squidID, int guardianID,
+                                     String guardianTypeName, String squidTypeName, String crystalTypeName, String teamSetCollision, String teamGetPlayers) {
+                this.major = major;
+                this.watcherFlags = watcherFlags;
+                this.watcherSpikes = watcherSpikes;
+                this.watcherTargetEntity = watcherTargetEntity;
+                this.watcherTargetLocation = watcherTargetLocation;
+                this.watcherBasePlate = watcherBasePlate;
+                this.squidID = squidID;
+                this.guardianID = guardianID;
+                this.guardianTypeName = guardianTypeName;
+                this.squidTypeName = squidTypeName;
+                this.crystalTypeName = crystalTypeName;
+                this.teamSetCollision = teamSetCollision;
+                this.teamGetPlayers = teamGetPlayers;
+            }
+
+            public int getMajor() {
+                return major;
+            }
+
+            public String getWatcherFlags() {
+                return watcherFlags;
+            }
+
+            public String getWatcherSpikes() {
+                return watcherSpikes;
+            }
+
+            public String getWatcherTargetEntity() {
+                return watcherTargetEntity;
+            }
+
+            public String getWatcherTargetLocation() {
+                return watcherTargetLocation;
+            }
+
+            public String getWatcherBasePlate() {
+                return watcherBasePlate;
+            }
+
+            public int getSquidID() {
+                return squidID;
+            }
+
+            public int getGuardianID() {
+                return guardianID;
+            }
+
+            public String getGuardianTypeName() {
+                return guardianTypeName;
+            }
+
+            public String getSquidTypeName() {
+                return squidTypeName;
+            }
+
+            public String getCrystalTypeName() {
+                return crystalTypeName;
+            }
+
+            public String getTeamSetCollision() {
+                return teamSetCollision;
+            }
+
+            public String getTeamGetPlayers() {
+                return teamGetPlayers;
+            }
+
             }
