@@ -542,4 +542,73 @@ public abstract class Laser {
             destroyPackets = Packets.createPacketsRemoveEntities(crystalID);
         }
 
+        private Object getCrystalSpawnPacket() throws ReflectiveOperationException {
+            if (createCrystalPacket == null) {
+                if (Packets.version < 17) {
+                    createCrystalPacket = Packets.createPacketEntitySpawnNormal(start, Packets.crystalID, Packets.crystalType, crystalID);
+                }else {
+                    createCrystalPacket = Packets.createPacketEntitySpawnNormal(crystal);
+                }
+            }
+            return createCrystalPacket;
+        }
+
+        @Override
+        public LaserType getLaserType() {
+            return LaserType.ENDER_CRYSTAL;
+        }
+
+        @Override
+        protected void sendStartPackets(Player p, boolean hasSeen) throws ReflectiveOperationException {
+            Packets.sendPackets(p, getCrystalSpawnPacket());
+            Packets.sendPackets(p, metadataPacketCrystal);
+        }
+
+        @Override
+        protected void sendDestroyPackets(Player p) throws ReflectiveOperationException {
+            Packets.sendPackets(p, destroyPackets);
+        }
+
+        @Override
+        public void moveStart(Location location) throws ReflectiveOperationException {
+            this.start = location.clone();
+            createCrystalPacket = null; // will force re-generation of spawn packet
+            moveFakeEntity(start, crystalID, crystal);
+        }
+
+        @Override
+        public void moveEnd(Location location) throws ReflectiveOperationException {
+            location = new Location(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+
+            if (end.equals(location))
+                return;
+
+            this.end = location;
+            if (main != null) {
+                Packets.setCrystalWatcher(fakeCrystalDataWatcher, location);
+                metadataPacketCrystal = Packets.createPacketMetadata(crystalID, fakeCrystalDataWatcher);
+                for (Player p : show) {
+                    Packets.sendPackets(p, metadataPacketCrystal);
+                }
+            }
+        }
+
+    }
+
+    public enum LaserType {
+        /**
+         * Represents a laser from a Guardian entity.
+         * <p>
+         * It can be pointed to precise locations and
+         * can track entities smoothly using {@link GuardianLaser#attachEndEntity(LivingEntity)}
+         */
+        GUARDIAN,
+
+        /**
+         * Represents a laser from an Ender Crystal entity.
+         * <p>
+         * Start and end locations are automatically rounded to integers (block locations).
+         */
+        ENDER_CRYSTAL;
+
 }
