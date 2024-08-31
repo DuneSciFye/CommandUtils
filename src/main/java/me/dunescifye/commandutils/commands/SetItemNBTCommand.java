@@ -22,6 +22,16 @@ public class SetItemNBTCommand extends Command implements Registerable {
         TextArgument keyArg = new TextArgument("Key");
         GreedyStringArgument contentArg = new GreedyStringArgument("Content");
 
+        /**
+         * Sets NBT Data of an Item
+         * @author DuneSciFye
+         * @since 1.0.0
+         * @param Player Player to get Inventory
+         * @param Slot Slot of Item
+         * @param Namespace String of Namespace
+         * @param Key String of Key
+         * @param Content Content to set NBT to
+         */
         new CommandAPICommand("setitemnbt")
             .withArguments(playerArg)
             .withArguments(slotArg)
