@@ -3,9 +3,12 @@ package me.dunescifye.commandutils.commands;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Collection;
 
 public class PreciseEffectCommand extends Command implements Configurable {
 
@@ -16,7 +19,7 @@ public class PreciseEffectCommand extends Command implements Configurable {
 
         if (!this.getEnabled()) return;
 
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
         PotionEffectArgument effectArg = new PotionEffectArgument("Effect");
         IntegerArgument durationArg = new IntegerArgument("Duration", 0);
         LiteralArgument infiniteArg = new LiteralArgument("infinite");
@@ -25,24 +28,40 @@ public class PreciseEffectCommand extends Command implements Configurable {
         BooleanArgument ambientArg = new BooleanArgument("Ambient");
         BooleanArgument iconArg = new BooleanArgument("Show Icon");
 
+        /**
+         * Gives Potion Effect with more Options
+         * @author DuneSciFye
+         * @since 1.0.4
+         * @param Player Player to give effect to
+         * @param Slot Slot of Item
+         * @param Namespace String of Namespace
+         * @param Key String of Key
+         * @param Content Content to set NBT to
+         */
         new CommandAPICommand("preciseeffect")
-            .withArguments(playerArg)
+            .withArguments(entitiesArg)
             .withArguments(effectArg)
             .withOptionalArguments(durationArg)
             .withOptionalArguments(amplifierArg)
             .withOptionalArguments(hideParticlesArg)
             .withOptionalArguments(ambientArg)
             .executes((sender, args) -> {
-                Player player = args.getByArgument(playerArg);
-                PotionEffectType effectType = args.getByArgument(effectArg);
-                int duration = args.getByArgumentOrDefault(durationArg, 30);
-                int amplifier = args.getByArgumentOrDefault(amplifierArg, 0);
-                boolean hideParticles = args.getByArgumentOrDefault(hideParticlesArg, false);
-                boolean ambient = args.getByArgumentOrDefault(ambientArg, false);
-                boolean icon = args.getByArgumentOrDefault(iconArg, true);
+                Collection<Entity> entities = args.getByArgument(entitiesArg);
 
-                PotionEffect potionEffect = new PotionEffect(effectType, duration, amplifier, ambient, hideParticles, icon);
-                player.addPotionEffect(potionEffect);
+                PotionEffect potionEffect = new PotionEffect(
+                    args.getByArgument(effectArg),
+                    args.getByArgumentOrDefault(durationArg, 30),
+                    args.getByArgumentOrDefault(amplifierArg, 0),
+                    args.getByArgumentOrDefault(ambientArg, false),
+                    args.getByArgumentOrDefault(hideParticlesArg, false),
+                    args.getByArgumentOrDefault(iconArg, true)
+                );
+
+                for (Entity entity : entities) {
+                    if (entity instanceof LivingEntity livingEntity) {
+                        livingEntity.addPotionEffect(potionEffect);
+                    }
+                }
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
@@ -50,22 +69,29 @@ public class PreciseEffectCommand extends Command implements Configurable {
 
         //Infinite Effect
         new CommandAPICommand("preciseeffect")
-            .withArguments(playerArg)
+            .withArguments(entitiesArg)
             .withArguments(effectArg)
             .withOptionalArguments(infiniteArg)
             .withOptionalArguments(amplifierArg)
             .withOptionalArguments(hideParticlesArg)
             .withOptionalArguments(ambientArg)
             .executes((sender, args) -> {
-                Player player = args.getByArgument(playerArg);
-                PotionEffectType effectType = args.getByArgument(effectArg);
-                int amplifier = args.getByArgumentOrDefault(amplifierArg, 0);
-                boolean hideParticles = args.getByArgumentOrDefault(hideParticlesArg, false);
-                boolean ambient = args.getByArgumentOrDefault(ambientArg, false);
-                boolean icon = args.getByArgumentOrDefault(iconArg, true);
+                Collection<Entity> entities = args.getByArgument(entitiesArg);
 
-                PotionEffect potionEffect = new PotionEffect(effectType, PotionEffect.INFINITE_DURATION, amplifier, ambient, hideParticles, icon);
-                player.addPotionEffect(potionEffect);
+                PotionEffect potionEffect = new PotionEffect(
+                    args.getByArgument(effectArg),
+                    PotionEffect.INFINITE_DURATION,
+                    args.getByArgumentOrDefault(amplifierArg, 0),
+                    args.getByArgumentOrDefault(ambientArg, false),
+                    args.getByArgumentOrDefault(hideParticlesArg, false),
+                    args.getByArgumentOrDefault(iconArg, true)
+                );
+
+                for (Entity entity : entities) {
+                    if (entity instanceof LivingEntity livingEntity) {
+                        livingEntity.addPotionEffect(potionEffect);
+                    }
+                }
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
