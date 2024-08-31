@@ -1,6 +1,7 @@
 package me.dunescifye.commandutils.utils;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -320,6 +321,84 @@ public abstract class Laser {
             targetUUID = endEntity.getUniqueId();
 
             initLaser();
+        }
+
+        private void initLaser() throws ReflectiveOperationException {
+            fakeGuardianDataWatcher = Packets.createFakeDataWatcher();
+            Packets.initGuardianWatcher(fakeGuardianDataWatcher, targetID);
+            if (Packets.version >= 17) {
+                guardian = Packets.createGuardian(getCorrectStart(), guardianUUID, guardianID);
+            }
+            metadataPacketGuardian = Packets.createPacketMetadata(guardianID, fakeGuardianDataWatcher);
+
+            teamCreatePacket = Packets.createPacketTeamCreate("noclip" + teamID.getAndIncrement(), squidUUID, guardianUUID);
+            destroyPackets = Packets.createPacketsRemoveEntities(squidID, guardianID);
+        }
+
+        private void initSquid() throws ReflectiveOperationException {
+            if (Packets.version >= 17) {
+                squid = Packets.createSquid(getCorrectEnd(), squidUUID, squidID);
+            }
+            metadataPacketSquid = Packets.createPacketMetadata(squidID, Packets.fakeSquidWatcher);
+            Packets.setDirtyWatcher(Packets.fakeSquidWatcher);
+        }
+
+        private Object getGuardianSpawnPacket() throws ReflectiveOperationException {
+            if (createGuardianPacket == null) {
+                if (Packets.version < 17) {
+                    createGuardianPacket = Packets.createPacketEntitySpawnLiving(getCorrectStart(), Packets.mappings.getGuardianID(), guardianUUID, guardianID);
+                }else {
+                    createGuardianPacket = Packets.createPacketEntitySpawnLiving(guardian);
+                }
+            }
+            return createGuardianPacket;
+        }
+
+        private Object getSquidSpawnPacket() throws ReflectiveOperationException {
+            if (createSquidPacket == null) {
+                if (Packets.version < 17) {
+                    createSquidPacket = Packets.createPacketEntitySpawnLiving(getCorrectEnd(), Packets.mappings.getSquidID(), squidUUID, squidID);
+                }else {
+                    createSquidPacket = Packets.createPacketEntitySpawnLiving(squid);
+                }
+            }
+            return createSquidPacket;
+        }
+
+        @Override
+        public LaserType getLaserType() {
+            return LaserType.GUARDIAN;
+        }
+
+        /**
+         * Makes the laser follow an entity (moving end location).
+         *
+         * This is done client-side by making the fake guardian follow the existing entity.
+         * Hence, there is no consuming of server resources.
+         *
+         * @param entity living entity the laser will follow
+         * @throws ReflectiveOperationException if a reflection operation fails
+         */
+        public void attachEndEntity(LivingEntity entity) throws ReflectiveOperationException {
+            if (entity.getWorld() != start.getWorld()) throw new IllegalArgumentException("Attached entity is not in the same world as the laser.");
+            this.endEntity = entity;
+            setTargetEntity(entity.getUniqueId(), entity.getEntityId());
+        }
+
+        public Entity getEndEntity() {
+            return endEntity;
+        }
+
+        private void setTargetEntity(UUID uuid, int id) throws ReflectiveOperationException {
+            targetUUID = uuid;
+            targetID = id;
+            fakeGuardianDataWatcher = Packets.createFakeDataWatcher();
+            Packets.initGuardianWatcher(fakeGuardianDataWatcher, targetID);
+            metadataPacketGuardian = Packets.createPacketMetadata(guardianID, fakeGuardianDataWatcher);
+
+            for (Player p : show) {
+                Packets.sendPackets(p, metadataPacketGuardian);
+            }
         }
 
 }
