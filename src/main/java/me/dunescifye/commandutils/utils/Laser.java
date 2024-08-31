@@ -828,4 +828,73 @@ public abstract class Laser {
             }
         }
 
+        public static void sendPackets(Player p, Object... packets) throws ReflectiveOperationException {
+            Object connection = playerConnection.get(getHandle.invoke(p));
+            for (Object packet : packets) {
+                if (packet == null) continue;
+                sendPacket.invoke(connection, packet);
+            }
+        }
+
+        public static Object createFakeDataWatcher() throws ReflectiveOperationException {
+            Object watcher = watcherConstructor.newInstance(fakeSquid);
+            if (version > 13) setField(watcher, "registrationLocked", false);
+            return watcher;
+        }
+
+        public static void setDirtyWatcher(Object watcher) throws ReflectiveOperationException {
+            if (version >= 15) watcherDirty.invoke(watcher, watcherObject1);
+        }
+
+        public static Object createSquid(Location location, UUID uuid, int id) throws ReflectiveOperationException {
+            Object entity = squidConstructor.newInstance(squidType, nmsWorld);
+            setEntityIDs(entity, uuid, id);
+            moveFakeEntity(entity, location);
+            return entity;
+        }
+
+        public static Object createGuardian(Location location, UUID uuid, int id) throws ReflectiveOperationException {
+            Object entity = guardianConstructor.newInstance(guardianType, nmsWorld);
+            setEntityIDs(entity, uuid, id);
+            moveFakeEntity(entity, location);
+            return entity;
+        }
+
+        public static Object createCrystal(Location location, UUID uuid, int id) throws ReflectiveOperationException {
+            Object entity = crystalConstructor.newInstance(nmsWorld, location.getX(), location.getY(), location.getZ());
+            setEntityIDs(entity, uuid, id);
+            return entity;
+        }
+
+        public static Object createPacketEntitySpawnLiving(Location location, int typeID, UUID uuid, int id) throws ReflectiveOperationException {
+            Object packet = packetSpawnLiving.newInstance();
+            setField(packet, "a", id);
+            setField(packet, "b", uuid);
+            setField(packet, "c", typeID);
+            setField(packet, "d", location.getX());
+            setField(packet, "e", location.getY());
+            setField(packet, "f", location.getZ());
+            setField(packet, "j", (byte) (location.getYaw() * 256.0F / 360.0F));
+            setField(packet, "k", (byte) (location.getPitch() * 256.0F / 360.0F));
+            if (version <= 14) setField(packet, "m", fakeSquidWatcher);
+            return packet;
+        }
+
+        public static Object createPacketEntitySpawnNormal(Location location, int typeID, Object type, int id) throws ReflectiveOperationException {
+            Object packet = packetSpawnNormal.newInstance();
+            setField(packet, "a", id);
+            setField(packet, "b", UUID.randomUUID());
+            setField(packet, "c", location.getX());
+            setField(packet, "d", location.getY());
+            setField(packet, "e", location.getZ());
+            setField(packet, "i", (int) (location.getYaw() * 256.0F / 360.0F));
+            setField(packet, "j", (int) (location.getPitch() * 256.0F / 360.0F));
+            setField(packet, "k", version < 13 ? typeID : type);
+            return packet;
+        }
+
+        public static Object createPacketEntitySpawnLiving(Object entity) throws ReflectiveOperationException {
+            return packetSpawnLiving.newInstance(entity);
+        }
+
 }
