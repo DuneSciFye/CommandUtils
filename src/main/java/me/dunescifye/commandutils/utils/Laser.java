@@ -1046,4 +1046,71 @@ public abstract class Laser {
                     return versionMinor < 4 ? "Z" : "an";
                 }
 
+                @Override
+                public int getGuardianID() {
+                    return versionMinor < 3 ? 38 : 39;
+                }
+
+                @Override
+                public String getSquidTypeName() {
+                    if (versionMinor < 3)
+                        return "aM";
+                    else if (versionMinor == 3)
+                        return "aN";
+                    else
+                        return "aT";
+                }
+
+                @Override
+                public String getGuardianTypeName() {
+                    if (versionMinor < 3)
+                        return "N";
+                    else if (versionMinor == 3)
+                        return "O";
+                    else
+                        return "V";
+                }
+            },
+            V1_20(20, null, "b", "e", "c", "d", 89, 38, null, null, "B", "a", "g") {
+                @Override
+                public String getWatcherFlags() {
+                    return versionMinor < 2 ? "an" : "ao";
+                }
+
+                @Override
+                public String getGuardianTypeName() {
+                    return versionMinor < 3 ? "V" : "W";
+                }
+
+                @Override
+                public String getSquidTypeName() {
+                    return versionMinor < 3 ? "aT" : "aU";
+                }
+            },
+            ;
+
+            private final int major;
+            private final String watcherFlags;
+            private final String watcherSpikes;
+            private final String watcherTargetEntity;
+            private final String watcherTargetLocation;
+            private final String watcherBasePlate;
+            private final int squidID;
+            private final int guardianID;
+            private final String guardianTypeName;
+            private final String squidTypeName;
+            private final String crystalTypeName;
+            private final String teamSetCollision;
+            private final String teamGetPlayers;
+
+            private ProtocolMappings(int major, ProtocolMappings parent) {
+                this(major, parent.watcherFlags, parent.watcherSpikes, parent.watcherTargetEntity, parent.watcherTargetLocation, parent.watcherBasePlate, parent.squidID, parent.guardianID, parent.guardianTypeName, parent.squidTypeName, parent.crystalTypeName, parent.teamSetCollision, parent.teamGetPlayers);
+            }
+
+            private ProtocolMappings(int major,
+                                     String watcherFlags, String watcherSpikes, String watcherTargetEntity, String watcherTargetLocation, String watcherBasePlate,
+                                     int squidID, int guardianID) {
+                this(major, watcherFlags, watcherSpikes, watcherTargetEntity, watcherTargetLocation, watcherBasePlate, squidID, guardianID, null, "SQUID", "END_CRYSTAL", null, null);
+            }
+
             }
