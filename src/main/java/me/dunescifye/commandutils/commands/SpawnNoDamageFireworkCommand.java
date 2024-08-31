@@ -25,6 +25,15 @@ public class SpawnNoDamageFireworkCommand extends Command implements Registerabl
         IntegerArgument ticksToDetonateArg = new IntegerArgument("Ticks To Detonate", 0);
         PlayerArgument playerArg = new PlayerArgument("No Damage Player");
 
+        /**
+         * Summons a Firework that does no damage
+         * @author DuneSciFye
+         * @since 1.0.0
+         * @param World World of the Location
+         * @param Location Location of where to Spawn Firework
+         * @param Ticks Ticks Until Detonation
+         * @param Player Player To Ignore Damage, if not specified, nobody takes damage
+         */
         new CommandAPICommand("spawnnodamagefirework")
             .withArguments(worldArg)
             .withArguments(locArg)
@@ -54,14 +63,21 @@ public class SpawnNoDamageFireworkCommand extends Command implements Registerabl
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
+        /**
+         * Summons a Firework that does no damage
+         * @author DuneSciFye
+         * @since 1.0.0
+         * @param Location Location of where to Spawn Firework
+         * @param Ticks Ticks Until Detonation
+         * @param Player Player To Ignore Damage, if not specified, nobody takes damage
+         */
         new CommandAPICommand("spawnnodamagefirework")
             .withArguments(locArg)
             .withArguments(ticksToDetonateArg)
             .withOptionalArguments(playerArg)
             .executes((sender, args) -> {
                 Location loc = args.getByArgument(locArg);
-                World world = loc.getWorld();
-                Firework fw = (Firework) world.spawnEntity(loc, EntityType.FIREWORK);
+                Firework fw = (Firework) loc.getWorld().spawnEntity(loc, EntityType.FIREWORK);
                 FireworkMeta fwm = fw.getFireworkMeta();
 
                 fwm.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(ThreadLocalRandom.current().nextInt(0, 256), ThreadLocalRandom.current().nextInt(0, 256), ThreadLocalRandom.current().nextInt(0, 256))).build());

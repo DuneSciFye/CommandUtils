@@ -2,6 +2,7 @@ package me.dunescifye.commandutils.commands;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.commandutils.CommandUtils;
@@ -142,46 +143,42 @@ public class WhileCommand extends Command implements Configurable {
                 .withAliases(this.getCommandAliases())
                 .register(this.getNamespace());
 
-            new CommandAPICommand("while")
-                .withArguments(removeArg)
-                .withArguments(commandIDArg)
-                .executes((sender, args) -> {
-                    String commandID = args.getByArgument(commandIDArg);
-                    BukkitTask task = tasks.remove(commandID);
-                    if (task != null) {
-                        task.cancel();
-                    }
-                })
+            new CommandTree("while")
+                .then(removeArg
+                    .then(commandIDArg
+                        .executes((sender, args) -> {
+                            String commandID = args.getByArgument(commandIDArg);
+                            BukkitTask task = tasks.remove(commandID);
+                            if (task != null) {
+                                task.cancel();
+                            }
+                        })
+                    )
+                )
+                .then(hasArg
+                    .then(commandIDArg
+                        .executes((sender, args) -> {
+                            String commandID = args.getByArgument(commandIDArg);
+                            sender.sendMessage(String.valueOf(tasks.containsKey(commandID)));
+                        })
+                    )
+                )
+                .then(listArg
+                    .executes((sender, args) -> {
+                        StringBuilder message = new StringBuilder();
+                        for (String commandID : tasks.keySet()) {
+                            message.append(commandID).append(", ");
+                        }
+
+                        message.deleteCharAt(message.length() - 1);
+
+                        sender.sendMessage(message.toString());
+                    })
+                )
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
                 .register(this.getNamespace());
 
-            new CommandAPICommand("while")
-                .withArguments(hasArg)
-                .withArguments(commandIDArg)
-                .executes((sender, args) -> {
-                    String commandID = args.getByArgument(commandIDArg);
-                    sender.sendMessage(String.valueOf(tasks.containsKey(commandID)));
-                })
-                .withPermission(this.getPermission())
-                .withAliases(this.getCommandAliases())
-                .register(this.getNamespace());
-
-            new CommandAPICommand("while")
-                .withArguments(listArg)
-                .executes((sender, args) -> {
-                    StringBuilder message = new StringBuilder();
-                    for (String commandID : tasks.keySet()) {
-                        message.append(commandID).append(", ");
-                    }
-
-                    message.deleteCharAt(message.length() - 1);
-
-                    sender.sendMessage(message.toString());
-                })
-                .withPermission(this.getPermission())
-                .withAliases(this.getCommandAliases())
-                .register(this.getNamespace());
 
         }
 }

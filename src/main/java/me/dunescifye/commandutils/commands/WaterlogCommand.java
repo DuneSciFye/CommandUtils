@@ -3,12 +3,12 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Waterlogged;
 
 public class WaterlogCommand extends Command implements Registerable {
+
     @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!this.getEnabled()) return;
@@ -18,7 +18,15 @@ public class WaterlogCommand extends Command implements Registerable {
         BooleanArgument waterlogArg = new BooleanArgument("Waterlogged State");
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
 
-    //Arguments: World, X Y Z, waterlogOrNot
+        /**
+         * Waterlogs Blocks
+         * @author DuneSciFye
+         * @since 1.0.0
+         * @param World World of the Locations
+         * @param Location Coordinates of Center Block
+         * @param Boolean If Blocks will be Waterlogged
+         * @param Radius How many Blocks to go out
+         */
         new CommandAPICommand("waterlogblock")
             .withArguments(worldArg)
             .withArguments(locArg)
@@ -28,15 +36,15 @@ public class WaterlogCommand extends Command implements Registerable {
 
                 Block block = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
                 int radius = args.getByArgumentOrDefault(radiusArg, 0);
+                boolean waterog = args.getByArgumentOrDefault(waterlogArg, true);
 
                 for (int x = -radius; x <= radius; x++) {
                     for (int y = -radius; y <= radius; y++) {
                         for (int z = -radius; z <= radius; z++) {
                             Block b = block.getRelative(x, y, z);
-                            BlockData blockData = b.getBlockData();
-                            if (blockData instanceof Waterlogged waterlogged) {
-                                waterlogged.setWaterlogged(args.getByArgumentOrDefault(waterlogArg, true));
-                                b.setBlockData(blockData);
+                            if (b.getBlockData() instanceof Waterlogged waterlogged) {
+                                waterlogged.setWaterlogged(waterog);
+                                b.setBlockData(waterlogged);
                             }
                         }
                     }

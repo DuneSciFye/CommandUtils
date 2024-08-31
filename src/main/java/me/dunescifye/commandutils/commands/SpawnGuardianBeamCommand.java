@@ -4,6 +4,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.LocationArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
+import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.Laser;
 
 public class SpawnGuardianBeamCommand extends Command implements Registerable {
@@ -43,6 +44,7 @@ public class SpawnGuardianBeamCommand extends Command implements Registerable {
                         args.getByArgument(durationArg),
                         args.getByArgument(distanceArg)
                     );
+                    laser.start(CommandUtils.getInstance());
                 } catch (
                     ReflectiveOperationException ignored) {
                 }
