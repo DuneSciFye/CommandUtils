@@ -1,16 +1,16 @@
 package me.dunescifye.commandutils.utils;
 
 import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Laser {
 
@@ -251,5 +251,75 @@ public abstract class Laser {
         return	getStart().distanceSquared(location) <= distanceSquared ||
             getEnd().distanceSquared(location) <= distanceSquared;
     }
+
+    public static class GuardianLaser extends Laser {
+        private static AtomicInteger teamID = new AtomicInteger(ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE));
+
+        private Object createGuardianPacket;
+        private Object createSquidPacket;
+        private Object teamCreatePacket;
+        private Object[] destroyPackets;
+        private Object metadataPacketGuardian;
+        private Object metadataPacketSquid;
+        private Object fakeGuardianDataWatcher;
+
+        private final UUID squidUUID = UUID.randomUUID();
+        private final UUID guardianUUID = UUID.randomUUID();
+        private final int squidID = Packets.generateEID();
+        private final int guardianID = Packets.generateEID();
+        private Object squid;
+        private Object guardian;
+
+        private int targetID;
+        private UUID targetUUID;
+
+        protected LivingEntity endEntity;
+
+        private Location correctStart;
+        private Location correctEnd;
+
+        /**
+         * Creates a new Guardian Laser instance
+         * @param start Location where laser will starts
+         * @param end Location where laser will ends
+         * @param duration Duration of laser in seconds (<i>-1 if infinite</i>)
+         * @param distance Distance where laser will be visible (<i>-1 if infinite</i>)
+         * @throws ReflectiveOperationException if a reflection exception occurred during Laser creation
+         * @see Laser#start(Plugin) to start the laser
+         * @see #durationInTicks() to make the duration in ticks
+         * @see #executeEnd(Runnable) to add Runnable-s to execute when the laser will stop
+         * @see #GuardianLaser(Location, LivingEntity, int, int) to create a laser which follows an entity
+         */
+        public GuardianLaser(Location start, Location end, int duration, int distance) throws ReflectiveOperationException {
+            super(start, end, duration, distance);
+
+            initSquid();
+
+            targetID = squidID;
+            targetUUID = squidUUID;
+
+            initLaser();
+        }
+
+        /**
+         * Creates a new Guardian Laser instance
+         * @param start Location where laser will starts
+         * @param endEntity Entity who the laser will follow
+         * @param duration Duration of laser in seconds (<i>-1 if infinite</i>)
+         * @param distance Distance where laser will be visible (<i>-1 if infinite</i>)
+         * @throws ReflectiveOperationException if a reflection exception occurred during Laser creation
+         * @see Laser#start(Plugin) to start the laser
+         * @see #durationInTicks() to make the duration in ticks
+         * @see #executeEnd(Runnable) to add Runnable-s to execute when the laser will stop
+         * @see #GuardianLaser(Location, Location, int, int) to create a laser with a specific end location
+         */
+        public GuardianLaser(Location start, LivingEntity endEntity, int duration, int distance) throws ReflectiveOperationException {
+            super(start, endEntity.getLocation(), duration, distance);
+
+            targetID = endEntity.getEntityId();
+            targetUUID = endEntity.getUniqueId();
+
+            initLaser();
+        }
 
 }
