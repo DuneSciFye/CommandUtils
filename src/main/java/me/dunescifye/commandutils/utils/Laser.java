@@ -52,4 +52,79 @@ public abstract class Laser {
         return this;
     }
 
+    /**
+     * Makes the duration provided in the constructor passed as ticks and not seconds
+     * @return this {@link Laser} instance
+     */
+    public Laser durationInTicks() {
+        durationInTicks = true;
+        return this;
+    }
+
+    /**
+     * Starts this laser.
+     * <p>
+     * It will make the laser visible for nearby players and start the countdown to the final duration.
+     * <p>
+     * Once finished, it will destroy the laser and execute all runnables passed with {@link Laser#executeEnd}.
+     * @param plugin plugin used to start the task
+     */
+    public void start(Plugin plugin) {
+        if (main != null) throw new IllegalStateException("Task already started");
+        this.plugin = plugin;
+        main = new BukkitRunnable() {
+            int time = 0;
+
+            @Override
+            public void run() {
+                try {
+                    if (time == duration) {
+                        cancel();
+                        return;
+                    }
+                    if (!durationInTicks || time % 20 == 0) {
+                        for (Player p : start.getWorld().getPlayers()) {
+                            if (isCloseEnough(p)) {
+                                if (show.add(p)) {
+                                    sendStartPackets(p, !seen.add(p));
+                                }
+                            }else if (show.remove(p)) {
+                                sendDestroyPackets(p);
+                            }
+                        }
+                    }
+                    time++;
+                }catch (ReflectiveOperationException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public synchronized void cancel() throws IllegalStateException {
+                super.cancel();
+                main = null;
+                try {
+                    for (Player p : show) {
+                        sendDestroyPackets(p);
+                    }
+                    show.clear();
+                    executeEnd.forEach(Runnable::run);
+                }catch (ReflectiveOperationException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        main.runTaskTimerAsynchronously(plugin, 0L, durationInTicks ? 1L : 20L);
+    }
+
+    /**
+     * Stops this laser.
+     * <p>
+     * This will destroy the laser for every player and start execute all runnables passed with {@link Laser#executeEnd}
+     */
+    public void stop() {
+        if (main == null) throw new IllegalStateException("Task not started");
+        main.cancel();
+    }
+
 }
