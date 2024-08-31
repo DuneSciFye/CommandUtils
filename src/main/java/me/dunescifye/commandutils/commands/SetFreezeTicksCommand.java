@@ -23,7 +23,7 @@ public class SetFreezeTicksCommand extends Command implements Registerable {
          * @author DuneSciFye
          * @since 1.0.5
          * @param Entities Entities to Target
-         * @param Ticks How long Entity is on Fire for
+         * @param Ticks How long Entity is Frozen for
          */
         new CommandAPICommand("setfreezeticks")
             .withArguments(entitiesArg)
