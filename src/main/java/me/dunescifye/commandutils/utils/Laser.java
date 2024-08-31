@@ -191,4 +191,65 @@ public abstract class Laser {
     public void moveEnd(Location location, int ticks, Runnable callback) {
         endMove = moveInternal(location, ticks, endMove, getEnd(), this::moveEnd, callback);
     }
+
+    private BukkitTask moveInternal(Location location, int ticks, BukkitTask oldTask, Location from,
+                                    ReflectiveConsumer<Location> moveConsumer, Runnable callback) {
+        if (ticks <= 0)
+            throw new IllegalArgumentException("Ticks must be a positive value");
+        if (plugin == null)
+            throw new IllegalStateException("The laser must have been started a least once");
+        if (oldTask != null && !oldTask.isCancelled())
+            oldTask.cancel();
+        return new BukkitRunnable() {
+            double xPerTick = (location.getX() - from.getX()) / ticks;
+            double yPerTick = (location.getY() - from.getY()) / ticks;
+            double zPerTick = (location.getZ() - from.getZ()) / ticks;
+            Location loc = from.clone();
+            int elapsed = 0;
+
+            @Override
+            public void run() {
+                try {
+                    loc.add(xPerTick, yPerTick, zPerTick);
+                    moveConsumer.accept(loc);
+                }catch (ReflectiveOperationException e) {
+                    e.printStackTrace();
+                    cancel();
+                    return;
+                }
+
+                if (++elapsed == ticks) {
+                    cancel();
+                    if (callback != null) callback.run();
+                }
+            }
+        }.runTaskTimer(plugin, 0L, 1L);
+    }
+
+    protected void moveFakeEntity(Location location, int entityId, Object fakeEntity) throws ReflectiveOperationException {
+        if (fakeEntity != null) Packets.moveFakeEntity(fakeEntity, location);
+        if (main == null) return;
+
+        Object packet;
+        if (fakeEntity == null) {
+            packet = Packets.createPacketMoveEntity(location, entityId);
+        }else {
+            packet = Packets.createPacketMoveEntity(fakeEntity);
+        }
+        for (Player p : show) {
+            Packets.sendPackets(p, packet);
+        }
+    }
+
+    protected abstract void sendStartPackets(Player p, boolean hasSeen) throws ReflectiveOperationException;
+
+    protected abstract void sendDestroyPackets(Player p) throws ReflectiveOperationException;
+
+    protected boolean isCloseEnough(Player player) {
+        if (distanceSquared == -1) return true;
+        Location location = player.getLocation();
+        return	getStart().distanceSquared(location) <= distanceSquared ||
+            getEnd().distanceSquared(location) <= distanceSquared;
+    }
+
 }
