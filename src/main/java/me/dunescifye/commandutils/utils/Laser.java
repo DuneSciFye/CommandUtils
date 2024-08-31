@@ -754,4 +754,78 @@ public abstract class Laser {
                     }
                 }
 
+                Class<?> dataWatcherClass = getNMSClass("network.syncher", "DataWatcher");
+                watcherConstructor = dataWatcherClass.getDeclaredConstructor(entityClass);
+                if (version >= 18) {
+                    watcherSet = dataWatcherClass.getDeclaredMethod("b", watcherObject1.getClass(), Object.class);
+                    watcherRegister = dataWatcherClass.getDeclaredMethod("a", watcherObject1.getClass(), Object.class);
+                }else {
+                    watcherSet = getMethod(dataWatcherClass, "set");
+                    watcherRegister = getMethod(dataWatcherClass, "register");
+                }
+                if (version >= 15) watcherDirty = getMethod(dataWatcherClass, "markDirty");
+                if (version > 19 || (version == 19 && versionMinor >= 3))
+                    watcherPack = dataWatcherClass.getDeclaredMethod("b");
+                packetSpawnNormal = getNMSClass("network.protocol.game", "PacketPlayOutSpawnEntity").getDeclaredConstructor(version < 17 ? new Class<?>[0] : new Class<?>[] { getNMSClass("world.entity", "Entity") });
+                packetSpawnLiving = version >= 19 ? packetSpawnNormal : getNMSClass("network.protocol.game", "PacketPlayOutSpawnEntityLiving").getDeclaredConstructor(version < 17 ? new Class<?>[0] : new Class<?>[] { getNMSClass("world.entity", "EntityLiving") });
+                packetRemove = getNMSClass("network.protocol.game", "PacketPlayOutEntityDestroy").getDeclaredConstructor(version == 17 && versionMinor == 0 ? int.class : int[].class);
+                packetMetadata = getNMSClass("network.protocol.game", "PacketPlayOutEntityMetadata")
+                    .getDeclaredConstructor(version < 19 || (version == 19 && versionMinor < 3)
+                        ? new Class<?>[] {int.class, dataWatcherClass, boolean.class}
+                        : new Class<?>[] {int.class, List.class});
+                packetTeleport = getNMSClass("network.protocol.game", "PacketPlayOutEntityTeleport").getDeclaredConstructor(version < 17 ? new Class<?>[0] : new Class<?>[] { entityClass });
+                packetTeam = getNMSClass("network.protocol.game", "PacketPlayOutScoreboardTeam");
+
+                blockPositionConstructor =
+                    getNMSClass("core", "BlockPosition").getConstructor(int.class, int.class, int.class);
+
+                nmsWorld = Class.forName(cpack + "CraftWorld").getDeclaredMethod("getHandle").invoke(Bukkit.getWorlds().get(0));
+
+                squidConstructor = squidClass.getDeclaredConstructors()[0];
+                if (version >= 17) {
+                    guardianConstructor = guardianClass.getDeclaredConstructors()[0];
+                    crystalConstructor = crystalClass.getDeclaredConstructor(nmsWorld.getClass().getSuperclass(), double.class, double.class, double.class);
+                }
+
+                Object[] entityConstructorParams = version < 14 ? new Object[] { nmsWorld } : new Object[] { entityTypesClass.getDeclaredField(mappings.getSquidTypeName()).get(null), nmsWorld };
+                fakeSquid = squidConstructor.newInstance(entityConstructorParams);
+                fakeSquidWatcher = createFakeDataWatcher();
+                tryWatcherSet(fakeSquidWatcher, watcherObject1, (byte) 32);
+
+                getHandle = Class.forName(cpack + "entity.CraftPlayer").getDeclaredMethod("getHandle");
+                playerConnection = getNMSClass("server.level", "EntityPlayer")
+                    .getDeclaredField(version < 17 ? "playerConnection" : (version < 20 ? "b" : "c"));
+                playerConnection.setAccessible(true);
+                sendPacket = getNMSClass("server.network", "PlayerConnection").getMethod(
+                    version < 18 ? "sendPacket" : (version >= 20 && versionMinor >= 2 ? "b" : "a"),
+                    getNMSClass("network.protocol", "Packet"));
+
+                if (version >= 17) {
+                    setLocation = entityClass.getDeclaredMethod(version < 18 ? "setLocation" : "a", double.class, double.class, double.class, float.class, float.class);
+                    setUUID = entityClass.getDeclaredMethod("a_", UUID.class);
+                    setID = entityClass.getDeclaredMethod("e", int.class);
+
+                    createTeamPacket = packetTeam.getMethod("a", getNMSClass("world.scores", "ScoreboardTeam"), boolean.class);
+
+                    Class<?> scoreboardClass = getNMSClass("world.scores", "Scoreboard");
+                    Class<?> teamClass = getNMSClass("world.scores", "ScoreboardTeam");
+                    Class<?> pushClass = getNMSClass("world.scores", "ScoreboardTeamBase$EnumTeamPush");
+                    createTeam = teamClass.getDeclaredConstructor(scoreboardClass, String.class);
+                    createScoreboard = scoreboardClass.getDeclaredConstructor();
+                    setTeamPush = teamClass.getDeclaredMethod(mappings.getTeamSetCollision(), pushClass);
+                    pushNever = pushClass.getDeclaredField("b").get(null);
+                    getTeamPlayers = teamClass.getDeclaredMethod(mappings.getTeamGetPlayers());
+                }
+
+                enabled = true;
+            }catch (Exception e) {
+                e.printStackTrace();
+                String errorMsg = "Laser Beam reflection failed to initialize. The util is disabled. Please ensure your version (" + Bukkit.getServer().getClass().getPackage().getName() + ") is supported.";
+                if (logger == null)
+                    System.err.println(errorMsg);
+                else
+                    logger.severe(errorMsg);
+            }
+        }
+
 }
