@@ -92,6 +92,8 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("ReplaceInRadius", new ReplaceInRadiusCommand());
         commands.put("SpawnGuardianBeam", new SpawnGuardianBeamCommand());
         commands.put("Oxygen", new OxygenCommand());
+        commands.put("ZombifyVillager", new ZombifyVillagerCommand());
+        commands.put("CureVillager", new CureVillagerCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {

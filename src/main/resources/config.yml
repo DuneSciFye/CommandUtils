@@ -118,6 +118,10 @@ Commands:
     Aliases: []
     Permission: "commandutils.command.cobwebprisoncommand"
 
+  CureVillager:
+    Enabled: true
+    Aliases: []
+
   Food:
     Enabled: true
     Aliases: []
@@ -295,12 +299,15 @@ Commands:
     ArgumentSeparator: ",,"
     CommandSeparator: "\\|"
 
-
   While:
     Enabled: true
     Aliases: []
     CommandSeparator: "\\|"
     PlaceholderSurrounder: "$"
+
+  ZombifyVillager:
+    Enabled: true
+    Aliases: []
 
 #Recommended to not change unless you know what your doing
 CommandNamespace: "commandutils"
