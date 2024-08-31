@@ -209,5 +209,75 @@ public class SpawnGuardianBeamCommand extends Command implements Registerable {
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
+
+        /**
+         * Summons a Guardian Beam between an Entity and a Location
+         * @author DuneSciFye
+         * @since 1.0.5
+         * @param Location Location
+         * @param Entity Entity
+         * @param Duration How Long Laser Stays for
+         * @param Distance How Long Laser is
+         */
+        new CommandAPICommand("spawnguardianbeam")
+            .withArguments(worldArg)
+            .withArguments(loc1Arg)
+            .withArguments(entity1Arg)
+            .withArguments(durationArg)
+            .withArguments(distanceArg)
+            .executes((sender, args) -> {
+                try {
+                    Location location = args.getByArgument(loc1Arg);
+                    Entity entity = args.getByArgument(entity1Arg);
+
+                    Laser laser = new Laser.GuardianLaser(
+                        location,
+                        entity.getLocation(),
+                        args.getByArgument(durationArg),
+                        args.getByArgument(distanceArg)
+                    );
+                    laser.start(CommandUtils.getInstance());
+                } catch (
+                    ReflectiveOperationException ignored) {
+                }
+
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+        /**
+         * Summons a Guardian Beam between a Location and an Entity
+         * @author DuneSciFye
+         * @since 1.0.5
+         * @param Entity Entity
+         * @param Location Location
+         * @param Duration How Long Laser Stays for
+         * @param Distance How Long Laser is
+         */
+        new CommandAPICommand("spawnguardianbeam")
+            .withArguments(entity1Arg)
+            .withArguments(loc1Arg)
+            .withArguments(durationArg)
+            .withArguments(distanceArg)
+            .executes((sender, args) -> {
+                try {
+                    Location location = args.getByArgument(loc1Arg);
+                    Entity entity = args.getByArgument(entity1Arg);
+
+                    Laser laser = new Laser.GuardianLaser(
+                        entity.getLocation(),
+                        location,
+                        args.getByArgument(durationArg),
+                        args.getByArgument(distanceArg)
+                    );
+                    laser.start(CommandUtils.getInstance());
+                } catch (
+                    ReflectiveOperationException ignored) {
+                }
+
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
     }
 }
