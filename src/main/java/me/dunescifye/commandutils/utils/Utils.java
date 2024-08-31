@@ -346,7 +346,22 @@ public class Utils {
         return false;
     }
 
-    public static void setupFacing(Player p, int depth, int xStart, int yStart, int zStart, ) {
+    public static void setupFacing(Player p, int depth, int xStart, int yStart, int zStart, int xEnd, int yEnd, int zEnd) {
+        double pitch = p.getPitch();
 
+        if (pitch < -45) {
+            yStart = 0;
+            yEnd = depth;
+        } else if (pitch > 45) {
+            yStart = -depth;
+            yEnd = 0;
+        } else {
+            switch (p.getFacing()) {
+                case NORTH -> { zStart = -depth; zEnd = 0; }
+                case SOUTH -> { zStart = 0; zEnd = depth; }
+                case WEST  -> { xStart = -depth; xEnd = 0; }
+                case EAST  -> { xStart = 0; xEnd = depth; }
+            }
+        }
     }
 }

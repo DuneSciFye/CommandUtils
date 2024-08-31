@@ -20,10 +20,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -590,14 +587,12 @@ public class StringUtils extends PlaceholderExpansion {
 
                     if (coords1.length != 3 && coords2.length != 3) return "Missing arguments.";
 
-                    int[] num1 = new int[3];
-                    int[] num2 = new int[3];
+                    int[] num1;
+                    int[] num2;
 
                     try {
-                        for (int i = 0; i < coords1.length; i++) {
-                            num1[i] = Integer.parseInt(coords1[i]);
-                            num2[i] = Integer.parseInt(coords2[i]);
-                        }
+                        num1 = Arrays.stream(coords1).mapToInt(Integer::parseInt).toArray();
+                        num2 = Arrays.stream(coords2).mapToInt(Integer::parseInt).toArray();
                     } catch (NumberFormatException e) {
                         return "Invalid Number for Coordinates provided";
                     }
