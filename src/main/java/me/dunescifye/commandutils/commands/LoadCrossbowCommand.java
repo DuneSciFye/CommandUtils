@@ -4,9 +4,11 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
+import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.CrossbowMeta;
 
 import java.util.List;
@@ -21,19 +23,44 @@ public class LoadCrossbowCommand extends Command implements Registerable {
         PlayerArgument playerArg = new PlayerArgument("Player");
         IntegerArgument slotArg = new IntegerArgument("Slot", 0, 36);
         BooleanArgument loadedArg = new BooleanArgument("Loaded");
+        BooleanArgument interactWithInvArg = new BooleanArgument("Interact With Inventory");
 
+        /**
+         * Loads/unloads crossbow
+         * @author DuneSciFye
+         * @since 1.0.0
+         * @param Player Player to check inventory
+         * @param Slot Slot Location of Item
+         * @param Boolean If Crossbow Should be Loaded
+         * @param Boolean If Arrow Should be Taken/Added to Inventory
+         */
         new CommandAPICommand("loadcrossbow")
             .withArguments(playerArg)
             .withArguments(slotArg)
             .withOptionalArguments(loadedArg)
+            .withOptionalArguments(interactWithInvArg)
             .executes((sender, args) -> {
                 Player p = args.getByArgument(playerArg);
-                ItemStack item = p.getInventory().getItem(args.getByArgument(slotArg));
+                PlayerInventory inv = p.getInventory();
+                ItemStack item = inv.getItem(args.getByArgument(slotArg));
+                ItemStack arrow = new ItemStack(Material.ARROW, 1);
                 if (item.getItemMeta() instanceof CrossbowMeta crossbowMeta) {
                     if (args.getByArgumentOrDefault(loadedArg, true)) {
-                        crossbowMeta.setChargedProjectiles(List.of(new ItemStack(Material.ARROW)));
+                        if (args.getByArgumentOrDefault(interactWithInvArg, true)) {
+                            if (inv.containsAtLeast(arrow, 1)) {
+                                inv.removeItem(arrow);
+                                crossbowMeta.setChargedProjectiles(List.of(arrow));
+                            }
+                        } else {
+                            crossbowMeta.setChargedProjectiles(List.of(arrow));
+                        }
                     } else {
                         crossbowMeta.setChargedProjectiles(List.of());
+                        if (args.getByArgumentOrDefault(interactWithInvArg, true)) {
+                            if (!inv.addItem(arrow).isEmpty()) {
+                                p.getWorld().dropItem(p.getLocation(), arrow);
+                            }
+                        }
                     }
                     item.setItemMeta(crossbowMeta);
                 }
