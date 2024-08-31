@@ -281,6 +281,10 @@ Commands:
     Enabled: true
     Aliases: []
 
+  SetShieldBlockingDelay:
+    Enabled: true
+    Aliases: []
+
   SetTNTSource:
     Enabled: true
     Aliases: []
