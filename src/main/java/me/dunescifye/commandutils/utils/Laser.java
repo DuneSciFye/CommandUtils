@@ -12,6 +12,7 @@ import org.bukkit.util.Vector;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -970,4 +971,79 @@ public abstract class Laser {
             }
             return packet;
         }
-}
+
+        private static Object createPacketMetadata(int entityId, Object watcher) throws ReflectiveOperationException {
+            if (version < 19 || (version == 19 && versionMinor < 3)) {
+                return packetMetadata.newInstance(entityId, watcher, false);
+            } else {
+                return packetMetadata.newInstance(entityId, watcherPack.invoke(watcher));
+            }
+        }
+
+        private static void tryWatcherSet(Object watcher, Object watcherObject, Object watcherData) throws ReflectiveOperationException {
+            try {
+                watcherSet.invoke(watcher, watcherObject, watcherData);
+            }catch (
+                InvocationTargetException ex) {
+                watcherRegister.invoke(watcher, watcherObject, watcherData);
+                if (version >= 15) watcherDirty.invoke(watcher, watcherObject);
+            }
+        }
+
+        /* Reflection utils */
+        private static Method getMethod(Class<?> clazz, String name) throws NoSuchMethodException {
+            for (Method m : clazz.getDeclaredMethods()) {
+                if (m.getName().equals(name)) return m;
+            }
+            throw new NoSuchMethodException(name + " in " + clazz.getName());
+        }
+
+        private static void setField(Object instance, String name, Object value) throws ReflectiveOperationException {
+            Field field = instance.getClass().getDeclaredField(name);
+            field.setAccessible(true);
+            field.set(instance, value);
+        }
+
+        private static Object getField(Class<?> clazz, String name, Object instance) throws ReflectiveOperationException {
+            Field field = clazz.getDeclaredField(name);
+            field.setAccessible(true);
+            return field.get(instance);
+        }
+
+        private static Class<?> getNMSClass(String package17, String className) throws ClassNotFoundException {
+            return Class.forName((version < 17 ? npack : "net.minecraft." + package17) + "." + className);
+        }
+
+        private enum ProtocolMappings {
+            V1_9(9, "Z", "bA", "bB", "b", "c", 94, 68),
+            V1_10(10, V1_9),
+            V1_11(11, V1_10),
+            V1_12(12, V1_11),
+            V1_13(13, "ac", "bF", "bG", "b", "c", 70, 28),
+            V1_14(14, "W", "b", "bD", "c", "d", 73, 30),
+            V1_15(15, "T", "b", "bA", "c", "d", 74, 31),
+            V1_16(16, null, "b", "d", "c", "d", -1, 31){
+                @Override
+                public int getSquidID() {
+                    return Packets.versionMinor < 2 ? 74 : 81;
+                }
+
+                @Override
+                public String getWatcherFlags() {
+                    return Packets.versionMinor < 2 ? "T" : "S";
+                }
+            },
+            V1_17(17, "Z", "b", "e", "c", "d", 86, 35, "K", "aJ", "u", "setCollisionRule", "getPlayerNameSet"),
+            V1_18(18, null, "b", "e", "c", "d", 86, 35, "K", "aJ", "u", "a", "g"){
+                @Override
+                public String getWatcherFlags() {
+                    return Packets.versionMinor < 2 ? "aa" : "Z";
+                }
+            },
+            V1_19(19, null, "b", "e", "c", "d", 89, 38, null, null, "w", "a", "g") {
+                @Override
+                public String getWatcherFlags() {
+                    return versionMinor < 4 ? "Z" : "an";
+                }
+
+            }
