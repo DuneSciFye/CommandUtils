@@ -458,4 +458,88 @@ public abstract class Laser {
             Packets.sendPackets(p, destroyPackets);
         }
 
+        @Override
+        public void moveStart(Location location) throws ReflectiveOperationException {
+            this.start = location.clone();
+            correctStart = null;
+
+            createGuardianPacket = null; // will force re-generation of spawn packet
+            moveFakeEntity(getCorrectStart(), guardianID, guardian);
+
+            if (squid != null) {
+                correctEnd = null;
+                createSquidPacket = null;
+                moveFakeEntity(getCorrectEnd(), squidID, squid);
+            }
+        }
+
+        @Override
+        public void moveEnd(Location location) throws ReflectiveOperationException {
+            this.end = location.clone();
+            createSquidPacket = null; // will force re-generation of spawn packet
+            correctEnd = null;
+
+            if (squid == null) {
+                initSquid();
+                for (Player p : show) {
+                    Packets.sendPackets(p, getSquidSpawnPacket(), metadataPacketSquid);
+                }
+            }else {
+                moveFakeEntity(getCorrectEnd(), squidID, squid);
+            }
+            if (targetUUID != squidUUID) {
+                endEntity = null;
+                setTargetEntity(squidUUID, squidID);
+            }
+        }
+
+        /**
+         * Asks viewers' clients to change the color of this laser
+         * @throws ReflectiveOperationException
+         */
+        public void callColorChange() throws ReflectiveOperationException {
+            for (Player p : show) {
+                Packets.sendPackets(p, metadataPacketGuardian);
+            }
+        }
+
+    }
+
+    public static class CrystalLaser extends Laser {
+
+        private Object createCrystalPacket;
+        private Object metadataPacketCrystal;
+        private Object[] destroyPackets;
+        private Object fakeCrystalDataWatcher;
+
+        private final Object crystal;
+        private final int crystalID = Packets.generateEID();
+
+        /**
+         * Creates a new Ender Crystal Laser instance
+         * @param start Location where laser will starts. The Crystal laser do not handle decimal number, it will be rounded to blocks.
+         * @param end Location where laser will ends. The Crystal laser do not handle decimal number, it will be rounded to blocks.
+         * @param duration Duration of laser in seconds (<i>-1 if infinite</i>)
+         * @param distance Distance where laser will be visible (<i>-1 if infinite</i>)
+         * @throws ReflectiveOperationException if a reflection exception occurred during Laser creation
+         * @see #start(Plugin) to start the laser
+         * @see #durationInTicks() to make the duration in ticks
+         * @see #executeEnd(Runnable) to add Runnable-s to execute when the laser will stop
+         */
+        public CrystalLaser(Location start, Location end, int duration, int distance) throws ReflectiveOperationException {
+            super(start, new Location(end.getWorld(), end.getBlockX(), end.getBlockY(), end.getBlockZ()), duration,
+                distance);
+
+            fakeCrystalDataWatcher = Packets.createFakeDataWatcher();
+            Packets.setCrystalWatcher(fakeCrystalDataWatcher, end);
+            if (Packets.version < 17) {
+                crystal = null;
+            }else {
+                crystal = Packets.createCrystal(start, UUID.randomUUID(), crystalID);
+            }
+            metadataPacketCrystal = Packets.createPacketMetadata(crystalID, fakeCrystalDataWatcher);
+
+            destroyPackets = Packets.createPacketsRemoveEntities(crystalID);
+        }
+
 }
