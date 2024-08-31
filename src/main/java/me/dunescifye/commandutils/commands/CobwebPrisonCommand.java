@@ -17,13 +17,26 @@ public class CobwebPrisonCommand extends Command implements Registerable {
         PlayerArgument playerArg = new PlayerArgument("Player");
         IntegerArgument radiusArg = new IntegerArgument("Radius");
         IntegerArgument heightArg = new IntegerArgument("Height");
+        IntegerArgument durationArg = new IntegerArgument("Duration");
 
+        /**
+         * Spawns a temporary cobweb prison using SCore
+         * @author DuneSciFye
+         * @since 1.0.3
+         * @param World World to Spawn in
+         * @param Location Location of Center Block
+         * @param Player Player to run SCore command for
+         * @param Radius Radius of the Prison
+         * @param Height Height of the Prison
+         * @param Duration How long the cobwebs will last for in Ticks
+         */
         new CommandAPICommand("cobwebprison")
             .withArguments(worldArg)
             .withArguments(locArg)
             .withArguments(playerArg)
             .withArguments(radiusArg)
             .withArguments(heightArg)
+            .withOptionalArguments(durationArg)
             .executes((sender, args) -> {
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 Block block = world.getBlockAt(args.getByArgument(locArg));
@@ -34,6 +47,7 @@ public class CobwebPrisonCommand extends Command implements Registerable {
                 String p = args.getByArgument(playerArg).getName();
                 int radius = args.getByArgument(radiusArg);
                 int height = args.getByArgument(heightArg);
+                int duration = args.getByArgumentOrDefault(durationArg, 100);
 
                 Server server = Bukkit.getServer();
                 ConsoleCommandSender commandSender = Bukkit.getConsoleSender();
@@ -42,22 +56,22 @@ public class CobwebPrisonCommand extends Command implements Registerable {
                     for (int x = startX - radius; x <= startX + radius; x++) {
                         Block b = world.getBlockAt(x, y, startZ + radius);
                         if (b.getType() == Material.AIR){
-                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + x + " " + y + " " + (startZ + radius) + " COBWEB 100 true");
+                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + x + " " + y + " " + (startZ + radius) + " COBWEB " + duration + " true");
                         }
 
                         b = world.getBlockAt(x, y, startZ - radius);
                         if (b.getType() == Material.AIR){
-                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + x + " " + y + " " + (startZ -radius) + " COBWEB 100 true");
+                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + x + " " + y + " " + (startZ -radius) + " COBWEB " + duration + " true");
                         }
                     }
                     for (int z = startZ -radius; z <= startZ + radius; z++) {
                         Block b = world.getBlockAt(radius + startX, y, z);
                         if (b.getType() == Material.AIR){
-                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + (startX + radius) + " " + y + " " + z + " COBWEB 100 true");
+                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + (startX + radius) + " " + y + " " + z + " COBWEB " + duration + " true");
                         }
                         b = world.getBlockAt(startX - radius, y, z);
                         if (b.getType() == Material.AIR){
-                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + (startX - radius) + " " + y + " " + z + " COBWEB 100 true");
+                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + (startX - radius) + " " + y + " " + z + " COBWEB " + duration + " true");
                         }
                     }
                 }
@@ -65,7 +79,7 @@ public class CobwebPrisonCommand extends Command implements Registerable {
                     for (int z = startZ - radius; z <= startZ + radius; z++) {
                         Block b = block.getRelative(x, startY + height, z);
                         if (b.getType() == Material.AIR) {
-                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + x + " " + (startY + height) + " " + z + " COBWEB 100 true");
+                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + x + " " + (startY + height) + " " + z + " COBWEB " + duration + " true");
                         }
                     }
                 }
@@ -74,11 +88,22 @@ public class CobwebPrisonCommand extends Command implements Registerable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
+        /**
+         * Spawns a temporary cobweb prison using SCore
+         * @author DuneSciFye
+         * @since 1.0.3
+         * @param Location Location of Center Block
+         * @param Player Player to run SCore command for
+         * @param Radius Radius of the Prison
+         * @param Height Height of the Prison
+         * @param Duration How long the cobwebs will last for in Ticks
+         */
         new CommandAPICommand("cobwebprison")
             .withArguments(locArg)
             .withArguments(playerArg)
             .withArguments(radiusArg)
             .withArguments(heightArg)
+            .withOptionalArguments(durationArg)
             .executes((sender, args) -> {
                 Location loc = args.getByArgument(locArg);
                 World world = loc.getWorld();
@@ -89,6 +114,7 @@ public class CobwebPrisonCommand extends Command implements Registerable {
                 String p = args.getByArgument(playerArg).getName();
                 int radius = args.getByArgument(radiusArg);
                 int height = args.getByArgument(heightArg);
+                int duration = args.getByArgumentOrDefault(durationArg, 100);
 
                 Server server = Bukkit.getServer();
                 ConsoleCommandSender commandSender = Bukkit.getConsoleSender();
@@ -97,22 +123,22 @@ public class CobwebPrisonCommand extends Command implements Registerable {
                     for (int x = startX - radius; x <= startX + radius; x++) {
                         Block b = world.getBlockAt(x, y, startZ + radius);
                         if (b.getType() == Material.AIR){
-                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + x + " " + y + " " + (startZ + radius) + " COBWEB 100 true");
+                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + x + " " + y + " " + (startZ + radius) + " COBWEB " + duration + " true");
                         }
 
                         b = world.getBlockAt(x, y, startZ - radius);
                         if (b.getType() == Material.AIR){
-                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + x + " " + y + " " + (startZ -radius) + " COBWEB 100 true");
+                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + x + " " + y + " " + (startZ -radius) + " COBWEB " + duration + " true");
                         }
                     }
                     for (int z = startZ -radius; z <= startZ + radius; z++) {
                         Block b = world.getBlockAt(radius + startX, y, z);
                         if (b.getType() == Material.AIR){
-                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + (startX + radius) + " " + y + " " + z + " COBWEB 100 true");
+                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + (startX + radius) + " " + y + " " + z + " COBWEB " + duration + " true");
                         }
                         b = world.getBlockAt(startX - radius, y, z);
                         if (b.getType() == Material.AIR){
-                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + (startX - radius) + " " + y + " " + z + " COBWEB 100 true");
+                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + (startX - radius) + " " + y + " " + z + " COBWEB " + duration + " true");
                         }
                     }
                 }
@@ -120,7 +146,7 @@ public class CobwebPrisonCommand extends Command implements Registerable {
                     for (int z = startZ - radius; z <= startZ + radius; z++) {
                         Block b = block.getRelative(x, startY + height, z);
                         if (b.getType() == Material.AIR) {
-                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + x + " " + (startY + height) + " " + z + " COBWEB 100 true");
+                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + x + " " + (startY + height) + " " + z + " COBWEB " + duration + " true");
                         }
                     }
                 }

@@ -5,51 +5,66 @@ import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
+
 public class FoodCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
         if (!this.getEnabled()) return;
 
-        LiteralArgument addArg = new LiteralArgument("add");
-        LiteralArgument removeArg = new LiteralArgument("remove");
-        LiteralArgument setArg = new LiteralArgument("set");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "remove", "set");
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.ManyPlayers playersArg = new EntitySelectorArgument.ManyPlayers("Players");
         IntegerArgument amountArg = new IntegerArgument("Amount");
         BooleanArgument allowOverflowArg = new BooleanArgument("Allow Overflow");
 
+        /**
+         * Modifies a Player's Food Level
+         * @author DuneSciFye
+         * @since 1.0.3
+         * @param Location Location of Center Block
+         * @param Player Player to run SCore command for
+         * @param Radius Radius of the Prison
+         * @param Height Height of the Prison
+         * @param Duration How long the cobwebs will last for in Ticks
+         */
         new CommandAPICommand("food")
             .withArguments(functionArg)
-            .withArguments(playerArg)
+            .withArguments(playersArg)
             .withArguments(amountArg)
             .withOptionalArguments(allowOverflowArg)
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
-                int foodLevel = p.getFoodLevel();
+                Collection<Player> players = args.getByArgument(playersArg);
                 int amount = args.getByArgument(amountArg);
                 boolean allowOverflow = args.getByArgumentOrDefault(allowOverflowArg, false);
 
-                switch (args.getByArgument(functionArg)) {
-                    case "add" -> {
-                        if (allowOverflow || foodLevel + amount < 20) {
-                            p.setFoodLevel(foodLevel + amount);
-                        } else {
-                            p.setFoodLevel(20);
+
+                for (Player p : players) {
+                    int foodLevel = p.getFoodLevel();
+                    switch (args.getByArgument(functionArg)) {
+                        case
+                            "add" -> {
+                            if (allowOverflow || foodLevel + amount < 20) {
+                                p.setFoodLevel(foodLevel + amount);
+                            } else {
+                                p.setFoodLevel(20);
+                            }
                         }
-                    }
-                    case "remove" -> {
-                        if (allowOverflow || foodLevel + amount < 20) {
-                            p.setFoodLevel(foodLevel - amount);
-                        } else {
-                            p.setFoodLevel(0);
+                        case
+                            "remove" -> {
+                            if (allowOverflow || foodLevel + amount < 20) {
+                                p.setFoodLevel(foodLevel - amount);
+                            } else {
+                                p.setFoodLevel(0);
+                            }
                         }
-                    }
-                    case "set" -> {
-                        if (allowOverflow || foodLevel + amount < 20) {
-                            p.setFoodLevel(amount);
-                        } else {
-                            p.setFoodLevel(20);
+                        case
+                            "set" -> {
+                            if (allowOverflow || foodLevel + amount < 20) {
+                                p.setFoodLevel(amount);
+                            } else {
+                                p.setFoodLevel(20);
+                            }
                         }
                     }
                 }

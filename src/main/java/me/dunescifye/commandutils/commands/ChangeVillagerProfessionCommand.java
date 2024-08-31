@@ -27,6 +27,13 @@ public class ChangeVillagerProfessionCommand extends Command implements Register
         EntitySelectorArgument.ManyEntities villagersArg = new EntitySelectorArgument.ManyEntities("Villagers");
         StringArgument professionArg = new StringArgument("Profession");
 
+        /**
+         * Changes a Villager's Profession
+         * @author DuneSciFye
+         * @since 1.0.3
+         * @param Villagers Villagers to Target
+         * @param Profession Profession to Change to
+         */
         new CommandAPICommand("changevillagerprofession")
             .withArguments(villagersArg)
             .withArguments(professionArg
