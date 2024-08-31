@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -399,6 +400,62 @@ public abstract class Laser {
             for (Player p : show) {
                 Packets.sendPackets(p, metadataPacketGuardian);
             }
+        }
+
+        @Override
+        public Location getEnd() {
+            return endEntity == null ? end : endEntity.getLocation();
+        }
+
+        protected Location getCorrectStart() {
+            if (correctStart == null) {
+                correctStart = start.clone();
+                correctStart.subtract(0, 0.5, 0);
+            }
+            return correctStart;
+        }
+
+        protected Location getCorrectEnd() {
+            if (correctEnd == null) {
+                correctEnd = end.clone();
+                correctEnd.subtract(0, 0.5, 0);
+
+                Vector corrective = correctEnd.toVector().subtract(getCorrectStart().toVector()).normalize();
+                if (Double.isNaN(corrective.getX())) corrective.setX(0);
+                if (Double.isNaN(corrective.getY())) corrective.setY(0);
+                if (Double.isNaN(corrective.getZ())) corrective.setZ(0);
+                // coordinates can be NaN when start and end are stricly equals
+                correctEnd.subtract(corrective);
+
+            }
+            return correctEnd;
+        }
+
+        @Override
+        protected boolean isCloseEnough(Player player) {
+            return player == endEntity || super.isCloseEnough(player);
+        }
+
+        @Override
+        protected void sendStartPackets(Player p, boolean hasSeen) throws ReflectiveOperationException {
+            if (squid == null) {
+                Packets.sendPackets(p,
+                    getGuardianSpawnPacket(),
+                    metadataPacketGuardian);
+            }else {
+                Packets.sendPackets(p,
+                    getGuardianSpawnPacket(),
+                    getSquidSpawnPacket(),
+                    metadataPacketGuardian,
+                    metadataPacketSquid);
+            }
+
+            if (!hasSeen) Packets.sendPackets(p, teamCreatePacket);
+        }
+
+        @Override
+        protected void sendDestroyPackets(Player p) throws ReflectiveOperationException {
+            Packets.sendPackets(p, destroyPackets);
         }
 
 }
