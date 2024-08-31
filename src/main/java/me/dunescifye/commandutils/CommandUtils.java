@@ -90,6 +90,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("RemoveInRadius", new RemoveInRadius());
         commands.put("LaunchTNT", new LaunchTNTCommand());
         commands.put("ReplaceInRadius", new ReplaceInRadiusCommand());
+        commands.put("SpawnGuardianBeam", new SpawnGuardianBeamCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {

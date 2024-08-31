@@ -264,11 +264,16 @@ Commands:
     MultipleTNTs: true
     #Allow selecting multiple sources at once, will be a random source if more than one source is provided, requires restart
     MultipleSources: false
+
   SilentParticle:
     Enabled: true
     Aliases: []
 
   SpawnBlockBreaker:
+    Enabled: true
+    Aliases: []
+
+  SpawnGuardianBeam:
     Enabled: true
     Aliases: []
 

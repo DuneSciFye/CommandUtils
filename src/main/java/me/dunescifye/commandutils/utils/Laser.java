@@ -1184,4 +1184,18 @@ public abstract class Laser {
                 return teamGetPlayers;
             }
 
+            public static ProtocolMappings getMappings(int major) {
+                for (ProtocolMappings map : values()) {
+                    if (major == map.getMajor()) return map;
+                }
+                return null;
             }
+        }
+    }
+
+    @FunctionalInterface
+    public static interface ReflectiveConsumer<T> {
+        abstract void accept(T t) throws ReflectiveOperationException;
+    }
+
+}
