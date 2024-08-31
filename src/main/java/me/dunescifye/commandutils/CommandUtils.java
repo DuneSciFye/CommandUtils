@@ -100,6 +100,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("SetBeeStingersInBody", new SetBeeStingersInBodyCommand());
         commands.put("SetFreezeTicks", new SetFreezeTicksCommand());
         commands.put("SetShieldBlockingDelay", new SetShieldBlockingDelayCommand());
+        commands.put("SetCompassTracking", new SetCompassTrackingCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {

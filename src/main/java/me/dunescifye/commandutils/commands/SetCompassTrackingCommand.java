@@ -5,13 +5,9 @@ import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.CompassMeta;
-
-import java.util.Collection;
 
 public class SetCompassTrackingCommand extends Command implements Registerable {
 
@@ -50,6 +46,8 @@ public class SetCompassTrackingCommand extends Command implements Registerable {
 
                 if (item.getItemMeta() instanceof CompassMeta compassMeta) {
                     compassMeta.setLodestone(loc);
+                    compassMeta.setLodestoneTracked(true);
+                    item.setItemMeta(compassMeta);
                 }
 
             })
@@ -81,6 +79,8 @@ public class SetCompassTrackingCommand extends Command implements Registerable {
 
                 if (item.getItemMeta() instanceof CompassMeta compassMeta) {
                     compassMeta.setLodestone(loc);
+                    compassMeta.setLodestoneTracked(true);
+                    item.setItemMeta(compassMeta);
                 }
 
             })
@@ -108,12 +108,46 @@ public class SetCompassTrackingCommand extends Command implements Registerable {
 
                 if (item.getItemMeta() instanceof CompassMeta compassMeta) {
                     compassMeta.setLodestone(loc);
+                    compassMeta.setLodestoneTracked(true);
+                    item.setItemMeta(compassMeta);
                 }
 
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
+
+        /**
+         * Sets a Compass to Track Location
+         * @author DuneSciFye
+         * @since 1.0.5
+         * @param Player Player to get Inventory
+         * @param Slot Text Slot to get Compass from
+         * @param Location Location
+         */
+        new CommandAPICommand("setcompasstracking")
+            .withArguments(playerArg)
+            .withArguments(textSlotArg)
+            .withArguments(worldArg)
+            .withArguments(locArg)
+            .executes((sender, args) -> {
+                ItemStack item = Utils.getInvItem(
+                    args.getByArgument(playerArg),
+                    args.getByArgument(textSlotArg)
+                );
+                Location loc = args.getByArgument(locArg);
+
+                if (item.getItemMeta() instanceof CompassMeta compassMeta) {
+                    compassMeta.setLodestone(loc);
+                    compassMeta.setLodestoneTracked(true);
+                    item.setItemMeta(compassMeta);
+                }
+
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
 
     }
 }
