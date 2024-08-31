@@ -127,4 +127,68 @@ public abstract class Laser {
         main.cancel();
     }
 
+    /**
+     * Gets laser status.
+     * @return	<code>true</code> if the laser is currently running
+     * 			(i.e. {@link #start} has been called and the duration is not over)
+     */
+    public boolean isStarted() {
+        return main != null;
+    }
+
+    /**
+     * Gets laser type.
+     * @return LaserType enum constant of this laser
+     */
+    public abstract LaserType getLaserType();
+
+    /**
+     * Instantly moves the start of the laser to the location provided.
+     * @param location New start location
+     * @throws ReflectiveOperationException if a reflection exception occurred during laser moving
+     */
+    public abstract void moveStart(Location location) throws ReflectiveOperationException;
+
+    /**
+     * Instantly moves the end of the laser to the location provided.
+     * @param location New end location
+     * @throws ReflectiveOperationException if a reflection exception occurred during laser moving
+     */
+    public abstract void moveEnd(Location location) throws ReflectiveOperationException;
+
+    /**
+     * Gets the start location of the laser.
+     * @return where exactly is the start position of the laser located
+     */
+    public Location getStart() {
+        return start.clone();
+    }
+
+    /**
+     * Gets the end location of the laser.
+     * @return where exactly is the end position of the laser located
+     */
+    public Location getEnd() {
+        return end.clone();
+    }
+
+    /**
+     * Moves the start of the laser smoothly to the new location, within a given time.
+     * @param location New start location to go to
+     * @param ticks Duration (in ticks) to make the move
+     * @param callback {@link Runnable} to execute at the end of the move (nullable)
+     */
+    public void moveStart(Location location, int ticks, Runnable callback) {
+        startMove = moveInternal(location, ticks, startMove, getStart(), this::moveStart, callback);
+    }
+
+    /**
+     * Moves the end of the laser smoothly to the new location, within a given time.
+     * @param location New end location to go to
+     * @param ticks Duration (in ticks) to make the move
+     * @param callback {@link Runnable} to execute at the end of the move (nullable)
+     */
+    public void moveEnd(Location location, int ticks, Runnable callback) {
+        endMove = moveInternal(location, ticks, endMove, getEnd(), this::moveEnd, callback);
+    }
 }
