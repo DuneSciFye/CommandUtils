@@ -17,6 +17,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public abstract class Laser {
@@ -696,5 +698,60 @@ public abstract class Laser {
         private static Method setLocation;
         private static Method setUUID;
         private static Method setID;
+
+        private static Object fakeSquid;
+        private static Object fakeSquidWatcher;
+
+        private static Object nmsWorld;
+
+        public static boolean enabled = false;
+
+        static {
+            try {
+                logger = new Logger("GuardianBeam", null) {
+                    @Override
+                    public void log(LogRecord logRecord) {
+                        logRecord.setMessage("[GuardianBeam] " + logRecord.getMessage());
+                        super.log(logRecord);
+                    }
+                };
+                logger.setParent(Bukkit.getServer().getLogger());
+                logger.setLevel(Level.ALL);
+
+                // e.g. Bukkit.getServer().getClass().getPackage().getName() -> org.bukkit.craftbukkit.v1_17_R1
+                String[] versions = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].substring(1).split("_");
+                version = Integer.parseInt(versions[1]); // 1.X
+                if (version >= 17) {
+                    // e.g. Bukkit.getBukkitVersion() -> 1.17.1-R0.1-SNAPSHOT
+                    versions = Bukkit.getBukkitVersion().split("-R")[0].split("\\.");
+                    versionMinor = versions.length <= 2 ? 0 : Integer.parseInt(versions[2]);
+                }else versionMinor = Integer.parseInt(versions[2].substring(1)); // 1.X.Y
+                logger.info("Found server version 1." + version + "." + versionMinor);
+
+                mappings = ProtocolMappings.getMappings(version);
+                if (mappings == null) {
+                    mappings = ProtocolMappings.values()[ProtocolMappings.values().length - 1];
+                    logger.warning("Loaded not matching version of the mappings for your server version (1." + version + "." + versionMinor + ")");
+                }
+                logger.info("Loaded mappings " + mappings.name());
+
+                Class<?> entityTypesClass = getNMSClass("world.entity", "EntityTypes");
+                Class<?> entityClass = getNMSClass("world.entity", "Entity");
+                Class<?> crystalClass = getNMSClass("world.entity.boss.enderdragon", "EntityEnderCrystal");
+                Class<?> squidClass = getNMSClass("world.entity.animal", "EntitySquid");
+                Class<?> guardianClass = getNMSClass("world.entity.monster", "EntityGuardian");
+                watcherObject1 = getField(entityClass, mappings.getWatcherFlags(), null);
+                watcherObject2 = getField(guardianClass, mappings.getWatcherSpikes(), null);
+                watcherObject3 = getField(guardianClass, mappings.getWatcherTargetEntity(), null);
+                watcherObject4 = getField(crystalClass, mappings.getWatcherTargetLocation(), null);
+                watcherObject5 = getField(crystalClass, mappings.getWatcherBasePlate(), null);
+
+                if (version >= 13) {
+                    crystalType = entityTypesClass.getDeclaredField(mappings.getCrystalTypeName()).get(null);
+                    if (version >= 17) {
+                        squidType = entityTypesClass.getDeclaredField(mappings.getSquidTypeName()).get(null);
+                        guardianType = entityTypesClass.getDeclaredField(mappings.getGuardianTypeName()).get(null);
+                    }
+                }
 
 }
