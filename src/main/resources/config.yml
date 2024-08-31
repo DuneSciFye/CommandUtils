@@ -269,6 +269,10 @@ Commands:
     Enabled: true
     Aliases: []
 
+  SetFreezeTicks:
+    Enabled: true
+    Aliases: []
+
   SetItem:
     Enabled: true
     Aliases: []
