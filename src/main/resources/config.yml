@@ -257,6 +257,10 @@ Commands:
     Enabled: true
     Aliases: []
 
+  SetBeeStingersInBody:
+    Enabled: true
+    Aliases: []
+
   SetCursorItem:
     Enabled: true
     Aliases: []

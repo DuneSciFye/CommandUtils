@@ -97,6 +97,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("SetArrowsInBody", new SetArrowsInBodyCommand());
         commands.put("SetAI", new SetAICommand());
         commands.put("SetFireTicks", new SetFireTicksCommand());
+        commands.put("SetBeeStingersInBody", new SetBeeStingersInBodyCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
