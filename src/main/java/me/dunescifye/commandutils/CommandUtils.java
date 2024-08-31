@@ -99,7 +99,6 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("SetFireTicks", new SetFireTicksCommand());
         commands.put("SetBeeStingersInBody", new SetBeeStingersInBodyCommand());
         commands.put("SetFreezeTicks", new SetFreezeTicksCommand());
-        commands.put("SetCanBreatheUnderwater", new SetCanBreatheUnderwaterCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
