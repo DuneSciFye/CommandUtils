@@ -1,14 +1,14 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
-import dev.jorel.commandapi.arguments.IntegerArgument;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.Collection;
 
-public class SetArrowsInBodyCommand extends Command implements Registerable {
+public class SetAICommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {
@@ -16,25 +16,25 @@ public class SetArrowsInBodyCommand extends Command implements Registerable {
         if (!this.getEnabled()) return;
 
         EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
-        IntegerArgument numberArg = new IntegerArgument("Number of Arrows");
+        BooleanArgument hasAIArg = new BooleanArgument("Has AI");
 
         /**
-         * Sets the Number of Arrows in Entities
+         * Sets an Entities AI
          * @author DuneSciFye
          * @since 1.0.5
-         * @param Entities Entities to set Arrows in
-         * @param Number Number of Arrows
+         * @param Entities Entities to Target
+         * @param Boolean If Entities should have AI
          */
-        new CommandAPICommand("setarrowsinbody")
+        new CommandAPICommand("setai")
             .withArguments(entitiesArg)
-            .withArguments(numberArg)
+            .withArguments(hasAIArg)
             .executes((sender, args) -> {
                 Collection<Entity> entities = args.getByArgument(entitiesArg);
-                int arrows = args.getByArgument(numberArg);
+                boolean hasAI = args.getByArgument(hasAIArg);
 
                 for (Entity entity : entities) {
                     if (entity instanceof LivingEntity livingEntity) {
-                        livingEntity.setArrowsInBody(arrows);
+                        livingEntity.setAI(hasAI);
                     }
                 }
             })

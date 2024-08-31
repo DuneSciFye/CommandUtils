@@ -249,6 +249,14 @@ Commands:
     ColorCodesByDefault: true
     PlayersListArg: false
 
+  SetAI:
+    Enabled: true
+    Aliases: []
+
+  SetArrowsInBody:
+    Enabled: true
+    Aliases: []
+
   SetCursorItem:
     Enabled: true
     Aliases: []
