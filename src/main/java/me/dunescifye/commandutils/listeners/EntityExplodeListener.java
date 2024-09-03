@@ -15,7 +15,7 @@ public class EntityExplodeListener implements Listener {
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent e) {
-        if (e.getEntityType() == EntityType.PRIMED_TNT && e.getEntity().hasMetadata("ignoreblockbreak")) {
+        if (e.getEntity().hasMetadata("ignoreblockbreak")) {
             e.blockList().clear();
         }
     }

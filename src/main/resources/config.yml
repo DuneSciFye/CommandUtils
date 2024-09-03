@@ -253,6 +253,10 @@ Commands:
     Enabled: true
     Aliases: []
 
+  SetArmorTrim:
+    Enabled: true
+    Aliases: []
+
   SetArrowsInBody:
     Enabled: true
     Aliases: []
@@ -314,6 +318,10 @@ Commands:
     Aliases: []
 
   SpawnNoDamageFirework:
+    Enabled: true
+    Aliases: []
+
+  SpawnWitherSkull:
     Enabled: true
     Aliases: []
 

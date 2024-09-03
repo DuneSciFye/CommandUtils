@@ -58,7 +58,7 @@ public class FoodCommand extends Command implements Registerable {
                         }
                         case
                             "set" -> {
-                            if (allowOverflow || foodLevel + amount < 20) {
+                            if (allowOverflow || amount < 20) {
                                 p.setFoodLevel(amount);
                             } else {
                                 p.setFoodLevel(20);

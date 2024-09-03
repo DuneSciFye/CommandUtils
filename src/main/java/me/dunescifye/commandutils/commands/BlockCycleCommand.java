@@ -11,6 +11,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.CopperBulb;
+import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Stairs;
 
@@ -47,6 +49,9 @@ public class BlockCycleCommand extends Command implements Registerable {
                 BlockFace facing = null;
                 Bisected.Half half = null;
                 Slab.Type type = null;
+                Door.Hinge hinge = null;
+                boolean opened = false;
+                boolean powered = false;
 
                 if (blockData instanceof Stairs stairs) {
                     shape = stairs.getShape();
@@ -56,6 +61,12 @@ public class BlockCycleCommand extends Command implements Registerable {
                 } else if (blockData instanceof Slab slab) {
                     type = slab.getType();
                     waterlogged = slab.isWaterlogged();
+                } else if (blockData instanceof Door door) {
+                    hinge = door.getHinge();
+                    facing = door.getFacing();
+                    half = door.getHalf();
+                    opened = door.isOpen();
+                    powered = door.isPowered();
                 }
 
                 switch (material) {
@@ -127,6 +138,13 @@ public class BlockCycleCommand extends Command implements Registerable {
                     newSlab.setType(type);
                     newSlab.setWaterlogged(waterlogged);
                     b.setBlockData(newSlab);
+                } else if (newBlockData instanceof Door door) {
+                    door.setHinge(hinge);
+                    door.setFacing(facing);
+                    door.setHalf(half);
+                    door.setOpen(opened);
+                    door.setPowered(powered);
+                    b.setBlockData(door);
                 }
 
             })
@@ -154,6 +172,9 @@ public class BlockCycleCommand extends Command implements Registerable {
                 BlockFace facing = null;
                 Bisected.Half half = null;
                 Slab.Type type = null;
+                Door.Hinge hinge = null;
+                boolean opened = false;
+                boolean powered = false;
 
                 if (blockData instanceof Stairs stairs) {
                     shape = stairs.getShape();
@@ -163,6 +184,12 @@ public class BlockCycleCommand extends Command implements Registerable {
                 } else if (blockData instanceof Slab slab) {
                     type = slab.getType();
                     waterlogged = slab.isWaterlogged();
+                } else if (blockData instanceof Door door) {
+                    hinge = door.getHinge();
+                    facing = door.getFacing();
+                    half = door.getHalf();
+                    opened = door.isOpen();
+                    powered = door.isPowered();
                 }
 
                 switch (material) {
@@ -234,6 +261,13 @@ public class BlockCycleCommand extends Command implements Registerable {
                     newSlab.setType(type);
                     newSlab.setWaterlogged(waterlogged);
                     b.setBlockData(newSlab);
+                } else if (newBlockData instanceof Door door) {
+                    door.setHinge(hinge);
+                    door.setFacing(facing);
+                    door.setHalf(half);
+                    door.setOpen(opened);
+                    door.setPowered(powered);
+                    b.setBlockData(door);
                 }
             })
             .withPermission(this.getPermission())

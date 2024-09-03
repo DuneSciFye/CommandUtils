@@ -344,6 +344,7 @@ public class StringUtils extends PlaceholderExpansion {
                 case "inventoryinfo" -> {
                     //Requires: Slot, info type
                     String[] inventoryInfoArgs = org.apache.commons.lang3.StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
+                    System.out.println(inventoryInfoArgs.length);
 
                     if (inventoryInfoArgs == null || inventoryInfoArgs.length < 2) return "Invalid arguments";
 
@@ -359,7 +360,7 @@ public class StringUtils extends PlaceholderExpansion {
                         default -> inv.getItem(Integer.parseInt(invSlot));
                     };
 
-                    if (itemStack == null) return "Null Item";
+                    if (itemStack == null) return "";
                     ItemMeta itemMeta = itemStack.getItemMeta();
 
                     String infoType = inventoryInfoArgs[1];
@@ -370,7 +371,7 @@ public class StringUtils extends PlaceholderExpansion {
                                 if (armorMeta.hasTrim())
                                     return armorMeta.getTrim().getPattern().getKey().getKey();
                             }
-                            return "Null Armor Trim";
+                            return "";
                         }
                         case "material", "mat" -> {
                             return itemStack.getType().toString();
@@ -587,12 +588,12 @@ public class StringUtils extends PlaceholderExpansion {
 
                     if (coords1.length != 3 && coords2.length != 3) return "Missing arguments.";
 
-                    int[] num1;
-                    int[] num2;
+                    double[] num1;
+                    double[] num2;
 
                     try {
-                        num1 = Arrays.stream(coords1).mapToInt(Integer::parseInt).toArray();
-                        num2 = Arrays.stream(coords2).mapToInt(Integer::parseInt).toArray();
+                        num1 = Arrays.stream(coords1).mapToDouble(Double::parseDouble).toArray();
+                        num2 = Arrays.stream(coords2).mapToDouble(Double::parseDouble).toArray();
                     } catch (NumberFormatException e) {
                         return "Invalid Number for Coordinates provided";
                     }

@@ -41,7 +41,7 @@ public class ItemAttributeCommand extends Command implements Registerable {
 
         LiteralArgument addArg = new LiteralArgument("add");
         PlayerArgument playerArg = new PlayerArgument("Player");
-        IntegerArgument itemSlotArg = new IntegerArgument("Item Slot", -1, 36);
+        IntegerArgument itemSlotArg = new IntegerArgument("Item Slot", -1, 40);
         StringArgument attributeArg = new StringArgument("Attribute");
         DoubleArgument valueArg = new DoubleArgument("Value");
         StringArgument operationArg = new StringArgument("Operation");

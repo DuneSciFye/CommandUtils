@@ -101,6 +101,8 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("SetFreezeTicks", new SetFreezeTicksCommand());
         commands.put("SetShieldBlockingDelay", new SetShieldBlockingDelayCommand());
         commands.put("SetCompassTracking", new SetCompassTrackingCommand());
+        commands.put("SpawnWitherSkull", new SpawnWitherSkullCommand());
+        commands.put("SetArmorTrim", new SetArmorTrimCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
