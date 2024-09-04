@@ -31,7 +31,7 @@ public class ReplaceInRadiusCommand extends Command implements Registerable {
         IntegerArgument zArg = new IntegerArgument("Z", 0);
         StringArgument whitelistedBlocksArgument = new StringArgument("Blocks To Replace From");
 
-        new CommandTree("replaceinfacing")
+        new CommandTree("replaceinradius")
             .then(worldArg
                 .then(locArg
                     .then(playerArg

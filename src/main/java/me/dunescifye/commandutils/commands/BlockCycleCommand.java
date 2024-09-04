@@ -62,15 +62,16 @@ public class BlockCycleCommand extends Command implements Registerable {
                     type = slab.getType();
                     waterlogged = slab.isWaterlogged();
                 } else if (blockData instanceof Door door) {
+                    Block relative = b.getRelative(BlockFace.DOWN);
+                    if (relative.getBlockData() instanceof Door relativeDoor) {
+                        b = relative;
+                        door = relativeDoor;
+                    }
                     hinge = door.getHinge();
                     facing = door.getFacing();
                     half = door.getHalf();
                     opened = door.isOpen();
                     powered = door.isPowered();
-                    Block relative = b.getRelative(BlockFace.DOWN);
-                    if (relative.getBlockData() instanceof Door) {
-                        b = relative;
-                    }
                 }
 
                 switch (material) {
