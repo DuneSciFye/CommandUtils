@@ -67,6 +67,10 @@ public class BlockCycleCommand extends Command implements Registerable {
                     half = door.getHalf();
                     opened = door.isOpen();
                     powered = door.isPowered();
+                    Block relative = b.getRelative(BlockFace.DOWN);
+                    if (relative.getBlockData() instanceof Door) {
+                        b = relative;
+                    }
                 }
 
                 switch (material) {

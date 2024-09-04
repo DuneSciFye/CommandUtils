@@ -28,12 +28,13 @@ import java.util.regex.Pattern;
 
 public class StringUtils extends PlaceholderExpansion {
 
-    private static String separator = ",", elseIfKeyword, elseKeyword, conditionSeparator;
+    private static String defaultSeparator = ",", elseIfKeyword, elseKeyword, conditionSeparator;
     private static String functionSeparator = "_", nbtSeparator = ",", amountSeparator = ",";
     private static boolean allowCustomSeparator;
 
     public StringUtils(CommandUtils plugin, YamlDocument config) {
         Logger logger = plugin.getLogger();
+
         if (config.isString("Placeholders.StringUtils.If.ElseIfKeyword")) {
             elseIfKeyword = config.getString("Placeholders.StringUtils.If.ElseIfKeyword");
             if (elseIfKeyword == null)
@@ -81,7 +82,7 @@ public class StringUtils extends PlaceholderExpansion {
 
 
     public static void setSeparator(String separator) {
-        StringUtils.separator = separator;
+        StringUtils.defaultSeparator = separator;
     }
 
 
@@ -111,18 +112,15 @@ public class StringUtils extends PlaceholderExpansion {
 
     @Override
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String args) {
-        String function, arguments = null;
-
         String[] parts = args.split("(?<!\\\\)_", 2);
-        function = parts[0];
-
-        if (parts.length == 2) {
-            arguments = PlaceholderAPI.setBracketPlaceholders(player, parts[1]);
-        }
+        String function = parts[0];
+        if (parts.length != 2) return null;
+        String arguments = PlaceholderAPI.setBracketPlaceholders(player, parts[1]);
+        String separator = defaultSeparator;
 
         Player p = player.getPlayer();
 
-        for (int v = 0; v<2;v++){
+        for (int v = 0; v < 2; v++){
             switch (function) {
                 case "inputoutput" -> {
                     String[] split = org.apache.commons.lang3.StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
