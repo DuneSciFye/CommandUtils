@@ -159,6 +159,10 @@ Commands:
     Aliases: []
     Permission: "commandutils.command.itemattributecommand"
 
+  ItemDurability:
+    Enabled: true
+    Aliases: []
+
   LaunchFirework:
     Enabled: true
     Aliases: []

@@ -103,6 +103,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("SetCompassTracking", new SetCompassTrackingCommand());
         commands.put("SpawnWitherSkull", new SpawnWitherSkullCommand());
         commands.put("SetArmorTrim", new SetArmorTrimCommand());
+        commands.put("ItemDurability", new ItemDurabilityCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
