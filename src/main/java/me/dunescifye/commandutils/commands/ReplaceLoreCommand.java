@@ -4,11 +4,12 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Utils;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextReplacementConfig;
-import org.bukkit.entity.Player;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReplaceLoreCommand extends Command implements Registerable {
@@ -84,16 +85,18 @@ public class ReplaceLoreCommand extends Command implements Registerable {
 
         ItemMeta meta = item.getItemMeta();
         List<Component> loreList = meta.lore();
+        List<Component> newLore = new ArrayList<>();
 
-        TextReplacementConfig config = TextReplacementConfig.builder()
-            .matchLiteral(matcher)
-            .replacement(replacement)
-            .build();
+        if (loreList == null) return;
 
-        if (loreList != null)
-            loreList.replaceAll(component -> component.replaceText(config));
+        matcher = matcher.replace("§", "&");
+        replacement = replacement.replace("§", "&");
 
-        meta.lore(loreList);
+        for (Component component : loreList) {
+            newLore.add(LegacyComponentSerializer.legacyAmpersand().deserialize(LegacyComponentSerializer.legacyAmpersand().serialize(component).replace(matcher, replacement)).decoration(TextDecoration.ITALIC, false));
+        }
+
+        meta.lore(newLore);
         item.setItemMeta(meta);
     }
 }

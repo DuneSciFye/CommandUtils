@@ -342,7 +342,6 @@ public class StringUtils extends PlaceholderExpansion {
                 case "inventoryinfo" -> {
                     //Requires: Slot, info type
                     String[] inventoryInfoArgs = org.apache.commons.lang3.StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
-                    System.out.println(inventoryInfoArgs.length);
 
                     if (inventoryInfoArgs == null || inventoryInfoArgs.length < 2) return "Invalid arguments";
 
