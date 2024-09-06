@@ -104,6 +104,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("SpawnWitherSkull", new SpawnWitherSkullCommand());
         commands.put("SetArmorTrim", new SetArmorTrimCommand());
         commands.put("ItemDurability", new ItemDurabilityCommand());
+        commands.put("BreakBlockMultiplyDrops", new BreakBlockMultiplyDropsCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {

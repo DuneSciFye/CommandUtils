@@ -70,6 +70,10 @@ Commands:
     Aliases: []
     Permission: "commandutils.command.breakandreplantcommand"
 
+  BreakBlockMultiplyDrops:
+    Enabled: true
+    Aliases: []
+
   BreakInFacing:
     Enabled: true
     Aliases: []
