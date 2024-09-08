@@ -105,6 +105,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("SetArmorTrim", new SetArmorTrimCommand());
         commands.put("ItemDurability", new ItemDurabilityCommand());
         commands.put("BreakBlockMultiplyDrops", new BreakBlockMultiplyDropsCommand());
+        commands.put("Saturation", new SaturationCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {

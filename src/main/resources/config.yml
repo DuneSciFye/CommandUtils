@@ -245,6 +245,10 @@ Commands:
     Enabled: true
     Aliases: []
 
+  Saturation:
+    Enabled: true
+    Aliases: []
+
   SendBossBar:
     Enabled: true
     Aliases: []

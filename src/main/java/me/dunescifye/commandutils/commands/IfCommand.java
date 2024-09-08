@@ -10,6 +10,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -64,14 +67,17 @@ public class IfCommand extends Command implements Configurable {
             .withArguments(new GreedyStringArgument("Arguments"))
             .executes((sender, args) -> {
                 String input = args.getUnchecked("Arguments");
-                String[] inputSplit = input.split(elseIfKeyword);
-                String[] elseSplit = inputSplit[inputSplit.length - 1].split(elseKeyword);
-
-                String[] combinedSplit = ArrayUtils.addAll(inputSplit, elseSplit);
+                ArrayList<String> inputSplit = new ArrayList<>(List.of(input.split(" " + elseIfKeyword + " ")));
+                String[] elseSplit = inputSplit.remove(inputSplit.size() - 1).split(" " + elseKeyword + " ", 2);
+                inputSplit.add(elseSplit[0]);
+                String elseCmd = null;
+                if (elseSplit.length > 1) {
+                    elseCmd = elseSplit[1];
+                }
 
                 //If and Else If's
-                for (int i = 0; i <= combinedSplit.length; i++) {
-                    String[] argSplit = combinedSplit[i].split(conditionSeparator, 3);
+                for (String elseif : inputSplit) {
+                    String[] argSplit = elseif.split(conditionSeparator, 3);
                     if (argSplit[1].contains("=")) {
                         String[] condition = argSplit[1].split("=", 2);
                         if (Objects.equals(condition[0], condition[1])) {
@@ -120,13 +126,24 @@ public class IfCommand extends Command implements Configurable {
                             }
                             return;
                         }
+                    } else if (argSplit[1].contains(" contains ")) {
+                        String[] condition = argSplit[1].split(" contains ", 2);
+                        if (condition[0].contains(condition[1])) {
+                            for (String command : argSplit[2].split(commandSeparator)) {
+                                server.dispatchCommand(console, command);
+                            }
+                            return;
+                        }
                     }
                 }
 
                 //Else
-                for (String command : combinedSplit[combinedSplit.length - 1].split(commandSeparator)) {
+                if (elseCmd == null) return;
+                for (String command : elseCmd.split(commandSeparator)) {
                     server.dispatchCommand(console, command);
                 }
+
+
 
             })
             .withPermission(this.getPermission())

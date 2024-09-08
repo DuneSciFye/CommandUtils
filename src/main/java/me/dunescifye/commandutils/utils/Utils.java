@@ -1,6 +1,8 @@
 package me.dunescifye.commandutils.utils;
 
 import me.dunescifye.commandutils.CommandUtils;
+import me.ryanhamshire.GriefPrevention.Claim;
+import me.ryanhamshire.GriefPrevention.ClaimPermission;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.coreprotect.CoreProtectAPI;
@@ -89,6 +91,7 @@ public class Utils {
                 world.dropItemNaturally(location, item);
                 amount -= 64;
             }
+            item.setAmount(amount);
             world.dropItemNaturally(location, item);
         }
     }
@@ -112,10 +115,11 @@ public class Utils {
         return true;
     }
 
-    public static boolean isInsideClaim(final Player player, final Location blockLocation) {
+    public static boolean isInsideClaim(final Player player, final Location location) {
         if (!CommandUtils.griefPreventionEnabled) return true;
-        final DataStore dataStore = GriefPrevention.instance.dataStore;
-        return dataStore.getClaimAt(blockLocation, false, dataStore.getPlayerData(player.getUniqueId()).lastClaim) != null;
+        final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
+        if (claim == null) return false;
+        return claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
     }
     public static boolean isWilderness(Location location) {
         if (!CommandUtils.griefPreventionEnabled) return true;
@@ -124,7 +128,8 @@ public class Utils {
 
     public static boolean isInClaimOrWilderness(final Player player, final Location location) {
         if (!CommandUtils.griefPreventionEnabled) return true;
-        return isInsideClaim(player, location) || isWilderness(location);
+        final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
+        return claim == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
     }
 
     private static CoreProtectAPI getCoreProtect() {
