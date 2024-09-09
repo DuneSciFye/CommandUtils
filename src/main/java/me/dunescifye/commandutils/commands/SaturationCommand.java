@@ -1,10 +1,7 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.BooleanArgument;
-import dev.jorel.commandapi.arguments.EntitySelectorArgument;
-import dev.jorel.commandapi.arguments.IntegerArgument;
-import dev.jorel.commandapi.arguments.MultiLiteralArgument;
+import dev.jorel.commandapi.arguments.*;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -17,7 +14,7 @@ public class SaturationCommand extends Command implements Registerable {
 
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "remove", "set", "get");
         EntitySelectorArgument.ManyPlayers playersArg = new EntitySelectorArgument.ManyPlayers("Players");
-        IntegerArgument amountArg = new IntegerArgument("Amount");
+        FloatArgument amountArg = new FloatArgument("Amount");
 
         /**
          * Modifies a Player's Saturation Level
@@ -33,7 +30,7 @@ public class SaturationCommand extends Command implements Registerable {
             .withArguments(amountArg)
             .executes((sender, args) -> {
                 Collection<Player> players = args.getByArgument(playersArg);
-                int amount = args.getByArgument(amountArg);
+                float amount = args.getByArgument(amountArg);
 
                 for (Player p : players) {
                     int foodLevel = p.getFoodLevel();
