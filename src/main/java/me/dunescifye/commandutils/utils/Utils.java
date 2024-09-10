@@ -3,7 +3,6 @@ package me.dunescifye.commandutils.utils;
 import me.dunescifye.commandutils.CommandUtils;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
-import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.coreprotect.CoreProtectAPI;
 import net.coreprotect.CoreProtect;
@@ -83,16 +82,37 @@ public class Utils {
         return mergedStacksMap.values();
     }
 
-    public static void dropAllItemStacks(Collection<ItemStack> itemStacks, World world, Location location) {
+    public static void dropAllItemStacks(World world, Location location, Collection<ItemStack> itemStacks) {
         for (ItemStack item : mergeSimilarItemStacks(itemStacks)) {
-            int amount = item.getAmount();
-            while (amount > 64) {
-                item.setAmount(64);
-                world.dropItemNaturally(location, item);
-                amount -= 64;
+            while (item.getAmount() > 0) {
+                if (item.getAmount() > 64) world.dropItemNaturally(location, item.asQuantity(64));
+                else world.dropItemNaturally(location, item);
+                item.setAmount(item.getAmount() - 64);
             }
-            item.setAmount(amount);
-            world.dropItemNaturally(location, item);
+        }
+    }
+    public static Collection<ItemStack> mergeSimilarItemStacks(ItemStack... itemStacks) {
+        Map<Material, ItemStack> mergedStacksMap = new HashMap<>();
+
+        for (ItemStack stack : itemStacks) {
+            Material material = stack.getType();
+            ItemStack existing = mergedStacksMap.get(material);
+            if (existing == null) {
+                mergedStacksMap.put(material, stack.clone());
+            } else {
+                existing.setAmount(existing.getAmount() + stack.getAmount());
+            }
+        }
+        return mergedStacksMap.values();
+    }
+
+    public static void dropAllItemStacks(World world, Location location, ItemStack... itemStacks) {
+        for (ItemStack item : mergeSimilarItemStacks(itemStacks)) {
+            while (item.getAmount() > 0) {
+                if (item.getAmount() > 64) world.dropItemNaturally(location, item.asQuantity(64));
+                else world.dropItemNaturally(location, item);
+                item.setAmount(item.getAmount() - 64);
+            }
         }
     }
 
@@ -130,6 +150,25 @@ public class Utils {
         if (!CommandUtils.griefPreventionEnabled) return true;
         final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
         return claim == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
+    }
+
+
+    public static boolean notInBlacklist(Block b, List<Predicate<Block>> blacklist) {
+        for (Predicate<Block> blacklisted : blacklist) {
+            if (blacklisted.test(b)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean inWhitelist(Block b, List<Predicate<Block>> whitelist) {
+        for (Predicate<Block> predicate : whitelist) {
+            if (predicate.test(b)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static CoreProtectAPI getCoreProtect() {
@@ -368,5 +407,19 @@ public class Utils {
                 case EAST  -> { xStart = 0; xEnd = depth; }
             }
         }
+    }
+
+    public static Set<Block> getBlocksInRadius(Block origin, final int radius) {
+        Set<Block> blocks = new HashSet<>();
+
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    blocks.add(origin.getRelative(x, y, z));
+                }
+            }
+        }
+
+        return blocks;
     }
 }

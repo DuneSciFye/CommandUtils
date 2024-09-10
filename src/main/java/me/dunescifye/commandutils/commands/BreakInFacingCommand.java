@@ -108,7 +108,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, world, location);
+                    dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -182,7 +182,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, location.getWorld(), location);
+                    dropAllItemStacks(location.getWorld(), location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -265,7 +265,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, world, location);
+                    dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -343,7 +343,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, location.getWorld(), location);
+                    dropAllItemStacks(location.getWorld(), location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -443,7 +443,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, world, location);
+                    dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -538,7 +538,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, location.getWorld(), location);
+                    dropAllItemStacks(location.getWorld(), location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -642,7 +642,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, world, location);
+                    dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -743,7 +743,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, location.getWorld(), location);
+                    dropAllItemStacks(location.getWorld(), location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -1265,7 +1265,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    Utils.dropAllItemStacks(drops, world, location);
+                    Utils.dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -1361,7 +1361,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    Utils.dropAllItemStacks(drops, location.getWorld(), location);
+                    Utils.dropAllItemStacks(location.getWorld(), location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -1465,7 +1465,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    Utils.dropAllItemStacks(drops, world, location);
+                    Utils.dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -1567,7 +1567,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    Utils.dropAllItemStacks(drops, location.getWorld(), location);
+                    Utils.dropAllItemStacks(location.getWorld(), location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -1639,7 +1639,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, world, location);
+                    dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -1709,7 +1709,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, world, location);
+                    dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -1786,7 +1786,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, world, location);
+                    dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -1862,7 +1862,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, world, location);
+                    dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -1954,7 +1954,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, world, location);
+                    dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -2045,7 +2045,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, world, location);
+                    dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -2144,7 +2144,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, world, location);
+                    dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -2241,7 +2241,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, world, location);
+                    dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -2739,7 +2739,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, world, location);
+                    dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -2829,7 +2829,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, world, location);
+                    dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -2928,7 +2928,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, world, location);
+                    dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -3024,7 +3024,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         }
                     }
 
-                    dropAllItemStacks(drops, world, location);
+                    dropAllItemStacks(world, location, drops);
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())

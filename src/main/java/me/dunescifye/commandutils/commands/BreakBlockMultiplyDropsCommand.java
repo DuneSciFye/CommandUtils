@@ -48,7 +48,7 @@ public class BreakBlockMultiplyDropsCommand extends Command implements Registera
 
                 b.setType(Material.AIR);
 
-                Utils.dropAllItemStacks(multipliedDrops, world, loc);
+                Utils.dropAllItemStacks(world, loc, multipliedDrops);
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
