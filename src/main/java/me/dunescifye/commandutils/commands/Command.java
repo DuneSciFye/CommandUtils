@@ -6,7 +6,7 @@ public abstract class Command {
 
     private static boolean enabled = true;
     private static String[] commandAliases = new String[0];
-    private static String permission;
+    private String permission;
     private String namespace = Config.getNamespace();
 
     public void setEnabled(boolean enabled) {
@@ -29,7 +29,7 @@ public abstract class Command {
     }
 
     public void setPermission(String permission) {
-        Command.permission = permission;
+        this.permission = permission;
     }
 
 

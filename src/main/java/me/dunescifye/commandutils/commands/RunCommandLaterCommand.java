@@ -17,40 +17,68 @@ public class RunCommandLaterCommand extends Command implements Registerable {
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
     @SuppressWarnings("ConstantConditions")
     public void register() {
+
         if (!this.getEnabled()) return;
+
+        Server server = Bukkit.getServer();
+        ConsoleCommandSender console = server.getConsoleSender();
+
         new CommandTree("runcommandlater")
-            .then(new StringArgument("Command ID")
+            .then(new LiteralArgument("add")
+                .then(new StringArgument("Command ID")
+                    .then(new IntegerArgument("Ticks", 0)
+                        .then(new GreedyStringArgument("Commands")
+                            .executesPlayer((player, args) -> {
+                                String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
+                                int ticks = args.getUnchecked("Ticks");
+
+                                BukkitTask task = Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
+                                    for (String command : commands) {
+                                        server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(player, command.replace("$", "%")));
+                                    }
+                                }, ticks);
+
+                                tasks.put(args.getUnchecked("Command ID"), task);
+                            })
+                            .executesConsole((sender, args) -> {
+                                String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
+                                int ticks = args.getUnchecked("Ticks");
+
+                                BukkitTask task = Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
+                                    for (String command : commands) {
+                                        server.dispatchCommand(console, command.replace("$", "%"));
+                                    }
+                                }, ticks);
+
+                                tasks.put((String) args.get("Command ID"), task);
+                            })
+                        )
+                    )
+                )
+            )
+            .then(new LiteralArgument("run")
                 .then(new IntegerArgument("Ticks", 0)
                     .then(new GreedyStringArgument("Commands")
                         .executesPlayer((player, args) -> {
                             String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
                             int ticks = args.getUnchecked("Ticks");
 
-                            Server server = Bukkit.getServer();
-                            ConsoleCommandSender console = server.getConsoleSender();
-
-                            BukkitTask task = Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
+                            Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
                                 for (String command : commands) {
                                     server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(player, command.replace("$", "%")));
                                 }
                             }, ticks);
-
-                            tasks.put(args.getUnchecked("Command ID"), task);
                         })
                         .executesConsole((sender, args) -> {
                             String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
                             int ticks = args.getUnchecked("Ticks");
 
-                            Server server = Bukkit.getServer();
-                            ConsoleCommandSender console = server.getConsoleSender();
-
-                            BukkitTask task = Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
+                            Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
                                 for (String command : commands) {
                                     server.dispatchCommand(console, command.replace("$", "%"));
                                 }
                             }, ticks);
 
-                            tasks.put((String) args.get("Command ID"), task);
                         })
                     )
                 )

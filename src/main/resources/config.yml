@@ -337,6 +337,10 @@ Commands:
     Enabled: true
     Aliases: []
 
+  TempVar:
+    Enabled: true
+    Aliases: []
+
   Waterlog:
     Enabled: true
     Aliases: []

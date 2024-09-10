@@ -2,6 +2,7 @@ package me.dunescifye.commandutils;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
+import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import me.dunescifye.commandutils.commands.*;
 import me.dunescifye.commandutils.files.Config;
 import me.dunescifye.commandutils.listeners.*;
@@ -23,13 +24,12 @@ public final class CommandUtils extends JavaPlugin {
     public static final NamespacedKey autoPickupKey = new NamespacedKey("commandutils", "autopickup");
     public static boolean griefPreventionEnabled = false, placeholderAPIEnabled = false;
     private static final HashMap<String, Command> commands = new HashMap<>();
-    /*
+
     @Override
     public void onLoad() {
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
     }
 
-     */
 
 
     @Override
@@ -39,7 +39,7 @@ public final class CommandUtils extends JavaPlugin {
 
         //Files first
 
-        //CommandAPI.onEnable();
+        CommandAPI.onEnable();
         commands.put("BlockCycle", new BlockCycleCommand());
         commands.put("BlockGravity", new BlockGravityCommand());
         commands.put("BoneMealBlock", new BoneMealBlockCommand());
@@ -106,6 +106,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("ItemDurability", new ItemDurabilityCommand());
         commands.put("BreakBlockMultiplyDrops", new BreakBlockMultiplyDropsCommand());
         commands.put("Saturation", new SaturationCommand());
+        commands.put("TempVar", new TempVarCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
@@ -137,7 +138,7 @@ public final class CommandUtils extends JavaPlugin {
             CommandAPI.unregister(commandName);
         }
 
-        //CommandAPI.onDisable();
+        CommandAPI.onDisable();
     }
 
     private void registerListeners() {

@@ -3,7 +3,7 @@ package me.dunescifye.commandutils.files;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import me.dunescifye.commandutils.CommandUtils;
-import me.dunescifye.commandutils.placeholders.StringUtils;
+import me.dunescifye.commandutils.placeholders.Placeholders;
 import me.dunescifye.commandutils.commands.Command;
 import me.dunescifye.commandutils.commands.Configurable;
 import me.dunescifye.commandutils.commands.Registerable;
@@ -113,14 +113,14 @@ public class Config {
                     }
                     if (config.isBoolean("Placeholders.StringUtils.Enabled")) {
                         if (config.getBoolean("Placeholders.StringUtils.Enabled")) {
-                            new StringUtils(CommandUtils.getInstance(), config).register();
+                            new Placeholders(CommandUtils.getInstance(), config).register();
                             Section placeholderSection = config.getSection("Placeholders.StringUtils");
 
                             if (placeholderSection.getOptionalString("ArgumentSeparator").isEmpty()) {
                                 placeholderSection.set("ArgumentSeparator", ",");
                             }
                             if (placeholderSection.isString("ArgumentSeparator")) {
-                                StringUtils.setSeparator(placeholderSection.getString("ArgumentSeparator"));
+                                Placeholders.setSeparator(placeholderSection.getString("ArgumentSeparator"));
                             } else {
                                 logger.warning("Configuration Placeholders.StringUtils.ArgumentSeparator is not a string. Found " + placeholderSection.get("ArgumentSeparator"));
                             }
@@ -129,7 +129,7 @@ public class Config {
                                 placeholderSection.set("AllowCustomSeparator", true);
                             }
                             if (placeholderSection.isBoolean("AllowCustomSeparator")) {
-                                StringUtils.setAllowCustomSeparator(placeholderSection.getBoolean("AllowCustomSeparator"));
+                                Placeholders.setAllowCustomSeparator(placeholderSection.getBoolean("AllowCustomSeparator"));
                             } else {
                                 logger.warning("Configuration Placeholders.StringUtils.AllowCustomSeparator is not a boolean. Found " + placeholderSection.get("AllowCustomSeparator"));
                             }

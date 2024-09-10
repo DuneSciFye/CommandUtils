@@ -10,51 +10,51 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.WitherSkull;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.HashMap;
+
 public class TempVarCommand extends Command implements Registerable {
+
+    private static final HashMap<String, String> vars = new HashMap<>();
+
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {
 
-        if (!this.getEnabled()) return;
+        if (!this.getEnabled())
+            return;
 
-        StringArgument worldArg = new StringArgument("World");
-        LocationArgument locArg = new LocationArgument("Location");
-        BooleanArgument breakBlocksArg = new BooleanArgument("Break Blocks");
-        DoubleArgument velocityMultiplierArg = new DoubleArgument("Velocity Multiplier");
-        FloatArgument yawArg = new FloatArgument("Yaw");
-        FloatArgument pitchArg = new FloatArgument("Pitch");
+        StringArgument varArg = new StringArgument("Variable Name");
+        GreedyStringArgument contentArg = new GreedyStringArgument("Content");
+        MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "set", "get", "clear", "remove", "setifempty");
 
         /**
-         * Summons a Wither Skull
+         * Sets a temporary variable, won't persist across server restarts
          * @author DuneSciFye
-         * @since 1.0.0
-         * @param World World of the Location
-         * @param Location Location of where to Spawn Wither Skull
-         * @param Yaw Yaw of the Skull
-         * @param Pitch Pitch of the Skull
-         * @param VelocityMultiplier Number to multiply velocity by
-         * @param Boolean If Skull should Break Blocks
+         * @since 1.0.6
+         * @param
          */
-        new CommandAPICommand("spawnwitherskull")
-            .withArguments(worldArg)
-            .withArguments(locArg)
-            .withOptionalArguments(yawArg)
-            .withOptionalArguments(pitchArg)
-            .withOptionalArguments(velocityMultiplierArg)
-            .withOptionalArguments(breakBlocksArg)
+        new CommandAPICommand("tempvar")
+            .withArguments(functionArg)
+            .withArguments(varArg)
+            .withOptionalArguments(contentArg)
             .executes((sender, args) -> {
-                World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                Location loc = args.getByArgument(locArg);
-                loc.setYaw(args.getByArgumentOrDefault(yawArg, (float) 0));
-                loc.setPitch(args.getByArgumentOrDefault(pitchArg, (float) 0));
-                WitherSkull witherSkull = (WitherSkull) world.spawnEntity(loc, EntityType.WITHER_SKULL);
-                witherSkull.setVelocity(witherSkull.getVelocity().multiply(args.getByArgumentOrDefault(velocityMultiplierArg, 1.0)));
-                if (!args.getByArgumentOrDefault(breakBlocksArg, true)) {
-                    witherSkull.setMetadata("ignoreblockbreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
+                String varName = args.getByArgument(varArg);
+                String content = args.getByArgumentOrDefault(contentArg, "");
+
+                switch (args.getByArgument(functionArg)) {
+                    case "set", "add" -> vars.put(varName, content);
+                    case "clear", "remove" -> vars.remove(varName);
+                    case "get" -> sender.sendMessage(getVar(varName));
+                    case "setifempty" -> vars.putIfAbsent(varName, content);
                 }
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
-
     }
+
+    public static String getVar(final String varName) {
+        String var = vars.get(varName);
+        return var == null ? "" : var;
+    }
+}
