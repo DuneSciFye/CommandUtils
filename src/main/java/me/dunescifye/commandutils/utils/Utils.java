@@ -49,6 +49,8 @@ public class Utils {
         for (Tag<Material> tag : Bukkit.getTags("blocks", Material.class)) {
             PREDICATES_LIST.add("#" + tag.getKey().asString());
             PREDICATES_LIST.add("!#" + tag.getKey().asString());
+            PREDICATES_LIST.add(tag.getKey().asString());
+            PREDICATES_LIST.add("!" + tag.getKey().asString());
         }
 
         for (Material mat : Material.values()) {
@@ -251,7 +253,21 @@ public class Utils {
             //Blacklist
             if (predicate.startsWith("!")) {
                 //Tags
-                if (predicate.startsWith("!#")) {
+                if (predicate.startsWith("!minecraft")) {
+                    predicate = predicate.substring(1);
+                    try {
+                        NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
+                        if (predicateKey != null) {
+                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
+                            if (tag != null) {
+                                blacklist.add(block -> tag.isTagged(block.getType()));
+                            }
+                        }
+                    } catch (
+                        IllegalArgumentException ignored) {
+                    }
+                }
+                else if (predicate.startsWith("!#")) {
                     predicate = predicate.substring(2);
                     try {
                         NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
@@ -275,7 +291,20 @@ public class Utils {
             //Whitelist
             else {
                 //Tags
-                if (predicate.startsWith("#")) {
+                if (predicate.startsWith("minecraft")) {
+                    try {
+                        NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
+                        if (predicateKey != null) {
+                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
+                            if (tag != null) {
+                                whitelist.add(block -> tag.isTagged(block.getType()));
+                            }
+                        }
+                    } catch (
+                        IllegalArgumentException ignored) {
+                    }
+                }
+                else if (predicate.startsWith("#")) {
                     predicate = predicate.substring(1);
                     try {
                         NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
@@ -303,7 +332,23 @@ public class Utils {
             //Blacklist
             if (predicate.startsWith("!")) {
                 //Tags
-                if (predicate.startsWith("!#")) {
+
+                if (predicate.startsWith("!minecraft")) {
+                    predicate = predicate.substring(1);
+                    try {
+                        NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
+                        if (predicateKey != null) {
+                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
+                            if (tag != null) {
+                                blacklist.add(block -> tag.isTagged(block.getType()));
+                            }
+                        }
+                    } catch (
+                        IllegalArgumentException e) {
+                        logger.info("Invalid block tag: " + predicate);
+                    }
+                }
+                else if (predicate.startsWith("!#")) {
                     predicate = predicate.substring(2);
                     try {
                         NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
@@ -328,7 +373,21 @@ public class Utils {
             //Whitelist
             else {
                 //Tags
-                if (predicate.startsWith("#")) {
+                if (predicate.startsWith("minecraft")) {
+                    try {
+                        NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
+                        if (predicateKey != null) {
+                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
+                            if (tag != null) {
+                                whitelist.add(block -> tag.isTagged(block.getType()));
+                            }
+                        }
+                    } catch (
+                        IllegalArgumentException e) {
+                        logger.info("Invalid block tag: " + predicate);
+                    }
+                }
+                else if (predicate.startsWith("#")) {
                     predicate = predicate.substring(1);
                     try {
                         NamespacedKey predicateKey = NamespacedKey.fromString(predicate);

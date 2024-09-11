@@ -264,7 +264,7 @@ public class BreakInRadiusCommand extends Command implements Registerable {
             .withArguments(whitelistedBlocksArgument
                 .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
             )
-            .withArguments(dropArg)
+            .withArguments(forcedropArg)
             .executes((sender, args) -> {
                 String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
                 List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
