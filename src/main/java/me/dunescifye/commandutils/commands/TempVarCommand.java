@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.CommandUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -42,7 +43,12 @@ public class TempVarCommand extends Command implements Registerable {
                 String content = args.getByArgumentOrDefault(contentArg, "");
 
                 switch (args.getByArgument(functionArg)) {
-                    case "set", "add" -> vars.put(varName, content);
+                    case "set" -> vars.put(varName, content);
+                    case "add" -> {
+                        String current = vars.getOrDefault(varName, "0");
+                        if (!NumberUtils.isCreatable(content) || !NumberUtils.isCreatable(current)) return;
+                        vars.put(varName, String.valueOf(Double.parseDouble(content) + Double.parseDouble(current)));
+                    }
                     case "clear", "remove" -> vars.remove(varName);
                     case "get" -> sender.sendMessage(getVar(varName));
                     case "setifempty" -> vars.putIfAbsent(varName, content);
