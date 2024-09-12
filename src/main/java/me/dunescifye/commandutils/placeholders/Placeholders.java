@@ -630,6 +630,11 @@ public class Placeholders extends PlaceholderExpansion {
             case "variable", "var" -> {
                 return TempVarCommand.getVar(arguments);
             }
+            case "variabledefault", "vardefault" -> {
+                String[] varParts = arguments.split("_", 2);
+                String var = TempVarCommand.getVar(varParts[1]);
+                return var.isEmpty() ? varParts[0] : var;
+            }
             /**
              * Get block relative to player eyesight
              * @author DuneSciFye

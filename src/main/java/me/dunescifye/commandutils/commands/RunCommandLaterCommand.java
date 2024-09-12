@@ -9,6 +9,7 @@ import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +32,9 @@ public class RunCommandLaterCommand extends Command implements Registerable {
                             .executesPlayer((player, args) -> {
                                 String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
                                 int ticks = args.getUnchecked("Ticks");
+                                String taskID = args.getUnchecked("Command ID");
+                                BukkitTask oldTask = tasks.remove(taskID);
+                                if (oldTask != null) oldTask.cancel();
 
                                 BukkitTask task = Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
                                     for (String command : commands) {
@@ -38,11 +42,14 @@ public class RunCommandLaterCommand extends Command implements Registerable {
                                     }
                                 }, ticks);
 
-                                tasks.put(args.getUnchecked("Command ID"), task);
+                                tasks.put(taskID, task);
                             })
                             .executesConsole((sender, args) -> {
                                 String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
                                 int ticks = args.getUnchecked("Ticks");
+                                String taskID = args.getUnchecked("Command ID");
+                                BukkitTask oldTask = tasks.remove(taskID);
+                                if (oldTask != null) oldTask.cancel();
 
                                 BukkitTask task = Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
                                     for (String command : commands) {
@@ -50,7 +57,7 @@ public class RunCommandLaterCommand extends Command implements Registerable {
                                     }
                                 }, ticks);
 
-                                tasks.put((String) args.get("Command ID"), task);
+                                tasks.put(taskID, task);
                             })
                         )
                     )
