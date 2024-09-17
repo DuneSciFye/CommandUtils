@@ -450,29 +450,18 @@ public class Placeholders extends PlaceholderExpansion {
 
                 String armorSetID = armorSetArgs[0];
 
-                if (p == null || !p.isOnline()) return "false";
+                if (p == null || !p.isOnline()) return "0";
 
-                ItemStack helm = p.getInventory().getHelmet();
-                if (helm == null) return "false";
-                ItemStack chest = p.getInventory().getChestplate();
-                if (chest == null) return "false";
-                ItemStack legs = p.getInventory().getLeggings();
-                if (legs == null) return "false";
-                ItemStack boots = p.getInventory().getBoots();
-                if (boots == null) return "false";
-                if (!helm.hasItemMeta() || !chest.hasItemMeta() || !legs.hasItemMeta() || !boots.hasItemMeta())
-                    return "false";
+                int amount = 0;
 
-                String helmID = helm.getItemMeta().getPersistentDataContainer().get(CommandUtils.keyEIID, PersistentDataType.STRING);
-                if (helmID == null || !helmID.contains(armorSetID + "helm")) return "false";
-                String legsID = legs.getItemMeta().getPersistentDataContainer().get(CommandUtils.keyEIID, PersistentDataType.STRING);
-                if (legsID == null || !legsID.contains(armorSetID + "legs")) return "false";
-                String chestID = chest.getItemMeta().getPersistentDataContainer().get(CommandUtils.keyEIID, PersistentDataType.STRING);
-                if (chestID == null || !chestID.contains(armorSetID + "chest")) return "false";
-                String bootsID = boots.getItemMeta().getPersistentDataContainer().get(CommandUtils.keyEIID, PersistentDataType.STRING);
-                if (bootsID == null || !bootsID.contains(armorSetID + "boots")) return "false";
+                for (ItemStack armor : p.getInventory().getArmorContents()) {
+                    if (armor != null && armor.hasItemMeta()) {
+                        String armorID = armor.getItemMeta().getPersistentDataContainer().get(CommandUtils.keyEIID, PersistentDataType.STRING);
+                        if (armorID != null && armorID.contains(armorSetID)) amount++;
+                    }
+                }
 
-                return "true";
+                return String.valueOf(amount);
             }
             case "worldenvironment" -> {
                 return p.getWorld().getEnvironment().toString();
