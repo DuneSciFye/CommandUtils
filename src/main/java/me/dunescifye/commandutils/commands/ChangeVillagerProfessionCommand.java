@@ -4,6 +4,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
+import org.bukkit.Registry;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Villager;
 
@@ -15,8 +16,8 @@ import java.util.stream.Collectors;
 public class ChangeVillagerProfessionCommand extends Command implements Registerable {
 
     private static List<String> getAllVillagerProfession() {
-        return Arrays.stream(Villager.Profession.values())
-            .map(Enum::name)
+        return Arrays.stream(Registry.VILLAGER_PROFESSION.stream().toArray())
+            .map(Object::toString)
             .collect(Collectors.toList());
     }
 

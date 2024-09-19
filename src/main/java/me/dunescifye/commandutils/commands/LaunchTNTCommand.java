@@ -37,7 +37,7 @@ public class LaunchTNTCommand extends Command implements Registerable {
             .withOptionalArguments(breakBlocksArg)
             .executes((sender, args) -> {
                 Player p = args.getByArgument(playerArg);
-                Entity tnt = p.getWorld().spawnEntity(p.getLocation(), EntityType.PRIMED_TNT);
+                Entity tnt = p.getWorld().spawnEntity(p.getLocation(), EntityType.TNT);
                 tnt.setVelocity(p.getEyeLocation().getDirection());
                 if (args.getByArgumentOrDefault(breakBlocksArg, false)) {
                     tnt.setMetadata("ignoreblockbreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
@@ -60,7 +60,7 @@ public class LaunchTNTCommand extends Command implements Registerable {
             .withArguments(locArg)
             .withOptionalArguments(breakBlocksArg)
             .executes((sender, args) -> {
-                Entity tnt = Bukkit.getWorld(args.getByArgument(worldArg)).spawnEntity(args.getByArgument(locArg), EntityType.PRIMED_TNT);
+                Entity tnt = Bukkit.getWorld(args.getByArgument(worldArg)).spawnEntity(args.getByArgument(locArg), EntityType.TNT);
                 if (args.getByArgumentOrDefault(breakBlocksArg, false)) {
                     tnt.setMetadata("ignoreblockbreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
                 }
@@ -81,7 +81,7 @@ public class LaunchTNTCommand extends Command implements Registerable {
             .withOptionalArguments(breakBlocksArg)
             .executes((sender, args) -> {
                 Location loc = args.getByArgument(locArg);
-                Entity tnt = loc.getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
+                Entity tnt = loc.getWorld().spawnEntity(loc, EntityType.TNT);
                 if (args.getByArgumentOrDefault(breakBlocksArg, false)) {
                     tnt.setMetadata("ignoreblockbreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
                 }

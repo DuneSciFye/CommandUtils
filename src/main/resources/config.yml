@@ -249,6 +249,10 @@ Commands:
     Enabled: true
     Aliases: []
 
+  ScaleWithCollide:
+    Enabled: true
+    Aliases: []
+
   SendBossBar:
     Enabled: true
     Aliases: []

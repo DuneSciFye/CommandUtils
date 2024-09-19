@@ -40,7 +40,7 @@ public class SpawnNoDamageFireworkCommand extends Command implements Registerabl
             .withArguments(ticksToDetonateArg)
             .withOptionalArguments(playerArg)
             .executes((sender, args) -> {
-                Firework fw = (Firework) Bukkit.getWorld(args.getByArgument(worldArg)).spawnEntity(args.getByArgument(locArg), EntityType.FIREWORK);
+                Firework fw = (Firework) Bukkit.getWorld(args.getByArgument(worldArg)).spawnEntity(args.getByArgument(locArg), EntityType.FIREWORK_ROCKET);
 
                 spawnFirework(fw, args.getByArgument(ticksToDetonateArg), args.getByArgument(playerArg));
             })
@@ -62,7 +62,7 @@ public class SpawnNoDamageFireworkCommand extends Command implements Registerabl
             .withOptionalArguments(playerArg)
             .executes((sender, args) -> {
                 Location loc = args.getByArgument(locArg);
-                Firework fw = (Firework) loc.getWorld().spawnEntity(loc, EntityType.FIREWORK);
+                Firework fw = (Firework) loc.getWorld().spawnEntity(loc, EntityType.FIREWORK_ROCKET);
                 spawnFirework(fw, args.getByArgument(ticksToDetonateArg), args.getByArgument(playerArg));
             })
             .withPermission(this.getPermission())

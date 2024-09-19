@@ -22,7 +22,7 @@ public final class CommandUtils extends JavaPlugin {
     public static final NamespacedKey keyNoDamagePlayer = new NamespacedKey("lunaritems", "nodamageplayer");
     public static final NamespacedKey noGravityKey = new NamespacedKey("lunaritems", "nogravity");
     public static final NamespacedKey autoPickupKey = new NamespacedKey("commandutils", "autopickup");
-    public static boolean griefPreventionEnabled = false, placeholderAPIEnabled = false;
+    public static boolean griefPreventionEnabled = false, placeholderAPIEnabled = false, factionsUUIDEnabled;
     private static final HashMap<String, Command> commands = new HashMap<>();
 
     @Override
@@ -107,6 +107,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("BreakBlockMultiplyDrops", new BreakBlockMultiplyDropsCommand());
         commands.put("Saturation", new SaturationCommand());
         commands.put("TempVar", new TempVarCommand());
+        commands.put("ScaleWithCollide", new ScaleWithCollideCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
@@ -125,6 +126,11 @@ public final class CommandUtils extends JavaPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
             logger.info("Detected GriefPrevention, enabling support for it.");
             griefPreventionEnabled = true;
+        }
+
+        if (Bukkit.getPluginManager().isPluginEnabled("FactionsUUID")) {
+            logger.info("Detected GriefPrevention, enabling support for it.");
+            factionsUUIDEnabled = true;
         }
 
         CustomBlockData.registerListener(plugin);

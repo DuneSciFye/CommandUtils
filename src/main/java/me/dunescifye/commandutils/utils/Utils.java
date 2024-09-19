@@ -1,5 +1,7 @@
 package me.dunescifye.commandutils.utils;
 
+import com.massivecraft.factions.*;
+import com.massivecraft.factions.perms.PermissibleActions;
 import me.dunescifye.commandutils.CommandUtils;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
@@ -138,10 +140,16 @@ public class Utils {
     }
 
     public static boolean isInsideClaim(final Player player, final Location location) {
-        if (!CommandUtils.griefPreventionEnabled) return true;
-        final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
-        if (claim == null) return false;
-        return claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
+        if (CommandUtils.griefPreventionEnabled) {
+            final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
+            if (claim == null) return false;
+            return claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
+        } /*else if (CommandUtils.factionsUUIDEnabled) {
+            FLocation fLocation = new FLocation(location);
+            return Board.getInstance().getFactionAt(fLocation).hasAccess(FPlayers.getInstance().getByPlayer(player), PermissibleActions.DESTROY, fLocation);
+        }
+        */
+        return true;
     }
     public static boolean isWilderness(Location location) {
         if (!CommandUtils.griefPreventionEnabled) return true;
@@ -149,9 +157,16 @@ public class Utils {
     }
 
     public static boolean isInClaimOrWilderness(final Player player, final Location location) {
-        if (!CommandUtils.griefPreventionEnabled) return true;
-        final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
-        return claim == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
+        if (CommandUtils.griefPreventionEnabled) {
+            final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
+            return claim == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
+        }/* else if (CommandUtils.factionsUUIDEnabled) {
+            FLocation fLocation = new FLocation(location);
+            return Board.getInstance().getFactionAt(fLocation).hasAccess(FPlayers.getInstance().getByPlayer(player), PermissibleActions.DESTROY, fLocation);
+        }
+        */
+
+        return true;
     }
 
 
