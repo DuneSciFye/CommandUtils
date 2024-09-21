@@ -2,23 +2,29 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
+import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.Utils;
-import org.bukkit.*;
+import net.coreprotect.CoreProtect;
+import net.coreprotect.CoreProtectAPI;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
-import java.util.function.Predicate;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static me.dunescifye.commandutils.utils.Utils.dropAllItemStacks;
 
-public class BreakInFacingCommand extends Command implements Registerable {
+public class BreakInFacingLogCoreProtectCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        if (!this.getEnabled()) return;
+        if (!this.getEnabled() || !CommandUtils.coreProtectEnabled) return;
 
         StringArgument worldArg = new StringArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
@@ -29,17 +35,19 @@ public class BreakInFacingCommand extends Command implements Registerable {
         LiteralArgument forceDropArg = new LiteralArgument("forcedrop");
         ItemStackArgument dropArg = new ItemStackArgument("Drop");
 
+        CoreProtectAPI cpAPI = CoreProtect.getInstance().getAPI();
+
         /**
          * Breaks Blocks in Direction Player is Facing, Breaks all Blocks
          * @author DuneSciFye
-         * @since 1.0.0
+         * @since 2.0.3
          * @param World World of the Blocks
          * @param Location Location of the Center Block
          * @param Player Player who is Breaking the Blocks
          * @param Radius Radius to Break Blocks In
          * @param Depth Number of Blocks to Break Forward in
          */
-        new CommandAPICommand("breakinfacing")
+        new CommandAPICommand("breakinfacinglogcoreprotect")
             .withArguments(worldArg)
             .withArguments(locArg)
             .withArguments(playerArg)
@@ -51,12 +59,14 @@ public class BreakInFacingCommand extends Command implements Registerable {
                 Player player = args.getByArgument(playerArg);
                 ItemStack heldItem = player.getInventory().getItemInMainHand();
                 Collection<ItemStack> drops = new ArrayList<>();
+                String name = player.getName();
 
                 for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
                     Location relativeLocation = b.getLocation();
                     if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
                         drops.addAll(b.getDrops(heldItem));
                         b.setType(Material.AIR);
+                        cpAPI.logRemoval(name, b.getLocation(), b.getType(), b.getBlockData());
                     }
                 }
 
@@ -67,9 +77,9 @@ public class BreakInFacingCommand extends Command implements Registerable {
             .register(this.getNamespace());
 
         /**
-         * Breaks Blocks in Direction Player is Facing, Define Predicates in List Format on Command
+         * Breaks Blocks in Direction Player is Facing with GriefPrevention, Define Predicates in List Format on Command
          * @author DuneSciFye
-         * @since 1.0.0
+         * @since 2.0.3
          * @param World World of the Blocks
          * @param Location Location of the Center Block
          * @param Player Player who is Breaking the Blocks
@@ -78,7 +88,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
          * @param whitelist Literal Argument
          * @param Predicates List of Predicates
          */
-        new CommandAPICommand("breakinfacing")
+        new CommandAPICommand("breakinfacinglogcoreprotect")
             .withArguments(worldArg)
             .withArguments(locArg)
             .withArguments(playerArg)
@@ -95,11 +105,13 @@ public class BreakInFacingCommand extends Command implements Registerable {
                 Player player = args.getByArgument(playerArg);
                 ItemStack heldItem = player.getInventory().getItemInMainHand();
                 Collection<ItemStack> drops = new ArrayList<>();
+                String name = player.getName();
 
                 for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
                     if (!Utils.inWhitelistBlacklist(args.getUnchecked("Whitelisted Blocks"), b) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
                     drops.addAll(b.getDrops(heldItem));
                     b.setType(Material.AIR);
+                    cpAPI.logRemoval(name, b.getLocation(), b.getType(), b.getBlockData());
                 }
 
                 dropAllItemStacks(world, location, drops);
@@ -109,9 +121,9 @@ public class BreakInFacingCommand extends Command implements Registerable {
             .register(this.getNamespace());
 
         /**
-         * Breaks Blocks in Direction Player is Facing, Define Predicates in List Format on Command, Custom Block Drop
+         * Breaks Blocks in Direction Player is Facing with GriefPrevention, Define Predicates in List Format on Command, Custom Block Drop
          * @author DuneSciFye
-         * @since 1.0.0
+         * @since 2.0.3
          * @param World World of the Blocks
          * @param Location Location of the Center Block
          * @param Player Player who is Breaking the Blocks
@@ -121,7 +133,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
          * @param Predicates List of Predicates
          * @param Drop ItemStack to Replace Drops with
          */
-        new CommandAPICommand("breakinfacing")
+        new CommandAPICommand("breakinfacinglogcoreprotect")
             .withArguments(worldArg)
             .withArguments(locArg)
             .withArguments(playerArg)
@@ -138,11 +150,13 @@ public class BreakInFacingCommand extends Command implements Registerable {
                 Location location = args.getByArgument(locArg);
                 Player player = args.getByArgument(playerArg);
                 ItemStack drop = args.getByArgument(dropArg);
+                String name = player.getName();
 
                 for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
                     if (!Utils.inWhitelistBlacklist(args.getUnchecked("Whitelisted Blocks"), b) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
                     drop.setAmount(drop.getAmount() + 1);
                     b.setType(Material.AIR);
+                    cpAPI.logRemoval(name, b.getLocation(), b.getType(), b.getBlockData());
                 }
 
                 drop.setAmount(drop.getAmount() - 1);
@@ -153,9 +167,9 @@ public class BreakInFacingCommand extends Command implements Registerable {
             .register(this.getNamespace());
 
         /**
-         * Breaks Blocks in Direction Player is Facing, Define Predicates in List Format on Command, Force Drop Block
+         * Breaks Blocks in Direction Player is Facing with GriefPrevention, Define Predicates in List Format on Command, Force Drop Block Drop
          * @author DuneSciFye
-         * @since 1.0.0
+         * @since 2.0.3
          * @param World World of the Blocks
          * @param Location Location of the Center Block
          * @param Player Player who is Breaking the Blocks
@@ -165,7 +179,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
          * @param Predicates List of Predicates
          * @param forcedrop Literal Argument to "Silk Touch" Block Drops
          */
-        new CommandAPICommand("breakinfacing")
+        new CommandAPICommand("breakinfacinglogcoreprotect")
             .withArguments(worldArg)
             .withArguments(locArg)
             .withArguments(playerArg)
@@ -181,14 +195,15 @@ public class BreakInFacingCommand extends Command implements Registerable {
             .executes((sender, args) -> {
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 Location location = args.getByArgument(locArg);
-                location.setWorld(world);
                 Player player = args.getByArgument(playerArg);
                 Collection<ItemStack> drops = new ArrayList<>();
+                String name = player.getName();
 
                 for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
                     if (!Utils.inWhitelistBlacklist(args.getUnchecked("Whitelisted Blocks"), b) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
                     drops.add(new ItemStack(b.getType()));
                     b.setType(Material.AIR);
+                    cpAPI.logRemoval(name, b.getLocation(), b.getType(), b.getBlockData());
                 }
 
                 Utils.dropAllItemStacks(world, location, drops);

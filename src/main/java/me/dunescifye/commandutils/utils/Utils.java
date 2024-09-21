@@ -188,6 +188,23 @@ public class Utils {
         return false;
     }
 
+    public static boolean inWhitelistBlacklist(List<String> predicates, Block b) {
+        List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
+        Utils.stringListToPredicate(predicates, whitelist, blacklist);
+
+        for (Predicate<Block> predicate : whitelist) {
+            if (predicate.test(b)) {
+                for (Predicate<Block> blacklisted : blacklist) {
+                    if (blacklisted.test(b)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static CoreProtectAPI getCoreProtect() {
         Plugin plugin = getServer().getPluginManager().getPlugin("CoreProtect");
         Logger logger = CommandUtils.getInstance().getLogger();
@@ -464,9 +481,25 @@ public class Utils {
         return false;
     }
 
-    public static void setupFacing(Player p, int depth, int xStart, int yStart, int zStart, int xEnd, int yEnd, int zEnd) {
-        double pitch = p.getPitch();
+    public static Set<Block> getBlocksInRadius(Block origin, final int radius) {
+        Set<Block> blocks = new HashSet<>();
 
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    blocks.add(origin.getRelative(x, y, z));
+                }
+            }
+        }
+
+        return blocks;
+    }
+
+    public static Set<Block> getBlocksInFacing(Block origin, final int radius, final int depth, final Player player) {
+        Set<Block> blocks = new HashSet<>();
+
+        double pitch = player.getLocation().getPitch();
+        int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;
         if (pitch < -45) {
             yStart = 0;
             yEnd = depth;
@@ -474,21 +507,29 @@ public class Utils {
             yStart = -depth;
             yEnd = 0;
         } else {
-            switch (p.getFacing()) {
-                case NORTH -> { zStart = -depth; zEnd = 0; }
-                case SOUTH -> { zStart = 0; zEnd = depth; }
-                case WEST  -> { xStart = -depth; xEnd = 0; }
-                case EAST  -> { xStart = 0; xEnd = depth; }
+            switch (player.getFacing()) {
+                case NORTH -> {
+                    zStart = -depth;
+                    zEnd = 0;
+                }
+                case SOUTH -> {
+                    zStart = 0;
+                    zEnd = depth;
+                }
+                case WEST -> {
+                    xStart = -depth;
+                    xEnd = 0;
+                }
+                case EAST -> {
+                    xStart = 0;
+                    xEnd = depth;
+                }
             }
         }
-    }
 
-    public static Set<Block> getBlocksInRadius(Block origin, final int radius) {
-        Set<Block> blocks = new HashSet<>();
-
-        for (int x = -radius; x <= radius; x++) {
-            for (int y = -radius; y <= radius; y++) {
-                for (int z = -radius; z <= radius; z++) {
+        for (int x = xStart; x <= xEnd; x++) {
+            for (int y = yStart; y <= yEnd; y++) {
+                for (int z = zStart; z <= zEnd; z++) {
                     blocks.add(origin.getRelative(x, y, z));
                 }
             }

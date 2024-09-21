@@ -79,6 +79,10 @@ Commands:
     Aliases: []
     Permission: "commandutils.command.breakinfacingcommand"
 
+  BreakInFacingLogCoreProtect:
+    Enabled: true
+    Aliases: []
+
   BreakInRadius:
     Enabled: true
     Aliases: []
