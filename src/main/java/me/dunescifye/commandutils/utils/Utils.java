@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.utils;
 import com.massivecraft.factions.*;
 import com.massivecraft.factions.perms.PermissibleActions;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.files.Config;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
@@ -182,23 +183,6 @@ public class Utils {
     public static boolean inWhitelist(Block b, List<Predicate<Block>> whitelist) {
         for (Predicate<Block> predicate : whitelist) {
             if (predicate.test(b)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean inWhitelistBlacklist(List<String> predicates, Block b) {
-        List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
-        Utils.stringListToPredicate(predicates, whitelist, blacklist);
-
-        for (Predicate<Block> predicate : whitelist) {
-            if (predicate.test(b)) {
-                for (Predicate<Block> blacklisted : blacklist) {
-                    if (blacklisted.test(b)) {
-                        return false;
-                    }
-                }
                 return true;
             }
         }
@@ -495,8 +479,9 @@ public class Utils {
         return blocks;
     }
 
-    public static Set<Block> getBlocksInFacing(Block origin, final int radius, final int depth, final Player player) {
+    public static Set<Block> getBlocksInFacing(Block origin, final int radius, int depth, final Player player) {
         Set<Block> blocks = new HashSet<>();
+        depth = depth > 0 ? depth - 1 : depth;
 
         double pitch = player.getLocation().getPitch();
         int xStart = -radius, yStart = -radius, zStart = -radius, xEnd = radius, yEnd = radius, zEnd = radius;

@@ -16,8 +16,11 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.function.Predicate;
 
 import static me.dunescifye.commandutils.utils.Utils.dropAllItemStacks;
+import static me.dunescifye.commandutils.utils.Utils.testBlock;
 
 public class BreakInFacingLogCoreProtectCommand extends Command implements Registerable {
 
@@ -106,9 +109,11 @@ public class BreakInFacingLogCoreProtectCommand extends Command implements Regis
                 ItemStack heldItem = player.getInventory().getItemInMainHand();
                 Collection<ItemStack> drops = new ArrayList<>();
                 String name = player.getName();
+                List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
+                Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
 
                 for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
-                    if (!Utils.inWhitelistBlacklist(args.getUnchecked("Whitelisted Blocks"), b) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
+                    if (!testBlock(b, whitelist, blacklist) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
                     drops.addAll(b.getDrops(heldItem));
                     b.setType(Material.AIR);
                     cpAPI.logRemoval(name, b.getLocation(), b.getType(), b.getBlockData());
@@ -151,9 +156,11 @@ public class BreakInFacingLogCoreProtectCommand extends Command implements Regis
                 Player player = args.getByArgument(playerArg);
                 ItemStack drop = args.getByArgument(dropArg);
                 String name = player.getName();
+                List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
+                Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
 
                 for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
-                    if (!Utils.inWhitelistBlacklist(args.getUnchecked("Whitelisted Blocks"), b) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
+                    if (!testBlock(b, whitelist, blacklist) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
                     drop.setAmount(drop.getAmount() + 1);
                     b.setType(Material.AIR);
                     cpAPI.logRemoval(name, b.getLocation(), b.getType(), b.getBlockData());
@@ -198,9 +205,11 @@ public class BreakInFacingLogCoreProtectCommand extends Command implements Regis
                 Player player = args.getByArgument(playerArg);
                 Collection<ItemStack> drops = new ArrayList<>();
                 String name = player.getName();
+                List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
+                Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
 
                 for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
-                    if (!Utils.inWhitelistBlacklist(args.getUnchecked("Whitelisted Blocks"), b) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
+                    if (!testBlock(b, whitelist, blacklist) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
                     drops.add(new ItemStack(b.getType()));
                     b.setType(Material.AIR);
                     cpAPI.logRemoval(name, b.getLocation(), b.getType(), b.getBlockData());
