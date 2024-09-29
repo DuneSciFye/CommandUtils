@@ -89,15 +89,14 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                     .withStringMapper()
                     .buildText())
                 .executes((sender, args) -> {
-                    List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
-                    Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
+                    List<Predicate<Block>>[] predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
                     World world = Bukkit.getWorld(args.getByArgument(worldArg));
                     if (world == null) return;
                     Location location = args.getByArgument(locArg);
                     location.setWorld(world);
 
-                    breakInRadius(whitelist, blacklist, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg));
+                    breakInRadius(predicates, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg));
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -126,15 +125,14 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                 .buildText())
             .withArguments(dropArg)
             .executes((sender, args) -> {
-                List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
-                Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
+                List<Predicate<Block>>[] predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 if (world == null) return;
                 Location location = args.getByArgument(locArg);
                 location.setWorld(world);
 
-                breakInRadius(whitelist, blacklist, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg), args.getByArgument(dropArg));
+                breakInRadius(predicates, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg), args.getByArgument(dropArg));
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
@@ -164,15 +162,14 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                 .buildText())
             .withArguments(forcedropArg)
             .executes((sender, args) -> {
-                List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
-                Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"), whitelist, blacklist);
+                List<Predicate<Block>>[] predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 if (world == null) return;
                 Location location = args.getByArgument(locArg);
                 location.setWorld(world);
 
-                breakInRadiusForceDrop(whitelist, blacklist, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg));
+                breakInRadiusForceDrop(predicates, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg));
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
@@ -194,18 +191,17 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                 .withArguments(playerArg)
                 .withArguments(radiusArg)
                 .withArguments(whitelistedBlocksArgument
-                    .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
+                    .replaceSuggestions(ArgumentSuggestions.strings(Config.getPredicates()))
                 )
                 .executes((sender, args) -> {
-                    String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
-                    List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
+                    List<Predicate<Block>>[] predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                     World world = Bukkit.getWorld(args.getByArgument(worldArg));
                     if (world == null) return;
                     Location location = args.getByArgument(locArg);
                     location.setWorld(world);
 
-                    breakInRadius(whitelist, blacklist, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg));
+                    breakInRadius(predicates, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg));
                 })
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
@@ -227,19 +223,18 @@ public class BreakInRadiusCommand extends Command implements Registerable {
             .withArguments(playerArg)
             .withArguments(radiusArg)
             .withArguments(whitelistedBlocksArgument
-                .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
+                .replaceSuggestions(ArgumentSuggestions.strings(Config.getPredicates()))
             )
             .withArguments(dropArg)
             .executes((sender, args) -> {
-                String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
-                List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
+                List<Predicate<Block>>[] predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 if (world == null) return;
                 Location location = args.getByArgument(locArg);
                 location.setWorld(world);
 
-                breakInRadius(whitelist, blacklist, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg), args.getByArgument(dropArg));
+                breakInRadius(predicates, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg), args.getByArgument(dropArg));
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
@@ -262,31 +257,30 @@ public class BreakInRadiusCommand extends Command implements Registerable {
             .withArguments(playerArg)
             .withArguments(radiusArg)
             .withArguments(whitelistedBlocksArgument
-                .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
+                .replaceSuggestions(ArgumentSuggestions.strings(Config.getPredicates()))
             )
             .withArguments(forcedropArg)
             .executes((sender, args) -> {
-                String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
-                List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
+                List<Predicate<Block>>[] predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 if (world == null) return;
                 Location location = args.getByArgument(locArg);
                 location.setWorld(world);
 
-                breakInRadiusForceDrop(whitelist, blacklist, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg));
+                breakInRadiusForceDrop(predicates, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg));
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 
-    private void breakInRadius(List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist, World world, Location location, Player player, int radius) {
+    private void breakInRadius(List<Predicate<Block>>[] predicates, World world, Location location, Player player, int radius) {
         ItemStack heldItem = player.getInventory().getItemInMainHand();
         Collection<ItemStack> drops = new ArrayList<>();
 
         for (Block b : Utils.getBlocksInRadius(location.getBlock(), radius)) {
-            if (!Utils.inWhitelist(b, whitelist) || !Utils.notInBlacklist(b, blacklist) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
+            if (!Utils.testBlock(b, predicates) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
 
             drops.addAll(b.getDrops(heldItem));
             b.setType(AIR);
@@ -294,24 +288,24 @@ public class BreakInRadiusCommand extends Command implements Registerable {
 
         dropAllItemStacks(world, location, drops);
     }
-    private void breakInRadius(List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist, World world, Location location, Player player, int radius, ItemStack drop) {
+    private void breakInRadius(List<Predicate<Block>>[] predicates, World world, Location location, Player player, int radius, ItemStack drop) {
 
         for (Block b : Utils.getBlocksInRadius(location.getBlock(), radius)) {
-            if (!Utils.inWhitelist(b, whitelist) || !Utils.notInBlacklist(b, blacklist) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
+            if (!Utils.testBlock(b, predicates) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
 
             drop.setAmount(drop.getAmount() + 1);
             b.setType(AIR);
         }
 
         drop.setAmount(drop.getAmount() - 1);
-        Utils.dropAllItemStacks(world, location, drop);
+        Utils.dropAllItemStacks(world, location, List.of(drop));
     }
 
-    private void breakInRadiusForceDrop(List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist, World world, Location location, Player player, int radius) {
+    private void breakInRadiusForceDrop(List<Predicate<Block>>[] predicates, World world, Location location, Player player, int radius) {
         Collection<ItemStack> drops = new ArrayList<>();
 
         for (Block b : Utils.getBlocksInRadius(location.getBlock(), radius)) {
-            if (!Utils.inWhitelist(b, whitelist) || !Utils.notInBlacklist(b, blacklist) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
+            if (!Utils.testBlock(b, predicates) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
 
             drops.add(new ItemStack(b.getType()));
             b.setType(AIR);

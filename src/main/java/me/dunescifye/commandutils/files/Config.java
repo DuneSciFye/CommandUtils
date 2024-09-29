@@ -7,7 +7,6 @@ import me.dunescifye.commandutils.placeholders.Placeholders;
 import me.dunescifye.commandutils.commands.Command;
 import me.dunescifye.commandutils.commands.Configurable;
 import me.dunescifye.commandutils.commands.Registerable;
-import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.block.Block;
 
 import java.io.File;
@@ -16,23 +15,13 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
+import static me.dunescifye.commandutils.utils.Utils.stringListToPredicate;
+
 public class Config {
 
-    private static final Map<String, List<Predicate<Block>>> whitelists = new HashMap<>();
-    private static final Map<String, List<Predicate<Block>>> blacklists = new HashMap<>();
+    private static final Map<String, List<Predicate<Block>>[]> predicates = new HashMap<>();
 
     private static String namespace = "commandutils";
-
-    public static List<Predicate<Block>> getWhitelist(String name) {
-        return whitelists.get(name);
-    }
-    public static List<Predicate<Block>> getBlacklist(String name) {
-        return blacklists.get(name);
-    }
-
-    public static Set<String> getWhitelistKeySet() {
-        return whitelists.keySet();
-    }
 
     public static void setup(CommandUtils plugin) {
         Logger logger = plugin.getLogger();
@@ -143,14 +132,8 @@ public class Config {
             Section whitelistSection = config.getSection("Whitelists");
 
             for (Object objectKey : whitelistSection.getKeys()) {
-                if (objectKey instanceof String key) {
-                    List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
-
-                    Utils.stringListToPredicate(config.getStringList("Whitelists." + key), whitelist, blacklist, logger);
-
-                    whitelists.put(key, whitelist);
-                    blacklists.put(key, blacklist);
-                }
+                if (objectKey instanceof String key)
+                    predicates.put(key, stringListToPredicate(config.getStringList("Whitelists." + key)));
             }
 
             config.save();
@@ -161,5 +144,13 @@ public class Config {
 
     public static String getNamespace() {
         return namespace;
+    }
+
+    public static List<Predicate<Block>>[] getPredicate(String key){
+        return predicates.get(key);
+    }
+
+    public static Set<String> getPredicates() {
+        return predicates.keySet();
     }
 }

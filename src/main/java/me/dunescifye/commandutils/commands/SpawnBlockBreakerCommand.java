@@ -70,7 +70,7 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
                                             })
                                             //Player, Item, Vector Multiplier, Radius, Period, Max Time, Whitelisted Blocks
                                             .then(whitelistedBlocksArgument
-                                                .replaceSuggestions(ArgumentSuggestions.strings(Config.getWhitelistKeySet()))
+                                                .replaceSuggestions(ArgumentSuggestions.strings(Config.getPredicates()))
                                                 .executes((sender, args) -> {
                                                     Location loc = args.getByArgument(locationArgument);
                                                     loc.setPitch(args.getByArgument(pitchArgument));
@@ -81,8 +81,7 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
 
                                                     int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
 
-                                                    String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
-                                                    List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
+                                                    List<Predicate<Block>>[] predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                                                     new BukkitRunnable() {
                                                         int count = 0;
@@ -98,19 +97,10 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
 
                                                             for (int x = -radius; x <= radius; x++) {
                                                                 for (int y = -radius; y <= radius; y++) {
-                                                                    block: for (int z = -radius; z <= radius; z++) {
+                                                                    for (int z = -radius; z <= radius; z++) {
                                                                         Block relative = origin.getRelative(x, y, z);
-                                                                        for (Predicate<Block> whitelist : whitelist) {
-                                                                            if (whitelist.test(relative)) {
-                                                                                for (Predicate<Block> blacklist : blacklist) {
-                                                                                    if (blacklist.test(relative)) {
-                                                                                        continue block;
-                                                                                    }
-                                                                                }
-                                                                                relative.breakNaturally();
-                                                                                break;
-                                                                            }
-                                                                        }
+                                                                        if (!Utils.testBlock(relative, predicates)) continue;
+                                                                        relative.breakNaturally();
                                                                     }
                                                                 }
                                                             }
@@ -165,9 +155,7 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
                                             snowball.setItem(args.getByArgument(itemStackArgument));
 
                                             int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
-
-                                            String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
-                                            List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
+                                            List<Predicate<Block>>[] predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                                             new BukkitRunnable() {
                                                 int count = 0;
@@ -183,19 +171,10 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
 
                                                     for (int x = -radius; x <= radius; x++) {
                                                         for (int y = -radius; y <= radius; y++) {
-                                                            block: for (int z = -radius; z <= radius; z++) {
+                                                            for (int z = -radius; z <= radius; z++) {
                                                                 Block relative = origin.getRelative(x, y, z);
-                                                                for (Predicate<Block> whitelist : whitelist) {
-                                                                    if (whitelist.test(relative)) {
-                                                                        for (Predicate<Block> blacklist : blacklist) {
-                                                                            if (blacklist.test(relative)) {
-                                                                                continue block;
-                                                                            }
-                                                                        }
-                                                                        relative.breakNaturally();
-                                                                        break;
-                                                                    }
-                                                                }
+                                                                if (!Utils.testBlock(relative, predicates)) continue;
+                                                                relative.breakNaturally();
                                                             }
                                                         }
                                                     }
@@ -215,9 +194,7 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
                                                 snowball.setItem(args.getByArgument(itemStackArgument));
 
                                                 int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
-
-                                                String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
-                                                List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
+                                                List<Predicate<Block>>[] predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                                                 new BukkitRunnable() {
                                                     int count = 0;
@@ -233,23 +210,10 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
 
                                                         for (int x = -radius; x <= radius; x++) {
                                                             for (int y = -radius; y <= radius; y++) {
-                                                                block: for (int z = -radius; z <= radius; z++) {
+                                                                for (int z = -radius; z <= radius; z++) {
                                                                     Block relative = origin.getRelative(x, y, z);
-                                                                    for (Predicate<Block> whitelist : whitelist) {
-                                                                        if (whitelist.test(relative)) {
-                                                                            for (Predicate<Block> blacklist : blacklist) {
-                                                                                if (blacklist.test(relative)) {
-                                                                                    continue block;
-                                                                                }
-                                                                            }
-                                                                            //Testing claim
-                                                                            Location relativeLocation = relative.getLocation();
-                                                                            if (Utils.isInsideClaim(p, relativeLocation) || Utils.isWilderness(relativeLocation)) {
-                                                                                relative.breakNaturally();
-                                                                                break;
-                                                                            }
-                                                                        }
-                                                                    }
+                                                                    if (!Utils.testBlock(relative, predicates) || !Utils.isInClaimOrWilderness(p, relative.getLocation())) continue;
+                                                                    relative.breakNaturally();
                                                                 }
                                                             }
                                                         }
@@ -267,9 +231,7 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
                                                     snowball.setItem(args.getByArgument(itemStackArgument));
 
                                                     int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
-
-                                                    String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
-                                                    List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
+                                                    List<Predicate<Block>>[] predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                                                     new BukkitRunnable() {
                                                         int count = 0;
@@ -286,19 +248,10 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
                                                             p.setMetadata("ignoreBlockBreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
                                                             for (int x = -radius; x <= radius; x++) {
                                                                 for (int y = -radius; y <= radius; y++) {
-                                                                    block: for (int z = -radius; z <= radius; z++) {
+                                                                    for (int z = -radius; z <= radius; z++) {
                                                                         Block relative = origin.getRelative(x, y, z);
-                                                                        for (Predicate<Block> whitelist : whitelist) {
-                                                                            if (whitelist.test(relative)) {
-                                                                                for (Predicate<Block> blacklist : blacklist) {
-                                                                                    if (blacklist.test(relative)) {
-                                                                                        continue block;
-                                                                                    }
-                                                                                }
-                                                                                p.breakBlock(relative);
-                                                                                continue block;
-                                                                            }
-                                                                        }
+                                                                        if (!Utils.testBlock(relative, predicates)) continue;
+                                                                        relative.breakNaturally();
                                                                     }
                                                                 }
                                                             }
@@ -318,8 +271,7 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
 
                                                         int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
 
-                                                        String whitelistedBlocks = args.getByArgument(whitelistedBlocksArgument);
-                                                        List<Predicate<Block>> whitelist = Config.getWhitelist(whitelistedBlocks), blacklist = Config.getBlacklist(whitelistedBlocks);
+                                                        List<Predicate<Block>>[] predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                                                         new BukkitRunnable() {
                                                             int count = 0;
@@ -335,24 +287,16 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
 
                                                                 for (int x = -radius; x <= radius; x++) {
                                                                     for (int y = -radius; y <= radius; y++) {
-                                                                        block: for (int z = -radius; z <= radius; z++) {
+                                                                        for (int z = -radius; z <= radius; z++) {
                                                                             Block relative = origin.getRelative(x, y, z);
-                                                                            for (Predicate<Block> whitelist : whitelist) {
-                                                                                if (whitelist.test(relative)) {
-                                                                                    for (Predicate<Block> blacklist : blacklist) {
-                                                                                        if (blacklist.test(relative)) {
-                                                                                            continue block;
-                                                                                        }
-                                                                                    }
-                                                                                    p.setMetadata("ignoreBlockBreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
-                                                                                    //BlockBreakEvent blockBreakEvent = new BlockBreakEvent(relative, p);
-                                                                                    //Bukkit.getServer().getPluginManager().callEvent(blockBreakEvent);
-                                                                                    PersistentDataContainer pdc = new CustomBlockData(relative, CommandUtils.getInstance());
-                                                                                    pdc.set(CommandUtils.autoPickupKey, PersistentDataType.BOOLEAN, true);
-                                                                                    p.breakBlock(relative);
-                                                                                    p.removeMetadata("ignoreBlockBreak", CommandUtils.getInstance());
-                                                                                }
-                                                                            }
+                                                                            if (!Utils.testBlock(relative, predicates)) continue;
+                                                                            p.setMetadata("ignoreBlockBreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
+                                                                            //BlockBreakEvent blockBreakEvent = new BlockBreakEvent(relative, p);
+                                                                            //Bukkit.getServer().getPluginManager().callEvent(blockBreakEvent);
+                                                                            PersistentDataContainer pdc = new CustomBlockData(relative, CommandUtils.getInstance());
+                                                                            pdc.set(CommandUtils.autoPickupKey, PersistentDataType.BOOLEAN, true);
+                                                                            p.breakBlock(relative);
+                                                                            p.removeMetadata("ignoreBlockBreak", CommandUtils.getInstance());
                                                                         }
                                                                     }
                                                                 }

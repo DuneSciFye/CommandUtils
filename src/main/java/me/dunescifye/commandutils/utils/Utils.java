@@ -3,7 +3,6 @@ package me.dunescifye.commandutils.utils;
 import com.massivecraft.factions.*;
 import com.massivecraft.factions.perms.PermissibleActions;
 import me.dunescifye.commandutils.CommandUtils;
-import me.dunescifye.commandutils.files.Config;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
@@ -25,30 +24,9 @@ import static org.bukkit.Bukkit.getServer;
 
 public class Utils {
 
-    private static final Map<String, List<Predicate<Block>>> predicates = new HashMap<>();
     private static final Collection<String> PREDICATES_LIST = new ArrayList<>();
-    private static final Collection<String> PARTICLES_LIST = new ArrayList<>();
-
-    private static final List<Predicate<Block>> pickaxeBlacklist = Arrays.asList(
-        block -> block.getType().equals(Material.SPAWNER),
-        block -> block.getType().equals(Material.GILDED_BLACKSTONE),
-        block -> block.getType().equals(Material.DROPPER),
-        block -> block.getType().equals(Material.DISPENSER),
-        block -> block.getType().equals(Material.HOPPER),
-        block -> block.getType().equals(Material.FURNACE),
-        block -> block.getType().equals(Material.BLAST_FURNACE),
-        block -> block.getType().equals(Material.SMOKER),
-        block -> Tag.SHULKER_BOXES.isTagged(block.getType())
-    );
-
-    private static final List<Predicate<Block>> pickaxeWhitelist = List.of(
-        block -> Tag.MINEABLE_PICKAXE.isTagged(block.getType())
-    );
 
     static {
-        predicates.put("pickaxeBlacklist", pickaxeBlacklist);
-        predicates.put("pickaxeWhitelist", pickaxeWhitelist);
-
         for (Tag<Material> tag : Bukkit.getTags("blocks", Material.class)) {
             PREDICATES_LIST.add("#" + tag.getKey().asString());
             PREDICATES_LIST.add("!#" + tag.getKey().asString());
@@ -61,15 +39,6 @@ public class Utils {
             PREDICATES_LIST.add(name);
             PREDICATES_LIST.add("!" + name);
         }
-
-        //Particles List
-        for (Particle particle : Particle.values()) {
-            PARTICLES_LIST.add(particle.name());
-        }
-    }
-
-    public static List<Predicate<Block>> getPredicate(String id){
-        return predicates.get(id);
     }
 
     public static Collection<ItemStack> mergeSimilarItemStacks(Collection<ItemStack> itemStacks) {
@@ -96,30 +65,6 @@ public class Utils {
             }
         }
     }
-    public static Collection<ItemStack> mergeSimilarItemStacks(ItemStack... itemStacks) {
-        Map<Material, ItemStack> mergedStacksMap = new HashMap<>();
-
-        for (ItemStack stack : itemStacks) {
-            Material material = stack.getType();
-            ItemStack existing = mergedStacksMap.get(material);
-            if (existing == null) {
-                mergedStacksMap.put(material, stack.clone());
-            } else {
-                existing.setAmount(existing.getAmount() + stack.getAmount());
-            }
-        }
-        return mergedStacksMap.values();
-    }
-
-    public static void dropAllItemStacks(World world, Location location, ItemStack... itemStacks) {
-        for (ItemStack item : mergeSimilarItemStacks(itemStacks)) {
-            while (item.getAmount() > 0) {
-                if (item.getAmount() > 64) world.dropItemNaturally(location, item.asQuantity(64));
-                else world.dropItemNaturally(location, item);
-                item.setAmount(item.getAmount() - 64);
-            }
-        }
-    }
 
     public static boolean isNumeric(String str) {
         try {
@@ -130,11 +75,10 @@ public class Utils {
         }
     }
 
-
     public static boolean isNaturallyGenerated(Block block) {
         List<String[]> lookup = getCoreProtect().blockLookup(block, 2147483647);
         if (lookup != null && !lookup.isEmpty()) {
-            CoreProtectAPI.ParseResult parseResult = getCoreProtect().parseResult(lookup.get(0));
+            CoreProtectAPI.ParseResult parseResult = getCoreProtect().parseResult(lookup.getFirst());
             return parseResult.getPlayer().startsWith("#") || parseResult.getActionId() != 1 || parseResult.isRolledBack();
         }
         return true;
@@ -168,25 +112,6 @@ public class Utils {
         */
 
         return true;
-    }
-
-
-    public static boolean notInBlacklist(Block b, List<Predicate<Block>> blacklist) {
-        for (Predicate<Block> blacklisted : blacklist) {
-            if (blacklisted.test(b)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static boolean inWhitelist(Block b, List<Predicate<Block>> whitelist) {
-        for (Predicate<Block> predicate : whitelist) {
-            if (predicate.test(b)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private static CoreProtectAPI getCoreProtect() {
@@ -264,101 +189,22 @@ public class Utils {
         return null;
     }
 
-    public static void stringListToPredicate(List<String> predicates, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist) {
+    public static List<Predicate<Block>>[] stringListToPredicate(List<String> predicates) {
+        List<Predicate<Block>>[] predicateList = new List[2];
+        predicateList[0] = new ArrayList<>();
+        predicateList[1] = new ArrayList<>();
+        Logger logger = CommandUtils.getInstance().getLogger();
+
         for (String predicate : predicates) {
-            //Blacklist
-            if (predicate.startsWith("!")) {
-                //Tags
+            if (predicate.startsWith("!")) { //Blacklist
                 if (predicate.startsWith("!minecraft")) {
                     predicate = predicate.substring(1);
                     try {
                         NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
-                        if (predicateKey != null) {
-                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
-                            if (tag != null) {
-                                blacklist.add(block -> tag.isTagged(block.getType()));
-                            }
-                        }
-                    } catch (
-                        IllegalArgumentException ignored) {
-                    }
-                }
-                else if (predicate.startsWith("!#")) {
-                    predicate = predicate.substring(2);
-                    try {
-                        NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
-                        if (predicateKey != null) {
-                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
-                            if (tag != null) {
-                                blacklist.add(block -> tag.isTagged(block.getType()));
-                            }
-                        }
-                    } catch (
-                        IllegalArgumentException ignored) {
-                    }
-                }
-                //Blocks
-                else {
-                    predicate = predicate.substring(1);
-                    Material material = Material.getMaterial(predicate.toUpperCase());
-                    blacklist.add(block -> block.getType().equals(material));
-                }
-            }
-            //Whitelist
-            else {
-                //Tags
-                if (predicate.startsWith("minecraft")) {
-                    try {
-                        NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
-                        if (predicateKey != null) {
-                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
-                            if (tag != null) {
-                                whitelist.add(block -> tag.isTagged(block.getType()));
-                            }
-                        }
-                    } catch (
-                        IllegalArgumentException ignored) {
-                    }
-                }
-                else if (predicate.startsWith("#")) {
-                    predicate = predicate.substring(1);
-                    try {
-                        NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
-                        if (predicateKey != null) {
-                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
-                            if (tag != null) {
-                                whitelist.add(block -> tag.isTagged(block.getType()));
-                            }
-                        }
-                    } catch (
-                        IllegalArgumentException ignored) {
-                    }
-                }
-                //Blocks
-                else {
-                    Material material = Material.getMaterial(predicate.toUpperCase());
-                    whitelist.add(block -> block.getType().equals(material));
-                }
-            }
-        }
-    }
-
-    public static void stringListToPredicate(List<String> predicates, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist, Logger logger) {
-        for (String predicate : predicates) {
-            //Blacklist
-            if (predicate.startsWith("!")) {
-                //Tags
-
-                if (predicate.startsWith("!minecraft")) {
-                    predicate = predicate.substring(1);
-                    try {
-                        NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
-                        if (predicateKey != null) {
-                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
-                            if (tag != null) {
-                                blacklist.add(block -> tag.isTagged(block.getType()));
-                            }
-                        }
+                        if (predicateKey == null) continue;
+                        Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
+                        if (tag == null) continue;
+                        predicateList[1].add(block -> tag.isTagged(block.getType()));
                     } catch (
                         IllegalArgumentException e) {
                         logger.info("Invalid block tag: " + predicate);
@@ -368,36 +214,30 @@ public class Utils {
                     predicate = predicate.substring(2);
                     try {
                         NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
-                        if (predicateKey != null) {
-                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
-                            if (tag != null) {
-                                blacklist.add(block -> tag.isTagged(block.getType()));
-                            }
-                        }
+                        if (predicateKey == null) continue;
+                        Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
+                        if (tag == null) continue;
+                        predicateList[1].add(block -> tag.isTagged(block.getType()));
                     } catch (
                         IllegalArgumentException e) {
                         logger.info("Invalid block tag: " + predicate);
                     }
                 }
-                //Blocks
-                else {
+                else { //Blocks
                     predicate = predicate.substring(1);
                     Material material = Material.getMaterial(predicate.toUpperCase());
-                    blacklist.add(block -> block.getType().equals(material));
+                    if (material == null) continue;
+                    predicateList[1].add(block -> block.getType().equals(material));
                 }
             }
-            //Whitelist
-            else {
-                //Tags
-                if (predicate.startsWith("minecraft")) {
+            else { //Whitelist
+                if (predicate.startsWith("minecraft")) { //Tags
                     try {
                         NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
-                        if (predicateKey != null) {
-                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
-                            if (tag != null) {
-                                whitelist.add(block -> tag.isTagged(block.getType()));
-                            }
-                        }
+                        if (predicateKey == null) continue;
+                        Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
+                        if (tag == null) continue;
+                        predicateList[0].add(block -> tag.isTagged(block.getType()));
                     } catch (
                         IllegalArgumentException e) {
                         logger.info("Invalid block tag: " + predicate);
@@ -407,42 +247,27 @@ public class Utils {
                     predicate = predicate.substring(1);
                     try {
                         NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
-                        if (predicateKey != null) {
-                            Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
-                            if (tag != null) {
-                                whitelist.add(block -> tag.isTagged(block.getType()));
-                            }
-                        }
+                        if (predicateKey == null) continue;
+                        Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
+                        if (tag == null) continue;
+                        predicateList[0].add(block -> tag.isTagged(block.getType()));
                     } catch (
                         IllegalArgumentException e) {
                         logger.info("Invalid block tag: " + predicate);
                     }
                 }
-                //Blocks
-                else {
+                else { //Blocks
                     Material material = Material.getMaterial(predicate.toUpperCase());
-                    whitelist.add(block -> block.getType().equals(material));
+                    if (material == null) continue;
+                    predicateList[0].add(block -> block.getType().equals(material));
                 }
             }
         }
-    }
-
-    public static List<Particle> stringListToParticles(List<String> inputList) {
-        List<Particle> particles = new ArrayList<>();
-
-        for (String input : inputList) {
-            particles.add(Particle.valueOf(input));
-        }
-
-        return particles;
+        return predicateList;
     }
 
     public static Collection<String> getPredicatesList() {
         return PREDICATES_LIST;
-    }
-
-    public static Collection<String> getParticlesList() {
-        return PARTICLES_LIST;
     }
 
     public static Collection<String> getPlayersList() {
@@ -451,17 +276,10 @@ public class Utils {
             .collect(Collectors.toList());
     }
 
-    public static boolean testBlock(Block b, List<Predicate<Block>> whitelist, List<Predicate<Block>> blacklist) {
-        for (Predicate<Block> predicateWhitelist : whitelist) {
-            if (predicateWhitelist.test(b)) {
-                for (Predicate<Block> predicateBlacklist : blacklist) {
-                    if (predicateBlacklist.test(b)) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
+    public static boolean testBlock(Block b, List<Predicate<Block>>[] predicates) {
+        for (Predicate<Block> whitelist : predicates[0])
+            if (whitelist.test(b))
+                return predicates[1].stream().noneMatch(blacklist -> blacklist.test(b));
         return false;
     }
 
