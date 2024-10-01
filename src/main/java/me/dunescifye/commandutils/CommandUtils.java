@@ -124,6 +124,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("ScaleWithCollide", new ScaleWithCollideCommand());
         commands.put("BreakInFacingLogCoreProtect", new BreakInFacingLogCoreProtectCommand());
         commands.put("SetMobTarget", new SetMobTargetCommand());
+        commands.put("RemoveEntity", new RemoveEntityCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {

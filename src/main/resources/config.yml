@@ -220,6 +220,10 @@ Commands:
     Enabled: true
     Aliases: []
 
+  RemoveEntity:
+    Enabled: true
+    Aliases: []
+
   RemoveItem:
     Enabled: true
     Aliases: []
