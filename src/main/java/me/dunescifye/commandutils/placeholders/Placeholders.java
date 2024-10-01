@@ -19,6 +19,8 @@ import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BlockIterator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -613,8 +615,7 @@ public class Placeholders extends PlaceholderExpansion {
              * Get value of temporary variable
              * @author DuneSciFye
              * @since 2.0.0
-             * @param Double Distance to go
-             * @param Function Data to get, allowed: coordinates, coord, coords, mat, material
+             * @param Variable Name of Variable
              */
             case "variable", "var" -> {
                 return TempVarCommand.getVar(arguments);
@@ -645,6 +646,31 @@ public class Placeholders extends PlaceholderExpansion {
                         return raytraceB.getType().toString();
                     }
                 }
+            }
+            /**
+             * Returns a random potion effect from input list that player does not already have
+             * @author DuneSciFye
+             * @since 2.1.1
+             * @param Effects List of potion effects to check for separated by space
+             * @param Level Minimum level of potion effect to check for
+             */
+            case "randomnewpotioneffect" -> {
+                String[] params = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
+                if (p == null || params.length < 1) return null;
+
+                int minLevel = params.length > 1 && Utils.isInteger(params[1]) ? Integer.parseInt(params[1]) - 1 : 0; //Zero based
+
+                ArrayList<String> effects = new ArrayList<>(List.of(params[0].split(" ")));
+                Collections.shuffle(effects);
+                for (String effect : effects) {
+                    NamespacedKey key = NamespacedKey.fromString(effect);
+                    if (key == null) continue;
+                    PotionEffectType type = Registry.POTION_EFFECT_TYPE.get(key);
+                    if (type == null) continue;
+                    PotionEffect potionEffect = p.getPotionEffect(type);
+                    if (potionEffect == null || potionEffect.getAmplifier() < minLevel) return effect;
+                }
+                return "";
             }
             default -> {
                 return "Unknown function";

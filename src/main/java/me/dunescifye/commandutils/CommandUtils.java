@@ -123,6 +123,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("TempVar", new TempVarCommand());
         commands.put("ScaleWithCollide", new ScaleWithCollideCommand());
         commands.put("BreakInFacingLogCoreProtect", new BreakInFacingLogCoreProtectCommand());
+        commands.put("SetMobTarget", new SetMobTargetCommand());
 
         //Special Commands
         if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {

@@ -309,6 +309,10 @@ Commands:
     Enabled: true
     Aliases: []
 
+  SetMobTarget:
+    Enabled: true
+    Aliases: []
+
   SetShieldBlockingDelay:
     Enabled: true
     Aliases: []
