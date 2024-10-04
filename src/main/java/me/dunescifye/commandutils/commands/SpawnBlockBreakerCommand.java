@@ -6,11 +6,13 @@ import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.files.Config;
 import me.dunescifye.commandutils.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -291,11 +293,18 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
                                                                             Block relative = origin.getRelative(x, y, z);
                                                                             if (!Utils.testBlock(relative, predicates)) continue;
                                                                             p.setMetadata("ignoreBlockBreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
-                                                                            //BlockBreakEvent blockBreakEvent = new BlockBreakEvent(relative, p);
-                                                                            //Bukkit.getServer().getPluginManager().callEvent(blockBreakEvent);
+                                                                            /*
                                                                             PersistentDataContainer pdc = new CustomBlockData(relative, CommandUtils.getInstance());
                                                                             pdc.set(CommandUtils.autoPickupKey, PersistentDataType.BOOLEAN, true);
-                                                                            p.breakBlock(relative);
+                                                                            BlockBreakEvent blockBreakEvent = new BlockBreakEvent(relative, p);
+                                                                            Bukkit.getServer().getPluginManager().callEvent(blockBreakEvent);
+                                                                            relative.setType(Material.AIR);
+                                                                            /*Bukkit.getScheduler().runTask(CommandUtils.getInstance(), () -> {
+                                                                                System.out.println("eee");
+                                                                                p.breakBlock(relative);
+                                                                            });
+
+                                                                             */
                                                                             p.removeMetadata("ignoreBlockBreak", CommandUtils.getInstance());
                                                                         }
                                                                     }

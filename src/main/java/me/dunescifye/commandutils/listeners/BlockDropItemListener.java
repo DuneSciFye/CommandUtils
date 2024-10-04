@@ -20,9 +20,14 @@ public class BlockDropItemListener implements Listener {
     }
     @EventHandler
     public void onBlockDropItem(BlockDropItemEvent e) {
+        /*
         Block b = e.getBlock();
+        System.out.println(b);
+        System.out.println("a");
         PersistentDataContainer pdc = new CustomBlockData(b, CommandUtils.getInstance());
-        if (pdc.has(CommandUtils.autoPickupKey, PersistentDataType.BOOLEAN)) {
+        //System.out.println(pdc.has(CommandUtils.autoPickupKey));
+        if (pdc.has(CommandUtils.autoPickupKey)) {
+            System.out.println("b");
             Player p = e.getPlayer();
             PlayerInventory inv = p.getInventory();
             for (Item item : e.getItems()) {
@@ -31,5 +36,7 @@ public class BlockDropItemListener implements Listener {
                 item.remove();
             }
         }
+
+         */
     }
 }

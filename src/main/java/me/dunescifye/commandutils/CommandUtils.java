@@ -126,10 +126,13 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("SetMobTarget", new SetMobTargetCommand());
         commands.put("RemoveEntity", new RemoveEntityCommand());
 
+        commands.put("CobwebPrison", new CobwebPrisonCommand());
         //Special Commands
-        if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
+        /*if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
             commands.put("CobwebPrison", new CobwebPrisonCommand());
         }
+
+         */
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             commands.put("ParsePlaceholder", new ParsePlaceholderCommand());
             placeholderAPIEnabled = true;
