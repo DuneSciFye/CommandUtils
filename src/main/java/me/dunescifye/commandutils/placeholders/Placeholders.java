@@ -358,20 +358,10 @@ public class Placeholders extends PlaceholderExpansion {
                 //Requires: Slot, info type
                 String[] inventoryInfoArgs = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
 
-                if (inventoryInfoArgs == null || inventoryInfoArgs.length < 2) return "Invalid arguments";
-
+                if (inventoryInfoArgs == null || inventoryInfoArgs.length < 2) return "Missing arguments";
                 if (p == null) return "Invalid Player";
 
-                PlayerInventory inv = p.getInventory();
-                String invSlot = inventoryInfoArgs[0];
-
-                ItemStack itemStack = switch (invSlot) {
-                    case "-1", "mainhand", "main" -> inv.getItemInMainHand();
-                    case "40", "offhand", "off" -> inv.getItemInOffHand();
-                    case "cursor" -> p.getItemOnCursor();
-                    default -> inv.getItem(Integer.parseInt(invSlot));
-                };
-
+                ItemStack itemStack = Utils.getInvItem(p, inventoryInfoArgs[0]);
                 if (itemStack == null) return "";
                 ItemMeta itemMeta = itemStack.getItemMeta();
 
@@ -392,6 +382,7 @@ public class Placeholders extends PlaceholderExpansion {
                         return String.valueOf(itemStack.getAmount());
                     }
                     case "enchantlevel", "enchantlvl", "enchantmentlvl", "enchantmentlevel" -> {
+                        if (inventoryInfoArgs.length < 3) return "";
                         String enchantName = inventoryInfoArgs[2];
                         NamespacedKey key = NamespacedKey.fromString(enchantName);
                         if (key == null) return "Invalid Enchant Name";
@@ -410,9 +401,8 @@ public class Placeholders extends PlaceholderExpansion {
                 //Converts bukkit slot numbers to vanilla slot text
                 if (slot < 9) {
                     return "hotbar." + slot;
-                } else {
+                } else
                     return "inventory." + (slot - 9);
-                }
             }
             case "blockat" -> {
                 String[] blockatargs = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
@@ -530,11 +520,11 @@ public class Placeholders extends PlaceholderExpansion {
             case "nbt" -> {
                 String[] argsNbt = arguments.split(nbtSeparator);
                 if (p == null) {
-                    return "null player";
+                    return "Null player";
                 }
 
-                if (argsNbt.length == 0) {
-                    return "missing arguments";
+                if (argsNbt.length < 3) {
+                    return "Missing arguments";
                 }
 
                 ItemStack item = Utils.getInvItem(p, argsNbt[0]);

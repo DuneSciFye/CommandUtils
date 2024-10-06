@@ -298,13 +298,9 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
                                                                             pdc.set(CommandUtils.autoPickupKey, PersistentDataType.BOOLEAN, true);
                                                                             BlockBreakEvent blockBreakEvent = new BlockBreakEvent(relative, p);
                                                                             Bukkit.getServer().getPluginManager().callEvent(blockBreakEvent);
-                                                                            relative.setType(Material.AIR);
-                                                                            /*Bukkit.getScheduler().runTask(CommandUtils.getInstance(), () -> {
-                                                                                System.out.println("eee");
-                                                                                p.breakBlock(relative);
-                                                                            });
 
                                                                              */
+                                                                            p.breakBlock(relative);
                                                                             p.removeMetadata("ignoreBlockBreak", CommandUtils.getInstance());
                                                                         }
                                                                     }

@@ -9,6 +9,12 @@ import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class RemoveItemCommand extends Command implements Configurable {
 
@@ -16,24 +22,32 @@ public class RemoveItemCommand extends Command implements Configurable {
     public void register(YamlDocument config){
         if (!this.getEnabled()) return;
 
-        String elseIfKeyword, elseKeyword, commandSeparator = ",,", conditionSeparator;
+        String commandSeparator = ",,";
+
+        PlayerArgument playerArg = new PlayerArgument("Player");
+        ItemStackArgument itemArg = new ItemStackArgument("Item");
+        IntegerArgument maxAmountArg = new IntegerArgument("Max Amount");
+        BooleanArgument onlyVanillaArg = new BooleanArgument("Only Vanilla Items");
+        GreedyStringArgument commandsArg = new GreedyStringArgument("Commands");
 
         new CommandAPICommand("removeitem")
-            .withArguments(new PlayerArgument("Player"))
-            .withArguments(new ItemStackArgument("Material"))
-            .withOptionalArguments(new IntegerArgument("Max Amount"))
-            .withOptionalArguments(new BooleanArgument("Only Vanilla Items"))
-            .withOptionalArguments(new GreedyStringArgument("Commands"))
+            .withArguments(playerArg)
+            .withArguments(itemArg)
+            .withOptionalArguments(maxAmountArg)
+            .withOptionalArguments(onlyVanillaArg)
+            .withOptionalArguments(commandsArg)
             .executes((sender, args) -> {
-                ItemStack matcher = args.getUnchecked("Material");
-                String inputCommands = args.getUnchecked("Commands");
-                int maxamount = args.getOrDefaultUnchecked("Max Amount", 99999);
-                boolean strict = args.getOrDefaultUnchecked("Only Vanilla Items", false);
+                ItemStack matcher = args.getByArgument(itemArg);
+                String inputCommands = args.getByArgument(commandsArg);
+                int maxamount = args.getByArgumentOrDefault(maxAmountArg, 999999);
+                boolean strict = args.getByArgumentOrDefault(onlyVanillaArg, false);
 
                 int amountFound = 0;
-                ItemStack[] inv = args.getByClass("Player", Player.class).getInventory().getContents();
+                Player p = args.getByArgument(playerArg);
+                ArrayList<ItemStack> items = new ArrayList<>(Arrays.asList(p.getInventory().getContents()));
+                items.addFirst(p.getItemOnCursor());
                 if (strict) {
-                    for (ItemStack invItem : inv) {
+                    for (ItemStack invItem : items) {
                         if (invItem == null || invItem.hasItemMeta() || invItem.getType() != matcher.getType()) continue;
                         if (amountFound + invItem.getAmount() > maxamount) {
                             invItem.setAmount(invItem.getAmount() - maxamount + amountFound);
@@ -44,7 +58,7 @@ public class RemoveItemCommand extends Command implements Configurable {
                         invItem.setAmount(0);
                     }
                 } else {
-                    for (ItemStack invItem : inv) {
+                    for (ItemStack invItem : items) {
                         if (invItem == null || invItem.getType() != matcher.getType()) continue;
                         if (amountFound + invItem.getAmount() > maxamount) {
                             invItem.setAmount(invItem.getAmount() - maxamount + amountFound);
@@ -56,6 +70,7 @@ public class RemoveItemCommand extends Command implements Configurable {
                     }
                 }
 
+                if (inputCommands == null) return;
                 String[] commands = inputCommands.split(commandSeparator);
 
                 Server server = Bukkit.getServer();

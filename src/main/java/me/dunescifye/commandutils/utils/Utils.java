@@ -278,8 +278,11 @@ public class Utils {
 
     public static boolean testBlock(Block b, List<Predicate<Block>>[] predicates) {
         for (Predicate<Block> whitelist : predicates[0])
-            if (whitelist.test(b))
-                return predicates[1].stream().noneMatch(blacklist -> blacklist.test(b));
+            if (whitelist.test(b)) {
+                for (Predicate<Block> blacklist : predicates[1])
+                    if (blacklist.test(b)) return false;
+                return true;
+            }
         return false;
     }
 

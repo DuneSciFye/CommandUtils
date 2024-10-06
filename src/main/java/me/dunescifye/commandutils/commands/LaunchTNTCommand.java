@@ -7,6 +7,8 @@ import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -59,7 +61,10 @@ public class LaunchTNTCommand extends Command implements Registerable {
             .withArguments(locArg)
             .withOptionalArguments(breakBlocksArg)
             .executes((sender, args) -> {
-                Entity tnt = Bukkit.getWorld(args.getByArgument(worldArg)).spawnEntity(args.getByArgument(locArg), EntityType.TNT);
+                World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                Location loc = args.getByArgument(locArg);
+                loc.setWorld(world);
+                Entity tnt = world.spawnEntity(loc, EntityType.TNT);
                 if (args.getByArgumentOrDefault(breakBlocksArg, false)) {
                     tnt.setMetadata("ignoreblockbreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
                 }
