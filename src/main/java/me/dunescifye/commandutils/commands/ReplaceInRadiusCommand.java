@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
@@ -106,28 +107,14 @@ public class ReplaceInRadiusCommand extends Command implements Registerable {
 
     }
 
-    private void replaceInRadius(Block b, int radius, List<Predicate<Block>>[] predicates, List<Material> blocksTo) {
-        for (int x = -radius; x <= radius; x++) {
-            for (int y = -radius; y <= radius; y++) {
-                for (int z = -radius; z <= radius; z++) {
-                    Block relative = b.getRelative(x, y, z);
-                    if (Utils.testBlock(b, predicates)) {
-                        relative.setType(blocksTo.get(ThreadLocalRandom.current().nextInt(blocksTo.size())));
-                    }
-                }
-            }
-        }
+    private void replaceInRadius(Block origin, int radius, List<Predicate<Block>>[] predicates, List<Material> blocksTo) {
+        for (Block b : Utils.getBlocksInRadius(origin, radius))
+            if (Utils.testBlock(b, predicates))
+                b.setType(blocksTo.get(ThreadLocalRandom.current().nextInt(blocksTo.size())));
     }
-    private void replaceInRadiusCheckClaims(Player p, Block b, int radius, List<Predicate<Block>>[] predicates, List<Material> blocksTo) {
-        for (int x = -radius; x <= radius; x++) {
-            for (int y = -radius; y <= radius; y++) {
-                for (int z = -radius; z <= radius; z++) {
-                    Block relative = b.getRelative(x, y, z);
-                    if (Utils.testBlock(b, predicates) && Utils.isInClaimOrWilderness(p, relative.getLocation())) {
-                        relative.setType(blocksTo.get(ThreadLocalRandom.current().nextInt(blocksTo.size())));
-                    }
-                }
-            }
-        }
+    private void replaceInRadiusCheckClaims(final Player p, final Block origin, final int radius, final List<Predicate<Block>>[] predicates, final List<Material> blocksTo) {
+        for (Block b : Utils.getBlocksInRadius(origin, radius))
+            if (Utils.testBlock(b, predicates) && Utils.isInClaimOrWilderness(p, b.getLocation()))
+                b.setType(blocksTo.get(ThreadLocalRandom.current().nextInt(blocksTo.size())));
     }
 }
