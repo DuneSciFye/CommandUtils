@@ -4,6 +4,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.commands.ComboCommand;
 import me.dunescifye.commandutils.commands.TempVarCommand;
 import me.dunescifye.commandutils.utils.Utils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -22,6 +23,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BlockIterator;
+import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -107,7 +109,7 @@ public class Placeholders extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return "2.0.1";
+        return "2.1.4";
     }
 
     @Override
@@ -117,10 +119,9 @@ public class Placeholders extends PlaceholderExpansion {
 
     @Override
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String args) {
-        String[] parts = args.split("_", 2);
-        if (parts.length != 2) return null;
+        String[] parts = args.split("_", 2); //Get function
         String function = parts[0];
-        String arguments = PlaceholderAPI.setBracketPlaceholders(player, parts[1]);
+        String arguments = parts.length == 2 ? PlaceholderAPI.setBracketPlaceholders(player, parts[1]) : null;
         String separator = defaultSeparator;
 
         Player p = player.getPlayer();
@@ -607,7 +608,7 @@ public class Placeholders extends PlaceholderExpansion {
              * @since 2.0.0
              * @param Variable Name of Variable
              */
-            case "variable", "var" -> {
+            case "variable", "var", "tempvar", "tempvariable" -> {
                 return TempVarCommand.getVar(arguments);
             }
             case "variabledefault", "vardefault" -> {
@@ -621,19 +622,33 @@ public class Placeholders extends PlaceholderExpansion {
              * @since 2.0.1
              * @param Double Distance to go
              * @param Function Data to get, allowed: coordinates, coord, coords, mat, material
+             * @param StopAtBlock Optional; Should it give first block encountered
              */
             case "raytrace" -> {
                 String[] rayTraceArgs = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
                 if (p == null || rayTraceArgs.length < 2 || !NumberUtils.isCreatable(rayTraceArgs[0])) return null;
 
-                Block raytraceB = p.getEyeLocation().add(p.getEyeLocation().getDirection().multiply(Double.parseDouble(rayTraceArgs[0]))).getBlock();
+                Block b;
+
+                if (rayTraceArgs.length > 2 && rayTraceArgs[2].equalsIgnoreCase("true")) {
+                    RayTraceResult result = p.rayTraceBlocks(Double.parseDouble(rayTraceArgs[0]));
+                    if (result == null || result.getHitBlock() == null) return "AIR";
+                    b = result.getHitBlock();
+                } else {
+                    b = p.getEyeLocation().add(p.getEyeLocation().getDirection().multiply(Double.parseDouble(rayTraceArgs[0]))).getBlock();
+                }
 
                 switch (rayTraceArgs[1]) {
-                    case "coordinates", "coord", "coords" -> {
-                        return raytraceB.getX() + " " + raytraceB.getY() + " " + raytraceB.getZ();
+                    case
+                        "coordinates",
+                        "coord",
+                        "coords" -> {
+                        return b.getX() + " " + b.getY() + " " + b.getZ();
                     }
-                    case "material", "mat" -> {
-                        return raytraceB.getType().toString();
+                    case
+                        "material",
+                        "mat" -> {
+                        return b.getType().toString();
                     }
                 }
             }
@@ -661,6 +676,15 @@ public class Placeholders extends PlaceholderExpansion {
                     if (potionEffect == null || potionEffect.getAmplifier() < minLevel) return effect;
                 }
                 return "";
+            }
+            /**
+             * Get value of Player's Combo
+             * @author DuneSciFye
+             * @since 2.1.4
+             * @function Max Combo Length
+             */
+            case "combo" -> {
+                return ComboCommand.getCombo(p);
             }
             default -> {
                 return "Unknown function";

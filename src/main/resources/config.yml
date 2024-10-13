@@ -18,7 +18,7 @@ Whitelists:
     - "!SMOKER"
     - "!#shulker_boxes"
   shovel:
-    "#mineable/shovel"
+    - "#mineable/shovel"
 Placeholders:
   Enabled: true
   StringUtils:
@@ -126,7 +126,14 @@ Commands:
     Aliases: []
     Permission: "commandutils.command.cobwebprisoncommand"
 
+  Combo:
+    Enabled: true
+
   CureVillager:
+    Enabled: true
+    Aliases: []
+
+  CooldownCommand:
     Enabled: true
     Aliases: []
 

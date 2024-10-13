@@ -125,6 +125,8 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("BreakInFacingLogCoreProtect", new BreakInFacingLogCoreProtectCommand());
         commands.put("SetMobTarget", new SetMobTargetCommand());
         commands.put("RemoveEntity", new RemoveEntityCommand());
+        commands.put("Combo", new ComboCommand());
+        commands.put("CooldownCommand", new CooldownCommandCommand());
 
         commands.put("CobwebPrison", new CobwebPrisonCommand());
         //Special Commands

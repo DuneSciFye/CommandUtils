@@ -24,7 +24,7 @@ public class TempVarCommand extends Command implements Registerable {
         if (!this.getEnabled())
             return;
 
-        StringArgument varArg = new StringArgument("Variable Name");
+        TextArgument varArg = new TextArgument("Variable Name");
         GreedyStringArgument contentArg = new GreedyStringArgument("Content");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "set", "get", "clear", "remove", "setifempty");
 
@@ -49,7 +49,11 @@ public class TempVarCommand extends Command implements Registerable {
                         if (!NumberUtils.isCreatable(content) || !NumberUtils.isCreatable(current)) return;
                         vars.put(varName, String.valueOf(Double.parseDouble(content) + Double.parseDouble(current)));
                     }
-                    case "clear", "remove" -> vars.remove(varName);
+                    case "clear", "remove" -> {
+                        for (String var : varName.split(",")) {
+                            vars.remove(var);
+                        }
+                    }
                     case "get" -> sender.sendMessage(getVar(varName));
                     case "setifempty" -> vars.putIfAbsent(varName, content);
                 }
@@ -60,7 +64,6 @@ public class TempVarCommand extends Command implements Registerable {
     }
 
     public static String getVar(final String varName) {
-        String var = vars.get(varName);
-        return var == null ? "" : var;
+        return vars.getOrDefault(varName, "");
     }
 }
