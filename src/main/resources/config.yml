@@ -203,6 +203,9 @@ Commands:
     #Allow multiple entities in the target selector argument, would randomly choose one
     AllowMultipleTargets: false
 
+  ModifyVelocity:
+    Enabled: true
+
   OverrideEffect:
     Enabled: true
     Aliases: []
