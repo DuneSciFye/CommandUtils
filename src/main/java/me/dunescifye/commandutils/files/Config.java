@@ -117,11 +117,6 @@ public class Config {
                             if (placeholderSection.getOptionalBoolean("AllowCustomSeparator").isEmpty()) {
                                 placeholderSection.set("AllowCustomSeparator", true);
                             }
-                            if (placeholderSection.isBoolean("AllowCustomSeparator")) {
-                                Placeholders.setAllowCustomSeparator(placeholderSection.getBoolean("AllowCustomSeparator"));
-                            } else {
-                                logger.warning("Configuration Placeholders.StringUtils.AllowCustomSeparator is not a boolean. Found " + placeholderSection.get("AllowCustomSeparator"));
-                            }
                         }
                     } else {
                         logger.warning("Configuration Placeholders.Enabled is not a boolean. Found " + config.getString("Placeholders.Enabled"));

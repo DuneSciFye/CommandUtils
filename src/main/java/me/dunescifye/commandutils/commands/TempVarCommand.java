@@ -3,14 +3,12 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 
 public class TempVarCommand extends Command implements Registerable {
 
     private static final HashMap<String, String> vars = new HashMap<>(); //Server Vars
-    private static final HashMap<Player, HashMap<String, String>> playerVars = new HashMap<>(); //Player Var
 
     @SuppressWarnings("ConstantConditions")
     @Override
@@ -22,9 +20,8 @@ public class TempVarCommand extends Command implements Registerable {
         TextArgument varArg = new TextArgument("Variable Name");
         GreedyStringArgument contentArg = new GreedyStringArgument("Content");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "set", "get", "clear", "remove", "setifempty");
-        PlayerArgument playerArg = new PlayerArgument("Player");
 
-        /**
+        /*
          * Sets a temporary variable, won't persist across server restarts
          * @author DuneSciFye
          * @since 1.0.6

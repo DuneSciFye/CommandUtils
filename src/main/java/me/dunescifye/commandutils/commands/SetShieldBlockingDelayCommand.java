@@ -18,7 +18,7 @@ public class SetShieldBlockingDelayCommand extends Command implements Registerab
         EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
         IntegerArgument delayArg = new IntegerArgument("Delay");
 
-        /**
+        /*
          * Sets how long an Entity is Frozen for
          * @author DuneSciFye
          * @since 1.0.5

@@ -19,22 +19,33 @@ public class EntityDamageByEntityListener implements Listener {
     public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
         Entity entity = e.getEntity();
         Entity damager = e.getDamager();
-        if (damager instanceof Firework fw) {
-            if (fw.hasMetadata("nodamage")) {
-                PersistentDataContainer container = fw.getPersistentDataContainer();
-                String noDamagePlayer = container.get(CommandUtils.keyNoDamagePlayer, PersistentDataType.STRING);
-                if (noDamagePlayer != null) {
-                    if (entity.getName().equals(noDamagePlayer)) {
+        switch (damager) {
+            case
+                Firework fw -> {
+                if (fw.hasMetadata("nodamage")) {
+                    PersistentDataContainer container = fw.getPersistentDataContainer();
+                    String noDamagePlayer = container.get(CommandUtils.keyNoDamagePlayer, PersistentDataType.STRING);
+                    if (noDamagePlayer != null) {
+                        if (entity.getName().equals(noDamagePlayer)) {
+                            e.setCancelled(true);
+                        }
+                    } else {
                         e.setCancelled(true);
                     }
-                } else {
-                    e.setCancelled(true);
                 }
             }
-        } else if (damager instanceof EvokerFangs evokerFangs) {
-            if (evokerFangs.hasMetadata("nodamage")) e.setCancelled(true);
-        } else if (damager instanceof WitherSkull witherSkull && entity instanceof ArmorStand) {
-            if (witherSkull.hasMetadata("ignoreblockbreak")) e.setCancelled(true);
+            case
+                EvokerFangs evokerFangs -> {
+                if (evokerFangs.hasMetadata("nodamage"))
+                    e.setCancelled(true);
+            }
+            case
+                WitherSkull witherSkull when entity instanceof ArmorStand -> {
+                if (witherSkull.hasMetadata("ignoreblockbreak"))
+                    e.setCancelled(true);
+            }
+            default -> {
+            }
         }
 
 

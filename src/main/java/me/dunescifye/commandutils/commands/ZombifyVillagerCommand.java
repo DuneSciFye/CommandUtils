@@ -14,7 +14,7 @@ public class ZombifyVillagerCommand extends Command implements Registerable {
 
         EntitySelectorArgument.ManyEntities villagersArg = new EntitySelectorArgument.ManyEntities("Villagers");
 
-        /**
+        /*
          * Turns a Villagers into a Zombie Villagers
          * @author DuneSciFye
          * @since 1.0.5

@@ -34,8 +34,8 @@ import java.util.regex.Pattern;
 public class Placeholders extends PlaceholderExpansion {
 
     private static String defaultSeparator = ",", elseIfKeyword, elseKeyword, conditionSeparator;
-    private static String functionSeparator = "_", nbtSeparator = ",", amountSeparator = ",";
-    private static boolean allowCustomSeparator;
+    private static String nbtSeparator = ",";
+    private static String amountSeparator = ",";
 
     public Placeholders(CommandUtils plugin, YamlDocument config) {
         Logger logger = plugin.getLogger();
@@ -88,11 +88,6 @@ public class Placeholders extends PlaceholderExpansion {
 
     public static void setSeparator(String separator) {
         Placeholders.defaultSeparator = separator;
-    }
-
-
-    public static void setAllowCustomSeparator(boolean allowCustomSeparator) {
-        Placeholders.allowCustomSeparator = allowCustomSeparator;
     }
 
     @Override
@@ -410,7 +405,7 @@ public class Placeholders extends PlaceholderExpansion {
             }
             case "isblocknatural" -> {
                 String[] isBlockNaturalArgs = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
-                Block isBlockNaturalBlock = Bukkit.getWorld(isBlockNaturalArgs[3]).getBlockAt(Integer.valueOf(isBlockNaturalArgs[0]), Integer.valueOf(isBlockNaturalArgs[1]), Integer.valueOf(isBlockNaturalArgs[2]));
+                Block isBlockNaturalBlock = Bukkit.getWorld(isBlockNaturalArgs[3]).getBlockAt(Integer.parseInt(isBlockNaturalArgs[0]), Integer.valueOf(isBlockNaturalArgs[1]), Integer.valueOf(isBlockNaturalArgs[2]));
                 return String.valueOf(Utils.isNaturallyGenerated(isBlockNaturalBlock));
             }
             case "weightedrandom" -> {
@@ -568,7 +563,7 @@ public class Placeholders extends PlaceholderExpansion {
 
                 return String.valueOf(item.getAmount());
             }
-            /**
+            /*
              * Get distance between two coordinates
              * @author DuneSciFye
              */
@@ -592,7 +587,7 @@ public class Placeholders extends PlaceholderExpansion {
                     return "Invalid Number for Coordinates provided";
                 }
 
-                World world = Bukkit.getWorlds().get(0);
+                World world = Bukkit.getWorlds().getFirst();
 
                 Location loc1 = new Location(world, num1[0], num1[1], num1[2]);
                 Location loc2 = new Location(world, num2[0], num2[1], num2[2]);
@@ -600,7 +595,7 @@ public class Placeholders extends PlaceholderExpansion {
                 return String.valueOf(distance);
 
             }
-            /**
+            /*
              * Get value of temporary variable
              * @author DuneSciFye
              * @since 2.0.0
@@ -609,7 +604,7 @@ public class Placeholders extends PlaceholderExpansion {
             case "variable", "var", "tempvar", "tempvariable" -> {
                 return TempVarCommand.getVar(arguments);
             }
-            /**
+            /*
              * Get value of temporary player variable
              * @author DuneSciFye
              * @since 2.1.5
@@ -623,7 +618,7 @@ public class Placeholders extends PlaceholderExpansion {
                 String var = TempVarCommand.getVar(varParts[1]);
                 return var.isEmpty() ? varParts[0] : var;
             }
-            /**
+            /*
              * Get block relative to player eyesight
              * @author DuneSciFye
              * @since 2.0.1
@@ -668,7 +663,7 @@ public class Placeholders extends PlaceholderExpansion {
                     }
                 }
             }
-            /**
+            /*
              * Returns a random potion effect from input list that player does not already have
              * @author DuneSciFye
              * @since 2.1.1
@@ -692,15 +687,6 @@ public class Placeholders extends PlaceholderExpansion {
                     if (potionEffect == null || potionEffect.getAmplifier() < minLevel) return effect;
                 }
                 return "";
-            }
-            /**
-             * Get value of Player's Combo
-             * @author DuneSciFye
-             * @since 2.1.4
-             * @function Max Combo Length
-             */
-            case "combo" -> {
-                return ComboCommand.getCombo(p);
             }
             default -> {
                 return "Unknown function";

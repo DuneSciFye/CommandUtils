@@ -18,7 +18,7 @@ public class WaterlogCommand extends Command implements Registerable {
         BooleanArgument waterlogArg = new BooleanArgument("Waterlogged State");
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
 
-        /**
+        /*
          * Waterlogs Blocks
          * @author DuneSciFye
          * @since 1.0.0
@@ -54,7 +54,7 @@ public class WaterlogCommand extends Command implements Registerable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /**
+        /*
          * Waterlogs Blocks
          * @author DuneSciFye
          * @since 1.0.0

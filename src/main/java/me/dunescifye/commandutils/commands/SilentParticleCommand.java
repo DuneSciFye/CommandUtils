@@ -1,7 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.wrappers.ParticleData;
 import me.dunescifye.commandutils.CommandUtils;
@@ -31,7 +30,7 @@ public class SilentParticleCommand extends Command implements Registerable {
         IntegerArgument periodArg = new IntegerArgument("Period");
         IntegerArgument delayArg = new IntegerArgument("Delay");
 
-        /**
+        /*
          * Summons Particles, no Console messages
          * @author DuneSciFye
          * @since 1.0.0
@@ -77,7 +76,7 @@ public class SilentParticleCommand extends Command implements Registerable {
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
-        /**
+        /*
          * Summons Particles, no Console messages
          * @author DuneSciFye
          * @since 1.0.0
@@ -119,7 +118,7 @@ public class SilentParticleCommand extends Command implements Registerable {
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
-        /**
+        /*
          * Summons Particles, no Console messages
          * @author DuneSciFye
          * @since 1.0.0

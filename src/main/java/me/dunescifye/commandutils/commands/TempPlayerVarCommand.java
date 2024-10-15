@@ -25,7 +25,7 @@ public class TempPlayerVarCommand extends Command implements Registerable {
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "set", "get", "clear", "remove", "setifempty", "append");
         PlayerArgument playerArg = new PlayerArgument("Player");
 
-        /**
+        /*
          * Sets a temporary player variable, won't persist across server restarts
          * @author DuneSciFye
          * @since 2.1.5

@@ -1,7 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.LocationArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import me.dunescifye.commandutils.CommandUtils;
@@ -22,24 +21,7 @@ public class SpawnNoDamageEvokerFangCommand extends Command implements Registera
         StringArgument worldArg = new StringArgument("world");
         LocationArgument locArg = new LocationArgument("Location");
 
-        /**
-         * Summons an Evoker Fang that does no damage
-         * @author DuneSciFye
-         * @since 1.0.0
-         * @param Location Location of where to Spawn Evoker Fang
-         */
-        new CommandAPICommand("spawnnodamageevokerfang")
-            .withArguments(locArg)
-            .executes((sender, args) -> {
-                Location loc = args.getByArgument(locArg);
-                Entity evokerFangs = loc.getWorld().spawnEntity(loc, EntityType.EVOKER_FANGS);
-                evokerFangs.setMetadata("nodamage", new FixedMetadataValue(CommandUtils.getInstance(), true));
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
-
-        /**
+        /*
          * Summons an Evoker Fang that does no damage
          * @author DuneSciFye
          * @since 1.0.0

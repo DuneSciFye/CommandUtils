@@ -24,7 +24,7 @@ public class SpawnWitherSkullCommand extends Command implements Registerable {
         FloatArgument yawArg = new FloatArgument("Yaw");
         FloatArgument pitchArg = new FloatArgument("Pitch");
 
-        /**
+        /*
          * Summons a Wither Skull
          * @author DuneSciFye
          * @since 1.0.0

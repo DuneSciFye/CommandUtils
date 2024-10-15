@@ -1,7 +1,7 @@
 package me.dunescifye.commandutils.utils;
 
-import com.massivecraft.factions.*;
-import com.massivecraft.factions.perms.PermissibleActions;
+//import com.massivecraft.factions.*;
+//import com.massivecraft.factions.perms.PermissibleActions;
 import me.dunescifye.commandutils.CommandUtils;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;

@@ -27,7 +27,7 @@ public class SpawnGuardianBeamCommand extends Command implements Registerable {
         IntegerArgument durationArg = new IntegerArgument("Duration");
         IntegerArgument distanceArg = new IntegerArgument("Distance");
 
-        /**
+        /*
          * Summons a Guardian Beam between two Locations
          * @author DuneSciFye
          * @since 1.0.5
@@ -66,7 +66,7 @@ public class SpawnGuardianBeamCommand extends Command implements Registerable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /**
+        /*
          * Summons a Guardian Beam between two Entities
          * @author DuneSciFye
          * @since 1.0.5
@@ -98,7 +98,7 @@ public class SpawnGuardianBeamCommand extends Command implements Registerable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /**
+        /*
          * Summons a Guardian Beam between an Entity and a Location
          * @author DuneSciFye
          * @since 1.0.5
@@ -136,7 +136,7 @@ public class SpawnGuardianBeamCommand extends Command implements Registerable {
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
-        /**
+        /*
          * Summons a Guardian Beam between a Location and an Entity
          * @author DuneSciFye
          * @since 1.0.5

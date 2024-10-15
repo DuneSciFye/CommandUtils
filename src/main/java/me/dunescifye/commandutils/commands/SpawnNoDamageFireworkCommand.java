@@ -25,7 +25,7 @@ public class SpawnNoDamageFireworkCommand extends Command implements Registerabl
         IntegerArgument ticksToDetonateArg = new IntegerArgument("Ticks To Detonate", 0);
         PlayerArgument playerArg = new PlayerArgument("No Damage Player");
 
-        /**
+        /*
          * Summons a Firework that does no damage
          * @author DuneSciFye
          * @since 1.0.0
@@ -42,27 +42,6 @@ public class SpawnNoDamageFireworkCommand extends Command implements Registerabl
             .executes((sender, args) -> {
                 Firework fw = (Firework) Bukkit.getWorld(args.getByArgument(worldArg)).spawnEntity(args.getByArgument(locArg), EntityType.FIREWORK_ROCKET);
 
-                spawnFirework(fw, args.getByArgument(ticksToDetonateArg), args.getByArgument(playerArg));
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
-
-        /**
-         * Summons a Firework that does no damage
-         * @author DuneSciFye
-         * @since 1.0.0
-         * @param Location Location of where to Spawn Firework
-         * @param Ticks Ticks Until Detonation
-         * @param Player Player To Ignore Damage, if not specified, nobody takes damage
-         */
-        new CommandAPICommand("spawnnodamagefirework")
-            .withArguments(locArg)
-            .withArguments(ticksToDetonateArg)
-            .withOptionalArguments(playerArg)
-            .executes((sender, args) -> {
-                Location loc = args.getByArgument(locArg);
-                Firework fw = (Firework) loc.getWorld().spawnEntity(loc, EntityType.FIREWORK_ROCKET);
                 spawnFirework(fw, args.getByArgument(ticksToDetonateArg), args.getByArgument(playerArg));
             })
             .withPermission(this.getPermission())
