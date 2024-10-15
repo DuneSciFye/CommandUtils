@@ -1,15 +1,5 @@
 package me.dunescifye.commandutils.utils;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -21,9 +11,27 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
+/**
+ * A whole class to create Guardian Lasers and Ender Crystal Beams using packets and reflection.<br>
+ * Inspired by the API
+ * <a href="https://www.spigotmc.org/resources/guardianbeamapi.18329">GuardianBeamAPI</a><br>
+ * <b>1.9 -> 1.20.4</b>
+ *
+ * @see <a href="https://github.com/SkytAsul/GuardianBeam">GitHub repository</a>
+ * @version 2.3.6
+ * @author SkytAsul
+ */
 public abstract class Laser {
-
 
     protected final int distanceSquared;
     protected final int duration;
@@ -41,7 +49,6 @@ public abstract class Laser {
     private Set<Player> seen = new HashSet<>();
 
     private List<Runnable> executeEnd = new ArrayList<>(1);
-
 
     protected Laser(Location start, Location end, int duration, int distance) {
         if (!Packets.enabled) throw new IllegalStateException("The Laser Beam API is disabled. An error has occured during initialization.");
@@ -983,8 +990,7 @@ public abstract class Laser {
         private static void tryWatcherSet(Object watcher, Object watcherObject, Object watcherData) throws ReflectiveOperationException {
             try {
                 watcherSet.invoke(watcher, watcherObject, watcherData);
-            }catch (
-                InvocationTargetException ex) {
+            }catch (InvocationTargetException ex) {
                 watcherRegister.invoke(watcher, watcherObject, watcherData);
                 if (version >= 15) watcherDirty.invoke(watcher, watcherObject);
             }

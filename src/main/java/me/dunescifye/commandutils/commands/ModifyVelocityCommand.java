@@ -35,18 +35,14 @@ public class ModifyVelocityCommand extends Command implements Registerable {
                         velocity.setY(velocity.getX()/max*amount);
                         velocity.setZ(velocity.getX()/max*amount);
                     }
-                    case "add" -> {
+                    case "add" ->
                         velocity.add(new Vector(amount, amount, amount));
-                    }
-                    case "subtract" -> {
+                    case "subtract" ->
                         velocity.subtract(new Vector(amount, amount, amount));
-                    }
-                    case "multiply" -> {
+                    case "multiply" ->
                         velocity.multiply(amount);
-                    }
-                    case "divide" -> {
+                    case "divide" ->
                         velocity.divide(new Vector(amount, amount, amount));
-                    }
                 }
 
                 e.setVelocity(velocity);

@@ -126,9 +126,6 @@ Commands:
     Aliases: []
     Permission: "commandutils.command.cobwebprisoncommand"
 
-  Combo:
-    Enabled: true
-
   CureVillager:
     Enabled: true
     Aliases: []
@@ -360,6 +357,10 @@ Commands:
     Aliases: []
 
   SpawnWitherSkull:
+    Enabled: true
+    Aliases: []
+
+  TempPlayerVar:
     Enabled: true
     Aliases: []
 

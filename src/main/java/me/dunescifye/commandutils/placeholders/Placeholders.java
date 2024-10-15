@@ -4,7 +4,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.dunescifye.commandutils.CommandUtils;
-import me.dunescifye.commandutils.commands.ComboCommand;
+import me.dunescifye.commandutils.commands.TempPlayerVarCommand;
 import me.dunescifye.commandutils.commands.TempVarCommand;
 import me.dunescifye.commandutils.utils.Utils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -15,14 +15,12 @@ import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.BlockIterator;
 import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -611,6 +609,15 @@ public class Placeholders extends PlaceholderExpansion {
             case "variable", "var", "tempvar", "tempvariable" -> {
                 return TempVarCommand.getVar(arguments);
             }
+            /**
+             * Get value of temporary player variable
+             * @author DuneSciFye
+             * @since 2.1.5
+             * @param Variable Name of Player Variable
+             */
+            case "playervariable", "playervar", "playertempvar", "playertempvariable", "pvar" -> {
+                return TempPlayerVarCommand.getPlayerVar(p, arguments);
+            }
             case "variabledefault", "vardefault" -> {
                 String[] varParts = arguments.split("_", 2);
                 String var = TempVarCommand.getVar(varParts[1]);
@@ -649,6 +656,15 @@ public class Placeholders extends PlaceholderExpansion {
                         "material",
                         "mat" -> {
                         return b.getType().toString();
+                    }
+                    case "x" -> {
+                        return String.valueOf(b.getX());
+                    }
+                    case "y" -> {
+                        return String.valueOf(b.getY());
+                    }
+                    case "z" -> {
+                        return String.valueOf(b.getZ());
                     }
                 }
             }
