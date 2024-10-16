@@ -180,6 +180,10 @@ Commands:
     Aliases: []
     Permission: "commandutils.command.launchfireworkcommand"
 
+  LaunchProjectile:
+    Enabled: true
+    Aliases: []
+
   LaunchTNT:
     Enabled: true
     Aliases: []
@@ -204,6 +208,10 @@ Commands:
     Enabled: true
 
   OverrideEffect:
+    Enabled: true
+    Aliases: []
+
+  Oxygen:
     Enabled: true
     Aliases: []
 
@@ -269,6 +277,10 @@ Commands:
     Aliases: []
 
   SendBossBar:
+    Enabled: true
+    Aliases: []
+
+  SendConditionMessage:
     Enabled: true
     Aliases: []
 

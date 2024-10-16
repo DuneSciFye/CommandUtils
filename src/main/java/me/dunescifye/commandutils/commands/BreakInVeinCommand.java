@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
-import static me.dunescifye.commandutils.utils.Utils.mergeSimilarItemStacks;
+import static me.dunescifye.commandutils.utils.Utils.*;
 
 public class BreakInVeinCommand extends Command implements Configurable {
 
@@ -93,10 +93,7 @@ public class BreakInVeinCommand extends Command implements Configurable {
                 int maxSize = args.getByArgumentOrDefault(maxBlocksArg, defaultMaxBlocks);
 
                 getVeinOres(block, drops, predicate, maxSize);
-
-                for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                    world.dropItemNaturally(block.getLocation(), item);
-                }
+                dropAllItemStacks(world, block.getLocation(), drops);
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
@@ -140,10 +137,7 @@ public class BreakInVeinCommand extends Command implements Configurable {
                     }
                 }
 
-                for (ItemStack drop : mergeSimilarItemStacks(drops)) {
-                    world.dropItemNaturally(block.getLocation(), drop);
-                }
-
+                dropAllItemStacks(world, block.getLocation(), drops);
                 player.removeMetadata("ignoreBlockBreak", CommandUtils.getInstance());
             })
             .withPermission(this.getPermission())
@@ -174,100 +168,70 @@ public class BreakInVeinCommand extends Command implements Configurable {
     }
 
     private void getVeinOresItem(Block center, Collection<ItemStack> drops, Predicate<Block> predicate, int maxSize, ItemStack item) {
-        for (int x = -1; x <= 1; x++) { //These 3 for loops check a 3x3x3 cube around the block in question
-            for (int y = -1; y <= 1; y++) {
-                for (int z = -1; z <= 1; z++) {
-                    Block relative = center.getRelative(x, y, z);
-                    if (predicate.test(relative)) {
-                        if (drops.size() >= maxSize) {
-                            return;
-                        }
-                        drops.addAll(relative.getDrops(item));
+        for (Block b : getBlocksInRadius(center, 1)) {
+            if (predicate.test(b)) {
+                if (drops.size() >= maxSize) return;
 
-                        relative.setType(Material.AIR);
+                drops.addAll(b.getDrops(item));
 
-                        this.getVeinOresItem(relative, drops, predicate, maxSize, item);
-                    }
-                }
+                b.setType(Material.AIR);
+
+                this.getVeinOresItem(b, drops, predicate, maxSize, item);
             }
         }
     }
 
     private void getVeinOresTriggerBlockBreak(Block center, Collection<ItemStack> drops, Predicate<Block> predicate, int maxSize, Player player, ItemStack item) {
-        for (int x = -1; x <= 1; x++) { //These 3 for loops check a 3x3x3 cube around the block in question
-            for (int y = -1; y <= 1; y++) {
-                for (int z = -1; z <= 1; z++) {
-                    Block relative = center.getRelative(x, y, z);
-                    if (predicate.test(relative)) {
-                        if (drops.size() >= maxSize) {
-                            return;
-                        }
+        for (Block b : getBlocksInRadius(center, 1)) {
+            if (predicate.test(b)) {
+                if (drops.size() >= maxSize) return;
 
-                        drops.addAll(relative.getDrops(item));
+                drops.addAll(b.getDrops(item));
 
-                        BlockBreakEvent blockBreakEvent = new BlockBreakEvent(relative, player);
-                        Bukkit.getServer().getPluginManager().callEvent(blockBreakEvent);
+                BlockBreakEvent blockBreakEvent = new BlockBreakEvent(b, player);
+                Bukkit.getServer().getPluginManager().callEvent(blockBreakEvent);
 
-                        relative.setType(Material.AIR);
+                b.setType(Material.AIR);
 
-                        this.getVeinOresTriggerBlockBreak(relative, drops, predicate, maxSize, player, item);
-                    }
-                }
+                this.getVeinOresTriggerBlockBreak(b, drops, predicate, maxSize, player, item);
             }
         }
     }
 
     private void getVeinOresCheckClaim(Block center, Collection<ItemStack> drops, Predicate<Block> predicate, int maxSize, Player player, ItemStack item) {
-        for (int x = -1; x <= 1; x++) { //These 3 for loops check a 3x3x3 cube around the block in question
-            for (int y = -1; y <= 1; y++) {
-                for (int z = -1; z <= 1; z++) {
-                    Block relative = center.getRelative(x, y, z);
-                    if (predicate.test(relative)) {
-                        //Testing claim
-                        Location relativeLocation = relative.getLocation();
-                        if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
-                            if (drops.size() >= maxSize) {
-                                return;
-                            }
+        for (Block b : getBlocksInRadius(center, 1)) {
+            if (predicate.test(b)) {
+                //Testing claim
+                Location relativeLocation = b.getLocation();
+                if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                    if (drops.size() >= maxSize) return;
 
-                            drops.addAll(relative.getDrops(item));
+                    drops.addAll(b.getDrops(item));
 
-                            relative.setType(Material.AIR);
+                    b.setType(Material.AIR);
 
-                            this.getVeinOresCheckClaim(relative, drops, predicate, maxSize, player, item);
-                        }
-                    }
+                    this.getVeinOresCheckClaim(b, drops, predicate, maxSize, player, item);
                 }
             }
         }
     }
 
     private void getVeinOresCheckClaimTriggerBlockBreak(Block center, Collection<ItemStack> drops, Predicate<Block> predicate, int maxSize, Player player, ItemStack item) {
-        for (int x = -1; x <= 1; x++) { //These 3 for loops check a 3x3x3 cube around the block in question
-            for (int y = -1; y <= 1; y++) {
-                for (int z = -1; z <= 1; z++) {
-                    Block relative = center.getRelative(x, y, z);
-                    if (predicate.test(relative)) {
-                        //Testing claim
-                        Location relativeLocation = relative.getLocation();
-                        if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
-                            if (drops.size() >= maxSize) {
-                                return;
-                            }
-                            if (item == null) {
-                                drops.addAll(relative.getDrops());
-                            } else {
-                                drops.addAll(relative.getDrops(item));
-                            }
+        for (Block b : getBlocksInRadius(center, 1)) {
+            if (predicate.test(b)) {
+                //Testing claim
+                Location relativeLocation = b.getLocation();
+                if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                    if (drops.size() >= maxSize) return;
 
-                            BlockBreakEvent blockBreakEvent = new BlockBreakEvent(relative, player);
-                            Bukkit.getServer().getPluginManager().callEvent(blockBreakEvent);
+                    drops.addAll(item == null ? b.getDrops() : b.getDrops(item));
 
-                            relative.setType(Material.AIR);
+                    BlockBreakEvent blockBreakEvent = new BlockBreakEvent(b, player);
+                    Bukkit.getServer().getPluginManager().callEvent(blockBreakEvent);
 
-                            this.getVeinOresCheckClaimTriggerBlockBreak(relative, drops, predicate, maxSize, player, item);
-                        }
-                    }
+                    b.setType(Material.AIR);
+
+                    this.getVeinOresCheckClaimTriggerBlockBreak(b, drops, predicate, maxSize, player, item);
                 }
             }
         }

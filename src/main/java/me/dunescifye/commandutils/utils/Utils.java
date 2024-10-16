@@ -41,29 +41,38 @@ public class Utils {
         }
     }
 
+    /**
+     * Combines Similar ItemStacks into one ItemStack, Each Combined Stack Won't go Over Max Stack Size
+     * @author DuneSciFye
+     * @param itemStacks Collection of ItemStacks
+     * @return Collection of Combined ItemStacks
+     */
     public static Collection<ItemStack> mergeSimilarItemStacks(Collection<ItemStack> itemStacks) {
-        Map<Material, ItemStack> mergedStacksMap = new HashMap<>();
+        Map<ItemStack, Integer> mergedStacksMap = new HashMap<>(); //ItemStack with Stack Size of 1-Used to Compare, Item's Stack Size
+        Collection<ItemStack> finalItems = new ArrayList<>(); //Items over Max Stack Size here
 
         for (ItemStack stack : itemStacks) {
-            Material material = stack.getType();
-            ItemStack existing = mergedStacksMap.get(material);
-            if (existing == null) {
-                mergedStacksMap.put(material, stack.clone());
-            } else {
-                existing.setAmount(existing.getAmount() + stack.getAmount());
+            ItemStack oneStack = stack.asQuantity(1);
+            int stackSize = stack.getAmount();
+            Integer currentStackSize = mergedStacksMap.remove(oneStack);
+            if (currentStackSize != null) {
+                int maxSize = stack.getMaxStackSize();
+                stackSize += currentStackSize;
+                while (stackSize > maxSize) {
+                    finalItems.add(stack.asQuantity(maxSize));
+                    stackSize-=maxSize;
+                }
             }
+            if (stackSize > 0) mergedStacksMap.put(oneStack, stackSize);
         }
-        return mergedStacksMap.values();
+        for (ItemStack stack : mergedStacksMap.keySet()) { //Leftover items
+            finalItems.add(stack.asQuantity(mergedStacksMap.get(stack)));
+        }
+        return finalItems;
     }
 
     public static void dropAllItemStacks(World world, Location location, Collection<ItemStack> itemStacks) {
-        for (ItemStack item : mergeSimilarItemStacks(itemStacks)) {
-            while (item.getAmount() > 0) {
-                if (item.getAmount() > 64) world.dropItemNaturally(location, item.asQuantity(64));
-                else world.dropItemNaturally(location, item);
-                item.setAmount(item.getAmount() - 64);
-            }
-        }
+        for (ItemStack item : mergeSimilarItemStacks(itemStacks)) world.dropItemNaturally(location, item);
     }
 
     public static boolean isNumeric(String str) {
@@ -76,11 +85,17 @@ public class Utils {
     }
 
     public static boolean isNaturallyGenerated(Block block) {
-        List<String[]> lookup = getCoreProtect().blockLookup(block, 2147483647);
-        if (lookup != null && !lookup.isEmpty()) {
-            CoreProtectAPI.ParseResult parseResult = getCoreProtect().parseResult(lookup.getFirst());
-            return parseResult.getPlayer().startsWith("#") || parseResult.getActionId() != 1 || parseResult.isRolledBack();
+        List<String[]> lookup = getCoreProtect().queueLookup(block);
+        if (lookup == null || lookup.isEmpty()) {
+            System.out.println("a");
+            lookup = getCoreProtect().blockLookup(block, 2147483647);
         }
+        if (lookup != null && !lookup.isEmpty()) {
+            System.out.println("b");
+            CoreProtectAPI.ParseResult parseResult = getCoreProtect().parseResult(lookup.getFirst());
+            return parseResult.getActionId() != 1 || parseResult.isRolledBack();
+        }
+        System.out.println("c");
         return true;
     }
 
