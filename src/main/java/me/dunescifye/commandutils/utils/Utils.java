@@ -88,10 +88,12 @@ public class Utils {
         List<String[]> lookup = getCoreProtect().queueLookup(block);
         if (lookup == null || lookup.isEmpty()) {
             lookup = getCoreProtect().blockLookup(block, 2147483647);
+        } else {
+            return false;
         }
         if (lookup != null && !lookup.isEmpty()) {
             CoreProtectAPI.ParseResult parseResult = getCoreProtect().parseResult(lookup.getFirst());
-            return parseResult.getPlayer().startsWith("#") || parseResult.getActionId() != 1 || parseResult.isRolledBack();
+            return parseResult.getPlayer().startsWith("#") || parseResult.isRolledBack();
         }
         return true;
     }
