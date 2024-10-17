@@ -87,15 +87,12 @@ public class Utils {
     public static boolean isNaturallyGenerated(Block block) {
         List<String[]> lookup = getCoreProtect().queueLookup(block);
         if (lookup == null || lookup.isEmpty()) {
-            System.out.println("a");
             lookup = getCoreProtect().blockLookup(block, 2147483647);
         }
         if (lookup != null && !lookup.isEmpty()) {
-            System.out.println("b");
             CoreProtectAPI.ParseResult parseResult = getCoreProtect().parseResult(lookup.getFirst());
-            return parseResult.getActionId() != 1 || parseResult.isRolledBack();
+            return parseResult.getPlayer().startsWith("#") || parseResult.getActionId() != 1 || parseResult.isRolledBack();
         }
-        System.out.println("c");
         return true;
     }
 
