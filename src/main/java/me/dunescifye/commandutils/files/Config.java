@@ -21,7 +21,7 @@ public class Config {
 
     private static final Map<String, List<Predicate<Block>>[]> predicates = new HashMap<>();
 
-    private static String namespace = "commandutils";
+    private static String namespace = "commandutils", prefix = "";
 
     public static void setup(CommandUtils plugin) {
         Logger logger = plugin.getLogger();
@@ -31,6 +31,9 @@ public class Config {
             //Namespace
             if (config.isString("CommandNamespace")) {
                 namespace = config.getString("CommandNamespace");
+            }
+            if (config.isString("Messages.Prefix")) { //Prefix
+                prefix = config.getString("Messages.Prefix");
             }
 
             //Commands
@@ -139,6 +142,10 @@ public class Config {
 
     public static String getNamespace() {
         return namespace;
+    }
+
+    public static String getPrefix() {
+        return prefix;
     }
 
     public static List<Predicate<Block>>[] getPredicate(String key){

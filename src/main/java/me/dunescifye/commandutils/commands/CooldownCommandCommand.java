@@ -17,6 +17,8 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
+import static me.dunescifye.commandutils.files.Config.getPrefix;
+
 public class CooldownCommandCommand extends Command implements Configurable {
 
     private static final HashMap<Player, HashMap<String, Instant>> cooldowns = new HashMap<>(); //Player, CommandID, Time
@@ -104,7 +106,7 @@ public class CooldownCommandCommand extends Command implements Configurable {
             message = cooldownMessageMilliseconds.replace("%milliseconds%", String.valueOf(duration.toMillisPart()));
         }
 
-        return LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message));
+        return LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, getPrefix() + message));
 
     }
 }
