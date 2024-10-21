@@ -44,6 +44,7 @@ public class LoopCommand extends Command implements Configurable {
         StringArgument commandIDArg = new StringArgument("Command ID");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "remove", "cancel", "list");
         LiteralArgument runArg = new LiteralArgument("run");
+        TextArgument endCommandsArg = new TextArgument("End Commands");
 
         new CommandAPICommand("loopcommand")
             .withArguments(functionArg)
@@ -52,13 +53,14 @@ public class LoopCommand extends Command implements Configurable {
             .withArguments(delayArg)
             .withArguments(periodArg)
             .withArguments(commandsArg)
+            .withOptionalArguments(endCommandsArg)
             .executes((sender, args) -> {
                 String commandID = args.getByArgument(commandIDArg);
                 switch (args.getByArgument(functionArg)) {
                     case "add" -> {
                         BukkitTask task = tasks.remove(commandID);
                         if (task != null) task.cancel();
-                        tasks.put(commandID, runCommands(args.getByArgument(loopAmountArg), args.getByArgument(commandsArg).split(commandSeparator), args.getByArgument(delayArg), args.getByArgument(periodArg), commandID));
+                        tasks.put(commandID, runCommands(args.getByArgument(loopAmountArg), args.getByArgument(commandsArg).split(commandSeparator), args.getByArgument(delayArg), args.getByArgument(periodArg), commandID, args.getByArgument(endCommandsArg).split(commandSeparator)));
                     }
                     case "remove", "cancel" -> {
                         BukkitTask task = tasks.remove(commandID);
@@ -89,14 +91,14 @@ public class LoopCommand extends Command implements Configurable {
             .withArguments(periodArg)
             .withArguments(commandsArg)
             .executes((sender, args) -> {
-                runCommands(args.getByArgument(loopAmountArg), args.getByArgument(commandsArg).split(commandSeparator), args.getByArgument(delayArg), args.getByArgument(periodArg), null);
+                runCommands(args.getByArgument(loopAmountArg), args.getByArgument(commandsArg).split(commandSeparator), args.getByArgument(delayArg), args.getByArgument(periodArg), null, args.getByArgument(endCommandsArg).split(commandSeparator));
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 
-    private BukkitTask runCommands(int maxCount, String[] commands, int delay, int period, String commandID) {
+    private BukkitTask runCommands(int maxCount, String[] commands, int delay, int period, String commandID, String[] endCommands) {
         Server server = Bukkit.getServer();
         ConsoleCommandSender console = server.getConsoleSender();
         return new BukkitRunnable() {
@@ -104,6 +106,9 @@ public class LoopCommand extends Command implements Configurable {
             @Override
             public void run() {
                 if (count > maxCount) {
+                    for (String command : endCommands) {
+                        server.dispatchCommand(console, command);
+                    }
                     tasks.remove(commandID);
                     cancel();
                     return;
