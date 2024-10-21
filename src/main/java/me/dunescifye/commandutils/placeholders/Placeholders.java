@@ -688,6 +688,25 @@ public class Placeholders extends PlaceholderExpansion {
                 }
                 return "";
             }
+            /*
+             * Returns the level of a potion effect. 0 based.
+             * @author DuneSciFye
+             * @since 2.1.1
+             * @param Potion Effect
+             */
+            case "potioneffectlevel" -> {
+                String[] params = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
+                if (p == null || params.length < 1) return null;
+
+                NamespacedKey key = NamespacedKey.fromString(params[0]);
+                if (key == null) return "";
+                PotionEffectType type = Registry.POTION_EFFECT_TYPE.get(key);
+                if (type == null) return "";
+                PotionEffect potionEffect = p.getPotionEffect(type);
+                if (potionEffect == null) return "";
+                return String.valueOf(potionEffect.getAmplifier());
+
+            }
             default -> {
                 return "Unknown function";
             }
