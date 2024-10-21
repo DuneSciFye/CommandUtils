@@ -2,14 +2,14 @@ package me.dunescifye.commandutils.commands;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.CommandArgument;
-import dev.jorel.commandapi.arguments.IntegerArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
-import dev.jorel.commandapi.arguments.StringArgument;
+import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.wrappers.CommandResult;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
@@ -38,26 +38,31 @@ public class CooldownCommandCommand extends Command implements Configurable {
 
         PlayerArgument playerArg = new PlayerArgument("Player");
         StringArgument idArg = new StringArgument("ID");
+        MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "clear", "remove", "unset", "get", "list");
         IntegerArgument timeArg = new IntegerArgument("Time in Ticks");
-        CommandArgument commandArg = new CommandArgument("Command");
+        TextArgument commandsArg = new TextArgument("Commands");
 
         new CommandAPICommand("cooldowncommand")
             .withArguments(playerArg)
             .withArguments(idArg)
             .withArguments(timeArg)
-            .withArguments(commandArg)
+            .withArguments(commandsArg)
             .executes((sender, args) -> {
                 Player p = args.getByArgument(playerArg);
                 String id = args.getByArgument(idArg);
                 int time = args.getByArgument(timeArg);
-                CommandResult command = args.getByArgument(commandArg);
+                String[] commands = args.getByArgument(commandsArg).split(",,");
                 HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p, k -> new HashMap<>());
 
                 if (hasCooldown(playerCDs, id))
                     p.sendActionBar(getCooldownMessage(p, getRemainingCooldown(playerCDs, id)));
                 else {
+                    Server server = Bukkit.getServer();
+                    ConsoleCommandSender console = server.getConsoleSender();
                     setCooldown(playerCDs, id, Duration.ofMillis(time * 50L)); //CD in Ticks
-                    command.execute(sender);
+                    for (String command : commands) {
+                        server.dispatchCommand(console, command);
+                    }
                 }
             })
             .withPermission(this.getPermission())

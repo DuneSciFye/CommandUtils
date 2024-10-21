@@ -133,6 +133,11 @@ Commands:
   CooldownCommand:
     Enabled: true
     Aliases: []
+    CooldownMessages:
+      Hours: "&cOn Cooldown for %hours%h, %minutes%m, & %seconds%s."
+      Minutes: "&cOn Cooldown for %minutes%m & %seconds%s."
+      Seconds: "&cOn Cooldown for %seconds%s."
+      Milliseconds: "&cOn Cooldown for 0.%milliseconds%s."
 
   Food:
     Enabled: true
