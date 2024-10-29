@@ -291,13 +291,17 @@ public class Utils {
     }
 
     public static boolean testBlock(Block b, List<Predicate<Block>>[] predicates) {
-        for (Predicate<Block> whitelist : predicates[0])
-            if (whitelist.test(b)) {
-                for (Predicate<Block> blacklist : predicates[1])
-                    if (blacklist.test(b)) return false;
-                return true;
-            }
-        return false;
+        List<Predicate<Block>> whitelistPredicates = predicates[0];
+        List<Predicate<Block>> blacklistPredicates = predicates[1];
+
+        // If whitelist is empty, only check blacklist
+        if (whitelistPredicates.isEmpty()) {
+            return blacklistPredicates.stream().noneMatch(predicate -> predicate.test(b));
+        }
+
+        // Check whitelist and ensure no blacklist match if any whitelist condition is met
+        return whitelistPredicates.stream().anyMatch(predicate -> predicate.test(b)) &&
+            blacklistPredicates.stream().noneMatch(predicate -> predicate.test(b));
     }
 
     public static Set<Block> getBlocksInRadius(Block origin, final int radius) {
