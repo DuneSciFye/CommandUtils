@@ -10,6 +10,7 @@ import net.coreprotect.CoreProtectAPI;
 import net.coreprotect.CoreProtect;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -291,6 +292,7 @@ public class Utils {
     }
 
     public static boolean testBlock(Block b, List<Predicate<Block>>[] predicates) {
+        if (predicates == null) return true; //Used for fully empty lists
         List<Predicate<Block>> whitelistPredicates = predicates[0];
         List<Predicate<Block>> blacklistPredicates = predicates[1];
 
@@ -361,4 +363,68 @@ public class Utils {
 
         return blocks;
     }
+    public static Set<Block> getBlocksInFacingXYZ(Block origin, int widthX, int heightY, int depthZ, Player player) {
+        Set<Block> blocks = new HashSet<>();
+        depthZ = Math.max(depthZ - 1, 0);
+
+        double pitch = player.getLocation().getPitch();
+        BlockFace facing = player.getFacing();
+
+        // Initialize ranges for X, Y, Z
+        int xStart = -widthX, yStart = -heightY, zStart = -depthZ;
+        int xEnd = widthX, yEnd = heightY, zEnd = depthZ;
+
+        // Adjust ranges based on pitch and facing direction
+        if (pitch < -45 || pitch > 45) {  // Looking up
+            if (pitch < -45) {
+                yStart = 0;
+                yEnd = depthZ;
+            } else {
+                yStart = -depthZ;
+                yEnd = 0;
+            }
+            if (facing == BlockFace.NORTH || facing == BlockFace.SOUTH) {
+                zStart = -heightY;
+                zEnd = heightY;
+            } else { // EAST or WEST
+                xStart = -heightY;
+                xEnd = heightY;
+                zStart = -widthX;
+                zEnd = widthX;
+            }
+        } else {  // Looking horizontally
+            switch (facing) {
+                case NORTH -> zEnd = 0;
+                case SOUTH -> zStart = 0;
+                case WEST -> {
+                    xStart = -depthZ;
+                    xEnd = 0;
+                    zStart = -widthX;
+                    zEnd = widthX;
+                }
+                case EAST -> {
+                    xStart = 0;
+                    xEnd = depthZ;
+                    zStart = -widthX;
+                    zEnd = widthX;
+                }
+            }
+        }
+
+        // Loop through calculated ranges to collect blocks
+        for (int x = xStart; x <= xEnd; x++) {
+            for (int y = yStart; y <= yEnd; y++) {
+                for (int z = zStart; z <= zEnd; z++) {
+                    blocks.add(origin.getRelative(x, y, z));
+                }
+            }
+        }
+
+        return blocks;
+    }
+
+    public static String[] getItemSlots() {
+        return new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "main", "mainhand", "off", "offhand", "cursor"};
+    }
+
 }

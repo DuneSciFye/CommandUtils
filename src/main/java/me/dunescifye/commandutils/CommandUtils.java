@@ -128,6 +128,8 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("CooldownCommand", new CooldownCommandCommand());
         commands.put("ModifyVelocity", new ModifyVelocityCommand());
         commands.put("TempPlayerVar", new TempPlayerVarCommand());
+        commands.put("BreakInXYZ", new BreakInXYZCommand());
+        commands.put("AddItemNBT", new AddItemNBTCommand());
 
         commands.put("CobwebPrison", new CobwebPrisonCommand());
         //Special Commands

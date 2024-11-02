@@ -17,7 +17,7 @@ import static me.dunescifye.commandutils.utils.Utils.*;
 
 public class BreakInFacingCommand extends Command implements Registerable {
 
-    @SuppressWarnings("ConstantConditions")
+        @SuppressWarnings("ConstantConditions")
     public void register() {
 
         if (!this.getEnabled()) return;
@@ -27,6 +27,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
         PlayerArgument playerArg = new PlayerArgument("Player");
         IntegerArgument depthArg = new IntegerArgument("Depth", 0);
+        IntegerArgument zArg = new IntegerArgument("Z", 0);
         LiteralArgument whitelistArg = new LiteralArgument("whitelist");
         StringArgument whitelistedBlocksArgument = new StringArgument("Whitelisted Blocks");
         LiteralArgument forceDropArg = new LiteralArgument("forcedrop");
@@ -44,12 +45,9 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                     Player player = args.getByArgument(playerArg);
                                     Collection<ItemStack> drops = new ArrayList<>();
 
-                                    for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
-                                        Location relativeLocation = b.getLocation();
-                                        if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                                    for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player))
+                                        if (Utils.isInClaimOrWilderness(player, b.getLocation()))
                                             b.setType(Material.AIR);
-                                        }
-                                    }
 
                                     dropAllItemStacks(world, location, drops);
                                 })
@@ -176,22 +174,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-    }
 
-    private void breakInFacing(int radius, int depth, Player player, World world, Location location, List<Predicate<Block>>[] predicates) {
-        if (world == null) return;
-        Collection<ItemStack> drops = new ArrayList<>();
-        ItemStack heldItem = player.getInventory().getItemInMainHand();
 
-        for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), radius, depth, player)) {
-            Location relativeLocation = b.getLocation();
-            if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
-                if (!testBlock(b, predicates) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
-                drops.addAll(b.getDrops(heldItem));
-                b.setType(Material.AIR);
-            }
-        }
-
-        dropAllItemStacks(world, location, drops);
     }
 }

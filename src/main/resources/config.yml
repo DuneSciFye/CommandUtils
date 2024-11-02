@@ -39,6 +39,10 @@ Placeholders:
       ArgsSeparator: ","
 
 Commands:
+  AddItemNBT:
+    Enabled: true
+    Aliases: []
+
   BlockCycle:
     Enabled: true
     Aliases: []

@@ -7,13 +7,14 @@ import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
 
-public class SetItemNBTCommand extends Command implements Registerable {
-
+public class AddItemNBTCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
+    @Override
     public void register() {
 
         if (!this.getEnabled()) return;
@@ -26,16 +27,16 @@ public class SetItemNBTCommand extends Command implements Registerable {
         GreedyStringArgument contentArg = new GreedyStringArgument("Content");
 
         /*
-          Sets NBT Data of an Item
+          Performs addition operation on NBT data of an item. If none exists, nothing happens.
           @author DuneSciFye
-         * @since 1.0.0
-         * @param Player Player to get Inventory
-         * @param Slot Slot of Item
-         * @param Namespace String of Namespace
-         * @param Key String of Key
-         * @param Content Content to set NBT to
+         * @since 2.1.6
+         * @param Player to get Inventory
+         * @param Slot of Item
+         * @param String of Namespace
+         * @param String of Key
+         * @param Amount to Add
          */
-        new CommandAPICommand("setitemnbt")
+        new CommandAPICommand("additemnbt")
             .withArguments(playerArg)
             .withArguments(slotArg
                 .replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots()))
@@ -51,17 +52,15 @@ public class SetItemNBTCommand extends Command implements Registerable {
                 String inputKey = args.getByArgument(keyArg);
                 String content = args.getByArgumentOrDefault(contentArg, "");
 
-                if (item == null)
-                    return;
+                if (item == null) return;
 
                 NamespacedKey key = new NamespacedKey(namespace, inputKey);
                 ItemMeta meta = item.getItemMeta();
 
-                if (Utils.isNumeric(content))
-                    meta.getPersistentDataContainer().set(key, PersistentDataType.DOUBLE, Double.parseDouble(content));
-                else
-                    meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, content);
-
+                if (!Utils.isNumeric(content)) return;
+                PersistentDataContainer container = meta.getPersistentDataContainer();
+                if (!container.has(key, PersistentDataType.DOUBLE)) return;
+                meta.getPersistentDataContainer().set(key, PersistentDataType.DOUBLE, container.get(key, PersistentDataType.DOUBLE) + Double.parseDouble(content));
                 item.setItemMeta(meta);
 
             })
