@@ -537,31 +537,31 @@ public class Placeholders extends PlaceholderExpansion {
                 }
             }
 
+            /*
+             * Gets how many of a material is in a player's inventory + cursor slot. Does not count opened containers.
+             * @author DuneSciFye
+             */
             case "amount", "amt" -> {
                 if (p == null) {
                     return "null player";
                 }
 
-                String[] argsAmt = arguments.split(amountSeparator);
-                ItemStack item = Utils.getInvItem(p, argsAmt[0]);
+                ItemStack item = Utils.getInvItem(p, arguments);
 
-                if (item == null) {
-                    Material mat = Material.getMaterial(argsAmt[0].toUpperCase());
+                if (item == null) { //Argument is not an inv slot
+                    Material mat = Material.getMaterial(arguments.toUpperCase());
                     if (mat == null) return "";
-
                     int count = 0;
-
-                    for (ItemStack content : p.getInventory().getContents()) {
-                        if (content == null) continue;
-                        if (Objects.equals(content.getType(), mat)) {
+                    ArrayList<ItemStack> items = new ArrayList<>(Arrays.asList(p.getInventory().getContents()));
+                    items.add(p.getItemOnCursor());
+                    for (ItemStack content : items)
+                        if (content != null && Objects.equals(content.getType(), mat))
                             count += content.getAmount();
-                        }
-                    }
 
                     return String.valueOf(count);
                 }
 
-                return String.valueOf(item.getAmount());
+                return String.valueOf(item.getAmount()); //Argument was an inv slot
             }
             /*
              * Get distance between two coordinates
