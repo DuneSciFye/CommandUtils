@@ -42,7 +42,7 @@ public final class CommandUtils extends JavaPlugin {
             griefPreventionEnabled = true;
         }
 
-        if (Bukkit.getPluginManager().isPluginEnabled("FactionsUUID")) {
+        if (Bukkit.getPluginManager().isPluginEnabled("Factions")) {
             logger.info("Detected FactionsUUID, enabling support for it.");
             factionsUUIDEnabled = true;
         }
