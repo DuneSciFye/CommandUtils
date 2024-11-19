@@ -4,6 +4,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.files.Config;
+import me.dunescifye.commandutils.utils.FUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -57,7 +58,7 @@ public class RemoveInRadius extends Command implements Registerable {
                             Block b = block.getRelative(x, y, z);
                             //Testing claim
                             Location relativeLocation = b.getLocation();
-                            if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                            if (FUtils.isInsideClaim(player, relativeLocation) || FUtils.isWilderness(relativeLocation)) {
                                 b.setType(AIR);
                             }
                         }
@@ -104,7 +105,7 @@ public class RemoveInRadius extends Command implements Registerable {
                     for (int y = -radius; y <= radius; y++) {
                         for (int z = -radius; z <= radius; z++) {
                             Block relative = origin.getRelative(x, y, z);
-                            if (!Utils.testBlock(relative, predicates) || !Utils.isInClaimOrWilderness(player, relative.getLocation())) continue;
+                            if (!Utils.testBlock(relative, predicates) || !FUtils.isInClaimOrWilderness(player, relative.getLocation())) continue;
                             relative.setType(Material.AIR);
                         }
                     }
@@ -145,7 +146,7 @@ public class RemoveInRadius extends Command implements Registerable {
                     for (int y = -radius; y <= radius; y++) {
                         for (int z = -radius; z <= radius; z++) {
                             Block relative = origin.getRelative(x, y, z);
-                            if (!Utils.testBlock(relative, predicates) || !Utils.isInClaimOrWilderness(player, relative.getLocation())) continue;
+                            if (!Utils.testBlock(relative, predicates) || !FUtils.isInClaimOrWilderness(player, relative.getLocation())) continue;
                             relative.setType(Material.AIR);
                         }
                     }

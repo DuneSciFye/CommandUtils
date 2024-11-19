@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.utils.FUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
@@ -66,7 +67,7 @@ public class BreakInFacingLogCoreProtectCommand extends Command implements Regis
 
                 for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
                     Location relativeLocation = b.getLocation();
-                    if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                    if (FUtils.isInsideClaim(player, relativeLocation) || FUtils.isWilderness(relativeLocation)) {
                         drops.addAll(b.getDrops(heldItem));
                         b.setType(Material.AIR);
                         cpAPI.logRemoval(name, b.getLocation(), b.getType(), b.getBlockData());
@@ -112,7 +113,7 @@ public class BreakInFacingLogCoreProtectCommand extends Command implements Regis
                 List<Predicate<Block>>[] predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
                 for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
-                    if (!testBlock(b, predicates) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
+                    if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
                     drops.addAll(b.getDrops(heldItem));
                     b.setType(Material.AIR);
                     cpAPI.logRemoval(name, b.getLocation(), b.getType(), b.getBlockData());
@@ -158,7 +159,7 @@ public class BreakInFacingLogCoreProtectCommand extends Command implements Regis
                 List<Predicate<Block>>[] predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
                 for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
-                    if (!testBlock(b, predicates) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
+                    if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
                     drop.setAmount(drop.getAmount() + 1);
                     b.setType(Material.AIR);
                     cpAPI.logRemoval(name, b.getLocation(), b.getType(), b.getBlockData());
@@ -206,7 +207,7 @@ public class BreakInFacingLogCoreProtectCommand extends Command implements Regis
                 List<Predicate<Block>>[] predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
                 for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
-                    if (!testBlock(b, predicates) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
+                    if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
                     drops.add(new ItemStack(b.getType()));
                     b.setType(Material.AIR);
                     cpAPI.logRemoval(name, b.getLocation(), b.getType(), b.getBlockData());

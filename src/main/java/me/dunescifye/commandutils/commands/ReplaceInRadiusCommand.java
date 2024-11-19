@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.files.Config;
+import me.dunescifye.commandutils.utils.FUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -114,7 +115,7 @@ public class ReplaceInRadiusCommand extends Command implements Registerable {
     }
     private void replaceInRadiusCheckClaims(final Player p, final Block origin, final int radius, final List<Predicate<Block>>[] predicates, final List<Material> blocksTo) {
         for (Block b : Utils.getBlocksInRadius(origin, radius))
-            if (Utils.testBlock(b, predicates) && Utils.isInClaimOrWilderness(p, b.getLocation()))
+            if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation()))
                 b.setType(blocksTo.get(ThreadLocalRandom.current().nextInt(blocksTo.size())));
     }
 }

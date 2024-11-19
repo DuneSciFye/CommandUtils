@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.files.Config;
+import me.dunescifye.commandutils.utils.FUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -55,7 +56,7 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                     Collection<ItemStack> drops = new ArrayList<>();
 
                     for (Block b : Utils.getBlocksInRadius(location.getBlock(), args.getByArgument(radiusArg))) {
-                        if (!Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
+                        if (!FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
 
                         drops.addAll(b.getDrops(heldItem));
                         b.setType(AIR);
@@ -280,7 +281,7 @@ public class BreakInRadiusCommand extends Command implements Registerable {
         Collection<ItemStack> drops = new ArrayList<>();
 
         for (Block b : Utils.getBlocksInRadius(location.getBlock(), radius)) {
-            if (!Utils.testBlock(b, predicates) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
+            if (!Utils.testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
 
             drops.addAll(b.getDrops(heldItem));
             b.setType(AIR);
@@ -291,7 +292,7 @@ public class BreakInRadiusCommand extends Command implements Registerable {
     private void breakInRadius(List<Predicate<Block>>[] predicates, World world, Location location, Player player, int radius, ItemStack drop) {
 
         for (Block b : Utils.getBlocksInRadius(location.getBlock(), radius)) {
-            if (!Utils.testBlock(b, predicates) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
+            if (!Utils.testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
 
             drop.setAmount(drop.getAmount() + 1);
             b.setType(AIR);
@@ -305,7 +306,7 @@ public class BreakInRadiusCommand extends Command implements Registerable {
         Collection<ItemStack> drops = new ArrayList<>();
 
         for (Block b : Utils.getBlocksInRadius(location.getBlock(), radius)) {
-            if (!Utils.testBlock(b, predicates) || !Utils.isInClaimOrWilderness(player, b.getLocation())) continue;
+            if (!Utils.testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
 
             drops.add(new ItemStack(b.getType()));
             b.setType(AIR);

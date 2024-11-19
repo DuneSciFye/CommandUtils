@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.files.Config;
+import me.dunescifye.commandutils.utils.FUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -68,7 +69,7 @@ public class BreakInXYZCommand extends Command implements Registerable {
                 ItemStack heldItem = p.getInventory().getItemInMainHand();
 
                 for (Block b : getBlocksInFacingXYZ(world.getBlockAt(loc), args.getByArgument(xArg), args.getByArgument(yArg), args.getByArgument(zArg), p)) {
-                    if (!testBlock(b, predicates) || !Utils.isInClaimOrWilderness(p, b.getLocation())) continue;
+                    if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(p, b.getLocation())) continue;
                     drops.addAll(b.getDrops(heldItem));
                     b.setType(Material.AIR);
                 }
@@ -101,7 +102,7 @@ public class BreakInXYZCommand extends Command implements Registerable {
                 ItemStack heldItem = p.getInventory().getItemInMainHand();
 
                 for (Block b : getBlocksInFacingXYZ(world.getBlockAt(loc), args.getByArgument(xArg), args.getByArgument(yArg), args.getByArgument(zArg), p)) {
-                    if (!testBlock(b, predicates) || !Utils.isInClaimOrWilderness(p, b.getLocation())) continue;
+                    if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(p, b.getLocation())) continue;
                     drops.addAll(b.getDrops(heldItem));
                     b.setType(Material.AIR);
                 }

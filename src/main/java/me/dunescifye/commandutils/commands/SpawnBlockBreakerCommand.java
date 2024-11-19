@@ -5,6 +5,7 @@ import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.files.Config;
+import me.dunescifye.commandutils.utils.FUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -214,7 +215,7 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
                                                             for (int y = -radius; y <= radius; y++) {
                                                                 for (int z = -radius; z <= radius; z++) {
                                                                     Block relative = origin.getRelative(x, y, z);
-                                                                    if (!Utils.testBlock(relative, predicates) || !Utils.isInClaimOrWilderness(p, relative.getLocation())) continue;
+                                                                    if (!Utils.testBlock(relative, predicates) || !FUtils.isInClaimOrWilderness(p, relative.getLocation())) continue;
                                                                     relative.breakNaturally();
                                                                 }
                                                             }

@@ -2,6 +2,7 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
+import me.dunescifye.commandutils.utils.FUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -67,7 +68,7 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                         Block b = block.getRelative(x, 0, z);
                         //Testing claim
                         Location relativeLocation = b.getLocation();
-                        if (Utils.isInClaimOrWilderness(player, relativeLocation)) {
+                        if (FUtils.isInClaimOrWilderness(player, relativeLocation)) {
                             BlockData blockData = b.getBlockData();
                             if (blockData instanceof Ageable ageable) {
                                 Collection<ItemStack> blockDrops = b.getDrops(heldItem);
@@ -124,7 +125,7 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                         Block b = block.getRelative(x, 0, z);
                         //Testing claim
                         Location relativeLocation = b.getLocation();
-                        if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                        if (FUtils.isInsideClaim(player, relativeLocation) || FUtils.isWilderness(relativeLocation)) {
                             BlockData blockData = b.getBlockData();
                             if (blockData instanceof Ageable ageable) {
                                 Collection<ItemStack> blockDrops = b.getDrops(heldItem);
@@ -189,7 +190,7 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                             Block b = block.getRelative(x, y, z);
                             //Testing claim
                             Location relativeLocation = b.getLocation();
-                            if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                            if (FUtils.isInsideClaim(player, relativeLocation) || FUtils.isWilderness(relativeLocation)) {
                                 BlockData blockData = b.getBlockData();
                                 if (blockData instanceof Ageable ageable) {
                                     Collection<ItemStack> blockDrops = b.getDrops(heldItem);
@@ -254,7 +255,7 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                             Block b = block.getRelative(x, y, z);
                             //Testing claim
                             Location relativeLocation = b.getLocation();
-                            if (Utils.isInsideClaim(player, relativeLocation) || Utils.isWilderness(relativeLocation)) {
+                            if (FUtils.isInsideClaim(player, relativeLocation) || FUtils.isWilderness(relativeLocation)) {
                                 BlockData blockData = b.getBlockData();
                                 if (blockData instanceof Ageable ageable) {
                                     Collection<ItemStack> blockDrops = b.getDrops(heldItem);
