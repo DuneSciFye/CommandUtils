@@ -13,6 +13,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
@@ -706,6 +707,47 @@ public class Placeholders extends PlaceholderExpansion {
                 if (potionEffect == null) return "";
                 return String.valueOf(potionEffect.getAmplifier());
 
+            }
+            case "exists", "alive" -> {
+                String[] params = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
+                if (params.length < 1) return null;
+                try {
+                    UUID uuid = UUID.fromString(params[0]);
+                    return Bukkit.getEntity(uuid) == null ? "false" : "true";
+                } catch (IllegalArgumentException e) {
+                    return "Invalid UUID";
+                }
+            }
+            case "entityinfo" -> {
+                String[] params = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
+                if (params.length < 2) return null;
+                try {
+                    UUID uuid = UUID.fromString(params[0]);
+                    Entity e = Bukkit.getEntity(uuid);
+                    if (e == null) return "Invalid Entity";
+                    switch (params[1]) {
+                        case "x" -> {
+                            return String.valueOf(e.getLocation().getX());
+                        }
+                        case "y" -> {
+                            return String.valueOf(e.getLocation().getY());
+                        }
+                        case "z" -> {
+                            return String.valueOf(e.getLocation().getZ());
+                        }
+                        case "xint" -> {
+                            return String.valueOf(e.getLocation().getBlockX());
+                        }
+                        case "yint" -> {
+                            return String.valueOf(e.getLocation().getBlockY());
+                        }
+                        case "zint" -> {
+                            return String.valueOf(e.getLocation().getBlockZ());
+                        }
+                    }
+                } catch (IllegalArgumentException e) {
+                    return "Invalid UUID";
+                }
             }
             default -> {
                 return "Unknown function";
