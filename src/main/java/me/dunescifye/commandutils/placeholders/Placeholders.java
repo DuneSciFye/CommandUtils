@@ -13,6 +13,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -714,6 +715,30 @@ public class Placeholders extends PlaceholderExpansion {
                 try {
                     UUID uuid = UUID.fromString(params[0]);
                     return Bukkit.getEntity(uuid) == null ? "false" : "true";
+                } catch (IllegalArgumentException e) {
+                    return "Invalid UUID";
+                }
+            }
+            case "inground", "inblock", "arrowinground", "arrowinblock" -> {
+                String[] params = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
+                if (params.length < 1) return null;
+                try {
+                    UUID uuid = UUID.fromString(params[0]);
+                    Entity e = Bukkit.getEntity(uuid);
+                    if (!(e instanceof Arrow arrow)) return "Invalid Arrow";
+                    return String.valueOf(!arrow.isInBlock());
+                } catch (IllegalArgumentException e) {
+                    return "Invalid UUID";
+                }
+            }
+            case "isinlava", "inlava" -> {
+                String[] params = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
+                if (params.length < 1) return null;
+                try {
+                    UUID uuid = UUID.fromString(params[0]);
+                    Entity e = Bukkit.getEntity(uuid);
+                    if (e == null) return "Invalid Entity";
+                    return String.valueOf(e.isInLava());
                 } catch (IllegalArgumentException e) {
                     return "Invalid UUID";
                 }
