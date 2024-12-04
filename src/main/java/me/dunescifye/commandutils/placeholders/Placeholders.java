@@ -15,6 +15,7 @@ import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
@@ -770,6 +771,18 @@ public class Placeholders extends PlaceholderExpansion {
                             return String.valueOf(e.getLocation().getBlockZ());
                         }
                     }
+                } catch (IllegalArgumentException e) {
+                    return "Invalid UUID";
+                }
+            }
+            case "hasai" -> {
+                String[] params = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
+                if (params.length < 1) return null;
+                try {
+                    UUID uuid = UUID.fromString(params[0]);
+                    Entity e = Bukkit.getEntity(uuid);
+                    if (!(e instanceof LivingEntity entity)) return "Invalid Entity";
+                    return String.valueOf(entity.hasAI());
                 } catch (IllegalArgumentException e) {
                     return "Invalid UUID";
                 }
