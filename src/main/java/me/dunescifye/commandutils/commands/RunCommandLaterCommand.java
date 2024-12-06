@@ -1,5 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
+import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -23,28 +24,15 @@ public class RunCommandLaterCommand extends Command implements Registerable {
 
         Server server = Bukkit.getServer();
         ConsoleCommandSender console = server.getConsoleSender();
+        PlayerArgument playerArg = new PlayerArgument("Player");
+        LiteralArgument addArg = new LiteralArgument("add");
 
         new CommandTree("runcommandlater")
-            .then(new LiteralArgument("add")
+            .then(addArg
                 .then(new StringArgument("Command ID")
                     .then(new IntegerArgument("Ticks", 0)
-                        .then(new GreedyStringArgument("Commands")
-                            .executesPlayer((player, args) -> {
-                                String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
-                                int ticks = args.getUnchecked("Ticks");
-                                String taskID = args.getUnchecked("Command ID");
-                                BukkitTask oldTask = tasks.remove(taskID);
-                                if (oldTask != null) oldTask.cancel();
-
-                                BukkitTask task = Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
-                                    for (String command : commands) {
-                                        server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(player, command.replace("$", "%")));
-                                    }
-                                }, ticks);
-
-                                tasks.put(taskID, task);
-                            })
-                            .executesConsole((sender, args) -> {
+                        .then(new TextArgument("Commands")
+                            .executes((sender, args) -> {
                                 String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
                                 int ticks = args.getUnchecked("Ticks");
                                 String taskID = args.getUnchecked("Command ID");
@@ -59,23 +47,30 @@ public class RunCommandLaterCommand extends Command implements Registerable {
 
                                 tasks.put(taskID, task);
                             })
+                            .then(playerArg
+                                .executes((sender, args) -> {
+                                    String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
+                                    int ticks = args.getUnchecked("Ticks");
+                                    String taskID = args.getUnchecked("Command ID");
+                                    BukkitTask oldTask = tasks.remove(taskID);
+                                    if (oldTask != null) oldTask.cancel();
+
+                                    BukkitTask task = Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
+                                        for (String command : commands) {
+                                            server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(args.getByArgument(playerArg), command.replace("$", "%")));
+                                        }
+                                    }, ticks);
+
+                                    tasks.put(taskID, task);
+                                })
+                            )
                         )
                     )
                 )
             )
             .then(new LiteralArgument("run")
                 .then(new IntegerArgument("Ticks", 0)
-                    .then(new GreedyStringArgument("Commands")
-                        .executesPlayer((player, args) -> {
-                            String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
-                            int ticks = args.getUnchecked("Ticks");
-
-                            Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
-                                for (String command : commands) {
-                                    server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(player, command.replace("$", "%")));
-                                }
-                            }, ticks);
-                        })
+                    .then(new TextArgument("Commands")
                         .executesConsole((sender, args) -> {
                             String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
                             int ticks = args.getUnchecked("Ticks");
@@ -87,6 +82,18 @@ public class RunCommandLaterCommand extends Command implements Registerable {
                             }, ticks);
 
                         })
+                        .then(playerArg
+                            .executes((sender, args) -> {
+                                String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
+                                int ticks = args.getUnchecked("Ticks");
+
+                                Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
+                                    for (String command : commands) {
+                                        server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(args.getByArgument(playerArg), command.replace("$", "%")));
+                                    }
+                                }, ticks);
+                            })
+                        )
                     )
                 )
             )
