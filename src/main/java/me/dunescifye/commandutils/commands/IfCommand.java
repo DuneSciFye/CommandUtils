@@ -44,14 +44,13 @@ public class IfCommand extends Command implements Configurable {
             logger.warning("Configuration Commands.If.ElseKeyword is not a String. Using default value of `else`");
             elseKeyword = "else";
         }
-
         if (config.isString("Commands.If.CommandSeparator")) {
             commandSeparator = config.getString("Commands.If.CommandSeparator");
             if (commandSeparator == null)
-                config.set("Commands.If.commandSeparator", ",,");
+                config.set("Commands.If.commandSeparator", ",if,");
         } else {
-            logger.warning("Configuration Commands.If.CommandSeparator is not a String. Using default value of `,,`");
-            commandSeparator = ",,";
+            logger.warning("Configuration Commands.If.CommandSeparator is not a String. Using default value of `,if,`");
+            commandSeparator = ",if,";
         }
 
         if (config.isString("Commands.If.ConditionSeparator")) {

@@ -27,87 +27,91 @@ public class RunCommandLaterCommand extends Command implements Registerable {
         PlayerArgument playerArg = new PlayerArgument("Player");
         LiteralArgument addArg = new LiteralArgument("add");
 
-        new CommandTree("runcommandlater")
-            .then(addArg
-                .then(new StringArgument("Command ID")
-                    .then(new IntegerArgument("Ticks", 0)
-                        .then(new TextArgument("Commands")
-                            .executes((sender, args) -> {
-                                String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
-                                int ticks = args.getUnchecked("Ticks");
-                                String taskID = args.getUnchecked("Command ID");
-                                BukkitTask oldTask = tasks.remove(taskID);
-                                if (oldTask != null) oldTask.cancel();
-
-                                BukkitTask task = Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
-                                    for (String command : commands) {
-                                        server.dispatchCommand(console, command.replace("$", "%"));
-                                    }
-                                }, ticks);
-
-                                tasks.put(taskID, task);
-                            })
-                            .then(playerArg
-                                .executes((sender, args) -> {
-                                    String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
-                                    int ticks = args.getUnchecked("Ticks");
-                                    String taskID = args.getUnchecked("Command ID");
-                                    BukkitTask oldTask = tasks.remove(taskID);
-                                    if (oldTask != null) oldTask.cancel();
-
-                                    BukkitTask task = Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
-                                        for (String command : commands) {
-                                            server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(args.getByArgument(playerArg), command.replace("$", "%")));
-                                        }
-                                    }, ticks);
-
-                                    tasks.put(taskID, task);
-                                })
-                            )
-                        )
-                    )
-                )
-            )
-            .then(new LiteralArgument("run")
+        CommandTree runcommandlater = new CommandTree("runcommandlater");
+        runcommandlater.then(addArg
+            .then(new StringArgument("Command ID")
                 .then(new IntegerArgument("Ticks", 0)
                     .then(new TextArgument("Commands")
-                        .executesConsole((sender, args) -> {
+                        .executes((sender, args) -> {
                             String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
                             int ticks = args.getUnchecked("Ticks");
+                            String taskID = args.getUnchecked("Command ID");
+                            BukkitTask oldTask = tasks.remove(taskID);
+                            if (oldTask != null)
+                                oldTask.cancel();
 
-                            Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
+                            BukkitTask task = Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
                                 for (String command : commands) {
                                     server.dispatchCommand(console, command.replace("$", "%"));
                                 }
                             }, ticks);
 
+                            tasks.put(taskID, task);
                         })
                         .then(playerArg
                             .executes((sender, args) -> {
-                                String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
+                                String[] commands = PlaceholderAPI.setPlaceholders(args.getByArgument(playerArg), ((String) args.getUnchecked("Commands")).replace("$", "%")).split(",,");
                                 int ticks = args.getUnchecked("Ticks");
+                                String taskID = args.getUnchecked("Command ID");
+                                BukkitTask oldTask = tasks.remove(taskID);
+                                if (oldTask != null)
+                                    oldTask.cancel();
 
-                                Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
+                                BukkitTask task = Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
                                     for (String command : commands) {
-                                        server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(args.getByArgument(playerArg), command.replace("$", "%")));
+                                        server.dispatchCommand(console, command);
                                     }
                                 }, ticks);
+
+                                tasks.put(taskID, task);
                             })
                         )
                     )
                 )
             )
-            .then(new LiteralArgument("remove")
-                .then(new StringArgument("Command ID")
-                    .executes((sender, args) -> {
-                        BukkitTask task = tasks.get(args.getByClass("Command ID", String.class));
-                        if (task != null) task.cancel();
+        );
+        runcommandlater.then(new LiteralArgument("run")
+            .then(new IntegerArgument("Ticks", 0)
+                .then(new TextArgument("Commands")
+                    .executesConsole((sender, args) -> {
+                        String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
+                        int ticks = args.getUnchecked("Ticks");
+
+                        Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
+                            for (String command : commands) {
+                                server.dispatchCommand(console, command);
+                            }
+                        }, ticks);
+
                     })
+                    .then(playerArg
+                        .executes((sender, args) -> {
+                            String[] commands = PlaceholderAPI.setPlaceholders(args.getByArgument(playerArg), ((String) args.getUnchecked("Commands")).replace("$", "%")).split(",,");
+                            ;
+                            int ticks = args.getUnchecked("Ticks");
+
+                            Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
+                                for (String command : commands) {
+                                    server.dispatchCommand(console, command);
+                                }
+                            }, ticks);
+                        })
+                    )
                 )
             )
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
+        );
+        runcommandlater.then(new LiteralArgument("remove")
+            .then(new StringArgument("Command ID")
+                .executes((sender, args) -> {
+                    BukkitTask task = tasks.get(args.getByClass("Command ID", String.class));
+                    if (task != null)
+                        task.cancel();
+                })
+            )
+        );
+        runcommandlater.withPermission(this.getPermission());
+        runcommandlater.withAliases(this.getCommandAliases());
+        runcommandlater.register(this.getNamespace());
     }
 
 }

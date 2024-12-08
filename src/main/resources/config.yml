@@ -172,7 +172,7 @@ Commands:
     Aliases: []
     ElseIfKeyword: "elseif"
     ElseKeyword: "else"
-    CommandSeparator: ",,"
+    CommandSeparator: ",if,"
     ConditionSeparator: "\""
 
   ItemAttribute:
