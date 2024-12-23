@@ -121,7 +121,6 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("BreakBlockMultiplyDrops", new BreakBlockMultiplyDropsCommand());
         commands.put("Saturation", new SaturationCommand());
         commands.put("TempVar", new TempVarCommand());
-        commands.put("ScaleWithCollide", new ScaleWithCollideCommand());
         commands.put("BreakInFacingLogCoreProtect", new BreakInFacingLogCoreProtectCommand());
         commands.put("SetMobTarget", new SetMobTargetCommand());
         commands.put("RemoveEntity", new RemoveEntityCommand());
@@ -131,6 +130,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("BreakInXYZ", new BreakInXYZCommand());
         commands.put("AddItemNBT", new AddItemNBTCommand());
         commands.put("BlockPrison", new BlockPrisonCommand());
+        commands.put("SendActionBar", new SendActionBarCommand());
 
         commands.put("CobwebPrison", new CobwebPrisonCommand());
         //Special Commands
