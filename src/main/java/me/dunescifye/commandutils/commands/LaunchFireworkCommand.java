@@ -47,6 +47,7 @@ public class LaunchFireworkCommand extends Command implements Registerable {
                 int power = args.getByArgumentOrDefault(fireworkPowerArg, 1);
 
                 Firework firework = p.getWorld().spawn(loc, Firework.class);
+                firework.setShooter(p);
                 FireworkMeta fwm = firework.getFireworkMeta();
                 fwm.addEffect(FireworkEffect.builder().withColor(Color.fromRGB(redColor, greenColor, blueColor)).build());
                 fwm.setPower(power);
