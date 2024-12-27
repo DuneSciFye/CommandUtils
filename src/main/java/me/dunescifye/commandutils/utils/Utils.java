@@ -8,6 +8,7 @@ import net.coreprotect.CoreProtect;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -393,5 +394,12 @@ public class Utils {
 
     public static String[] getItemSlots() {
         return new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "main", "mainhand", "off", "offhand", "cursor"};
+    }
+
+    public static void runConsoleCommands(String... commands){
+        Server server = Bukkit.getServer();
+        ConsoleCommandSender console = server.getConsoleSender();
+        for (String command : commands)
+            server.dispatchCommand(console, command);
     }
 }

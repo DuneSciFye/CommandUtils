@@ -28,7 +28,7 @@ public class ReplaceLoreRegexCommand extends Command implements Registerable {
         TextArgument fromArg = new TextArgument("Text To Find");
         TextArgument toArg = new TextArgument("New Text");
 
-        /**
+        /*
          * Replaces Lore of Item using Regex
          * @author DuneSciFye
          * @since 1.0.3
