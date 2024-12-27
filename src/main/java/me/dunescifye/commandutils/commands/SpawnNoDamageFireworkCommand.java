@@ -24,15 +24,16 @@ public class SpawnNoDamageFireworkCommand extends Command implements Registerabl
         LocationArgument locArg = new LocationArgument("Location");
         IntegerArgument ticksToDetonateArg = new IntegerArgument("Ticks To Detonate", 0);
         PlayerArgument playerArg = new PlayerArgument("No Damage Player");
+        PlayerArgument launcherArg = new PlayerArgument("Player");
 
         /*
          * Summons a Firework that does no damage
          * @author DuneSciFye
          * @since 1.0.0
-         * @param World World of the Location
-         * @param Location Location of where to Spawn Firework
-         * @param Ticks Ticks Until Detonation
-         * @param Player Player To Ignore Damage, if not specified, nobody takes damage
+         * @param World of the Location
+         * @param Location of where to Spawn Firework
+         * @param Ticks Until Detonation
+         * @param Player To Ignore Damage, if not specified, nobody takes damage
          */
         new CommandAPICommand("spawnnodamagefirework")
             .withArguments(worldArg)

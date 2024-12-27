@@ -46,7 +46,7 @@ public class AddItemNBTCommand extends Command implements Registerable {
             .withOptionalArguments(contentArg)
             .executes((sender, args) -> {
                 String slot = args.getByArgument(textSlotArg);
-                if (Arrays.stream(Utils.getItemSlots()).noneMatch(slot::equals)) throw CommandAPI.failWithString("Unknown slot for command SetItemNBT! Found: " + slot);
+                if (Arrays.stream(Utils.getItemSlots()).noneMatch(slot::equals)) throw CommandAPI.failWithString("Unknown slot for command AddItemNBT! Found: " + slot);
                 ItemStack item = Utils.getInvItem(args.getByArgument(playerArg), slot);
                 String namespace = args.getByArgument(namespaceArg);
                 String inputKey = args.getByArgument(keyArg);

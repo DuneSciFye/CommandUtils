@@ -1,6 +1,7 @@
 package me.dunescifye.commandutils.listeners;
 
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -17,11 +18,10 @@ public class EntityDamageByEntityListener implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
-        Entity entity = e.getEntity();
-        Entity damager = e.getDamager();
+        Entity entity = e.getEntity(), damager = e.getDamager();
+
         switch (damager) {
-            case
-                Firework fw -> {
+            case Firework fw -> {
                 if (fw.hasMetadata("nodamage")) {
                     PersistentDataContainer container = fw.getPersistentDataContainer();
                     String noDamagePlayer = container.get(CommandUtils.keyNoDamagePlayer, PersistentDataType.STRING);
@@ -34,22 +34,16 @@ public class EntityDamageByEntityListener implements Listener {
                     }
                 }
             }
-            case
-                EvokerFangs evokerFangs -> {
+            case EvokerFangs evokerFangs -> {
                 if (evokerFangs.hasMetadata("nodamage"))
                     e.setCancelled(true);
             }
-            case
-                WitherSkull witherSkull when entity instanceof ArmorStand -> {
+            case WitherSkull witherSkull when entity instanceof ArmorStand -> {
                 if (witherSkull.hasMetadata("ignoreblockbreak"))
                     e.setCancelled(true);
             }
             default -> {
             }
         }
-
-
     }
-
-
 }

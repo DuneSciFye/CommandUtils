@@ -62,12 +62,14 @@ public class IfCommand extends Command implements Configurable {
             conditionSeparator = "\"";
         }
 
+        GreedyStringArgument argumentsArg = new GreedyStringArgument("Arguments");
+
         new CommandAPICommand("if")
-            .withArguments(new GreedyStringArgument("Arguments"))
+            .withArguments(argumentsArg)
             .executes((sender, args) -> {
-                String input = args.getUnchecked("Arguments");
-                ArrayList<String> inputSplit = new ArrayList<>(List.of(input.split(" " + elseIfKeyword + " ")));
-                String[] elseSplit = inputSplit.remove(inputSplit.size() - 1).split(" " + elseKeyword + " ", 2);
+                String arguments = args.getByArgument(argumentsArg);
+                ArrayList<String> inputSplit = new ArrayList<>(List.of(arguments.split(" " + elseIfKeyword + " ")));
+                String[] elseSplit = inputSplit.removeLast().split(" " + elseKeyword + " ", 2);
                 inputSplit.add(elseSplit[0]);
                 String elseCmd = null;
                 if (elseSplit.length > 1) {
@@ -77,63 +79,64 @@ public class IfCommand extends Command implements Configurable {
                 //If and Else If's
                 for (String elseif : inputSplit) {
                     String[] argSplit = elseif.split(conditionSeparator, 3);
-                    if (argSplit[1].contains("=")) {
-                        String[] condition = argSplit[1].split("=", 2);
-                        if (Objects.equals(condition[0], condition[1])) {
-                            for (String command : argSplit[2].split(commandSeparator)) {
-                                server.dispatchCommand(console, command);
+                    try {
+                        if (argSplit[1].contains("!=")) {
+                            String[] condition = argSplit[1].split("!=", 2);
+                            if (!Objects.equals(condition[0].trim(), condition[1].trim())) {
+                                for (String command : argSplit[2].split(commandSeparator))
+                                    server.dispatchCommand(console, command);
+                                return;
                             }
-                            return;
-                        }
-                    } else if (argSplit[1].contains("!=")) {
-                        String[] condition = argSplit[1].split("!=", 2);
-                        if (!Objects.equals(condition[0], condition[1])) {
-                            for (String command : argSplit[2].split(commandSeparator)) {
-                                server.dispatchCommand(console, command);
+                        } else if (argSplit[1].contains(">=")) {
+                            String[] condition = argSplit[1].split(">=", 2);
+                            if ((Double.parseDouble(condition[0].trim()) >= Double.parseDouble(condition[1].trim()))) {
+                                for (String command : argSplit[2].split(commandSeparator)) {
+                                    server.dispatchCommand(console, command);
+                                }
+                                return;
                             }
-                            return;
-                        }
-                    } else if (argSplit[1].contains(">")) {
-                        String[] condition = argSplit[1].split(">", 2);
-                        if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) > Double.parseDouble(condition[1]))) {
-                            for (String command : argSplit[2].split(commandSeparator)) {
-                                server.dispatchCommand(console, command);
+                        } else if (argSplit[1].contains("<=")) {
+                            String[] condition = argSplit[1].split("<=", 2);
+                            if ((Double.parseDouble(condition[0]) <= Double.parseDouble(condition[1]))) {
+                                for (String command : argSplit[2].split(commandSeparator)) {
+                                    server.dispatchCommand(console, command);
+                                }
+                                return;
                             }
-                            return;
-                        }
-                    } else if (argSplit[1].contains("<")) {
-                        String[] condition = argSplit[1].split("<", 2);
-                        if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) < Double.parseDouble(condition[1]))) {
-                            for (String command : argSplit[2].split(commandSeparator)) {
-                                server.dispatchCommand(console, command);
+                        } else if (argSplit[1].contains(">")) {
+                            String[] condition = argSplit[1].split(">", 2);
+                            if ((Double.parseDouble(condition[0]) > Double.parseDouble(condition[1]))) {
+                                for (String command : argSplit[2].split(commandSeparator)) {
+                                    server.dispatchCommand(console, command);
+                                }
+                                return;
                             }
-                            return;
-                        }
-                    } else if (argSplit[1].contains(">=")) {
-                        String[] condition = argSplit[1].split(">=", 2);
-                        if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) >= Double.parseDouble(condition[1]))) {
-                            for (String command : argSplit[2].split(commandSeparator)) {
-                                server.dispatchCommand(console, command);
+                        } else if (argSplit[1].contains("<")) {
+                            String[] condition = argSplit[1].split("<", 2);
+                            if ((Double.parseDouble(condition[0]) < Double.parseDouble(condition[1]))) {
+                                for (String command : argSplit[2].split(commandSeparator)) {
+                                    server.dispatchCommand(console, command);
+                                }
+                                return;
                             }
-                            return;
-                        }
-                    } else if (argSplit[1].contains("<=")) {
-                        String[] condition = argSplit[1].split("<=", 2);
-                        if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) <= Double.parseDouble(condition[1]))) {
-                            for (String command : argSplit[2].split(commandSeparator)) {
-                                server.dispatchCommand(console, command);
+                        } else if (argSplit[1].contains("=")) {
+                            String[] condition = argSplit[1].split("=", 2);
+                            if (Objects.equals(condition[0], condition[1])) {
+                                for (String command : argSplit[2].split(commandSeparator)) {
+                                    server.dispatchCommand(console, command);
+                                }
+                                return;
                             }
-                            return;
-                        }
-                    } else if (argSplit[1].contains(" contains ")) {
-                        String[] condition = argSplit[1].split(" contains ", 2);
-                        if (condition[0].contains(condition[1])) {
-                            for (String command : argSplit[2].split(commandSeparator)) {
-                                server.dispatchCommand(console, command);
+                        } else if (argSplit[1].contains(" contains ")) {
+                            String[] condition = argSplit[1].split(" contains ", 2);
+                            if (condition[0].contains(condition[1])) {
+                                for (String command : argSplit[2].split(commandSeparator)) {
+                                    server.dispatchCommand(console, command);
+                                }
+                                return;
                             }
-                            return;
                         }
-                    }
+                    } catch (IllegalArgumentException ignored) {}
                 }
 
                 //Else

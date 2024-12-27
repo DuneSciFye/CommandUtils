@@ -29,16 +29,15 @@ public class SetItemCommand extends Command implements Registerable {
                 Player p = args.getByArgument(playerArg);
                 int slot = args.getByArgument(slotArg);
 
-                ItemMeta meta = p.getInventory().getItem(slot).getItemMeta();
                 ItemStack item = args.getByArgument(itemArg);
-                ItemMeta newMeta = item.getItemMeta();
-                int customModelData = newMeta.getCustomModelData();
-                meta.setCustomModelData(customModelData);
+                ItemStack newItem = p.getInventory().getItem(slot).withType(item.getType());
+                ItemMeta meta = item.getItemMeta();
+                ItemMeta newMeta = newItem.getItemMeta();
+                int customModelData = meta.getCustomModelData();
+                newMeta.setCustomModelData(customModelData);
 
-                item.setItemMeta(meta);
-                p.getInventory().setItem(slot, item);
-
-
+                newItem.setItemMeta(newMeta);
+                p.getInventory().setItem(slot, newItem);
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())

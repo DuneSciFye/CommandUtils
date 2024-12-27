@@ -3,9 +3,6 @@ package me.dunescifye.commandutils.utils;
 import com.massivecraft.factions.*;
 import com.massivecraft.factions.perms.PermissibleActions;
 import me.dunescifye.commandutils.CommandUtils;
-import me.ryanhamshire.GriefPrevention.Claim;
-import me.ryanhamshire.GriefPrevention.ClaimPermission;
-import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.coreprotect.CoreProtectAPI;
 import net.coreprotect.CoreProtect;
 import org.bukkit.*;
@@ -397,5 +394,4 @@ public class Utils {
     public static String[] getItemSlots() {
         return new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "main", "mainhand", "off", "offhand", "cursor"};
     }
-
 }

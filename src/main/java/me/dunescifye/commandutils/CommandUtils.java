@@ -163,9 +163,9 @@ public final class CommandUtils extends JavaPlugin {
     private void registerListeners() {
         new EntityDamageByEntityListener().entityDamageByEntityHandler(this);
         new EntityChangeBlockListener().entityChangeBlockHandler(this);
-        new BlockDropItemListener().blockDropItemHandler(this);
         new GodModeListener().registerEvents(this);
         new EntityExplodeListener().entityExplodeHandler(this);
+        new PlayerDamageTracker().damageTrackerHandler(this);
     }
     public static CommandUtils getInstance(){
         return plugin;

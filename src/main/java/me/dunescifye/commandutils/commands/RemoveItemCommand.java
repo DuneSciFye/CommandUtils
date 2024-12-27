@@ -48,7 +48,7 @@ public class RemoveItemCommand extends Command implements Configurable {
                 items.addFirst(p.getItemOnCursor());
                 if (strict) {
                     for (ItemStack invItem : items) {
-                        if (invItem == null || invItem.hasItemMeta() || invItem.getType() != matcher.getType()) continue;
+                        if (invItem == null || invItem.hasItemMeta() || invItem != matcher) continue;
                         if (amountFound + invItem.getAmount() > maxamount) {
                             invItem.setAmount(invItem.getAmount() - maxamount + amountFound);
                             amountFound = maxamount;
@@ -59,7 +59,7 @@ public class RemoveItemCommand extends Command implements Configurable {
                     }
                 } else {
                     for (ItemStack invItem : items) {
-                        if (invItem == null || invItem.getType() != matcher.getType()) continue;
+                        if (invItem == null || invItem != matcher) continue;
                         if (amountFound + invItem.getAmount() > maxamount) {
                             invItem.setAmount(invItem.getAmount() - maxamount + amountFound);
                             amountFound = maxamount;

@@ -6,6 +6,8 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.commands.TempPlayerVarCommand;
 import me.dunescifye.commandutils.commands.TempVarCommand;
+import me.dunescifye.commandutils.listeners.EntityDamageByEntityListener;
+import me.dunescifye.commandutils.listeners.PlayerDamageTracker;
 import me.dunescifye.commandutils.utils.Utils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
@@ -39,6 +42,7 @@ public class Placeholders extends PlaceholderExpansion {
     private static String defaultSeparator = ",", elseIfKeyword, elseKeyword, conditionSeparator;
     private static String nbtSeparator = ",";
     private static String amountSeparator = ",";
+
 
     public Placeholders(CommandUtils plugin, YamlDocument config) {
         Logger logger = plugin.getLogger();
@@ -113,6 +117,7 @@ public class Placeholders extends PlaceholderExpansion {
         return true;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String args) {
         String[] parts = args.split("_", 2); //Get function
@@ -132,6 +137,7 @@ public class Placeholders extends PlaceholderExpansion {
         //return super.onRequest(player, args);
     }
 
+    @SuppressWarnings("ConstantConditions")
     private String function(String function, String arguments, String separator, Player p) {
         switch (function) {
             case "inputoutput" -> {
@@ -351,7 +357,7 @@ public class Placeholders extends PlaceholderExpansion {
 
                 return String.valueOf(p.getItemOnCursor().getType());
             }
-            case "inventoryinfo" -> {
+            case "inventoryinfo", "invinfo", "iteminfo" -> {
                 //Requires: Slot, info type
                 String[] inventoryInfoArgs = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
 
@@ -386,6 +392,10 @@ public class Placeholders extends PlaceholderExpansion {
                         Enchantment enchant = Registry.ENCHANTMENT.get(key);
                         if (enchant == null) return "Invalid Enchant Name";
                         return String.valueOf(itemStack.getEnchantmentLevel(enchant));
+                    }
+                    case "potiontype", "potion" -> {
+                        if (!(itemMeta instanceof PotionMeta potionMeta)) return "";
+                        return potionMeta.getBasePotionType().toString();
                     }
                     default -> {
                         return "Invalid infotype";
@@ -516,21 +526,14 @@ public class Placeholders extends PlaceholderExpansion {
             }
             case "nbt" -> {
                 String[] argsNbt = arguments.split(nbtSeparator);
-                if (p == null) {
-                    return "Null player";
-                }
-
-                if (argsNbt.length < 3) {
-                    return "Missing arguments";
-                }
+                if (p == null) return "Null player";
+                if (argsNbt.length < 3) return "Missing arguments";
 
                 ItemStack item = Utils.getInvItem(p, argsNbt[0]);
-
                 if (item == null || !item.hasItemMeta()) return "";
 
                 PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
                 NamespacedKey key = new NamespacedKey(argsNbt[1], argsNbt[2]);
-
                 if (!container.has(key)) return "";
 
                 try {
@@ -786,6 +789,12 @@ public class Placeholders extends PlaceholderExpansion {
                 } catch (IllegalArgumentException e) {
                     return "Invalid UUID";
                 }
+            }
+            case "lastrawdamage", "lastrawdamagetaken" -> {
+                return String.valueOf(PlayerDamageTracker.getLastRawDamageTaken(p));
+            }
+            case "lastfinaldamage", "lastfinaldamagetaken" -> {
+                return String.valueOf(PlayerDamageTracker.getLastFinalDamageTaken(p));
             }
             default -> {
                 return "Unknown function";
