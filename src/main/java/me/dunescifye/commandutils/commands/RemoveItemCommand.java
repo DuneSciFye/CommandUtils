@@ -9,12 +9,9 @@ import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 public class RemoveItemCommand extends Command implements Configurable {
 
@@ -27,20 +24,20 @@ public class RemoveItemCommand extends Command implements Configurable {
         PlayerArgument playerArg = new PlayerArgument("Player");
         ItemStackArgument itemArg = new ItemStackArgument("Item");
         IntegerArgument maxAmountArg = new IntegerArgument("Max Amount");
-        BooleanArgument onlyVanillaArg = new BooleanArgument("Only Vanilla Items");
+        BooleanArgument strictArg = new BooleanArgument("Strict");
         GreedyStringArgument commandsArg = new GreedyStringArgument("Commands");
 
         new CommandAPICommand("removeitem")
             .withArguments(playerArg)
             .withArguments(itemArg)
             .withOptionalArguments(maxAmountArg)
-            .withOptionalArguments(onlyVanillaArg)
+            .withOptionalArguments(strictArg)
             .withOptionalArguments(commandsArg)
             .executes((sender, args) -> {
                 ItemStack matcher = args.getByArgument(itemArg);
                 String inputCommands = args.getByArgument(commandsArg);
                 int maxamount = args.getByArgumentOrDefault(maxAmountArg, 999999);
-                boolean strict = args.getByArgumentOrDefault(onlyVanillaArg, false);
+                boolean strict = args.getByArgumentOrDefault(strictArg, false);
 
                 int amountFound = 0;
                 Player p = args.getByArgument(playerArg);
@@ -59,7 +56,7 @@ public class RemoveItemCommand extends Command implements Configurable {
                     }
                 } else {
                     for (ItemStack invItem : items) {
-                        if (invItem == null || invItem != matcher) continue;
+                        if (invItem == null || invItem.getType() != matcher.getType()) continue;
                         if (amountFound + invItem.getAmount() > maxamount) {
                             invItem.setAmount(invItem.getAmount() - maxamount + amountFound);
                             amountFound = maxamount;

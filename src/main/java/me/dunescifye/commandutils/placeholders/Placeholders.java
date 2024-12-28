@@ -275,6 +275,13 @@ public class Placeholders extends PlaceholderExpansion {
                     return newColor + "_" + input;
                 }
             }
+            case "replaceregex" -> {
+                String[] args = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
+                if (args.length < 3)
+                    return "Missing arguments!";
+                String input = args[0], regex = args[1], replacement = args[2];
+                return input.replaceAll(regex, replacement);
+            }
             case "changewood" -> {
                 String[] argsChangeWood = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
                 if (argsChangeWood.length < 2) {

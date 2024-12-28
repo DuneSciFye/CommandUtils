@@ -1,7 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
-import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
@@ -9,9 +8,6 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.commandutils.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.Bukkit;
-import org.bukkit.Server;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
@@ -54,15 +50,13 @@ public class CooldownCommandCommand extends Command implements Configurable {
             .executes((sender, args) -> {
                 Player p = args.getByArgument(playerArg);
                 String id = args.getByArgument(idArg);
-                int time = args.getByArgument(timeArg);
-                String[] commands = args.getByArgument(commandsArg).split(",,");
                 HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p, k -> new HashMap<>());
 
                 if (hasCooldown(playerCDs, id))
                     p.sendActionBar(getCooldownMessage(p, getRemainingCooldown(playerCDs, id)));
                 else {
-                    setCooldown(playerCDs, id, Duration.ofMillis(time * 50L)); //CD in Ticks
-                    Utils.runConsoleCommands(commands);
+                    setCooldown(playerCDs, id, Duration.ofMillis(args.getByArgument(timeArg) * 50L)); //CD in Ticks
+                    Utils.runConsoleCommands(args.getByArgument(commandsArg).split(",,"));
                 }
             })
             .withPermission(this.getPermission())
@@ -80,21 +74,6 @@ public class CooldownCommandCommand extends Command implements Configurable {
          * @param Commands to be run
          */
         new CommandTree("cooldowncommand")
-            .then(resetArg
-                .then(playerArg
-                    .executes((sender, args) -> {
-                        Player p = args.getByArgument(playerArg);
-                        cooldowns.remove(p);
-                    })
-                    .then(idArg
-                        .executes((sender, args) -> {
-                            Player p = args.getByArgument(playerArg);
-                            HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p, k -> new HashMap<>());
-                            playerCDs.remove(args.getByArgument(idArg));
-                        })
-                    )
-                )
-            )
             .then(runArg
                 .then(playerArg
                     .then(idArg
@@ -125,6 +104,21 @@ public class CooldownCommandCommand extends Command implements Configurable {
                                 })
                             )
                         )
+                    )
+                )
+            )
+            .then(resetArg
+                .then(playerArg
+                    .executes((sender, args) -> {
+                        Player p = args.getByArgument(playerArg);
+                        cooldowns.remove(p);
+                    })
+                    .then(idArg
+                        .executes((sender, args) -> {
+                            Player p = args.getByArgument(playerArg);
+                            HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p, k -> new HashMap<>());
+                            playerCDs.remove(args.getByArgument(idArg));
+                        })
                     )
                 )
             )
