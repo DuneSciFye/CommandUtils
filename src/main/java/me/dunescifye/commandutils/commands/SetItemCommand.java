@@ -16,7 +16,7 @@ public class SetItemCommand extends Command implements Registerable {
         PlayerArgument playerArg = new PlayerArgument("Player");
         IntegerArgument slotArg = new IntegerArgument("Slot", 0, 40);
         ItemStackArgument itemArg = new ItemStackArgument("Item");
-        MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "material", "custommodeldata");
+        MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "material", "custommodeldata", "attributemodifiers");
 
         new CommandAPICommand("setitem")
             .withArguments(playerArg)
@@ -42,6 +42,7 @@ public class SetItemCommand extends Command implements Registerable {
                     }
                     case null, default -> {
                         invItem = invItem.withType(argItem.getType());
+                        invMeta = invItem.getItemMeta();
                         if (argMeta.hasCustomModelData()) invMeta.setCustomModelData(argMeta.getCustomModelData());
                         if (argMeta.hasAttributeModifiers()) invMeta.setAttributeModifiers(argMeta.getAttributeModifiers());
                     }
