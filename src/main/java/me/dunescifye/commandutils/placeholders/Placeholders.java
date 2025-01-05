@@ -6,6 +6,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.commands.TempPlayerVarCommand;
 import me.dunescifye.commandutils.commands.TempVarCommand;
+import me.dunescifye.commandutils.listeners.BowForceTracker;
 import me.dunescifye.commandutils.listeners.EntityDamageByEntityListener;
 import me.dunescifye.commandutils.listeners.PlayerDamageTracker;
 import me.dunescifye.commandutils.utils.Utils;
@@ -403,6 +404,10 @@ public class Placeholders extends PlaceholderExpansion {
                     case "potiontype", "potion" -> {
                         if (!(itemMeta instanceof PotionMeta potionMeta)) return "";
                         return potionMeta.getBasePotionType().toString();
+                    }
+                    case "cmdata", "custommodeldata" -> {
+                        if (!itemMeta.hasCustomModelData()) return "";
+                        return String.valueOf(itemMeta.getCustomModelData());
                     }
                     default -> {
                         return "Invalid infotype";
@@ -802,6 +807,9 @@ public class Placeholders extends PlaceholderExpansion {
             }
             case "lastfinaldamage", "lastfinaldamagetaken" -> {
                 return String.valueOf(PlayerDamageTracker.getLastFinalDamageTaken(p));
+            }
+            case "lastbowforce", "bowforce" -> {
+                return String.valueOf(BowForceTracker.getBowForce(p));
             }
             default -> {
                 return "Unknown function";

@@ -166,6 +166,7 @@ public final class CommandUtils extends JavaPlugin {
         new GodModeListener().registerEvents(this);
         new EntityExplodeListener().entityExplodeHandler(this);
         new PlayerDamageTracker().damageTrackerHandler(this);
+        new BowForceTracker().bowForceHandler(this);
     }
     public static CommandUtils getInstance(){
         return plugin;
