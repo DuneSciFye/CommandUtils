@@ -8,6 +8,7 @@ import me.dunescifye.commandutils.commands.TempPlayerVarCommand;
 import me.dunescifye.commandutils.commands.TempVarCommand;
 import me.dunescifye.commandutils.listeners.BowForceTracker;
 import me.dunescifye.commandutils.listeners.EntityDamageByEntityListener;
+import me.dunescifye.commandutils.listeners.ExperienceTracker;
 import me.dunescifye.commandutils.listeners.PlayerDamageTracker;
 import me.dunescifye.commandutils.utils.Utils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -808,8 +809,11 @@ public class Placeholders extends PlaceholderExpansion {
             case "lastfinaldamage", "lastfinaldamagetaken" -> {
                 return String.valueOf(PlayerDamageTracker.getLastFinalDamageTaken(p));
             }
-            case "lastbowforce", "bowforce" -> {
+            case "lastbowforce", "bowforce", "recentbowforce" -> {
                 return String.valueOf(BowForceTracker.getBowForce(p));
+            }
+            case "expreason", "experiencereason", "xpreason", "lastexpreason", "lastexperiencereason", "lastxpreason", "recentexpreason", "recentexperiencereason", "recentxpreason" -> {
+                return String.valueOf(ExperienceTracker.getRecentEXPSpawnReason(p));
             }
             default -> {
                 return "Unknown function";

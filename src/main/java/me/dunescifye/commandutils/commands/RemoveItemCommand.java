@@ -9,6 +9,8 @@ import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,9 +45,13 @@ public class RemoveItemCommand extends Command implements Configurable {
                 Player p = args.getByArgument(playerArg);
                 ArrayList<ItemStack> items = new ArrayList<>(Arrays.asList(p.getInventory().getContents()));
                 items.addFirst(p.getItemOnCursor());
-                if (strict) {
+                if (strict && matcher.hasItemMeta()) {
+                    ItemMeta meta = matcher.getItemMeta();
                     for (ItemStack invItem : items) {
-                        if (invItem == null || invItem.hasItemMeta() || invItem != matcher) continue;
+                        if (invItem == null || !invItem.hasItemMeta() || invItem.getType() != matcher.getType()) continue;
+                        ItemMeta invMeta = invItem.getItemMeta();
+                        if (meta instanceof PotionMeta potionMeta && invMeta instanceof PotionMeta invPotionMeta && (potionMeta.getBasePotionType() != invPotionMeta.getBasePotionType()))
+                            continue;
                         if (amountFound + invItem.getAmount() > maxamount) {
                             invItem.setAmount(invItem.getAmount() - maxamount + amountFound);
                             amountFound = maxamount;
