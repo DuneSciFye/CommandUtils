@@ -277,7 +277,7 @@ public class Placeholders extends PlaceholderExpansion {
                     return newColor + "_" + input;
                 }
             }
-            case "replaceregex" -> {
+            case "replaceregex", "regexreplace" -> {
                 String[] args = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
                 if (args.length < 3)
                     return "Missing arguments!";
@@ -409,6 +409,9 @@ public class Placeholders extends PlaceholderExpansion {
                     case "cmdata", "custommodeldata" -> {
                         if (!itemMeta.hasCustomModelData()) return "";
                         return String.valueOf(itemMeta.getCustomModelData());
+                    }
+                    case "dumpitem", "dumpinfo", "dumpdata" -> {
+                        return itemMeta.getAsComponentString();
                     }
                     default -> {
                         return "Invalid infotype";
