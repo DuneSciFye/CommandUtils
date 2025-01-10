@@ -1,6 +1,8 @@
 package me.dunescifye.commandutils.placeholders;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.dunescifye.commandutils.CommandUtils;
@@ -16,6 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Directional;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -25,6 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.material.Attachable;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
@@ -39,11 +44,15 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static me.dunescifye.commandutils.utils.Utils.isInteger;
+
 public class Placeholders extends PlaceholderExpansion {
 
     private static String defaultSeparator = ",", elseIfKeyword, elseKeyword, conditionSeparator;
     private static String nbtSeparator = ",";
     private static String amountSeparator = ",";
+
+    private static final BlockFace[] blockFaces = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 
 
     public Placeholders(CommandUtils plugin, YamlDocument config) {
@@ -132,6 +141,7 @@ public class Placeholders extends PlaceholderExpansion {
         String output = function(function, arguments, separator, p);
         if (output != null && output.equals("Unknown function")) {
             String[] temp = arguments.split("_", 2);
+            if (temp.length < 2) return "Unknown function";
             output = function(temp[0], temp[1], function, p);
         }
 
@@ -383,6 +393,7 @@ public class Placeholders extends PlaceholderExpansion {
                     case "armortrim", "trim" -> {
                         if (itemMeta instanceof ArmorMeta armorMeta) {
                             if (armorMeta.hasTrim())
+                                // RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_PATTERN).get()
                                 return armorMeta.getTrim().getPattern().getKey().getKey();
                         }
                         return "";
@@ -412,6 +423,34 @@ public class Placeholders extends PlaceholderExpansion {
                     }
                     case "dumpitem", "dumpinfo", "dumpdata" -> {
                         return itemMeta.getAsComponentString();
+                    }
+                    default -> {
+                        return "Invalid infotype";
+                    }
+                }
+            }
+            case "blockinfo" -> { //X, Y, Z, World, Info Type
+                String[] args = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
+
+                if (args.length < 5) return "Missing arguments";
+                if (!isInteger(args[0]) || !isInteger(args[1]) || !isInteger(args[2])) return "Invalid Coordinates";
+                World world = Bukkit.getWorld(args[3]);
+                if (world == null) return "Invalid World";
+
+                Block b = world.getBlockAt(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+
+                switch (args[4]) {
+                    case "material", "mat" -> {
+                        return b.getType().toString();
+                    }
+                    case "attachedtostem" -> {
+                        for (BlockFace blockFace : blockFaces) {
+                            Block relative = b.getRelative(blockFace);
+                            if ((relative.getType() == Material.ATTACHED_MELON_STEM || relative.getType() == Material.ATTACHED_PUMPKIN_STEM) &&
+                                ((Directional) relative.getBlockData()).getFacing() == blockFace.getOppositeFace())
+                                return "true";
+                        }
+                        return "false";
                     }
                     default -> {
                         return "Invalid infotype";
@@ -696,7 +735,7 @@ public class Placeholders extends PlaceholderExpansion {
                 String[] params = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
                 if (p == null || params.length < 1) return null;
 
-                int minLevel = params.length > 1 && Utils.isInteger(params[1]) ? Integer.parseInt(params[1]) - 1 : 0; //Zero based
+                int minLevel = params.length > 1 && isInteger(params[1]) ? Integer.parseInt(params[1]) - 1 : 0; //Zero based
 
                 ArrayList<String> effects = new ArrayList<>(List.of(params[0].split(" ")));
                 Collections.shuffle(effects);

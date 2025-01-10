@@ -1,7 +1,5 @@
 package me.dunescifye.commandutils.utils;
 
-import com.massivecraft.factions.*;
-import com.massivecraft.factions.perms.PermissibleActions;
 import me.dunescifye.commandutils.CommandUtils;
 import net.coreprotect.CoreProtectAPI;
 import net.coreprotect.CoreProtect;
@@ -134,15 +132,14 @@ public class Utils {
         if (length == 0) {
             return false;
         }
-        /*
+        int i = 0;
         if (str.charAt(0) == '-') {
             if (length == 1) {
                 return false;
             }
             i = 1;
         }
-         */
-        for (int i = 0; i < length; i++) {
+        for (; i < length; i++) {
             char c = str.charAt(i);
             if (c < '0' || c > '9') {
                 return false;
