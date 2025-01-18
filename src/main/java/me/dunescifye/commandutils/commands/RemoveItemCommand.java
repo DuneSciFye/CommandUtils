@@ -45,13 +45,10 @@ public class RemoveItemCommand extends Command implements Configurable {
                 Player p = args.getByArgument(playerArg);
                 ArrayList<ItemStack> items = new ArrayList<>(Arrays.asList(p.getInventory().getContents()));
                 items.addFirst(p.getItemOnCursor());
-                if (strict && matcher.hasItemMeta()) {
-                    ItemMeta meta = matcher.getItemMeta();
+                // Strict means has to match everything exactly
+                if (strict) {
                     for (ItemStack invItem : items) {
-                        if (invItem == null || !invItem.hasItemMeta() || invItem.getType() != matcher.getType()) continue;
-                        ItemMeta invMeta = invItem.getItemMeta();
-                        if (meta instanceof PotionMeta potionMeta && invMeta instanceof PotionMeta invPotionMeta && (potionMeta.getBasePotionType() != invPotionMeta.getBasePotionType()))
-                            continue;
+                        if (!invItem.isSimilar(matcher)) continue;
                         if (amountFound + invItem.getAmount() > maxamount) {
                             invItem.setAmount(invItem.getAmount() - maxamount + amountFound);
                             amountFound = maxamount;
@@ -60,9 +57,15 @@ public class RemoveItemCommand extends Command implements Configurable {
                         amountFound += invItem.getAmount();
                         invItem.setAmount(0);
                     }
-                } else {
+                } else { // Not strict has to match just material and other attributes provided. Inv items with extra attributes are still counted.
+                    ItemMeta meta = matcher.getItemMeta();
                     for (ItemStack invItem : items) {
                         if (invItem == null || invItem.getType() != matcher.getType()) continue;
+                        if (invItem.hasItemMeta()) {
+                            ItemMeta invMeta = invItem.getItemMeta();
+                            if (meta instanceof PotionMeta potionMeta && invMeta instanceof PotionMeta invPotionMeta && (potionMeta.getBasePotionType() != invPotionMeta.getBasePotionType()))
+                                continue;
+                        }
                         if (amountFound + invItem.getAmount() > maxamount) {
                             invItem.setAmount(invItem.getAmount() - maxamount + amountFound);
                             amountFound = maxamount;

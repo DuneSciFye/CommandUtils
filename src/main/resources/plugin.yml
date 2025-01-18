@@ -2,4 +2,4 @@ name: CommandUtils
 version: '2.3.0'
 main: me.dunescifye.commandutils.CommandUtils
 softdepend: [PlaceholderAPI, GriefPrevention, ExecutableBlocks, CoreProtect, Factions]
-api-version: '1.20'
+api-version: '1.21.1'
