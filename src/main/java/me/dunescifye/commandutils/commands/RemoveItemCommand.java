@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class RemoveItemCommand extends Command implements Configurable {
 
@@ -27,14 +28,18 @@ public class RemoveItemCommand extends Command implements Configurable {
         ItemStackArgument itemArg = new ItemStackArgument("Item");
         IntegerArgument maxAmountArg = new IntegerArgument("Max Amount");
         BooleanArgument strictArg = new BooleanArgument("Strict");
-        GreedyStringArgument commandsArg = new GreedyStringArgument("Commands");
+        BooleanArgument checkChestArg = new BooleanArgument("Check Chest");
+        TextArgument commandsArg = new TextArgument("Commands");
+        BooleanArgument noCommandsIfZeroArg = new BooleanArgument("No Commands If Zero");
 
         new CommandAPICommand("removeitem")
             .withArguments(playerArg)
             .withArguments(itemArg)
             .withOptionalArguments(maxAmountArg)
             .withOptionalArguments(strictArg)
+            .withOptionalArguments(checkChestArg)
             .withOptionalArguments(commandsArg)
+            .withOptionalArguments(noCommandsIfZeroArg)
             .executes((sender, args) -> {
                 ItemStack matcher = args.getByArgument(itemArg);
                 String inputCommands = args.getByArgument(commandsArg);
@@ -45,6 +50,8 @@ public class RemoveItemCommand extends Command implements Configurable {
                 Player p = args.getByArgument(playerArg);
                 ArrayList<ItemStack> items = new ArrayList<>(Arrays.asList(p.getInventory().getContents()));
                 items.addFirst(p.getItemOnCursor());
+                if (args.getByArgumentOrDefault(checkChestArg, false) && p.getOpenInventory() != null && p.getOpenInventory().getTopInventory() != null)
+                    items.addAll(Arrays.asList(p.getOpenInventory().getTopInventory().getContents()));
                 // Strict means has to match everything exactly
                 if (strict) {
                     for (ItemStack invItem : items) {
