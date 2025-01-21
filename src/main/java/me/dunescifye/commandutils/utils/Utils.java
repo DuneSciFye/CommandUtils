@@ -397,6 +397,7 @@ public class Utils {
         Server server = Bukkit.getServer();
         ConsoleCommandSender console = server.getConsoleSender();
         for (String command : commands)
-            server.dispatchCommand(console, command);
+            if (!Objects.equals(command, ""))
+                server.dispatchCommand(console, command);
     }
 }
