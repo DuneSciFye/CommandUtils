@@ -152,11 +152,6 @@ Commands:
     Enabled: true
     Aliases: []
 
-  God:
-    Enabled: true
-    Aliases: []
-    Permission: "commandutils.command.godcommand"
-
   HighlightBlocks:
     Enabled: true
     Aliases: []

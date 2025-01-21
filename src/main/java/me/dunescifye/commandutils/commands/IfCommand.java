@@ -79,6 +79,7 @@ public class IfCommand extends Command implements Configurable {
                 //If and Else If's
                 for (String elseif : inputSplit) {
                     String[] argSplit = elseif.split(conditionSeparator, 3);
+                    if (argSplit.length != 3) continue;
                     try {
                         if (argSplit[1].contains("!=")) {
                             String[] condition = argSplit[1].split("!=", 2);

@@ -65,7 +65,6 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("ChanceRandomRun", new ChanceRandomRunCommand());
         commands.put("ChangeVillagerProfession", new ChangeVillagerProfessionCommand());
         commands.put("Food", new FoodCommand());
-        commands.put("God", new GodCommand());
         commands.put("HighlightBlocks", new HighlightBlocksCommand());
         commands.put("ItemAttribute", new ItemAttributeCommand());
         commands.put("LaunchProjectile", new LaunchProjectileCommand());
@@ -163,7 +162,6 @@ public final class CommandUtils extends JavaPlugin {
     private void registerListeners() {
         new EntityDamageByEntityListener().entityDamageByEntityHandler(this);
         new EntityChangeBlockListener().entityChangeBlockHandler(this);
-        new GodModeListener().registerEvents(this);
         new EntityExplodeListener().entityExplodeHandler(this);
         new PlayerDamageTracker().damageTrackerHandler(this);
         new BowForceTracker().bowForceHandler(this);

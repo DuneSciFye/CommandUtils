@@ -622,7 +622,7 @@ public class Placeholders extends PlaceholderExpansion {
                 return String.valueOf(item.getAmount()); //Argument was an inv slot
             }
             /*
-             * Get distance between two coordinates
+             * Get distance between two coordinates or entities
              * @author DuneSciFye
              */
             case "distance" -> {
@@ -630,25 +630,46 @@ public class Placeholders extends PlaceholderExpansion {
 
                 if (distanceArgs.length != 2) return "Missing arguments.";
 
-                String[] coords1 = distanceArgs[0].split(",", 3);
-                String[] coords2 = distanceArgs[1].split(",", 3);
-
-                if (coords1.length != 3 && coords2.length != 3) return "Missing arguments.";
-
-                double[] num1;
-                double[] num2;
-
-                try {
-                    num1 = Arrays.stream(coords1).mapToDouble(Double::parseDouble).toArray();
-                    num2 = Arrays.stream(coords2).mapToDouble(Double::parseDouble).toArray();
-                } catch (NumberFormatException e) {
-                    return "Invalid Number for Coordinates provided";
+                String[] arg1 = distanceArgs[0].split(",", 3);
+                String[] arg2 = distanceArgs[1].split(",", 3);
+                Location loc1, loc2;
+                World world = Bukkit.getWorlds().getFirst();
+                // If not coordinate, check for UUID
+                if (arg1.length == 1) {
+                    try {
+                        Entity entity = Bukkit.getEntity(UUID.fromString(arg1[0]));
+                        if (entity == null)
+                            return "null";
+                        loc1 = entity.getLocation();
+                        loc1.setWorld(world);
+                    } catch (IllegalArgumentException e) {
+                        return "Invalid Entity";
+                    }
+                } else {
+                    try {
+                        loc1 = new Location(world, Integer.parseInt(arg1[0]), Integer.parseInt(arg1[1]), Integer.parseInt(arg1[2]));
+                    } catch (NumberFormatException e) {
+                        return "Invalid Number for Coordinates provided";
+                    }
+                }
+                if (arg2.length == 1) {
+                    try {
+                        Entity entity = Bukkit.getEntity(UUID.fromString(arg2[0]));
+                        if (entity == null)
+                            return "null";
+                        loc2 = entity.getLocation();
+                        loc2.setWorld(world);
+                    } catch (IllegalArgumentException e) {
+                        return "Invalid Entity";
+                    }
+                } else {
+                    try {
+                        loc2 = new Location(world, Integer.parseInt(arg2[0]), Integer.parseInt(arg2[1]), Integer.parseInt(arg2[2]));
+                    } catch (NumberFormatException e) {
+                        return "Invalid Number for Coordinates provided";
+                    }
                 }
 
-                World world = Bukkit.getWorlds().getFirst();
-
-                Location loc1 = new Location(world, num1[0], num1[1], num1[2]);
-                Location loc2 = new Location(world, num2[0], num2[1], num2[2]);
                 double distance = loc1.distance(loc2);
                 return String.valueOf(distance);
 
