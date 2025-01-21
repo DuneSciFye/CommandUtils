@@ -14,7 +14,6 @@ import org.bukkit.inventory.meta.PotionMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class RemoveItemCommand extends Command implements Configurable {
 
@@ -55,7 +54,7 @@ public class RemoveItemCommand extends Command implements Configurable {
                 // Strict means has to match everything exactly
                 if (strict) {
                     for (ItemStack invItem : items) {
-                        if (!invItem.isSimilar(matcher)) continue;
+                        if (invItem == null || !invItem.isSimilar(matcher)) continue;
                         if (amountFound + invItem.getAmount() > maxamount) {
                             invItem.setAmount(invItem.getAmount() - maxamount + amountFound);
                             amountFound = maxamount;

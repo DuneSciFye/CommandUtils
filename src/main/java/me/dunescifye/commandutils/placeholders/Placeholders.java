@@ -1,15 +1,12 @@
 package me.dunescifye.commandutils.placeholders;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
-import io.papermc.paper.registry.RegistryAccess;
-import io.papermc.paper.registry.RegistryKey;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.commands.TempPlayerVarCommand;
 import me.dunescifye.commandutils.commands.TempVarCommand;
 import me.dunescifye.commandutils.listeners.BowForceTracker;
-import me.dunescifye.commandutils.listeners.EntityDamageByEntityListener;
 import me.dunescifye.commandutils.listeners.ExperienceTracker;
 import me.dunescifye.commandutils.listeners.PlayerDamageTracker;
 import me.dunescifye.commandutils.utils.Utils;
@@ -29,7 +26,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.material.Attachable;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
@@ -422,6 +418,7 @@ public class Placeholders extends PlaceholderExpansion {
                         return String.valueOf(itemMeta.getCustomModelData());
                     }
                     case "dumpitem", "dumpinfo", "dumpdata" -> {
+                        if (itemMeta == null) return "";
                         return itemMeta.getAsComponentString();
                     }
                     default -> {
