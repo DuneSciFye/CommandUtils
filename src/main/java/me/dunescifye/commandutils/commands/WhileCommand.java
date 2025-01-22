@@ -93,6 +93,7 @@ public class WhileCommand extends Command implements Configurable {
                             @Override
                             public void run() {
                                 if (!p.isOnline() || !Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                    tasks.remove(commandID);
                                     this.cancel();
                                     return;
                                 }
@@ -104,6 +105,7 @@ public class WhileCommand extends Command implements Configurable {
                             @Override
                             public void run() {
                                 if (!p.isOnline() || Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                    tasks.remove(commandID);
                                     this.cancel();
                                     return;
                                 }
@@ -115,6 +117,7 @@ public class WhileCommand extends Command implements Configurable {
                             @Override
                             public void run() {
                                 if (!p.isOnline() || !PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                    tasks.remove(commandID);
                                     this.cancel();
                                     return;
                                 }
@@ -126,6 +129,7 @@ public class WhileCommand extends Command implements Configurable {
                             @Override
                             public void run() {
                                 if (!p.isOnline() || PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                    tasks.remove(commandID);
                                     this.cancel();
                                     return;
                                 }
