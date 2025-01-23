@@ -18,12 +18,12 @@ public class SetBeeStingersInBodyCommand extends Command implements Registerable
         EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
         IntegerArgument numberArg = new IntegerArgument("Number of Stingers");
 
-        /**
+        /*
          * Sets the Number of Stingers in Entities
          * @author DuneSciFye
          * @since 1.0.5
-         * @param Entities Entities to set Stingers in
-         * @param Number Number of Stinger
+         * @param Entities to set Stingers in
+         * @param Number of Stinger
          */
         new CommandAPICommand("setbeestingersinbody")
             .withArguments(entitiesArg)
