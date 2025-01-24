@@ -28,10 +28,10 @@ public class SpawnWitherSkullCommand extends Command implements Registerable {
          * Summons a Wither Skull
          * @author DuneSciFye
          * @since 1.0.0
-         * @param World World of the Location
-         * @param Location Location of where to Spawn Wither Skull
-         * @param Yaw Yaw of the Skull
-         * @param Pitch Pitch of the Skull
+         * @param World of the Location
+         * @param Location of where to Spawn Wither Skull
+         * @param Yaw of the Skull
+         * @param Pitch of the Skull
          * @param VelocityMultiplier Number to multiply velocity by
          * @param Boolean If Skull should Break Blocks
          */

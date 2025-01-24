@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class BowForceTracker implements Listener {
 
     private static final HashMap<Player, Float> bowForces = new HashMap<>();
-    private static HashMap<Player, BukkitTask> tasks = new HashMap<>();
+    private static final HashMap<Player, BukkitTask> tasks = new HashMap<>();
 
     public void bowForceHandler(CommandUtils plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);

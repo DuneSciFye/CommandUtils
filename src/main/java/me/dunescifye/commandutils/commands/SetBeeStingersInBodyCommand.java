@@ -29,7 +29,7 @@ public class SetBeeStingersInBodyCommand extends Command implements Registerable
             .withArguments(entitiesArg)
             .withArguments(numberArg)
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getByArgument(entitiesArg);
+                Collection<Entity> entities = args.getUnchecked("Entities");
                 int stingers = args.getByArgument(numberArg);
 
                 for (Entity entity : entities) {

@@ -37,16 +37,16 @@ public class BreakInXYZCommand extends Command implements Registerable {
         LiteralArgument whitelistArg = new LiteralArgument("whitelist");
         StringArgument whitelistedBlocksArgument = new StringArgument("Whitelisted Blocks");
 
-        /**
+        /*
          * Breaks Blocks in XYZ
          * @author DuneSciFye
          * @since 2.1.6
-         * @param World World of the Blocks
-         * @param Location Location of the Center Block
-         * @param Player Player who is Breaking the Blocks
-         * @param X X Direction
-         * @param Y Y Direction
-         * @param Z Z Direction
+         * @param World of the Blocks
+         * @param Location of the Center Block
+         * @param Player who is Breaking the Blocks
+         * @param X Direction
+         * @param Y Direction
+         * @param Z Direction
          * @param Whitelist Config Defined Whitelist of Blocks
          */
         new CommandAPICommand("breakinxyz")

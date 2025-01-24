@@ -26,14 +26,14 @@ public class ReplaceLoreCommand extends Command implements Registerable {
         TextArgument fromArg = new TextArgument("Text To Find");
         TextArgument toArg = new TextArgument("New Text");
 
-        /**
+        /*
          * Replaces Lore of Item
          * @author DuneSciFye
          * @since 1.0.3
-         * @param Player Player to get Inventory
-         * @param Slot Slot Number
-         * @param From Text to Search for
-         * @param To Text to Replace to
+         * @param Player to get Inventory
+         * @param Slot Number
+         * @param Text to Search for
+         * @param Text to Replace to
          */
         new CommandAPICommand("replacelore")
             .withArguments(playerArg)
@@ -51,14 +51,14 @@ public class ReplaceLoreCommand extends Command implements Registerable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /**
+        /*
          * Replaces Lore of Item
          * @author DuneSciFye
          * @since 1.0.3
-         * @param Player Player to get Inventory
-         * @param Slot Slot Text
-         * @param From Text to Search for
-         * @param To Text to Replace to
+         * @param Player to get Inventory
+         * @param Slot Text
+         * @param Text to Search for
+         * @param Text to Replace to
          */
         new CommandAPICommand("replacelore")
             .withArguments(playerArg)

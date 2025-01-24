@@ -21,7 +21,6 @@ public final class CommandUtils extends JavaPlugin {
     public static NamespacedKey keyEIID = new NamespacedKey("executableitems", "ei-id");
     public static final NamespacedKey keyNoDamagePlayer = new NamespacedKey("lunaritems", "nodamageplayer");
     public static final NamespacedKey noGravityKey = new NamespacedKey("lunaritems", "nogravity");
-    public static final NamespacedKey autoPickupKey = new NamespacedKey("commandutils", "autopickup");
     public static boolean griefPreventionEnabled = false, placeholderAPIEnabled = false, factionsUUIDEnabled = false, coreProtectEnabled = false;
     private static final HashMap<String, Command> commands = new HashMap<>();
 
@@ -71,7 +70,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("LaunchFirework", new LaunchFireworkCommand());
         commands.put("LoadCrossbow", new LoadCrossbowCommand());
         commands.put("PushEntity", new PushEntityCommand());
-        commands.put("RayTraceParticle", new RayTraceParticleComand());
+        commands.put("RayTraceParticle", new RayTraceParticleCommand());
         commands.put("RemoveItem", new RemoveItemCommand());
         commands.put("ReplaceInFacing", new ReplaceInFacingCommand());
         commands.put("RunCommandLater", new RunCommandLaterCommand());
@@ -130,6 +129,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("AddItemNBT", new AddItemNBTCommand());
         commands.put("BlockPrison", new BlockPrisonCommand());
         commands.put("SendActionBar", new SendActionBarCommand());
+        commands.put("MobDrops", new MobDropsCommand());
 
         commands.put("CobwebPrison", new CobwebPrisonCommand());
         //Special Commands
@@ -166,6 +166,7 @@ public final class CommandUtils extends JavaPlugin {
         new PlayerDamageTracker().damageTrackerHandler(this);
         new BowForceTracker().bowForceHandler(this);
         new ExperienceTracker().experienceHandler(this);
+        new CustomMobDrops().registerEvents(this);
     }
     public static CommandUtils getInstance(){
         return plugin;

@@ -26,17 +26,17 @@ public class ReplaceInFacingCommand extends Command implements Registerable {
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
         IntegerArgument depthArg = new IntegerArgument("Depth", 0);
 
-        /**
+        /*
          * Replaces Blocks in Direction Player is Facing, Command Defined Predicates
          * @author DuneSciFye
          * @since 1.0.4
-         * @param World World of the Blocks
-         * @param Location Location of the Center Block
-         * @param Player Player to Check Claim
-         * @param Integer Radius of the Blocks to go out
-         * @param Depth Depth of Blocks to go in
-         * @param Predicates List of Predicates to Replace From
-         * @param Materials List of Blocks to Replace To
+         * @param World of the Blocks
+         * @param Location of the Center Block
+         * @param Player to Check Claim
+         * @param Radius of the Blocks to go out
+         * @param Depth of Blocks to go in
+         * @param List of Predicates to Replace From
+         * @param List of Blocks to Replace To
          */
         new CommandAPICommand("replaceinfacing")
             .withArguments(worldArg)

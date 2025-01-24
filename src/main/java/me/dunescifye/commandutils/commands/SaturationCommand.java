@@ -16,13 +16,13 @@ public class SaturationCommand extends Command implements Registerable {
         EntitySelectorArgument.ManyPlayers playersArg = new EntitySelectorArgument.ManyPlayers("Players");
         FloatArgument amountArg = new FloatArgument("Amount");
 
-        /**
+        /*
          * Modifies a Player's Saturation Level
          * @author DuneSciFye
          * @since 1.0.3
-         * @param Function Function to do
-         * @param Players Players to Target
-         * @param Amount Amount to Edit
+         * @param Function to do
+         * @param Players to Target
+         * @param Amount to Edit
          */
         new CommandAPICommand("saturation")
             .withArguments(functionArg)

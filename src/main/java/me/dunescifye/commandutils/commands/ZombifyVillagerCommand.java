@@ -18,12 +18,12 @@ public class ZombifyVillagerCommand extends Command implements Registerable {
          * Turns a Villagers into a Zombie Villagers
          * @author DuneSciFye
          * @since 1.0.5
-         * @param Villagers Villagers to Target
+         * @param Villagers to Target
          */
         new CommandAPICommand("zombifyvillager")
             .withArguments(villagersArg)
             .executes((sender, args) -> {
-                Collection<Entity> villagers = args.getByArgument(villagersArg);
+                Collection<Entity> villagers = args.getUnchecked("Villagers");
 
                 for (Entity entity : villagers) {
                     if (entity instanceof Villager villager) {

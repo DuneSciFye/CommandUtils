@@ -4,6 +4,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.utils.Utils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
@@ -79,61 +80,57 @@ public class IfCommand extends Command implements Configurable {
                 //If and Else If's
                 for (String elseif : inputSplit) {
                     String[] argSplit = elseif.split(conditionSeparator, 3);
+                    if (argSplit.length == 1) argSplit = argSplit[0].split("'", 3);
+                    if (argSplit.length == 1) argSplit = (" " + argSplit[0]).split(" ", 3);
                     if (argSplit.length != 3) continue;
+
                     try {
                         if (argSplit[1].contains("!=")) {
                             String[] condition = argSplit[1].split("!=", 2);
                             if (!Objects.equals(condition[0].trim(), condition[1].trim())) {
-                                for (String command : argSplit[2].split(commandSeparator))
-                                    server.dispatchCommand(console, command);
+                                Utils.runConsoleCommands(argSplit[2].split(commandSeparator));
                                 return;
                             }
                         } else if (argSplit[1].contains(">=")) {
                             String[] condition = argSplit[1].split(">=", 2);
                             if ((Double.parseDouble(condition[0].trim()) >= Double.parseDouble(condition[1].trim()))) {
-                                for (String command : argSplit[2].split(commandSeparator)) {
-                                    server.dispatchCommand(console, command);
-                                }
+                                Utils.runConsoleCommands(argSplit[2].split(commandSeparator));
                                 return;
                             }
                         } else if (argSplit[1].contains("<=")) {
                             String[] condition = argSplit[1].split("<=", 2);
                             if ((Double.parseDouble(condition[0]) <= Double.parseDouble(condition[1]))) {
-                                for (String command : argSplit[2].split(commandSeparator)) {
-                                    server.dispatchCommand(console, command);
-                                }
+                                Utils.runConsoleCommands(argSplit[2].split(commandSeparator));
                                 return;
                             }
                         } else if (argSplit[1].contains(">")) {
                             String[] condition = argSplit[1].split(">", 2);
                             if ((Double.parseDouble(condition[0]) > Double.parseDouble(condition[1]))) {
-                                for (String command : argSplit[2].split(commandSeparator)) {
-                                    server.dispatchCommand(console, command);
-                                }
+                                Utils.runConsoleCommands(argSplit[2].split(commandSeparator));
                                 return;
                             }
                         } else if (argSplit[1].contains("<")) {
                             String[] condition = argSplit[1].split("<", 2);
                             if ((Double.parseDouble(condition[0]) < Double.parseDouble(condition[1]))) {
-                                for (String command : argSplit[2].split(commandSeparator)) {
-                                    server.dispatchCommand(console, command);
-                                }
+                                Utils.runConsoleCommands(argSplit[2].split(commandSeparator));
+                                return;
+                            }
+                        } else if (argSplit[1].contains("==")) {
+                            String[] condition = argSplit[1].split("==", 2);
+                            if (Objects.equals(condition[0], condition[1])) {
+                                Utils.runConsoleCommands(argSplit[2].split(commandSeparator));
                                 return;
                             }
                         } else if (argSplit[1].contains("=")) {
                             String[] condition = argSplit[1].split("=", 2);
                             if (Objects.equals(condition[0], condition[1])) {
-                                for (String command : argSplit[2].split(commandSeparator)) {
-                                    server.dispatchCommand(console, command);
-                                }
+                                Utils.runConsoleCommands(argSplit[2].split(commandSeparator));
                                 return;
                             }
                         } else if (argSplit[1].contains(" contains ")) {
                             String[] condition = argSplit[1].split(" contains ", 2);
                             if (condition[0].contains(condition[1])) {
-                                for (String command : argSplit[2].split(commandSeparator)) {
-                                    server.dispatchCommand(console, command);
-                                }
+                                Utils.runConsoleCommands(argSplit[2].split(commandSeparator));
                                 return;
                             }
                         }
@@ -142,11 +139,7 @@ public class IfCommand extends Command implements Configurable {
 
                 //Else
                 if (elseCmd == null) return;
-                for (String command : elseCmd.split(commandSeparator)) {
-                    server.dispatchCommand(console, command);
-                }
-
-
+                Utils.runConsoleCommands(elseCmd.split(commandSeparator));
 
             })
             .withPermission(this.getPermission())

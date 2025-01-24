@@ -18,18 +18,18 @@ public class SetArrowsInBodyCommand extends Command implements Registerable {
         EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
         IntegerArgument numberArg = new IntegerArgument("Number of Arrows");
 
-        /**
+        /*
          * Sets the Number of Arrows in Entities
          * @author DuneSciFye
          * @since 1.0.5
-         * @param Entities Entities to set Arrows in
-         * @param Number Number of Arrows
+         * @param Entities to set Arrows in
+         * @param Number of Arrows
          */
         new CommandAPICommand("setarrowsinbody")
             .withArguments(entitiesArg)
             .withArguments(numberArg)
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getByArgument(entitiesArg);
+                Collection<Entity> entities = args.getUnchecked("Entities");
                 int arrows = args.getByArgument(numberArg);
 
                 for (Entity entity : entities) {

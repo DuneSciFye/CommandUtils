@@ -53,8 +53,8 @@ public class SetTNTSourceCommand extends Command implements Configurable {
                     .withArguments(tntsArg)
                     .withArguments(entitySourcesArg)
                     .executes((sender, args) -> {
-                        Collection<Entity> tnts = args.getByArgument(tntsArg);
-                        Collection<Entity> entities = args.getByArgument(entitySourcesArg);
+                        Collection<Entity> tnts = args.getUnchecked("TNTs");
+                        Collection<Entity> entities = args.getUnchecked("Entity Sources");
                         Entity[] sources = entities.toArray(new Entity[0]);
                         for (Entity entity : tnts) {
                             if (entity instanceof TNTPrimed tnt)
@@ -69,7 +69,7 @@ public class SetTNTSourceCommand extends Command implements Configurable {
                     .withArguments(tntsArg)
                     .withArguments(entitySourceArg)
                     .executes((sender, args) -> {
-                        Collection<Entity> tnts = args.getByArgument(tntsArg);
+                        Collection<Entity> tnts = args.getUnchecked("TNTs");
                         for (Entity entity : tnts) {
                             if (entity instanceof TNTPrimed tnt)
                                 tnt.setSource(args.getByArgument(entitySourceArg));
@@ -86,7 +86,7 @@ public class SetTNTSourceCommand extends Command implements Configurable {
                     .withArguments(entitySourcesArg)
                     .executes((sender, args) -> {
                         Entity entity = args.getByArgument(tntArg);
-                        Collection<Entity> entities = args.getByArgument(entitySourcesArg);
+                        Collection<Entity> entities = args.getUnchecked("Entity Sources");
                         Entity[] sources = entities.toArray(new Entity[0]);
                         if (entity instanceof TNTPrimed tnt)
                             tnt.setSource(sources[ThreadLocalRandom.current().nextInt(sources.length)]);

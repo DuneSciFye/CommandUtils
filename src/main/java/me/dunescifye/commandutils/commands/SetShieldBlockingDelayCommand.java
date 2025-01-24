@@ -22,14 +22,14 @@ public class SetShieldBlockingDelayCommand extends Command implements Registerab
          * Sets how long an Entity is Frozen for
          * @author DuneSciFye
          * @since 1.0.5
-         * @param Entities Entities to Target
+         * @param Entities to Target
          * @param Ticks How long delay is
          */
         new CommandAPICommand("setshieldblockingdelay")
             .withArguments(entitiesArg)
             .withArguments(delayArg)
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getByArgument(entitiesArg);
+                Collection<Entity> entities = args.getUnchecked("Entities");
                 int shieldBlockingDelay = args.getByArgument(delayArg);
 
                 for (Entity entity : entities) {

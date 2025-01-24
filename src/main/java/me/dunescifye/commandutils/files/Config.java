@@ -7,6 +7,7 @@ import me.dunescifye.commandutils.placeholders.Placeholders;
 import me.dunescifye.commandutils.commands.Command;
 import me.dunescifye.commandutils.commands.Configurable;
 import me.dunescifye.commandutils.commands.Registerable;
+import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.block.Block;
 
 import java.io.File;
@@ -14,8 +15,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
-
-import static me.dunescifye.commandutils.utils.Utils.stringListToPredicate;
 
 public class Config {
 
@@ -131,7 +130,7 @@ public class Config {
 
             for (Object objectKey : whitelistSection.getKeys()) {
                 if (objectKey instanceof String key)
-                    predicates.put(key, stringListToPredicate(config.getStringList("Whitelists." + key)));
+                    predicates.put(key, Utils.stringListToPredicate(config.getStringList("Whitelists." + key)));
             }
 
             config.save();

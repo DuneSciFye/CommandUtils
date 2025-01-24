@@ -356,11 +356,17 @@ public class Placeholders extends PlaceholderExpansion {
             case "isgliding" -> {
                 if (p == null) return "null player";
 
-                if (p.isGliding()) {
-                    return "yes";
-                } else {
-                    return "no";
-                }
+                return p.isGliding() ? "yes" : "no";
+            }
+            case "isblocking" -> {
+                if (p == null) return "null player";
+
+                return p.isBlocking() ? "yes" : "no";
+            }
+            case "isfrozen" -> {
+                if (p == null) return "null player";
+
+                return p.isFrozen() ? "yes" : "no";
             }
             case "cursoritem" -> {
                 String[] argsCursorItem = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);

@@ -18,18 +18,18 @@ public class SetFireTicksCommand extends Command implements Registerable {
         EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
         IntegerArgument fireTicksArg = new IntegerArgument("Fire Ticks");
 
-        /**
+        /*
          * Sets how long an Entity is on Fire For
          * @author DuneSciFye
          * @since 1.0.5
-         * @param Entities Entities to Target
+         * @param Entities to Target
          * @param Ticks How long Entity is on Fire for
          */
         new CommandAPICommand("setfireticks")
             .withArguments(entitiesArg)
             .withArguments(fireTicksArg)
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getByArgument(entitiesArg);
+                Collection<Entity> entities = args.getUnchecked("Entities");
                 int fireTicks = args.getByArgument(fireTicksArg);
 
                 for (Entity entity : entities) {

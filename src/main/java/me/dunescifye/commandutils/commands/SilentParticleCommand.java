@@ -34,9 +34,9 @@ public class SilentParticleCommand extends Command implements Registerable {
          * Summons Particles, no Console messages
          * @author DuneSciFye
          * @since 1.0.0
-         * @param Particle Particle to Spawn
-         * @param Player Player to Spawn Particles At
-         * @param Amount Amount of Particles to Spawn
+         * @param Particle to Spawn
+         * @param Player to Spawn Particles At
+         * @param Amount of Particles to Spawn
          * @param XOffset Delta in the X Direction to Spawn Particles
          * @param YOffset Delta in the Y Direction to Spawn Particles
          * @param ZOffset Delta in the Z Direction to Spawn Particles
@@ -80,10 +80,10 @@ public class SilentParticleCommand extends Command implements Registerable {
          * Summons Particles, no Console messages
          * @author DuneSciFye
          * @since 1.0.0
-         * @param Particle Particle to Spawn
-         * @param World World to Spawn Particles in
-         * @param Location Location to Spawn Particles in
-         * @param Amount Amount of Particles to Spawn
+         * @param Particle to Spawn
+         * @param World to Spawn Particles in
+         * @param Location to Spawn Particles in
+         * @param Amount of Particles to Spawn
          * @param XOffset Delta in the X Direction to Spawn Particles
          * @param YOffset Delta in the Y Direction to Spawn Particles
          * @param ZOffset Delta in the Z Direction to Spawn Particles
@@ -122,9 +122,9 @@ public class SilentParticleCommand extends Command implements Registerable {
          * Summons Particles, no Console messages
          * @author DuneSciFye
          * @since 1.0.0
-         * @param Particle Particle to Spawn
-         * @param Location Location to Spawn Particles in
-         * @param Amount Amount of Particles to Spawn
+         * @param Particle to Spawn
+         * @param Location to Spawn Particles in
+         * @param Amount of Particles to Spawn
          * @param XOffset Delta in the X Direction to Spawn Particles
          * @param YOffset Delta in the Y Direction to Spawn Particles
          * @param ZOffset Delta in the Z Direction to Spawn Particles

@@ -29,11 +29,11 @@ public class SetItemNBTCommand extends Command implements Registerable {
           Sets NBT Data of an Item
           @author DuneSciFye
          * @since 1.0.0
-         * @param Player Player to get Inventory
-         * @param Slot Slot of Item
-         * @param Namespace String of Namespace
-         * @param Key String of Key
-         * @param Content Content to set NBT to
+         * @param Player to get Inventory
+         * @param Slot of Item
+         * @param String of Namespace
+         * @param String of Key
+         * @param Content to set NBT to
          */
         new CommandAPICommand("setitemnbt")
             .withArguments(playerArg)

@@ -22,7 +22,7 @@ public class SetMobTargetCommand extends Command implements Registerable {
             .withArguments(entitiesArg)
             .withArguments(targetArg)
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getByArgument(entitiesArg);
+                Collection<Entity> entities = args.getUnchecked("Entities");
                 Entity target = args.getByArgument(targetArg);
                 if (!(target instanceof LivingEntity livingTarget))
                     return;

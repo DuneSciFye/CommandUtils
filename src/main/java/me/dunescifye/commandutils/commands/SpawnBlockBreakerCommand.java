@@ -344,16 +344,8 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
                     return;
                 }
 
-                Block origin = snowball.getLocation().getBlock();
-
-                for (int x = -radius; x <= radius; x++) {
-                    for (int y = -radius; y <= radius; y++) {
-                        for (int z = -radius; z <= radius; z++) {
-                            Block relative = origin.getRelative(x, y, z);
-                            relative.breakNaturally();
-                        }
-                    }
-                }
+                for (Block b : Utils.getBlocksInRadius(snowball.getLocation().getBlock(), radius))
+                    b.breakNaturally();
 
                 count += period;
             }

@@ -14,8 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SendBossBarCommand extends Command implements Registerable {
+
     private static final Map<String, BossBar> bossBars = new HashMap<>();
     private static final Map<String, BukkitTask> bossBarTasks = new HashMap<>();
+
     @SuppressWarnings("ConstantConditions")
     public void register() {
         if (!this.getEnabled()) return;

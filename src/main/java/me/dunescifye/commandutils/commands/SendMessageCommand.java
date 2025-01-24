@@ -4,7 +4,6 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.dunescifye.commandutils.utils.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 
@@ -17,18 +16,7 @@ public class SendMessageCommand extends Command implements Configurable {
         if (!this.getEnabled())
             return;
 
-        boolean playersListArg, ampersandByDefault, parsePlaceholdersByDefault, colorCodesByDefault;
-
-        if (config.getOptionalString("Commands.SendMessage.PlayersListArg").isPresent()) {
-            if (config.isString("Commands.SendMessage.PlayersListArg")) {
-                playersListArg = config.getBoolean("Commands.SendMessage.PlayersListArg");
-            } else {
-                playersListArg = false;
-            }
-        } else {
-            playersListArg = false;
-            config.set("Commands.SendMessage.PlayersListArg", false);
-        }
+        boolean ampersandByDefault, parsePlaceholdersByDefault, colorCodesByDefault;
 
         if (config.getOptionalString("Commands.SendMessage.Use&ForColorCodesByDefault").isPresent()) {
             if (config.isString("Commands.SendMessage.Use&ForColorCodesByDefault")) {
@@ -69,53 +57,12 @@ public class SendMessageCommand extends Command implements Configurable {
         BooleanArgument colorCodesArg = new BooleanArgument("Color Codes");
         BooleanArgument parsePlaceholdersArg = new BooleanArgument("Parse Placeholders");
         BooleanArgument useAmpersandArg = new BooleanArgument("Use Ampersand For Color Codes");
-        /*
-        new CommandAPICommand("sendmessage")
-            .withArguments(playersArg)
-            .withArguments(colorCodesArg)
-            .withArguments(parsePlaceholdersArg)
-            .withArguments(useAmpersandArg)
-            .withArguments(textArg)
-            .executes((sender, args) -> {
-                sendMessage(args.getByArgument(playersArg),
-                    args.getByArgument(textArg),
-                    args.getByArgument(parsePlaceholdersArg),
-                    args.getByArgument(colorCodesArg),
-                    args.getByArgument(useAmpersandArg));
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
-
-        if (playersListArg) {
-            new CommandAPICommand("sendmessage")
-                .withArguments(new ListArgumentBuilder<String>("Players List")
-                    .withList(Utils.getPlayersList())
-                    .withStringMapper()
-                    .buildText())
-                .withArguments(colorCodesArg)
-                .withArguments(parsePlaceholdersArg)
-                .withArguments(useAmpersandArg)
-                .withArguments(textArg)
-                .executes((sender, args) -> {
-                    sendMessage(args.getUnchecked("Players List"),
-                        args.getByArgument(textArg),
-                        args.getByArgument(parsePlaceholdersArg),
-                        args.getByArgument(colorCodesArg),
-                        args.getByArgument(useAmpersandArg));
-                })
-                .withPermission(this.getPermission())
-                .withAliases(this.getCommandAliases())
-                .register(this.getNamespace());
-        }
-
-         */
 
         new CommandAPICommand("sendmessage")
             .withArguments(playersArg)
             .withArguments(greedyStringArg)
             .executes((sender, args) -> {
-                sendMessage(args.getByArgument(playersArg),
+                sendMessage(args.getUnchecked("Players"),
                     args.getByArgument(greedyStringArg),
                     parsePlaceholdersByDefault,
                     colorCodesByDefault,
@@ -124,25 +71,6 @@ public class SendMessageCommand extends Command implements Configurable {
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
-
-        if (playersListArg) {
-            new CommandAPICommand("sendmessage")
-                .withArguments(new ListArgumentBuilder<String>("Players List")
-                    .withList(Utils.getPlayersList())
-                    .withStringMapper()
-                    .buildText())
-                .withArguments(greedyStringArg)
-                .executes((sender, args) -> {
-                    sendMessage(args.getUnchecked("Players List"),
-                        args.getByArgument(greedyStringArg),
-                        parsePlaceholdersByDefault,
-                        colorCodesByDefault,
-                        ampersandByDefault);
-                })
-                .withPermission(this.getPermission())
-                .withAliases(this.getCommandAliases())
-                .register(this.getNamespace());
-        }
 
     }
 

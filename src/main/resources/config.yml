@@ -202,6 +202,10 @@ Commands:
     Aliases: []
     CommandSeparator: ",,"
 
+  MobDrops:
+    Enabled: true
+    Aliases: []
+
   MobTarget:
     Enabled: true
     Aliases: []
