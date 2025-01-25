@@ -38,6 +38,9 @@ repositories {
     maven {
         url = "https://dependency.download/releases"
     }
+    maven {
+        url = "https://repo.md-5.net/content/groups/public/" // LibsDisguises
+    }
 }
 
 dependencies {
@@ -50,6 +53,7 @@ dependencies {
     compileOnly "net.kyori:adventure-text-serializer-legacy:4.16.0"
     compileOnly 'net.coreprotect:coreprotect:22.4'
     compileOnly 'dev.kitteh:factionsuuid:0.7.0'
+    compileOnly("LibsDisguises:LibsDisguises:10.0.44")
     implementation 'com.jeff_media:MorePersistentDataTypes:2.4.0'
     implementation 'com.jeff-media:custom-block-data:2.2.3'
     implementation "dev.jorel:commandapi-bukkit-shade:9.7.0"

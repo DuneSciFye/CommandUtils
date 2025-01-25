@@ -31,11 +31,11 @@ public class SpawnGuardianBeamCommand extends Command implements Registerable {
          * Summons a Guardian Beam between two Locations
          * @author DuneSciFye
          * @since 1.0.5
-         * @param World World of the Locations
-         * @param Location1 Coordinates of First Location
-         * @param Location2 Coordinates of Second Location
-         * @param Duration How Long Laser Stays for
-         * @param Distance How Long Laser is
+         * @param World of the Locations
+         * @param Coordinates of First Location
+         * @param Coordinates of Second Location
+         * @param How Long Laser Stays for
+         * @param How Long Laser is
          */
         new CommandAPICommand("spawnguardianbeam")
             .withArguments(worldArg)
@@ -102,9 +102,9 @@ public class SpawnGuardianBeamCommand extends Command implements Registerable {
          * Summons a Guardian Beam between an Entity and a Location
          * @author DuneSciFye
          * @since 1.0.5
-         * @param World World of the Locations
-         * @param Location Location
-         * @param Entity Entity
+         * @param World of the Locations
+         * @param Location
+         * @param Entity
          * @param Duration How Long Laser Stays for
          * @param Distance How Long Laser is
          */
@@ -140,9 +140,9 @@ public class SpawnGuardianBeamCommand extends Command implements Registerable {
          * Summons a Guardian Beam between a Location and an Entity
          * @author DuneSciFye
          * @since 1.0.5
-         * @param Entity Entity
-         * @param World World of the Locations
-         * @param Location Location
+         * @param Entity
+         * @param World of the Locations
+         * @param Location
          * @param Duration How Long Laser Stays for
          * @param Distance How Long Laser is
          */

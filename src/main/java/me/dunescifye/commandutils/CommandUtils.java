@@ -7,6 +7,8 @@ import me.dunescifye.commandutils.commands.*;
 import me.dunescifye.commandutils.files.Config;
 import me.dunescifye.commandutils.listeners.*;
 import me.dunescifye.commandutils.commands.Command;
+import me.libraryaddict.disguise.LibsDisguises;
+import me.libraryaddict.disguise.commands.LibsDisguisesCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,7 +23,7 @@ public final class CommandUtils extends JavaPlugin {
     public static NamespacedKey keyEIID = new NamespacedKey("executableitems", "ei-id");
     public static final NamespacedKey keyNoDamagePlayer = new NamespacedKey("lunaritems", "nodamageplayer");
     public static final NamespacedKey noGravityKey = new NamespacedKey("lunaritems", "nogravity");
-    public static boolean griefPreventionEnabled = false, placeholderAPIEnabled = false, factionsUUIDEnabled = false, coreProtectEnabled = false;
+    public static boolean griefPreventionEnabled = false, placeholderAPIEnabled = false, factionsUUIDEnabled = false, coreProtectEnabled = false, libsDisguisesEnabled = false;
     private static final HashMap<String, Command> commands = new HashMap<>();
 
     @Override
@@ -36,20 +38,6 @@ public final class CommandUtils extends JavaPlugin {
         plugin = this;
         Logger logger = plugin.getLogger();
 
-        if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
-            logger.info("Detected GriefPrevention, enabling support for it.");
-            griefPreventionEnabled = true;
-        }
-
-        if (Bukkit.getPluginManager().isPluginEnabled("Factions")) {
-            logger.info("Detected FactionsUUID, enabling support for it.");
-            factionsUUIDEnabled = true;
-        }
-
-        if (Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
-            logger.info("Detected CoreProtect, enabling support for it.");
-            coreProtectEnabled = true;
-        }
 
         //Files first
 
@@ -132,6 +120,27 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("MobDrops", new MobDropsCommand());
 
         commands.put("CobwebPrison", new CobwebPrisonCommand());
+
+        if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
+            logger.info("Detected GriefPrevention, enabling support for it.");
+            griefPreventionEnabled = true;
+        }
+
+        if (Bukkit.getPluginManager().isPluginEnabled("Factions")) {
+            logger.info("Detected FactionsUUID, enabling support for it.");
+            factionsUUIDEnabled = true;
+        }
+
+        if (Bukkit.getPluginManager().isPluginEnabled("CoreProtect")) {
+            logger.info("Detected CoreProtect, enabling support for it.");
+            coreProtectEnabled = true;
+        }
+
+        if (LibsDisguises.getInstance().isEnabled()) {
+            logger.info("Detected LibsDisguises, enabling support for it.");
+            libsDisguisesEnabled = true;
+        }
+
         //Special Commands
         /*if (Bukkit.getPluginManager().isPluginEnabled("ExecutableBlocks")) {
             commands.put("CobwebPrison", new CobwebPrisonCommand());

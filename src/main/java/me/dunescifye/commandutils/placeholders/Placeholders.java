@@ -10,6 +10,7 @@ import me.dunescifye.commandutils.listeners.BowForceTracker;
 import me.dunescifye.commandutils.listeners.ExperienceTracker;
 import me.dunescifye.commandutils.listeners.PlayerDamageTracker;
 import me.dunescifye.commandutils.utils.Utils;
+import me.libraryaddict.disguise.DisguiseAPI;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -17,6 +18,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.Rail;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
@@ -138,8 +140,13 @@ public class Placeholders extends PlaceholderExpansion {
         if (output != null && output.equals("Unknown function")) {
             String[] temp = arguments.split("_", 2);
             if (temp.length < 2) return "Unknown function";
-            output = function(temp[0], temp[1], function, p);
+            arguments = temp[1];
+            separator = function;
+            output = function(temp[0], arguments, separator, p);
         }
+
+        if (arguments.endsWith(separator + "lower")) output = output.toLowerCase();
+        else if (arguments.endsWith(separator + "upper")) output = output.toUpperCase();
 
         return output;
         //return super.onRequest(player, args);
@@ -454,6 +461,10 @@ public class Placeholders extends PlaceholderExpansion {
                                 return "true";
                         }
                         return "false";
+                    }
+                    case "shape" -> {
+                        if (b.getBlockData() instanceof Rail rail)
+                            return String.valueOf(rail.getShape());
                     }
                     default -> {
                         return "Invalid infotype";
@@ -809,7 +820,7 @@ public class Placeholders extends PlaceholderExpansion {
                     UUID uuid = UUID.fromString(params[0]);
                     Entity e = Bukkit.getEntity(uuid);
                     if (!(e instanceof Arrow arrow)) return "Invalid Arrow";
-                    return String.valueOf(!arrow.isInBlock());
+                    return String.valueOf(arrow.isInBlock());
                 } catch (IllegalArgumentException e) {
                     return "Invalid UUID";
                 }
@@ -880,6 +891,9 @@ public class Placeholders extends PlaceholderExpansion {
             }
             case "expreason", "experiencereason", "xpreason", "lastexpreason", "lastexperiencereason", "lastxpreason", "recentexpreason", "recentexperiencereason", "recentxpreason" -> {
                 return String.valueOf(ExperienceTracker.getRecentEXPSpawnReason(p));
+            }
+            case "isdisguised", "disguised" -> {
+                return CommandUtils.libsDisguisesEnabled ? String.valueOf(DisguiseAPI.isDisguised(p)) : "LibsDisguises not Enabled";
             }
             default -> {
                 return "Unknown function";

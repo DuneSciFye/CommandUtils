@@ -22,7 +22,7 @@ public class TempPlayerVarCommand extends Command implements Registerable {
 
         TextArgument varArg = new TextArgument("Variable Name");
         GreedyStringArgument contentArg = new GreedyStringArgument("Content");
-        MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "set", "get", "clear", "remove", "setifempty", "append");
+        MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "set", "get", "clear", "remove", "setifempty", "append", "singleparse", "singleuse");
         PlayerArgument playerArg = new PlayerArgument("Player");
 
         /*
@@ -62,6 +62,9 @@ public class TempPlayerVarCommand extends Command implements Registerable {
                     case "get" -> sender.sendMessage(getPlayerVar(p, varName));
                     case "setifempty" -> vars.putIfAbsent(varName, content);
                     case "append" -> vars.put(varName, vars.getOrDefault(varName, "") + content);
+                    case "singleparse" -> {
+
+                    }
                 }
                 playerVars.put(p, vars);
             })
