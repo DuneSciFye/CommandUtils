@@ -20,10 +20,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Rail;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -862,6 +859,10 @@ public class Placeholders extends PlaceholderExpansion {
                         }
                         case "zint" -> {
                             return String.valueOf(e.getLocation().getBlockZ());
+                        }
+                        case "owner" -> {
+                            if (e instanceof Tameable tameable && tameable.isTamed())
+                                return tameable.getOwner().getName();
                         }
                     }
                 } catch (IllegalArgumentException e) {

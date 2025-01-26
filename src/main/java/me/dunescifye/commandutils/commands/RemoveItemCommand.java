@@ -5,12 +5,14 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,8 +71,7 @@ public class RemoveItemCommand extends Command implements Configurable {
                         if (invItem == null || invItem.getType() != matcher.getType()) continue;
                         if (invItem.hasItemMeta()) {
                             ItemMeta invMeta = invItem.getItemMeta();
-                            if (meta instanceof PotionMeta potionMeta && invMeta instanceof PotionMeta invPotionMeta && (potionMeta.getBasePotionType() != invPotionMeta.getBasePotionType()))
-                                continue;
+                            if (meta instanceof PotionMeta potionMeta && invMeta instanceof PotionMeta invPotionMeta && (potionMeta.getBasePotionType() != invPotionMeta.getBasePotionType())) continue;
                         }
                         if (amountFound + invItem.getAmount() > maxamount) {
                             invItem.setAmount(invItem.getAmount() - maxamount + amountFound);
