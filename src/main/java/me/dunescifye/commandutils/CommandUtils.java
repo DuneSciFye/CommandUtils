@@ -7,8 +7,6 @@ import me.dunescifye.commandutils.commands.*;
 import me.dunescifye.commandutils.files.Config;
 import me.dunescifye.commandutils.listeners.*;
 import me.dunescifye.commandutils.commands.Command;
-import me.libraryaddict.disguise.LibsDisguises;
-import me.libraryaddict.disguise.commands.LibsDisguisesCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -136,7 +134,7 @@ public final class CommandUtils extends JavaPlugin {
             coreProtectEnabled = true;
         }
 
-        if (LibsDisguises.getInstance().isEnabled()) {
+        if (Bukkit.getPluginManager().isPluginEnabled("LibsDisguises")) {
             logger.info("Detected LibsDisguises, enabling support for it.");
             libsDisguisesEnabled = true;
         }
