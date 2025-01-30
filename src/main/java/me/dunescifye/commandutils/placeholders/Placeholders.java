@@ -141,9 +141,10 @@ public class Placeholders extends PlaceholderExpansion {
             separator = function;
             output = function(temp[0], arguments, separator, p);
         }
-
-        if (arguments.endsWith(separator + "lower")) output = output.toLowerCase();
-        else if (arguments.endsWith(separator + "upper")) output = output.toUpperCase();
+        if (arguments != null) {
+            if (arguments.endsWith(separator + "lower")) output = output.toLowerCase();
+            else if (arguments.endsWith(separator + "upper")) output = output.toUpperCase();
+        }
 
         return output;
         //return super.onRequest(player, args);

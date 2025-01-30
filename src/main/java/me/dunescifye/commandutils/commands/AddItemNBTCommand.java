@@ -21,7 +21,6 @@ public class AddItemNBTCommand extends Command implements Registerable {
 
         PlayerArgument playerArg = new PlayerArgument("Player");
         StringArgument slotArg = new StringArgument("Slot");
-        MultiLiteralArgument textSlotArg = new MultiLiteralArgument("Slot", "main", "mainhand", "off", "offhand", "cursor");
         TextArgument namespaceArg = new TextArgument("Namespace");
         TextArgument keyArg = new TextArgument("Key");
         GreedyStringArgument contentArg = new GreedyStringArgument("Content");
@@ -45,8 +44,7 @@ public class AddItemNBTCommand extends Command implements Registerable {
             .withArguments(keyArg)
             .withOptionalArguments(contentArg)
             .executes((sender, args) -> {
-                String slot = args.getByArgument(textSlotArg);
-                if (Arrays.stream(Utils.getItemSlots()).noneMatch(slot::equals)) throw CommandAPI.failWithString("Unknown slot for command AddItemNBT! Found: " + slot);
+                String slot = args.getByArgument(slotArg);
                 ItemStack item = Utils.getInvItem(args.getByArgument(playerArg), slot);
                 String namespace = args.getByArgument(namespaceArg);
                 String inputKey = args.getByArgument(keyArg);

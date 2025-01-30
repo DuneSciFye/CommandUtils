@@ -118,6 +118,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("BlockPrison", new BlockPrisonCommand());
         commands.put("SendActionBar", new SendActionBarCommand());
         commands.put("MobDrops", new MobDropsCommand());
+        commands.put("ItemLore", new ItemLoreCommand());
 
         commands.put("CobwebPrison", new CobwebPrisonCommand());
 

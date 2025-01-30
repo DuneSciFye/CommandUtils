@@ -25,14 +25,14 @@ public class LoadCrossbowCommand extends Command implements Registerable {
         BooleanArgument loadedArg = new BooleanArgument("Loaded");
         BooleanArgument interactWithInvArg = new BooleanArgument("Interact With Inventory");
 
-        /**
+        /*
          * Loads/unloads crossbow
          * @author DuneSciFye
          * @since 1.0.0
-         * @param Player Player to check inventory
-         * @param Slot Slot Location of Item
-         * @param Boolean If Crossbow Should be Loaded
-         * @param Boolean If Arrow Should be Taken/Added to Inventory
+         * @param Player to check inventory
+         * @param Slot Location of Item
+         * @param If Crossbow Should be Loaded
+         * @param If Arrow Should be Taken/Added to Inventory
          */
         new CommandAPICommand("loadcrossbow")
             .withArguments(playerArg)
