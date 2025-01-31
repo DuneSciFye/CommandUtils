@@ -22,6 +22,9 @@ import static org.bukkit.Bukkit.getServer;
 public class Utils {
 
     private static final Collection<String> PREDICATES_LIST = new ArrayList<>();
+    private static final List<Material> blockMaterials = Arrays.stream(Material.values())
+        .filter(Material::isBlock)
+        .toList();
 
     static {
         for (Tag<Material> tag : Bukkit.getTags("blocks", Material.class)) {
@@ -399,5 +402,9 @@ public class Utils {
         for (String command : commands)
             if (!Objects.equals(command, ""))
                 server.dispatchCommand(console, command);
+    }
+
+    public static List<Material> getBlockMaterials() {
+        return blockMaterials;
     }
 }

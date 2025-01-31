@@ -82,7 +82,6 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("PreciseEffect", new PreciseEffectCommand());
         commands.put("ReplaceLore", new ReplaceLoreCommand());
         commands.put("ReplaceLoreRegex", new ReplaceLoreRegexCommand());
-        commands.put("BroadcastConditionMessage", new BroadcastConditionMessageCommand());
         commands.put("BreakInVein", new BreakInVeinCommand());
         commands.put("GetPlayerHead", new GetPlayerHeadCommand());
         commands.put("RemoveInRadius", new RemoveInRadius());
@@ -117,6 +116,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("SendActionBar", new SendActionBarCommand());
         commands.put("MobDrops", new MobDropsCommand());
         commands.put("ItemLore", new ItemLoreCommand());
+        commands.put("ReplaceInRadiusIfBlockRelative", new ReplaceInRadiusIfBlockRelative());
 
         commands.put("CobwebPrison", new CobwebPrisonCommand());
 
