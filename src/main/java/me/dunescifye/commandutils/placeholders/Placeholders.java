@@ -529,6 +529,24 @@ public class Placeholders extends PlaceholderExpansion {
 
                 return String.valueOf(amount);
             }
+            case "armorsetlowestlevel", "armorsetlowestlvl" -> {
+                if (p == null || !p.isOnline()) return "0";
+
+                double lowest = Double.MAX_VALUE;
+                Material material = null;
+
+                for (ItemStack armor : p.getInventory().getArmorContents()) {
+                    if (armor != null && armor.hasItemMeta()) {
+                        Double level = armor.getItemMeta().getPersistentDataContainer().get(CommandUtils.keyCustomLevel, PersistentDataType.DOUBLE);
+                        if (level != null && level < lowest) {
+                            lowest = level;
+                            material = armor.getType();
+                        }
+                    }
+                }
+
+                return material.toString();
+            }
             case "worldenvironment" -> {
                 return p.getWorld().getEnvironment().toString();
             }

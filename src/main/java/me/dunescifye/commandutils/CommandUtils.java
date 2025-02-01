@@ -18,7 +18,8 @@ import java.util.logging.Logger;
 public final class CommandUtils extends JavaPlugin {
 
     private static CommandUtils plugin;
-    public static NamespacedKey keyEIID = new NamespacedKey("executableitems", "ei-id");
+    public static final NamespacedKey keyEIID = new NamespacedKey("executableitems", "ei-id");
+    public static final NamespacedKey keyCustomLevel = new NamespacedKey("score", "score-customlevel");
     public static final NamespacedKey keyNoDamagePlayer = new NamespacedKey("lunaritems", "nodamageplayer");
     public static final NamespacedKey noGravityKey = new NamespacedKey("lunaritems", "nogravity");
     public static boolean griefPreventionEnabled = false, placeholderAPIEnabled = false, factionsUUIDEnabled = false, coreProtectEnabled = false, libsDisguisesEnabled = false;
