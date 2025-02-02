@@ -43,7 +43,8 @@ import static me.dunescifye.commandutils.utils.Utils.isInteger;
 
 public class Placeholders extends PlaceholderExpansion {
 
-    private static String defaultSeparator = ",", elseIfKeyword, elseKeyword, conditionSeparator;
+    private static String defaultSeparator = ",";
+    private static String elseIfKeyword, elseKeyword, conditionSeparator;
     private static String nbtSeparator = ",";
     private static String amountSeparator = ",";
 
@@ -626,6 +627,16 @@ public class Placeholders extends PlaceholderExpansion {
                 } catch (IllegalArgumentException e) {
                     return String.valueOf(item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.DOUBLE));
                 }
+            }
+            case "dumpitem" -> {
+                String[] argsNbt = arguments.split(nbtSeparator);
+                if (p == null) return "Null player";
+                if (argsNbt.length < 1) return "Missing arguments";
+
+                ItemStack item = Utils.getInvItem(p, argsNbt[0]);
+                if (item == null || !item.hasItemMeta()) return "";
+
+                return item.getType().toString().toLowerCase() + item.getItemMeta().getAsComponentString();
             }
 
             /*
