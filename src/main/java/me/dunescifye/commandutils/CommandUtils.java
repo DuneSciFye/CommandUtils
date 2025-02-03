@@ -119,6 +119,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("ItemLore", new ItemLoreCommand());
         commands.put("ReplaceInRadiusIfBlockRelative", new ReplaceInRadiusIfBlockRelative());
         commands.put("RemoveNBTItem", new RemoveNBTItemCommand());
+        commands.put("PreciseIf", new PreciseIfCommand());
 
         commands.put("CobwebPrison", new CobwebPrisonCommand());
 

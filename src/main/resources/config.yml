@@ -227,6 +227,10 @@ Commands:
     Enabled: true
     Aliases: []
 
+  PreciseIf:
+    Enabled: true
+    Aliases: []
+
   PushEntity:
     Enabled: true
     Aliases: []

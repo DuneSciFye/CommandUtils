@@ -412,6 +412,9 @@ public class Placeholders extends PlaceholderExpansion {
                     case "amount", "amt" -> {
                         return String.valueOf(itemStack.getAmount());
                     }
+                    case "isvanilla" -> {
+                        return String.valueOf(!itemStack.hasItemMeta());
+                    }
                     case "enchantlevel", "enchantlvl", "enchantmentlvl", "enchantmentlevel" -> {
                         if (inventoryInfoArgs.length < 3) return "";
                         String enchantName = inventoryInfoArgs[2];

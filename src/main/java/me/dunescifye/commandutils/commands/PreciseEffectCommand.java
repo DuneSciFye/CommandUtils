@@ -28,12 +28,12 @@ public class PreciseEffectCommand extends Command implements Configurable {
         BooleanArgument ambientArg = new BooleanArgument("Ambient");
         BooleanArgument iconArg = new BooleanArgument("Show Icon");
 
-        /**
+        /*
          * Gives Potion Effect with more Options
          * @author DuneSciFye
          * @since 1.0.4
-         * @param Entities Entities to give Effect to
-         * @param Effect Effect to give
+         * @param Entities to give Effect to
+         * @param Effect to give
          * @param Duration How long to give Effect for, in Ticks
          * @param Amplifier How strong the Effect is
          * @param HideParticles If Particles are Hidden
@@ -68,12 +68,12 @@ public class PreciseEffectCommand extends Command implements Configurable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /**
+        /*
          * Gives Potion Effect with more Options
          * @author DuneSciFye
          * @since 1.0.4
-         * @param Entities Entities to give Effect to
-         * @param Effect Effect to give
+         * @param Entities to give Effect to
+         * @param Effect to give
          * @param Infinite Literal Argument infinite
          * @param Amplifier How strong the Effect is
          * @param HideParticles If Particles are Hidden
