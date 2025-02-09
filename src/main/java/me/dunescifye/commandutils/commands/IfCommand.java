@@ -4,17 +4,13 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import me.dunescifye.commandutils.CommandUtils;
-import me.dunescifye.commandutils.placeholders.Placeholders;
 import me.dunescifye.commandutils.utils.Utils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -70,79 +66,7 @@ public class IfCommand extends Command implements Configurable {
         new CommandAPICommand("if")
             .withArguments(argumentsArg)
             .executes((sender, args) -> {
-                String arguments = args.getByArgument(argumentsArg);
-                ArrayList<String> inputSplit = new ArrayList<>(List.of(arguments.split(" " + elseIfKeyword + " ")));
-                String[] elseSplit = inputSplit.removeLast().split(" " + elseKeyword + " ", 2);
-                inputSplit.add(elseSplit[0]);
-                String elseCmd = null;
-                if (elseSplit.length > 1) {
-                    elseCmd = elseSplit[1];
-                }
-
-                //If and Else If's
-                for (String elseif : inputSplit) {
-                    String[] argSplit = elseif.split(conditionSeparator, 3);
-                    if (argSplit.length == 1) argSplit = argSplit[0].split("'", 3);
-                    if (argSplit.length == 1) argSplit = (" " + argSplit[0]).split(" ", 3);
-                    if (argSplit.length != 3) continue;
-
-                    try {
-                        if (argSplit[1].contains("!=")) {
-                            String[] condition = argSplit[1].split("!=", 2);
-                            if (!Objects.equals(condition[0].trim(), condition[1].trim())) {
-                                Utils.runConsoleCommands(argSplit[2].split(commandSeparator));
-                                return;
-                            }
-                        } else if (argSplit[1].contains(">=")) {
-                            String[] condition = argSplit[1].split(">=", 2);
-                            if ((Double.parseDouble(condition[0].trim()) >= Double.parseDouble(condition[1].trim()))) {
-                                Utils.runConsoleCommands(argSplit[2].split(commandSeparator));
-                                return;
-                            }
-                        } else if (argSplit[1].contains("<=")) {
-                            String[] condition = argSplit[1].split("<=", 2);
-                            if ((Double.parseDouble(condition[0]) <= Double.parseDouble(condition[1]))) {
-                                Utils.runConsoleCommands(argSplit[2].split(commandSeparator));
-                                return;
-                            }
-                        } else if (argSplit[1].contains(">")) {
-                            String[] condition = argSplit[1].split(">", 2);
-                            if ((Double.parseDouble(condition[0]) > Double.parseDouble(condition[1]))) {
-                                Utils.runConsoleCommands(argSplit[2].split(commandSeparator));
-                                return;
-                            }
-                        } else if (argSplit[1].contains("<")) {
-                            String[] condition = argSplit[1].split("<", 2);
-                            if ((Double.parseDouble(condition[0]) < Double.parseDouble(condition[1]))) {
-                                Utils.runConsoleCommands(argSplit[2].split(commandSeparator));
-                                return;
-                            }
-                        } else if (argSplit[1].contains("==")) {
-                            String[] condition = argSplit[1].split("==", 2);
-                            if (Objects.equals(condition[0], condition[1])) {
-                                Utils.runConsoleCommands(argSplit[2].split(commandSeparator));
-                                return;
-                            }
-                        } else if (argSplit[1].contains("=")) {
-                            String[] condition = argSplit[1].split("=", 2);
-                            if (Objects.equals(condition[0], condition[1])) {
-                                Utils.runConsoleCommands(argSplit[2].split(commandSeparator));
-                                return;
-                            }
-                        } else if (argSplit[1].contains(" contains ")) {
-                            String[] condition = argSplit[1].split(" contains ", 2);
-                            if (condition[0].contains(condition[1])) {
-                                Utils.runConsoleCommands(argSplit[2].split(commandSeparator));
-                                return;
-                            }
-                        }
-                    } catch (IllegalArgumentException ignored) {}
-                }
-
-                //Else
-                if (elseCmd == null) return;
-                Utils.runConsoleCommands(elseCmd.split(commandSeparator));
-
+                Utils.runConsoleCommands(parseIf(args.getByArgument(argumentsArg), null).split(commandSeparator));
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
@@ -160,40 +84,42 @@ public class IfCommand extends Command implements Configurable {
         }
 
         //If and Else If's
-        for (String elseif : inputSplit) {
+        elseif: for (String elseif : inputSplit) {
             String[] argSplit = elseif.split(conditionSeparator, 3);
             if (argSplit.length == 1) argSplit = argSplit[0].split("'", 3);
             if (argSplit.length == 1) argSplit = (" " + argSplit[0]).split(" ", 3);
             if (argSplit.length != 3) continue;
 
-            try {
-                if (argSplit[1].contains("!=")) {
-                    String[] condition = argSplit[1].split("!=", 2);
-                    if (!Objects.equals(condition[0].trim(), condition[1].trim())) return argSplit[2];
-                } else if (argSplit[1].contains(">=")) {
-                    String[] condition = argSplit[1].split(">=", 2);
-                    if ((Double.parseDouble(condition[0].trim()) >= Double.parseDouble(condition[1].trim())))
-                        return argSplit[2];
-                } else if (argSplit[1].contains("<=")) {
-                    String[] condition = argSplit[1].split("<=", 2);
-                    if ((Double.parseDouble(condition[0]) <= Double.parseDouble(condition[1]))) return argSplit[2];
-                } else if (argSplit[1].contains(">")) {
-                    String[] condition = argSplit[1].split(">", 2);
-                    if ((Double.parseDouble(condition[0]) > Double.parseDouble(condition[1]))) return argSplit[2];
-                } else if (argSplit[1].contains("<")) {
-                    String[] condition = argSplit[1].split("<", 2);
-                    if ((Double.parseDouble(condition[0]) < Double.parseDouble(condition[1]))) return argSplit[2];
-                } else if (argSplit[1].contains("==")) {
-                    String[] condition = argSplit[1].split("==", 2);
-                    if (Objects.equals(condition[0], condition[1])) return argSplit[2];
-                } else if (argSplit[1].contains("=")) {
-                    String[] condition = argSplit[1].split("=", 2);
-                    if (Objects.equals(condition[0], condition[1])) return argSplit[2];
-                } else if (argSplit[1].contains(" contains ")) {
-                    String[] condition = argSplit[1].split(" contains ", 2);
-                    if (condition[0].contains(condition[1])) return argSplit[2];
-                }
-            } catch (IllegalArgumentException ignored) {}
+            for (String conditions : argSplit[1].split("&&")) {
+                try {
+                    if (conditions.contains("!=")) {
+                        String[] condition = conditions.split("!=", 2);
+                        if (Objects.equals(condition[0].trim(), condition[1].trim())) continue elseif;
+                    } else if (conditions.contains(">=")) {
+                        String[] condition = argSplit[1].split(">=", 2);
+                        if (!(Double.parseDouble(condition[0].trim()) >= Double.parseDouble(condition[1].trim()))) continue elseif;
+                    } else if (conditions.contains("<=")) {
+                        String[] condition = conditions.split("<=", 2);
+                        if (!(Double.parseDouble(condition[0]) <= Double.parseDouble(condition[1]))) continue elseif;
+                    } else if (conditions.contains(">")) {
+                        String[] condition = conditions.split(">", 2);
+                        if (!(Double.parseDouble(condition[0]) > Double.parseDouble(condition[1]))) continue elseif;
+                    } else if (conditions.contains("<")) {
+                        String[] condition = conditions.split("<", 2);
+                        if (!(Double.parseDouble(condition[0]) < Double.parseDouble(condition[1]))) continue elseif;
+                    } else if (conditions.contains("==")) {
+                        String[] condition = conditions.split("==", 2);
+                        if (!Objects.equals(condition[0], condition[1])) continue elseif;
+                    } else if (conditions.contains("=")) {
+                        String[] condition = conditions.split("=", 2);
+                        if (!Objects.equals(condition[0], condition[1])) continue elseif;
+                    } else if (conditions.contains(" contains ")) {
+                        String[] condition = conditions.split(" contains ", 2);
+                        if (!condition[0].contains(condition[1])) continue elseif;
+                    }
+                } catch (IllegalArgumentException ignored) {}
+            }
+            return argSplit[2];
         }
 
         //Else
