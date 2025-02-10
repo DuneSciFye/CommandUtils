@@ -632,36 +632,40 @@ public class Placeholders extends PlaceholderExpansion {
                 }
             }
             case "dumpitem" -> {
-                String[] argsNbt = arguments.split(nbtSeparator);
+                String[] args = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
                 if (p == null) return "Null player";
-                if (argsNbt.length < 1) return "Missing arguments";
+                if (args.length < 1) return "Missing arguments";
 
-                ItemStack item = Utils.getInvItem(p, argsNbt[0]);
+                ItemStack item = Utils.getInvItem(p, args[0]);
                 if (item == null || !item.hasItemMeta()) return "";
 
                 return item.getType().toString().toLowerCase() + item.getItemMeta().getAsComponentString();
             }
 
             /*
-             * Gets how many of a material is in a player's inventory + cursor slot. Does not count opened containers.
+             * Gets how many of a material is in a player's inventory + cursor slot. Does not check opened containers.
              * @author DuneSciFye
              */
             case "amount", "amt" -> {
-                if (p == null) {
-                    return "null player";
-                }
-
-                ItemStack item = Utils.getInvItem(p, arguments);
+                if (p == null) return "null player";
+                String[] args = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
+                ItemStack item = Utils.getInvItem(p, args[0]);
 
                 if (item == null) { //Argument is not an inv slot
-                    Material mat = Material.getMaterial(arguments.toUpperCase());
+                    Material mat = Material.getMaterial(args[0].toUpperCase());
                     if (mat == null) return "";
                     int count = 0;
                     ArrayList<ItemStack> items = new ArrayList<>(Arrays.asList(p.getInventory().getContents()));
                     items.add(p.getItemOnCursor());
-                    for (ItemStack content : items)
-                        if (content != null && Objects.equals(content.getType(), mat))
-                            count += content.getAmount();
+                    if (args.length == 1 || !args[1].equalsIgnoreCase("strict")) {
+                        for (ItemStack content : items)
+                            if (content != null && Objects.equals(content.getType(), mat))
+                                count += content.getAmount();
+                    } else {
+                        for (ItemStack content : items)
+                            if (content != null && Objects.equals(content.getType(), mat) && !content.hasItemMeta())
+                                count += content.getAmount();
+                    }
 
                     return String.valueOf(count);
                 }
