@@ -56,8 +56,8 @@ public class RunCommandLaterCommand extends Command implements Registerable {
                             PlaceholderAPI.setPlaceholders(
                                 args.getByArgument(playerArg),
                                 args.getByArgument(commandsArg)
-                                    .replace(args.getByArgumentOrDefault(placeholderSurrounderArg, "$"), "%"))
-                                .split(args.getByArgumentOrDefault(commandSeparatorArg, ",,")));
+                                    .replace(args.getByArgumentOrDefault(placeholderSurrounderArg, "$"), "%")
+                                ).split(args.getByArgumentOrDefault(commandSeparatorArg, ",,")));
                 }, args.getByArgument(ticksArg));
 
                 tasks.put(taskID, task);

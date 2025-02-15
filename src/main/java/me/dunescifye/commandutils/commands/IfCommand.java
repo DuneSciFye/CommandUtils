@@ -96,7 +96,7 @@ public class IfCommand extends Command implements Configurable {
                         String[] condition = conditions.split("!=", 2);
                         if (Objects.equals(condition[0].trim(), condition[1].trim())) continue elseif;
                     } else if (conditions.contains(">=")) {
-                        String[] condition = argSplit[1].split(">=", 2);
+                        String[] condition = conditions.split(">=", 2);
                         if (!(Double.parseDouble(condition[0].trim()) >= Double.parseDouble(condition[1].trim()))) continue elseif;
                     } else if (conditions.contains("<=")) {
                         String[] condition = conditions.split("<=", 2);
@@ -109,7 +109,13 @@ public class IfCommand extends Command implements Configurable {
                         if (!(Double.parseDouble(condition[0]) < Double.parseDouble(condition[1]))) continue elseif;
                     } else if (conditions.contains("==")) {
                         String[] condition = conditions.split("==", 2);
-                        if (!Objects.equals(condition[0], condition[1])) continue elseif;
+                        System.out.println(condition[0]);
+                        System.out.println(condition[1]);
+                        if (!Objects.equals(condition[0], condition[1])) {
+                            System.out.println("a");
+                            continue elseif;
+                        }
+                        System.out.println("b");
                     } else if (conditions.contains("=")) {
                         String[] condition = conditions.split("=", 2);
                         if (!Objects.equals(condition[0], condition[1])) continue elseif;

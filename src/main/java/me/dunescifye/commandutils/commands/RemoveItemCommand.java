@@ -3,16 +3,12 @@ package me.dunescifye.commandutils.commands;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
-import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Server;
-import org.bukkit.command.ConsoleCommandSender;
+import me.clip.placeholderapi.PlaceholderAPI;
+import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,8 +19,6 @@ public class RemoveItemCommand extends Command implements Configurable {
     public void register(YamlDocument config){
         if (!this.getEnabled()) return;
 
-        String commandSeparator = ",,";
-
         PlayerArgument playerArg = new PlayerArgument("Player");
         ItemStackArgument itemArg = new ItemStackArgument("Item");
         IntegerArgument maxAmountArg = new IntegerArgument("Max Amount");
@@ -32,20 +26,14 @@ public class RemoveItemCommand extends Command implements Configurable {
         BooleanArgument checkChestArg = new BooleanArgument("Check Chest");
         TextArgument commandsArg = new TextArgument("Commands");
         BooleanArgument noCommandsIfZeroArg = new BooleanArgument("No Commands If Zero");
+        TextArgument commandSeparatorArg = new TextArgument("Command Separator");
 
         new CommandAPICommand("removeitem")
-            .withArguments(playerArg)
-            .withArguments(itemArg)
-            .withOptionalArguments(maxAmountArg)
-            .withOptionalArguments(strictArg)
-            .withOptionalArguments(checkChestArg)
-            .withOptionalArguments(commandsArg)
-            .withOptionalArguments(noCommandsIfZeroArg)
+            .withArguments(playerArg, itemArg)
+            .withOptionalArguments(maxAmountArg, strictArg, checkChestArg, commandsArg, noCommandsIfZeroArg, commandSeparatorArg)
             .executes((sender, args) -> {
                 ItemStack matcher = args.getByArgument(itemArg);
-                String inputCommands = args.getByArgument(commandsArg);
-                int maxamount = args.getByArgumentOrDefault(maxAmountArg, 999999);
-                boolean strict = args.getByArgumentOrDefault(strictArg, false);
+                int maxAmount = args.getByArgumentOrDefault(maxAmountArg, 999999);
 
                 int amountFound = 0;
                 Player p = args.getByArgument(playerArg);
@@ -54,12 +42,12 @@ public class RemoveItemCommand extends Command implements Configurable {
                 if (args.getByArgumentOrDefault(checkChestArg, false) && p.getOpenInventory() != null && p.getOpenInventory().getTopInventory() != null)
                     items.addAll(Arrays.asList(p.getOpenInventory().getTopInventory().getContents()));
                 // Strict means has to match everything exactly
-                if (strict) {
+                if (args.getByArgumentOrDefault(strictArg, false)) {
                     for (ItemStack invItem : items) {
                         if (invItem == null || !invItem.isSimilar(matcher)) continue;
-                        if (amountFound + invItem.getAmount() > maxamount) {
-                            invItem.setAmount(invItem.getAmount() - maxamount + amountFound);
-                            amountFound = maxamount;
+                        if (amountFound + invItem.getAmount() > maxAmount) {
+                            invItem.setAmount(invItem.getAmount() - maxAmount + amountFound);
+                            amountFound = maxAmount;
                             break;
                         }
                         amountFound += invItem.getAmount();
@@ -73,9 +61,9 @@ public class RemoveItemCommand extends Command implements Configurable {
                             ItemMeta invMeta = invItem.getItemMeta();
                             if (meta instanceof PotionMeta potionMeta && invMeta instanceof PotionMeta invPotionMeta && (potionMeta.getBasePotionType() != invPotionMeta.getBasePotionType())) continue;
                         }
-                        if (amountFound + invItem.getAmount() > maxamount) {
-                            invItem.setAmount(invItem.getAmount() - maxamount + amountFound);
-                            amountFound = maxamount;
+                        if (amountFound + invItem.getAmount() > maxAmount) {
+                            invItem.setAmount(invItem.getAmount() - maxAmount + amountFound);
+                            amountFound = maxAmount;
                             break;
                         }
                         amountFound += invItem.getAmount();
@@ -83,14 +71,12 @@ public class RemoveItemCommand extends Command implements Configurable {
                     }
                 }
 
-                if (inputCommands == null) return;
-                String[] commands = inputCommands.split(commandSeparator);
-
-                Server server = Bukkit.getServer();
-                ConsoleCommandSender console = server.getConsoleSender();
-                for (String command : commands){
-                    server.dispatchCommand(console, StringUtils.replaceIgnoreCase(command, "{amount}", String.valueOf(amountFound)));
-                }
+                if (args.getByArgumentOrDefault(noCommandsIfZeroArg, false) && amountFound == 0) return;
+                Utils.runConsoleCommands(
+                    PlaceholderAPI.setPlaceholders(
+                        p,
+                        args.getByArgumentOrDefault(commandsArg, "").replace("{amount}", String.valueOf(amountFound))
+                    ).split(args.getByArgumentOrDefault(commandSeparatorArg, ",,")));
 
             })
             .withPermission(this.getPermission())
