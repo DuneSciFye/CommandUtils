@@ -90,7 +90,7 @@ public class IfCommand extends Command implements Configurable {
             if (argSplit.length == 1) argSplit = (" " + argSplit[0]).split(" ", 3);
             if (argSplit.length != 3) continue;
 
-            for (String conditions : argSplit[1].split("&&")) {
+            for (String conditions : argSplit[1].split("&&| and ")) {
                 try {
                     if (conditions.contains("!=")) {
                         String[] condition = conditions.split("!=", 2);
@@ -109,13 +109,7 @@ public class IfCommand extends Command implements Configurable {
                         if (!(Double.parseDouble(condition[0]) < Double.parseDouble(condition[1]))) continue elseif;
                     } else if (conditions.contains("==")) {
                         String[] condition = conditions.split("==", 2);
-                        System.out.println(condition[0]);
-                        System.out.println(condition[1]);
-                        if (!Objects.equals(condition[0], condition[1])) {
-                            System.out.println("a");
-                            continue elseif;
-                        }
-                        System.out.println("b");
+                        if (!Objects.equals(condition[0], condition[1])) continue elseif;
                     } else if (conditions.contains("=")) {
                         String[] condition = conditions.split("=", 2);
                         if (!Objects.equals(condition[0], condition[1])) continue elseif;

@@ -1,10 +1,9 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.GreedyStringArgument;
-import dev.jorel.commandapi.arguments.MultiLiteralArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
-import dev.jorel.commandapi.arguments.TextArgument;
+import dev.jorel.commandapi.arguments.*;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.entity.Player;
 
@@ -24,6 +23,7 @@ public class TempPlayerVarCommand extends Command implements Registerable {
         GreedyStringArgument contentArg = new GreedyStringArgument("Content");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "set", "get", "clear", "remove", "setifempty", "append");
         PlayerArgument playerArg = new PlayerArgument("Player");
+        AdventureChatArgument chatArg = new AdventureChatArgument("Content");
 
         /*
          * Sets a temporary player variable, won't persist across server restarts
@@ -32,14 +32,12 @@ public class TempPlayerVarCommand extends Command implements Registerable {
          * @param
          */
         new CommandAPICommand("tempplayervar")
-            .withArguments(functionArg)
-            .withArguments(playerArg)
-            .withArguments(varArg)
-            .withOptionalArguments(contentArg)
+            .withArguments(functionArg, playerArg, varArg)
+            .withOptionalArguments(chatArg)
             .executes((sender, args) -> {
                 Player p = args.getByArgument(playerArg);
                 String varName = args.getByArgument(varArg);
-                String content = args.getByArgumentOrDefault(contentArg, "");
+                String content = LegacyComponentSerializer.legacyAmpersand().serialize(args.getByArgumentOrDefault(chatArg, Component.empty()));
                 HashMap<String, String> vars = playerVars.get(p);
                 if (vars == null) vars = new HashMap<>();
 

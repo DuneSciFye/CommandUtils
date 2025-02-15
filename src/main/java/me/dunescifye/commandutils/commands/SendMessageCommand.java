@@ -53,17 +53,16 @@ public class SendMessageCommand extends Command implements Configurable {
 
         EntitySelectorArgument.ManyPlayers playersArg = new EntitySelectorArgument.ManyPlayers("Players");
         TextArgument textArg = new TextArgument("Message");
-        GreedyStringArgument greedyStringArg = new GreedyStringArgument("Message");
+        AdventureChatArgument messageArg = new AdventureChatArgument("Message");
         BooleanArgument colorCodesArg = new BooleanArgument("Color Codes");
         BooleanArgument parsePlaceholdersArg = new BooleanArgument("Parse Placeholders");
         BooleanArgument useAmpersandArg = new BooleanArgument("Use Ampersand For Color Codes");
 
         new CommandAPICommand("sendmessage")
-            .withArguments(playersArg)
-            .withArguments(greedyStringArg)
+            .withArguments(playersArg, messageArg)
             .executes((sender, args) -> {
                 sendMessage(args.getUnchecked("Players"),
-                    args.getByArgument(greedyStringArg),
+                    LegacyComponentSerializer.legacyAmpersand().serialize(args.getByArgument(messageArg)),
                     parsePlaceholdersByDefault,
                     colorCodesByDefault,
                     ampersandByDefault);

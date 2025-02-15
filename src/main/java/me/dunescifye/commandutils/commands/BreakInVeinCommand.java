@@ -5,7 +5,6 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.FUtils;
-import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,8 +15,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -78,6 +76,7 @@ public class BreakInVeinCommand extends Command implements Configurable {
         IntegerArgument maxBlocksArg = new IntegerArgument("Max Blocks");
         BooleanArgument checkClaimArg = new BooleanArgument("Check Claim");
         BooleanArgument triggerBlockBreakArg = new BooleanArgument("Trigger Block Break Event");
+        BooleanArgument autoPickupArg = new BooleanArgument("Auto Pickup");
 
         new CommandAPICommand("breakinvein")
             .withArguments(worldArg)
@@ -101,13 +100,8 @@ public class BreakInVeinCommand extends Command implements Configurable {
             .register(this.getNamespace());
 
         new CommandAPICommand("breakinvein")
-            .withArguments(worldArg)
-            .withArguments(locArg)
-            .withArguments(playerArg)
-            .withOptionalArguments(blockArg)
-            .withOptionalArguments(triggerBlockBreakArg)
-            .withOptionalArguments(maxBlocksArg)
-            .withOptionalArguments(checkClaimArg)
+            .withArguments(worldArg, locArg, playerArg)
+            .withOptionalArguments(blockArg, triggerBlockBreakArg, maxBlocksArg, checkClaimArg, autoPickupArg)
             .executes((sender, args) -> {
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 Block block = world.getBlockAt(args.getByArgument(locArg));
@@ -137,6 +131,8 @@ public class BreakInVeinCommand extends Command implements Configurable {
                         getVeinOresItem(block, drops, predicate, maxSize, item);
                     }
                 }
+
+                if (args.getByArgumentOrDefault(autoPickupArg, false)) drops = player.getInventory().addItem(drops.toArray(new ItemStack[0])).values();
 
                 dropAllItemStacks(world, block.getLocation(), drops);
                 player.removeMetadata("ignoreBlockBreak", CommandUtils.getInstance());
