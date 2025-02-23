@@ -51,7 +51,7 @@ public class ReplaceInRadiusCommand extends Command implements Registerable {
                                      * @param List of Blocks to Replace To
                                      */
                                     .executes((sender, args) -> {
-                                        List<Predicate<Block>>[] predicates = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
+                                        List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
 
                                         replaceInRadiusCheckClaims(
                                             args.getByArgument(playerArg),
@@ -85,7 +85,7 @@ public class ReplaceInRadiusCommand extends Command implements Registerable {
                                  * @param Materials List of Blocks to Replace To
                                  */
                                 .executes((sender, args) -> {
-                                    List<Predicate<Block>>[] predicates = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
+                                    List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
 
                                     replaceInRadius(
                                         Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg)),
@@ -105,12 +105,12 @@ public class ReplaceInRadiusCommand extends Command implements Registerable {
 
     }
 
-    private void replaceInRadius(Block origin, int radius, List<Predicate<Block>>[] predicates, List<Material> blocksTo) {
+    private void replaceInRadius(Block origin, int radius, List<List<Predicate<Block>>> predicates, List<Material> blocksTo) {
         for (Block b : Utils.getBlocksInRadius(origin, radius))
             if (Utils.testBlock(b, predicates))
                 b.setType(blocksTo.get(ThreadLocalRandom.current().nextInt(blocksTo.size())));
     }
-    private void replaceInRadiusCheckClaims(final Player p, final Block origin, final int radius, final List<Predicate<Block>>[] predicates, final List<Material> blocksTo) {
+    private void replaceInRadiusCheckClaims(final Player p, final Block origin, final int radius, final List<List<Predicate<Block>>> predicates, final List<Material> blocksTo) {
         for (Block b : Utils.getBlocksInRadius(origin, radius))
             if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation()))
                 b.setType(blocksTo.get(ThreadLocalRandom.current().nextInt(blocksTo.size())));

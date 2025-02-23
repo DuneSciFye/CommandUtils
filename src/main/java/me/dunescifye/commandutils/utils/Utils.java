@@ -1,5 +1,9 @@
 package me.dunescifye.commandutils.utils;
 
+import dev.jorel.commandapi.arguments.Argument;
+import dev.jorel.commandapi.arguments.ArgumentSuggestions;
+import dev.jorel.commandapi.arguments.CustomArgument;
+import dev.jorel.commandapi.arguments.StringArgument;
 import me.dunescifye.commandutils.CommandUtils;
 import net.coreprotect.CoreProtectAPI;
 import net.coreprotect.CoreProtect;
@@ -8,17 +12,23 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.bukkit.Bukkit.getServer;
 
+@SuppressWarnings("UnstableApiUsage")
 public class Utils {
 
     private static final Collection<String> PREDICATES_LIST = new ArrayList<>();
@@ -173,10 +183,8 @@ public class Utils {
         return null;
     }
 
-    public static List<Predicate<Block>>[] stringListToPredicate(List<String> predicates) {
-        List<Predicate<Block>>[] predicateList = new List[2];
-        predicateList[0] = new ArrayList<>();
-        predicateList[1] = new ArrayList<>();
+    public static List<List<Predicate<Block>>> stringListToPredicate(List<String> predicates) {
+        List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
         Logger logger = CommandUtils.getInstance().getLogger();
 
         for (String predicate : predicates) {
@@ -188,7 +196,7 @@ public class Utils {
                         if (predicateKey == null) continue;
                         Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
                         if (tag == null) continue;
-                        predicateList[1].add(block -> tag.isTagged(block.getType()));
+                        blacklist.add(block -> tag.isTagged(block.getType()));
                     } catch (
                         IllegalArgumentException e) {
                         logger.info("Invalid block tag: " + predicate);
@@ -201,7 +209,7 @@ public class Utils {
                         if (predicateKey == null) continue;
                         Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
                         if (tag == null) continue;
-                        predicateList[1].add(block -> tag.isTagged(block.getType()));
+                        blacklist.add(block -> tag.isTagged(block.getType()));
                     } catch (
                         IllegalArgumentException e) {
                         logger.info("Invalid block tag: " + predicate);
@@ -211,7 +219,7 @@ public class Utils {
                     predicate = predicate.substring(1);
                     Material material = Material.getMaterial(predicate.toUpperCase());
                     if (material == null) continue;
-                    predicateList[1].add(block -> block.getType().equals(material));
+                    blacklist.add(block -> block.getType().equals(material));
                 }
             }
             else { //Whitelist
@@ -221,7 +229,7 @@ public class Utils {
                         if (predicateKey == null) continue;
                         Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
                         if (tag == null) continue;
-                        predicateList[0].add(block -> tag.isTagged(block.getType()));
+                        whitelist.add(block -> tag.isTagged(block.getType()));
                     } catch (
                         IllegalArgumentException e) {
                         logger.info("Invalid block tag: " + predicate);
@@ -234,7 +242,7 @@ public class Utils {
                         if (predicateKey == null) continue;
                         Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
                         if (tag == null) continue;
-                        predicateList[0].add(block -> tag.isTagged(block.getType()));
+                        whitelist.add(block -> tag.isTagged(block.getType()));
                     } catch (
                         IllegalArgumentException e) {
                         logger.info("Invalid block tag: " + predicate);
@@ -243,11 +251,11 @@ public class Utils {
                 else { //Blocks
                     Material material = Material.getMaterial(predicate.toUpperCase());
                     if (material == null) continue;
-                    predicateList[0].add(block -> block.getType().equals(material));
+                    whitelist.add(block -> block.getType().equals(material));
                 }
             }
         }
-        return predicateList;
+        return List.of(whitelist, blacklist);
     }
 
     public static Collection<String> getPredicatesList() {
@@ -260,15 +268,14 @@ public class Utils {
             .collect(Collectors.toList());
     }
 
-    public static boolean testBlock(Block b, List<Predicate<Block>>[] predicates) {
+    public static boolean testBlock(Block b, List<List<Predicate<Block>>> predicates) {
         if (predicates == null) return true; //Used for fully empty lists
-        List<Predicate<Block>> whitelistPredicates = predicates[0];
-        List<Predicate<Block>> blacklistPredicates = predicates[1];
+        List<Predicate<Block>> whitelistPredicates = predicates.getFirst();
+        List<Predicate<Block>> blacklistPredicates = predicates.getLast();
 
         // If whitelist is empty, only check blacklist
-        if (whitelistPredicates.isEmpty()) {
+        if (whitelistPredicates.isEmpty())
             return blacklistPredicates.stream().noneMatch(predicate -> predicate.test(b));
-        }
 
         // Check whitelist and ensure no blacklist match if any whitelist condition is met
         return whitelistPredicates.stream().anyMatch(predicate -> predicate.test(b)) &&
@@ -406,5 +413,47 @@ public class Utils {
 
     public static List<Material> getBlockMaterials() {
         return blockMaterials;
+    }
+
+    public static Duration parseDuration(String duration) {
+        Pattern pattern = Pattern.compile("(\\d+)([a-zA-Z]*)");
+        Matcher matcher = pattern.matcher(duration);
+        Duration totalDuration = Duration.ZERO;
+
+        while (matcher.find()) {
+            int value = Integer.parseInt(matcher.group(1));
+            String unit = matcher.group(2);
+
+            totalDuration = switch (unit.toLowerCase()) {
+                case "s", "sec", "secs", "second", "seconds" -> totalDuration.plusSeconds(value);
+                case "m", "min", "mins", "minute", "minutes" -> totalDuration.plusMinutes(value);
+                case "h", "hr", "hrs", "hour", "hours" -> totalDuration.plusHours(value);
+                case "d", "day", "days" -> totalDuration.plusDays(value);
+                case "w", "week", "weeks" -> totalDuration.plusDays(value * 7L);
+                default -> totalDuration.plusMillis(value * 50L);
+            };
+        }
+
+        return totalDuration;
+    }
+
+
+    public static Argument<EquipmentSlotGroup> equipmentSlotGroupArgument(String nodeName) {
+
+        return new CustomArgument<>(new StringArgument(nodeName), info -> {
+            EquipmentSlotGroup equipmentSlotGroup = EquipmentSlotGroup.getByName(info.input());
+
+            if (equipmentSlotGroup == null) {
+                throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Unknown Equipment Slot Group: ").appendArgInput());
+            } else {
+                return equipmentSlotGroup;
+            }
+        }).replaceSuggestions(ArgumentSuggestions.strings(info ->
+            Stream.of(EquipmentSlotGroup.ANY, EquipmentSlotGroup.ARMOR, EquipmentSlotGroup.BODY, EquipmentSlotGroup.FEET, EquipmentSlotGroup.CHEST, EquipmentSlotGroup.HAND, EquipmentSlotGroup.HEAD, EquipmentSlotGroup.ARMOR, EquipmentSlotGroup.LEGS, EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND).map(EquipmentSlotGroup::toString).toArray(String[]::new))
+        );
+    }
+
+    public static EquipmentSlotGroup[] getEquipmentSlotGroups() {
+        return new EquipmentSlotGroup[]{EquipmentSlotGroup.ANY, EquipmentSlotGroup.ARMOR, EquipmentSlotGroup.BODY, EquipmentSlotGroup.FEET, EquipmentSlotGroup.CHEST, EquipmentSlotGroup.HAND, EquipmentSlotGroup.HEAD, EquipmentSlotGroup.ARMOR, EquipmentSlotGroup.LEGS, EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND};
     }
 }

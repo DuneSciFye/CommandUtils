@@ -64,7 +64,7 @@ public class BreakInXYZCommand extends Command implements Registerable {
                 Location loc = args.getByArgument(locArg);
                 loc.setWorld(world);
                 Player p = args.getByArgument(playerArg);
-                List<Predicate<Block>>[] predicates = getPredicate(args.getByArgument(whitelistedBlocksArgument));
+                List<List<Predicate<Block>>> predicates = getPredicate(args.getByArgument(whitelistedBlocksArgument));
                 Collection<ItemStack> drops = new ArrayList<>();
                 ItemStack heldItem = p.getInventory().getItemInMainHand();
 
@@ -97,7 +97,7 @@ public class BreakInXYZCommand extends Command implements Registerable {
                 Location loc = args.getByArgument(locArg);
                 loc.setWorld(world);
                 Player p = args.getByArgument(playerArg);
-                List<Predicate<Block>>[] predicates = stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
+                List<List<Predicate<Block>>> predicates = stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
                 Collection<ItemStack> drops = new ArrayList<>();
                 ItemStack heldItem = p.getInventory().getItemInMainHand();
 

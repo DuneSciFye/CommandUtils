@@ -63,7 +63,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                             Player player = args.getByArgument(playerArg);
                                             ItemStack heldItem = player.getInventory().getItemInMainHand();
                                             Collection<ItemStack> drops = new ArrayList<>();
-                                            List<Predicate<Block>>[] predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
+                                            List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
                                             for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
                                                 if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
@@ -79,7 +79,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                 Location location = args.getByArgument(locArg);
                                                 Player player = args.getByArgument(playerArg);
                                                 ItemStack drop = args.getByArgument(dropArg);
-                                                List<Predicate<Block>>[] predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
+                                                List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
                                                 for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
                                                     if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
@@ -98,7 +98,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                 location.setWorld(world);
                                                 Player player = args.getByArgument(playerArg);
                                                 Collection<ItemStack> drops = new ArrayList<>();
-                                                List<Predicate<Block>>[] predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
+                                                List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
                                                 for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
                                                     if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
@@ -119,7 +119,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                         Player player = args.getByArgument(playerArg);
                                         ItemStack heldItem = player.getInventory().getItemInMainHand();
                                         Collection<ItemStack> drops = new ArrayList<>();
-                                        List<Predicate<Block>>[] predicates = getPredicate(args.getByArgument(whitelistedBlocksArgument));
+                                        List<List<Predicate<Block>>> predicates = getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                                         for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
                                             if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
@@ -135,7 +135,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                             Location location = args.getByArgument(locArg);
                                             Player player = args.getByArgument(playerArg);
                                             ItemStack drop = args.getByArgument(dropArg);
-                                            List<Predicate<Block>>[] predicates = getPredicate(args.getByArgument(whitelistedBlocksArgument));
+                                            List<List<Predicate<Block>>> predicates = getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                                             for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
                                                 if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
@@ -154,7 +154,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                             location.setWorld(world);
                                             Player player = args.getByArgument(playerArg);
                                             Collection<ItemStack> drops = new ArrayList<>();
-                                            List<Predicate<Block>>[] predicates = getPredicate(args.getByArgument(whitelistedBlocksArgument));
+                                            List<List<Predicate<Block>>> predicates = getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                                             for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
                                                 if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;

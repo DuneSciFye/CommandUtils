@@ -191,7 +191,7 @@ public class HighlightBlocksCommand extends Command implements Configurable {
             .withOptionalArguments(numberOfIntervalsArg)
             .withOptionalArguments(particleSpawnIntervalArg)
             .executes((sender, args) -> {
-                List<Predicate<Block>>[] predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
+                List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 Location location = args.getByArgument(locArg);
@@ -234,7 +234,7 @@ public class HighlightBlocksCommand extends Command implements Configurable {
             .withOptionalArguments(numberOfIntervalsArg)
             .withOptionalArguments(particleSpawnIntervalArg)
             .executes((sender, args) -> {
-                List<Predicate<Block>>[] predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
+                List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 Location location = args.getByArgument(locArg);

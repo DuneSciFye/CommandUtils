@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 public class Config {
 
-    private static final Map<String, List<Predicate<Block>>[]> predicates = new HashMap<>();
+    private static final Map<String, List<List<Predicate<Block>>>> predicates = new HashMap<>();
 
     private static String namespace = "commandutils", prefix = "";
 
@@ -147,7 +147,7 @@ public class Config {
         return prefix;
     }
 
-    public static List<Predicate<Block>>[] getPredicate(String key){
+    public static List<List<Predicate<Block>>> getPredicate(String key){
         return predicates.get(key);
     }
 

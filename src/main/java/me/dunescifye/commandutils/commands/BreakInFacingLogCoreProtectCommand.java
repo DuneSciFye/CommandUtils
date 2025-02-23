@@ -110,7 +110,7 @@ public class BreakInFacingLogCoreProtectCommand extends Command implements Regis
                 ItemStack heldItem = player.getInventory().getItemInMainHand();
                 Collection<ItemStack> drops = new ArrayList<>();
                 String name = player.getName();
-                List<Predicate<Block>>[] predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
+                List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
                 for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
                     if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
@@ -156,7 +156,7 @@ public class BreakInFacingLogCoreProtectCommand extends Command implements Regis
                 Player player = args.getByArgument(playerArg);
                 ItemStack drop = args.getByArgument(dropArg);
                 String name = player.getName();
-                List<Predicate<Block>>[] predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
+                List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
                 for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
                     if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
@@ -204,7 +204,7 @@ public class BreakInFacingLogCoreProtectCommand extends Command implements Regis
                 Player player = args.getByArgument(playerArg);
                 Collection<ItemStack> drops = new ArrayList<>();
                 String name = player.getName();
-                List<Predicate<Block>>[] predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
+                List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
                 for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
                     if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;

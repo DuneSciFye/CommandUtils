@@ -34,13 +34,8 @@ public class RunCommandLaterCommand extends Command implements Registerable {
         TextArgument placeholderSurrounderArg = new TextArgument("Placeholder Surrounder");
 
         new CommandAPICommand("runcommandlater")
-            .withArguments(addArg)
-            .withArguments(commandIDArg)
-            .withArguments(ticksArg)
-            .withArguments(commandsArg)
-            .withOptionalArguments(playerArg)
-            .withOptionalArguments(commandSeparatorArg)
-            .withOptionalArguments(placeholderSurrounderArg)
+            .withArguments(addArg, commandIDArg, ticksArg, commandsArg)
+            .withOptionalArguments(playerArg, commandSeparatorArg, placeholderSurrounderArg)
             .executes((sender, args) -> {
                 String taskID = args.getByArgument(commandIDArg);
                 BukkitTask oldTask = tasks.remove(taskID);

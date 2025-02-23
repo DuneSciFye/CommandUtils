@@ -67,10 +67,10 @@ public class ReplaceInRadiusIfBlockRelative extends Command implements Registera
                 final Player p = args.getByArgument(playerArg);
                 final Block origin = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
                 final int radius = args.getByArgument(radiusArg);
-                final List<Predicate<Block>>[] blocksFrom = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
+                final List<List<Predicate<Block>>> blocksFrom = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
                 final List<Material> blocksTo = args.getUnchecked("Blocks To Replace To");
                 final List<BlockFace> blocksFaces = args.getUnchecked("Block Faces");
-                final List<Predicate<Block>>[] blocksRelative = Utils.stringListToPredicate(args.getUnchecked("Blocks Relative"));
+                final List<List<Predicate<Block>>> blocksRelative = Utils.stringListToPredicate(args.getUnchecked("Blocks Relative"));
                 final ItemStack item = args.getByArgumentOrDefault(removeItemArg, null);
                 Inventory inv = p.getInventory();
 
@@ -108,10 +108,10 @@ public class ReplaceInRadiusIfBlockRelative extends Command implements Registera
                 final Player p = args.getByArgument(playerArg);
                 final Block origin = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
                 final int radius = args.getByArgument(radiusArg);
-                final List<Predicate<Block>>[] blocksFrom = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
+                final List<List<Predicate<Block>>> blocksFrom = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
                 final BlockData blockTo = args.getByArgument(blockToArg);
                 final List<BlockFace> blocksFaces = args.getUnchecked("Block Faces");
-                final List<Predicate<Block>>[] blocksRelative = Utils.stringListToPredicate(args.getUnchecked("Blocks Relative"));
+                final List<List<Predicate<Block>>> blocksRelative = Utils.stringListToPredicate(args.getUnchecked("Blocks Relative"));
                 final ItemStack item = args.getByArgumentOrDefault(removeItemArg, null);
                 Inventory inv = p.getInventory();
 

@@ -1,75 +1,51 @@
 package me.dunescifye.commandutils.commands;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Utils;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static me.dunescifye.commandutils.utils.Utils.getEquipmentSlotGroups;
 
 public class ItemAttributeCommand extends Command implements Registerable {
 
-    private static List<String> getAllAttributes() {
-        return Arrays.stream(Attribute.values())
-            .map(Attribute::name)
-            .collect(Collectors.toList());
-    }
-
-    private static List<String> getAllOperations() {
-        return Arrays.stream(AttributeModifier.Operation.values())
-            .map(Enum::name)
-            .collect(Collectors.toList());
-    }
-
-    private static List<String> getAllEquipmentSlots() {
-        return Arrays.stream(EquipmentSlot.values())
-            .map(Enum::name)
-            .collect(Collectors.toList());
-    }
-
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "UnstableApiUsage"})
     public void register() {
 
         if (!this.getEnabled()) return;
 
         LiteralArgument addArg = new LiteralArgument("add");
+        LiteralArgument removeArg = new LiteralArgument("remove");
         PlayerArgument playerArg = new PlayerArgument("Player");
-        IntegerArgument itemSlotArg = new IntegerArgument("Item Slot", -1, 40);
-        MultiLiteralArgument textSlotArg = new MultiLiteralArgument("Slot", "main", "mainhand", "off", "offhand", "cursor");
+        StringArgument slotArg = new StringArgument("Slot");
         StringArgument attributeArg = new StringArgument("Attribute");
         DoubleArgument valueArg = new DoubleArgument("Value");
         StringArgument operationArg = new StringArgument("Operation");
         StringArgument equipSlotArg = new StringArgument("Equipment Slot");
-        StringArgument nameArg = new StringArgument("Name");
-        StringArgument uuidArg = new StringArgument("UUID");
+        StringArgument idArg = new StringArgument("ID");
 
         new CommandAPICommand("itemattribute")
-            .withArguments(addArg)
-            .withArguments(playerArg)
-            .withArguments(textSlotArg)
-            .withArguments(attributeArg
-                .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllAttributes().toArray(new String[0])))
-            )
-            .withArguments(valueArg)
-            .withArguments(operationArg
-                .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllOperations().toArray(new String[0])))
-            )
-            .withArguments(equipSlotArg
-                .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllEquipmentSlots().toArray(new String[0])))
+            .withArguments(addArg, playerArg, slotArg.replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots())), attributeArg
+                    .replaceSuggestions(ArgumentSuggestions.strings(Arrays.stream(Attribute.values()).map(attribute -> attribute.getKey().value().toUpperCase()).collect(Collectors.toList())))
+                , idArg, valueArg, operationArg
+                    .replaceSuggestions(ArgumentSuggestions.strings(Arrays.stream(AttributeModifier.Operation.values()).map(operation -> operation.toString().toUpperCase()).collect(Collectors.toList())))
+                , equipSlotArg
+                    .replaceSuggestions(ArgumentSuggestions.strings(info -> Arrays.stream(getEquipmentSlotGroups()).map(EquipmentSlotGroup::toString).toList().toArray(new String[0])))
             )
             .executes((sender, args) -> {
                 ItemStack item = Utils.getInvItem(
                     args.getByArgument(playerArg),
-                    args.getByArgument(textSlotArg)
+                    args.getByArgument(slotArg)
                 );
                 if (item == null || !item.hasItemMeta())
                     return;
@@ -77,13 +53,21 @@ public class ItemAttributeCommand extends Command implements Registerable {
                 ItemMeta meta = item.getItemMeta();
 
                 double amount = args.getByArgument(valueArg);
-                UUID uuid = UUID.randomUUID();
                 Attribute attribute = Attribute.valueOf(args.getByArgument(attributeArg).toUpperCase());
                 AttributeModifier.Operation operation = AttributeModifier.Operation.valueOf(args.getByArgument(operationArg).toUpperCase());
-                EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(args.getByArgument(equipSlotArg).toUpperCase());
+                EquipmentSlotGroup equipmentSlot = EquipmentSlotGroup.getByName(args.getByArgument(equipSlotArg));
+                NamespacedKey key = NamespacedKey.fromString(args.getByArgument(idArg));
+                AttributeModifier modifier = new AttributeModifier(key, amount, operation, equipmentSlot);
 
-                AttributeModifier modifier = new AttributeModifier(uuid, uuid.toString(), amount, operation, equipmentSlot);
-                meta.addAttributeModifier(attribute, modifier);
+                Multimap<Attribute, AttributeModifier> attributes = meta.getAttributeModifiers();
+                if (attributes == null)
+                    attributes = HashMultimap.create();
+                if (attributes.containsEntry(attribute, modifier)) return;
+                Multimap<Attribute, AttributeModifier> defaultAttributes = item.getType().getDefaultAttributeModifiers();
+                if (defaultAttributes != null)
+                    attributes.putAll(defaultAttributes);
+                attributes.put(attribute, modifier);
+                meta.setAttributeModifiers(attributes);
                 item.setItemMeta(meta);
             })
             .withPermission(this.getPermission())
@@ -91,166 +75,33 @@ public class ItemAttributeCommand extends Command implements Registerable {
             .register(this.getNamespace());
 
         new CommandAPICommand("itemattribute")
-            .withArguments(addArg)
-            .withArguments(playerArg)
-            .withArguments(textSlotArg)
-            .withArguments(attributeArg
-                .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllAttributes().toArray(new String[0])))
-            )
-            .withArguments(uuidArg)
-            .withArguments(valueArg)
-            .withArguments(operationArg
-                .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllOperations().toArray(new String[0])))
-            )
-            .withArguments(equipSlotArg
-                .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllEquipmentSlots().toArray(new String[0])))
-            )
+            .withArguments(removeArg, playerArg, slotArg.replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots())), attributeArg
+                    .replaceSuggestions(ArgumentSuggestions.strings(Arrays.stream(Attribute.values()).map(attribute -> attribute.getKey().value().toUpperCase()).collect(Collectors.toList())))
+                , idArg)
             .executes((sender, args) -> {
                 ItemStack item = Utils.getInvItem(
                     args.getByArgument(playerArg),
-                    args.getByArgument(textSlotArg)
+                    args.getByArgument(slotArg)
                 );
                 if (item == null || !item.hasItemMeta())
                     return;
 
                 ItemMeta meta = item.getItemMeta();
 
-                double amount = args.getByArgument(valueArg);
-                String uuidString = args.getByArgument(uuidArg);
-                UUID uuid = UUID.fromString(uuidString);
+                double amount = 1;
                 Attribute attribute = Attribute.valueOf(args.getByArgument(attributeArg).toUpperCase());
-                AttributeModifier.Operation operation = AttributeModifier.Operation.valueOf(args.getByArgument(operationArg).toUpperCase());
-                EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(args.getByArgument(equipSlotArg).toUpperCase());
+                AttributeModifier.Operation operation = AttributeModifier.Operation.ADD_NUMBER;
+                NamespacedKey key = NamespacedKey.fromString(args.getByArgument(idArg));
+                AttributeModifier modifier = new AttributeModifier(key, amount, operation);
 
-                AttributeModifier modifier = new AttributeModifier(uuid, uuidString, amount, operation, equipmentSlot);
-                meta.addAttributeModifier(attribute, modifier);
+                meta.removeAttributeModifier(attribute, modifier);
                 item.setItemMeta(meta);
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        new CommandAPICommand("itemattribute")
-            .withArguments(addArg)
-            .withArguments(playerArg)
-            .withArguments(itemSlotArg)
-            .withArguments(attributeArg
-                .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllAttributes().toArray(new String[0])))
-            )
-            .withArguments(valueArg)
-            .withArguments(operationArg
-                .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllOperations().toArray(new String[0])))
-            )
-            .withArguments(equipSlotArg
-                .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllEquipmentSlots().toArray(new String[0])))
-            )
-            .executes((sender, args) -> {
-                Player p = (Player) args.get("Player");
-                int slot = (Integer) args.get("Item Slot");
-                ItemStack item = slot == -1 ? p.getInventory().getItemInMainHand() : p.getInventory().getItem(slot);
-                if (item == null || !item.hasItemMeta())
-                    return;
 
-                ItemMeta meta = item.getItemMeta();
-
-                double amount = args.getByArgument(valueArg);
-                UUID uuid = UUID.randomUUID();
-                Attribute attribute = Attribute.valueOf(args.getByArgument(attributeArg).toUpperCase());
-                AttributeModifier.Operation operation = AttributeModifier.Operation.valueOf(args.getByArgument(operationArg).toUpperCase());
-                EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(args.getByArgument(equipSlotArg).toUpperCase());
-
-                AttributeModifier modifier = new AttributeModifier(uuid, uuid.toString(), amount, operation, equipmentSlot);
-                meta.addAttributeModifier(attribute, modifier);
-                item.setItemMeta(meta);
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
-
-        new CommandAPICommand("itemattribute")
-            .withArguments(addArg)
-            .withArguments(playerArg)
-            .withArguments(itemSlotArg)
-            .withArguments(attributeArg
-                .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllAttributes().toArray(new String[0])))
-            )
-            .withArguments(uuidArg)
-            .withArguments(valueArg)
-            .withArguments(operationArg
-                .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllOperations().toArray(new String[0])))
-            )
-            .withArguments(equipSlotArg
-                .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllEquipmentSlots().toArray(new String[0])))
-            )
-            .executes((sender, args) -> {
-                Player p = (Player) args.get("Player");
-                int slot = (Integer) args.get("Item Slot");
-                ItemStack item = slot == -1 ? p.getInventory().getItemInMainHand() : p.getInventory().getItem(slot);
-                if (item == null || !item.hasItemMeta())
-                    return;
-
-                ItemMeta meta = item.getItemMeta();
-
-                double amount = args.getByArgument(valueArg);
-                String uuidString = args.getByArgument(uuidArg);
-                UUID uuid = UUID.fromString(uuidString);
-                Attribute attribute = Attribute.valueOf(args.getByArgument(attributeArg).toUpperCase());
-                AttributeModifier.Operation operation = AttributeModifier.Operation.valueOf(args.getByArgument(operationArg).toUpperCase());
-                EquipmentSlot equipmentSlot = EquipmentSlot.valueOf(args.getByArgument(equipSlotArg).toUpperCase());
-
-                AttributeModifier modifier = new AttributeModifier(uuid, uuidString, amount, operation, equipmentSlot);
-                meta.addAttributeModifier(attribute, modifier);
-                item.setItemMeta(meta);
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
-
-        new CommandTree("itemattribute")
-            .then(new LiteralArgument("remove")
-                .then(new PlayerArgument("Player")
-                    .then(new IntegerArgument("Item Slot")
-                        .then(new StringArgument("Attribute")
-                            .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllAttributes().toArray(new String[0])))
-                            .executes((sender, args) -> {
-                                Player p = (Player) args.get("Player");
-                                int slot = (Integer) args.get("Item Slot");
-                                ItemStack item = slot == -1 ? p.getInventory().getItemInMainHand() : p.getInventory().getItem(slot);
-                                if (item == null)
-                                    return;
-
-                                ItemMeta meta = item.getItemMeta();
-                                Attribute attribute = Attribute.valueOf(((String) args.get("Attribute")).toUpperCase());
-
-                                meta.removeAttributeModifier(attribute);
-                                item.setItemMeta(meta);
-                            })
-                        )
-                    )
-                    .then(textSlotArg
-                        .then(new StringArgument("Attribute")
-                            .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllAttributes().toArray(new String[0])))
-                            .executes((sender, args) -> {
-                                ItemStack item = Utils.getInvItem(
-                                    args.getByArgument(playerArg),
-                                    args.getByArgument(textSlotArg)
-                                );
-                                if (item == null)  return;
-
-                                ItemMeta meta = item.getItemMeta();
-
-                                meta.removeAttributeModifier(
-                                    Attribute.valueOf(((String) args.get("Attribute")).toUpperCase())
-                                );
-                                item.setItemMeta(meta);
-                            })
-                        )
-                    )
-                )
-            )
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
     }
 
 }

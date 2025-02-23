@@ -39,14 +39,13 @@ public class CooldownCommandCommand extends Command implements Configurable {
         MultiLiteralArgument resetArg = new MultiLiteralArgument("Function", "reset", "clear");
         MultiLiteralArgument runArg = new MultiLiteralArgument("Function", "run", "silent");
         MultiLiteralArgument getCooldownArg = new MultiLiteralArgument("Function", "getcooldown", "getcd");
-        IntegerArgument timeArg = new IntegerArgument("Time in Ticks");
+        StringArgument timeArg = new StringArgument("Time");
         TextArgument commandsArg = new TextArgument("Commands");
+        TextArgument commandSeparatorArg = new TextArgument("Command Separator");
 
         new CommandAPICommand("cooldowncommand")
-            .withArguments(playerArg)
-            .withArguments(idArg)
-            .withArguments(timeArg)
-            .withArguments(commandsArg)
+            .withArguments(playerArg, idArg, timeArg, commandsArg)
+            .withOptionalArguments(commandSeparatorArg)
             .executes((sender, args) -> {
                 Player p = args.getByArgument(playerArg);
                 String id = args.getByArgument(idArg);
@@ -55,8 +54,8 @@ public class CooldownCommandCommand extends Command implements Configurable {
                 if (hasCooldown(playerCDs, id))
                     p.sendActionBar(getCooldownMessage(p, getRemainingCooldown(playerCDs, id)));
                 else {
-                    setCooldown(playerCDs, id, Duration.ofMillis(args.getByArgument(timeArg) * 50L)); //CD in Ticks
-                    Utils.runConsoleCommands(args.getByArgument(commandsArg).split(",,"));
+                    setCooldown(playerCDs, id, Utils.parseDuration(args.getByArgument(timeArg)));
+                    Utils.runConsoleCommands(args.getByArgument(commandsArg).split(args.getByArgumentOrDefault(commandSeparatorArg, ",,")));
                 }
             })
             .withPermission(this.getPermission())
@@ -73,40 +72,37 @@ public class CooldownCommandCommand extends Command implements Configurable {
          * @param Ticks of the cooldown
          * @param Commands to be run
          */
-        new CommandTree("cooldowncommand")
-            .then(runArg
-                .then(playerArg
-                    .then(idArg
-                        .then(timeArg
-                            .then(commandsArg
-                                .executes((sender, args) -> {
-                                    Player p = args.getByArgument(playerArg);
-                                    String id = args.getByArgument(idArg);
-                                    int time = args.getByArgument(timeArg);
-                                    String[] commands = args.getByArgument(commandsArg).split(",,");
-                                    HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p, k -> new HashMap<>());
+        new CommandAPICommand("cooldowncommand")
+            .withArguments(runArg, playerArg, idArg, timeArg, commandsArg)
+            .withOptionalArguments(commandSeparatorArg)
+            .executes((sender, args) -> {
+                Player p = args.getByArgument(playerArg);
+                String id = args.getByArgument(idArg);
+                String time = args.getByArgument(timeArg);
+                String[] commands = args.getByArgument(commandsArg).split(args.getByArgumentOrDefault(commandSeparatorArg, ",,"));
+                HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p, k -> new HashMap<>());
 
-                                    switch (args.getByArgument(runArg)) {
-                                        case "run" -> {
-                                            if (hasCooldown(playerCDs, id))
-                                                p.sendActionBar(getCooldownMessage(p, getRemainingCooldown(playerCDs, id)));
-                                            else {
-                                                setCooldown(playerCDs, id, Duration.ofMillis(time * 50L));
-                                                Utils.runConsoleCommands(commands);
-                                            }
-                                        }
-                                        case "silent" -> {
-                                            if (hasCooldown(playerCDs, id)) return;
-                                            setCooldown(playerCDs, id, Duration.ofMillis(time * 50L));
-                                            Utils.runConsoleCommands(commands);
-                                        }
-                                    }
-                                })
-                            )
-                        )
-                    )
-                )
-            )
+                switch (args.getByArgument(runArg)) {
+                    case "run" -> {
+                        if (hasCooldown(playerCDs, id))
+                            p.sendActionBar(getCooldownMessage(p, getRemainingCooldown(playerCDs, id)));
+                        else {
+                            setCooldown(playerCDs, id, Utils.parseDuration(time));
+                            Utils.runConsoleCommands(commands);
+                        }
+                    }
+                    case "silent" -> {
+                        if (hasCooldown(playerCDs, id)) return;
+                        setCooldown(playerCDs, id, Utils.parseDuration(time));
+                        Utils.runConsoleCommands(commands);
+                    }
+                }
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+
+        new CommandTree("cooldowncommand")
             .then(resetArg
                 .then(playerArg
                     .executes((sender, args) -> {

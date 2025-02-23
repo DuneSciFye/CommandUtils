@@ -84,7 +84,7 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
 
                                                     int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
 
-                                                    List<Predicate<Block>>[] predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
+                                                    List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                                                     new BukkitRunnable() {
                                                         int count = 0;
@@ -158,7 +158,7 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
                                             snowball.setItem(args.getByArgument(itemStackArgument));
 
                                             int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
-                                            List<Predicate<Block>>[] predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
+                                            List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                                             new BukkitRunnable() {
                                                 int count = 0;
@@ -197,7 +197,7 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
                                                 snowball.setItem(args.getByArgument(itemStackArgument));
 
                                                 int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
-                                                List<Predicate<Block>>[] predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
+                                                List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                                                 new BukkitRunnable() {
                                                     int count = 0;
@@ -234,7 +234,7 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
                                                     snowball.setItem(args.getByArgument(itemStackArgument));
 
                                                     int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
-                                                    List<Predicate<Block>>[] predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
+                                                    List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                                                     new BukkitRunnable() {
                                                         int count = 0;
@@ -274,7 +274,7 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
 
                                                         int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
 
-                                                        List<Predicate<Block>>[] predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
+                                                        List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
                                                         new BukkitRunnable() {
                                                             int count = 0;

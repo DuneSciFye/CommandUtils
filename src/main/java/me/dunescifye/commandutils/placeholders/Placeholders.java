@@ -17,6 +17,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Rail;
 import org.bukkit.enchantments.Enchantment;
@@ -444,14 +445,41 @@ public class Placeholders extends PlaceholderExpansion {
             case "blockinfo" -> { //X, Y, Z, World, Info Type
                 String[] args = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
 
-                if (args.length < 5) return "Missing arguments";
-                if (!isInteger(args[0]) || !isInteger(args[1]) || !isInteger(args[2])) return "Invalid Coordinates";
-                World world = Bukkit.getWorld(args[3]);
-                if (world == null) return "Invalid World";
+                Block b;
+                String blockInfoFunction;
 
-                Block b = world.getBlockAt(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+                try {
+                    Entity entity = Bukkit.getEntity(UUID.fromString(args[0]));
+                    if (entity == null) return "null entity";
 
-                switch (args[4]) {
+                    if (args.length >= 5) {
+                        try {
+                            b = entity.getLocation().add(Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3])).getBlock();
+                        } catch (
+                            NumberFormatException e) {
+                            return "Invalid Coordinate Modifiers";
+                        }
+                        blockInfoFunction = args[4].toLowerCase();
+                    }
+                    else if (args.length >= 2) {
+                        b = entity.getLocation().getBlock();
+                        blockInfoFunction = args[1].toLowerCase();
+                    } else return "Invalid Arguments";
+
+                } catch (IllegalArgumentException e) {
+                    if (args.length == 5) {
+                        try {
+                            World world = Bukkit.getWorld(args[3]);
+                            if (world == null) return "Invalid World";
+                            b = world.getBlockAt(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+                            blockInfoFunction = args[4].toLowerCase();
+                        } catch (NumberFormatException error) {
+                            return "Invalid Coordinates";
+                        }
+                    } else return "Missing Arguments";
+                }
+
+                switch (blockInfoFunction) {
                     case "material", "mat" -> {
                         return b.getType().toString();
                     }
@@ -467,6 +495,11 @@ public class Placeholders extends PlaceholderExpansion {
                     case "shape" -> {
                         if (b.getBlockData() instanceof Rail rail)
                             return String.valueOf(rail.getShape());
+                    }
+                    case "fullygrown" -> {
+                        if (b.getBlockData() instanceof Ageable ageable)
+                            return String.valueOf(ageable.getAge() == ageable.getMaximumAge());
+                        else return "Not Ageable";
                     }
                     default -> {
                         return "Invalid infotype";
