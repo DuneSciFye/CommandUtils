@@ -59,9 +59,8 @@ public class ItemAttributeCommand extends Command implements Registerable {
                 NamespacedKey key = NamespacedKey.fromString(args.getByArgument(idArg));
                 AttributeModifier modifier = new AttributeModifier(key, amount, operation, equipmentSlot);
 
-                Multimap<Attribute, AttributeModifier> attributes = meta.getAttributeModifiers();
-                if (attributes == null)
-                    attributes = HashMultimap.create();
+                Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
+                if (meta.hasAttributeModifiers()) attributes.putAll(meta.getAttributeModifiers());
                 if (attributes.containsEntry(attribute, modifier)) return;
                 Multimap<Attribute, AttributeModifier> defaultAttributes = item.getType().getDefaultAttributeModifiers();
                 if (defaultAttributes != null)

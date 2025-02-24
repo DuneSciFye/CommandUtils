@@ -467,7 +467,7 @@ public class Placeholders extends PlaceholderExpansion {
                     } else return "Invalid Arguments";
 
                 } catch (IllegalArgumentException e) {
-                    if (args.length == 5) {
+                    if (args.length >= 5) {
                         try {
                             World world = Bukkit.getWorld(args[3]);
                             if (world == null) return "Invalid World";
