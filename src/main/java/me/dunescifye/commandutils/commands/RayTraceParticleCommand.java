@@ -16,8 +16,6 @@ public class RayTraceParticleCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         ParticleArgument particleArg = new ParticleArgument("Particle");
         IntegerArgument lengthArg = new IntegerArgument("Length");
         DoubleArgument spacingArg = new DoubleArgument("Spacing");

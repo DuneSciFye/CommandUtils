@@ -11,21 +11,19 @@ public class FoodCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "remove", "set");
         EntitySelectorArgument.ManyPlayers playersArg = new EntitySelectorArgument.ManyPlayers("Players");
         IntegerArgument amountArg = new IntegerArgument("Amount");
         BooleanArgument allowOverflowArg = new BooleanArgument("Allow Overflow");
 
-        /**
+        /*
          * Modifies a Player's Food Level
          * @author DuneSciFye
          * @since 1.0.3
-         * @param Function Function to do
-         * @param Players Players to Target
-         * @param Amount Amount to Edit
-         * @param AllowOverflow If Over/Under Max/Min Values are Allowed
+         * @param Function to do
+         * @param Players to Target
+         * @param Amount to Edit
+         * @param If Over/Under Max/Min Values are Allowed
          */
         new CommandAPICommand("food")
             .withArguments(functionArg)

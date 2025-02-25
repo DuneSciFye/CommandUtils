@@ -16,8 +16,7 @@ import java.util.Arrays;
 public class RemoveItemCommand extends Command implements Configurable {
 
     @SuppressWarnings("ConstantConditions")
-    public void register(YamlDocument config){
-        if (!this.getEnabled()) return;
+    public void register(YamlDocument config) {
 
         PlayerArgument playerArg = new PlayerArgument("Player");
         ItemStackArgument itemArg = new ItemStackArgument("Item");

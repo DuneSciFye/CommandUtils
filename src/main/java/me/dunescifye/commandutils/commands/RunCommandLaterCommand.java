@@ -21,8 +21,6 @@ public class RunCommandLaterCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         Server server = Bukkit.getServer();
         ConsoleCommandSender console = server.getConsoleSender();
         PlayerArgument playerArg = new PlayerArgument("Player");

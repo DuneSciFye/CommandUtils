@@ -13,8 +13,6 @@ public class SetFireTicksCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
         IntegerArgument fireTicksArg = new IntegerArgument("Fire Ticks");
 

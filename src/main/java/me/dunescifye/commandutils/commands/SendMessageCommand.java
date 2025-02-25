@@ -13,9 +13,6 @@ public class SendMessageCommand extends Command implements Configurable {
     @SuppressWarnings("ConstantConditions")
     public void register(YamlDocument config) {
 
-        if (!this.getEnabled())
-            return;
-
         boolean ampersandByDefault, parsePlaceholdersByDefault, colorCodesByDefault;
 
         if (config.getOptionalString("Commands.SendMessage.Use&ForColorCodesByDefault").isPresent()) {

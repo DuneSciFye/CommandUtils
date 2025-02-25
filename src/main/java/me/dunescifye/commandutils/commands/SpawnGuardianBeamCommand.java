@@ -17,8 +17,6 @@ public class SpawnGuardianBeamCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         StringArgument worldArg = new StringArgument("World");
         LocationArgument loc1Arg = new LocationArgument("First Location");
         LocationArgument loc2Arg = new LocationArgument("Second Location");

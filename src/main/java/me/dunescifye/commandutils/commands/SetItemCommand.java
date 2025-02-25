@@ -11,8 +11,6 @@ public class SetItemCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register(){
 
-        if (!this.getEnabled()) return;
-
         PlayerArgument playerArg = new PlayerArgument("Player");
         IntegerArgument slotArg = new IntegerArgument("Slot", 0, 40);
         ItemStackArgument itemArg = new ItemStackArgument("Item");

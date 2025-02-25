@@ -17,8 +17,6 @@ public class PreciseEffectCommand extends Command implements Configurable {
     @Override
     public void register(YamlDocument config) {
 
-        if (!this.getEnabled()) return;
-
         EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
         PotionEffectArgument effectArg = new PotionEffectArgument("Effect");
         IntegerArgument durationArg = new IntegerArgument("Duration", 0);

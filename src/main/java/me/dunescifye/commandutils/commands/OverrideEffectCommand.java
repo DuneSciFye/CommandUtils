@@ -17,8 +17,6 @@ public class OverrideEffectCommand extends Command implements Configurable {
     @Override
     public void register(YamlDocument config) {
 
-        if (!this.getEnabled()) return;
-
         PlayerArgument playerArg = new PlayerArgument("Player");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "override", "retrieve", "remove");
         StringArgument idArg = new StringArgument("ID");

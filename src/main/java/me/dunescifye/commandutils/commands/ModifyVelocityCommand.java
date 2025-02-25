@@ -13,8 +13,6 @@ public class ModifyVelocityCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         EntitySelectorArgument.OneEntity entityArg = new EntitySelectorArgument.OneEntity("Entity");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "set", "add", "subtract", "multiply", "divide");
         DoubleArgument amountArg = new DoubleArgument("Amount");

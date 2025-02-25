@@ -8,7 +8,9 @@ import me.dunescifye.commandutils.commands.Command;
 import me.dunescifye.commandutils.commands.Configurable;
 import me.dunescifye.commandutils.commands.Registerable;
 import me.dunescifye.commandutils.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
+import org.bukkit.event.Listener;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +37,7 @@ public class Config {
                 prefix = config.getString("Messages.Prefix");
             }
 
-            //Commands
+            // Setup Commands
             HashMap<String, Command> commands = CommandUtils.getCommands();
             Section commandSection = config.getSection("Commands");
 
@@ -82,13 +84,16 @@ public class Config {
 
             }
 
-            //Register Commands
-
+            // Register Commands
             for (Command command : commands.values()) {
+                if (!command.getEnabled()) continue;
                 if (command instanceof Registerable registerable) {
                     registerable.register();
                 } else if (command instanceof Configurable configurableCommand) {
                     configurableCommand.register(config);
+                }
+                if (command instanceof Listener listener) {
+                    Bukkit.getPluginManager().registerEvents(listener, plugin);
                 }
             }
 

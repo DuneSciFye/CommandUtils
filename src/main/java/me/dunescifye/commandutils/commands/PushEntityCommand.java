@@ -2,7 +2,6 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -14,8 +13,6 @@ public class PushEntityCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
-
-        if (!this.getEnabled()) return;
 
         EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
         LocationArgument locArg = new LocationArgument("Location");

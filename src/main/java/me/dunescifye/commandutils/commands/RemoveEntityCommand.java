@@ -12,15 +12,13 @@ public class RemoveEntityCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
 
-        /**
+        /*
          * Removes an Entity without Death Animation or Drops
          * @author DuneSciFye
          * @since 2.1.2
-         * @param Entities Entities to Remove
+         * @param Entities to Remove
          */
         new CommandAPICommand("removeentity")
             .withArguments(entitiesArg)

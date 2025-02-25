@@ -17,8 +17,6 @@ public class GetPlayerHeadCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         PlayerArgument playerArg = new PlayerArgument("Player");
         PlayerArgument targetArg = new PlayerArgument("Target");
         StringArgument worldArg = new StringArgument("World");

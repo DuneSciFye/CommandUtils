@@ -11,7 +11,6 @@ public class WaterlogCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
-        if (!this.getEnabled()) return;
 
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         StringArgument worldArg = new StringArgument("World");

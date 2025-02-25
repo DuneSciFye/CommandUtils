@@ -17,8 +17,6 @@ public class ReplaceInFacingCommand extends Command implements Registerable {
     @SuppressWarnings({"ConstantConditions", "unchecked"})
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         StringArgument worldArg = new StringArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         PlayerArgument playerArg = new PlayerArgument("Player");

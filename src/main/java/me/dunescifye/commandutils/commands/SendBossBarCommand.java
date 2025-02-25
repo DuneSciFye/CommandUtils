@@ -20,7 +20,7 @@ public class SendBossBarCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
-        if (!this.getEnabled()) return;
+
         new CommandAPICommand("sendbossbar")
             .withArguments(new PlayerArgument("Player"))
             .withArguments(new StringArgument("Bossbar ID"))
