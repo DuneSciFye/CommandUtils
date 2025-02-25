@@ -20,8 +20,6 @@ public class LaunchFireworkCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         this.addCommandAliases(new String[]{"spawnfirework", "summonfirework"});
 
         PlayerArgument playerArg = new PlayerArgument("Player");

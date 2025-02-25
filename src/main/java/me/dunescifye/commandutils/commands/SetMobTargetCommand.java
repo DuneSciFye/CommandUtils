@@ -13,8 +13,6 @@ public class SetMobTargetCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
         EntitySelectorArgument.OneEntity targetArg = new EntitySelectorArgument.OneEntity("Target");
 

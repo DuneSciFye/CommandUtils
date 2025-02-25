@@ -22,7 +22,6 @@ public class LoopCommand extends Command implements Configurable {
 
     @SuppressWarnings("ConstantConditions")
     public void register(YamlDocument config) {
-        if (!this.getEnabled()) return;
 
         Logger logger = CommandUtils.getInstance().getLogger();
         String commandSeparator;

@@ -13,8 +13,6 @@ public class SetShieldBlockingDelayCommand extends Command implements Registerab
     @Override
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
         IntegerArgument delayArg = new IntegerArgument("Delay");
 

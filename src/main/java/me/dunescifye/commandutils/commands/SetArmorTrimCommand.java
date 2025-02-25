@@ -28,8 +28,6 @@ public class SetArmorTrimCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         PlayerArgument playerArg = new PlayerArgument("Player");
         IntegerArgument slotArg = new IntegerArgument("Slot");
         StringArgument materialArg = new StringArgument("Material");

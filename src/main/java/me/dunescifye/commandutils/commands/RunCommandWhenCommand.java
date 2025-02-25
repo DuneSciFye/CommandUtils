@@ -20,7 +20,8 @@ public class RunCommandWhenCommand extends Command implements Registerable {
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
     @SuppressWarnings("ConstantConditions")
     public void register() {
-        if (!this.getEnabled()) return;
+
+
         new CommandTree("runcommandwhen")
             .then(new LiteralArgument("add")
                 .then(new StringArgument("Command ID")

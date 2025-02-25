@@ -16,8 +16,6 @@ public class RemoveNBTItemCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         PlayerArgument playerArg = new PlayerArgument("Player");
         StringArgument namespaceArg = new StringArgument("Namespace");
         StringArgument keyArg = new StringArgument("Key");

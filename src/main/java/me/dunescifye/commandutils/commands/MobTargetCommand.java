@@ -19,8 +19,6 @@ public class MobTargetCommand extends Command implements Configurable {
     @Override
     public void register(YamlDocument config) {
 
-        if (!this.getEnabled()) return;
-
         boolean multipleTargets;
         Logger logger = CommandUtils.getInstance().getLogger();
 

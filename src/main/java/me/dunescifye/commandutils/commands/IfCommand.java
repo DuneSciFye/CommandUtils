@@ -6,9 +6,6 @@ import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.Utils;
-import org.bukkit.Bukkit;
-import org.bukkit.Server;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -21,7 +18,6 @@ public class IfCommand extends Command implements Configurable {
 
     @SuppressWarnings("ConstantConditions")
     public void register (YamlDocument config) {
-        if (!this.getEnabled()) return;
 
         Logger logger = CommandUtils.getInstance().getLogger();
 

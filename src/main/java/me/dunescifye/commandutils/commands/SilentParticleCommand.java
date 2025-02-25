@@ -16,8 +16,6 @@ public class SilentParticleCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register(){
 
-        if (!this.getEnabled()) return;
-
         ParticleArgument particleArg = new ParticleArgument("Particle");
         PlayerArgument playerArg = new PlayerArgument("Player");
         IntegerArgument amountArg = new IntegerArgument("Amount");

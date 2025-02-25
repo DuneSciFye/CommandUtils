@@ -13,8 +13,6 @@ public class SetFreezeTicksCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
         IntegerArgument freezeTicksArg = new IntegerArgument("Freeze Ticks");
 

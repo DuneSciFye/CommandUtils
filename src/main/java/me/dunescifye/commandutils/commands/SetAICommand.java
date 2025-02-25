@@ -13,8 +13,6 @@ public class SetAICommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
         BooleanArgument hasAIArg = new BooleanArgument("Has AI");
 

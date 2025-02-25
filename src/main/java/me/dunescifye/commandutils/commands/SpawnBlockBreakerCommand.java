@@ -26,7 +26,6 @@ import java.util.function.Predicate;
 public class SpawnBlockBreakerCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
-        if (!this.getEnabled()) return;
 
         LocationArgument locationArgument = new LocationArgument("Location");
         FloatArgument yawArgument = new FloatArgument("Yaw");

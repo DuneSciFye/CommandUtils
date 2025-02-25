@@ -16,8 +16,6 @@ public class SpawnNoDamageEvokerFangCommand extends Command implements Registera
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         StringArgument worldArg = new StringArgument("world");
         LocationArgument locArg = new LocationArgument("Location");
 

@@ -16,8 +16,6 @@ public class SetItemNBTCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         PlayerArgument playerArg = new PlayerArgument("Player");
         StringArgument slotArg = new StringArgument("Slot");
         MultiLiteralArgument textSlotArg = new MultiLiteralArgument("Slot", "main", "mainhand", "off", "offhand", "cursor");

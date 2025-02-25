@@ -12,8 +12,6 @@ public class OxygenCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         PlayerArgument playerArg = new PlayerArgument("Player");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "set", "add", "remove", "get");
         IntegerArgument amountArg = new IntegerArgument("Amount");

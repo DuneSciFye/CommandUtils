@@ -11,7 +11,8 @@ public class SetCursorItemCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
-        if (!this.getEnabled()) return;
+
+
         new CommandAPICommand("setcursoritem")
             .withArguments(new PlayerArgument("Player"))
             .withArguments(new ItemStackArgument("Item"))

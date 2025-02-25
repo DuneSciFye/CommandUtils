@@ -18,8 +18,6 @@ public class SpawnNoDamageFireworkCommand extends Command implements Registerabl
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         StringArgument worldArg = new StringArgument("World");
         LocationArgument locArg = new LocationArgument("Location");
         IntegerArgument ticksToDetonateArg = new IntegerArgument("Ticks To Detonate", 0);

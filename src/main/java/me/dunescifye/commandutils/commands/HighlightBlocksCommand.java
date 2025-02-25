@@ -21,7 +21,6 @@ public class HighlightBlocksCommand extends Command implements Configurable {
 
     @SuppressWarnings("ConstantConditions")
     public void register (YamlDocument config){
-        if (!this.getEnabled()) return;
 
         double defaultParticleOffset, defaultParticleSpeed;
         int defaultParticleCount, numberOfIntervals, particleSpawnInterval;

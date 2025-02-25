@@ -16,8 +16,6 @@ public class SetTNTSourceCommand extends Command implements Configurable {
     @SuppressWarnings("ConstantConditions")
     public void register(YamlDocument config) {
 
-        if (!this.getEnabled()) return;
-
         Logger logger = CommandUtils.getInstance().getLogger();
         EntitySelectorArgument.OneEntity entitySourceArg = new EntitySelectorArgument.OneEntity("Entity Source");
         EntitySelectorArgument.OneEntity tntArg = new EntitySelectorArgument.OneEntity("TNT");

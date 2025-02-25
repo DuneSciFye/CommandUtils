@@ -13,8 +13,6 @@ public class SetBeeStingersInBodyCommand extends Command implements Registerable
     @Override
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
         IntegerArgument numberArg = new IntegerArgument("Number of Stingers");
 

@@ -24,8 +24,6 @@ public class WhileCommand extends Command implements Configurable {
         @SuppressWarnings("ConstantConditions")
         public void register(YamlDocument config) {
 
-            if (!this.getEnabled()) return;
-
             Logger logger = CommandUtils.getInstance().getLogger();
             Server server = Bukkit.getServer();
             ConsoleCommandSender console = server.getConsoleSender();

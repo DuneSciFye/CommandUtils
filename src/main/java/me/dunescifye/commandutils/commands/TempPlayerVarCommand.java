@@ -16,9 +16,6 @@ public class TempPlayerVarCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        if (!this.getEnabled())
-            return;
-
         TextArgument varArg = new TextArgument("Variable Name");
         GreedyStringArgument contentArg = new GreedyStringArgument("Content");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "set", "get", "clear", "remove", "setifempty", "append");

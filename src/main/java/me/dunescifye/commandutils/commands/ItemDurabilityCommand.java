@@ -13,8 +13,6 @@ public class ItemDurabilityCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         PlayerArgument playerArg = new PlayerArgument("Player");
         IntegerArgument itemSlotArg = new IntegerArgument("Item Slot", -1, 40);
         LiteralArgument addArg = new LiteralArgument("add");

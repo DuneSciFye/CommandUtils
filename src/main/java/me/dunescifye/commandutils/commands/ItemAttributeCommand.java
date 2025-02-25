@@ -22,8 +22,6 @@ public class ItemAttributeCommand extends Command implements Registerable {
     @SuppressWarnings({"ConstantConditions", "UnstableApiUsage"})
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         LiteralArgument addArg = new LiteralArgument("add");
         LiteralArgument removeArg = new LiteralArgument("remove");
         PlayerArgument playerArg = new PlayerArgument("Player");
@@ -47,7 +45,7 @@ public class ItemAttributeCommand extends Command implements Registerable {
                     args.getByArgument(playerArg),
                     args.getByArgument(slotArg)
                 );
-                if (item == null || !item.hasItemMeta())
+                if (item == null)
                     return;
 
                 ItemMeta meta = item.getItemMeta();
@@ -56,7 +54,7 @@ public class ItemAttributeCommand extends Command implements Registerable {
                 Attribute attribute = Attribute.valueOf(args.getByArgument(attributeArg).toUpperCase());
                 AttributeModifier.Operation operation = AttributeModifier.Operation.valueOf(args.getByArgument(operationArg).toUpperCase());
                 EquipmentSlotGroup equipmentSlot = EquipmentSlotGroup.getByName(args.getByArgument(equipSlotArg));
-                NamespacedKey key = NamespacedKey.fromString(args.getByArgument(idArg));
+                NamespacedKey key = NamespacedKey.fromString(args.getByArgument(idArg).toLowerCase());
                 AttributeModifier modifier = new AttributeModifier(key, amount, operation, equipmentSlot);
 
                 Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
@@ -90,7 +88,7 @@ public class ItemAttributeCommand extends Command implements Registerable {
                 double amount = 1;
                 Attribute attribute = Attribute.valueOf(args.getByArgument(attributeArg).toUpperCase());
                 AttributeModifier.Operation operation = AttributeModifier.Operation.ADD_NUMBER;
-                NamespacedKey key = NamespacedKey.fromString(args.getByArgument(idArg));
+                NamespacedKey key = NamespacedKey.fromString(args.getByArgument(idArg).toLowerCase());
                 AttributeModifier modifier = new AttributeModifier(key, amount, operation);
 
                 meta.removeAttributeModifier(attribute, modifier);

@@ -10,8 +10,6 @@ public class SaturationCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "remove", "set", "get");
         EntitySelectorArgument.ManyPlayers playersArg = new EntitySelectorArgument.ManyPlayers("Players");
         FloatArgument amountArg = new FloatArgument("Amount");

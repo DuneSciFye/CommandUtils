@@ -11,8 +11,6 @@ public class LaunchProjectileCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         StringArgument projArg = new StringArgument("Projectile");
         PlayerArgument playerArg = new PlayerArgument("Player");
 
