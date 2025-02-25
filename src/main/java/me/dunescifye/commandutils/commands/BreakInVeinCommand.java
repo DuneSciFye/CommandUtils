@@ -16,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import static me.dunescifye.commandutils.utils.Utils.*;
@@ -91,8 +90,6 @@ public class BreakInVeinCommand extends Command implements Configurable {
                 Block block = loc.getBlock();
                 Collection<ItemStack> drops = new ArrayList<>();
 
-                //Predicate<Block> defaultPredicate = b -> b.getType().equals(block.getType());
-                //Predicate<Block> predicate = args.getByArgumentOrDefault(blockArg, defaultPredicate);
                 Material material = args.getByArgumentOrDefault(blockArg, block.getBlockData()).getMaterial();
                 int maxSize = args.getByArgumentOrDefault(maxBlocksArg, defaultMaxBlocks);
 
