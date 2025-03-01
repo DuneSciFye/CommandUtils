@@ -108,6 +108,9 @@ public class IfCommand extends Command implements Configurable {
                     } else if (conditions.contains("=")) {
                         String[] condition = conditions.split("=", 2);
                         if (!Objects.equals(condition[0], condition[1])) continue elseif;
+                    } else if (conditions.contains(" !contains ")) {
+                        String[] condition = conditions.split(" !contains ", 2);
+                        if (condition[0].contains(condition[1])) continue elseif;
                     } else if (conditions.contains(" contains ")) {
                         String[] condition = conditions.split(" contains ", 2);
                         if (!condition[0].contains(condition[1])) continue elseif;
