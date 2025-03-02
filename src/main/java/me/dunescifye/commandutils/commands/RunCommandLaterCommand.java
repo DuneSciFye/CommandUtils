@@ -26,13 +26,13 @@ public class RunCommandLaterCommand extends Command implements Registerable {
         PlayerArgument playerArg = new PlayerArgument("Player");
         LiteralArgument addArg = new LiteralArgument("add");
         StringArgument commandIDArg = new StringArgument("Command ID");
-        IntegerArgument ticksArg = new IntegerArgument("Ticks", 0);
+        StringArgument timeArg = new StringArgument("Time");
         TextArgument commandsArg = new TextArgument("Commands");
         TextArgument commandSeparatorArg = new TextArgument("Command Separator");
         TextArgument placeholderSurrounderArg = new TextArgument("Placeholder Surrounder");
 
         new CommandAPICommand("runcommandlater")
-            .withArguments(addArg, commandIDArg, ticksArg, commandsArg)
+            .withArguments(addArg, commandIDArg, timeArg, commandsArg)
             .withOptionalArguments(playerArg, commandSeparatorArg, placeholderSurrounderArg)
             .executes((sender, args) -> {
                 String taskID = args.getByArgument(commandIDArg);
@@ -51,7 +51,7 @@ public class RunCommandLaterCommand extends Command implements Registerable {
                                 args.getByArgument(commandsArg)
                                     .replace(args.getByArgumentOrDefault(placeholderSurrounderArg, "$"), "%")
                                 ).split(args.getByArgumentOrDefault(commandSeparatorArg, ",,")));
-                }, args.getByArgument(ticksArg));
+                }, Utils.parseDuration(args.getByArgument(timeArg)).toMillis() / 50);
 
                 tasks.put(taskID, task);
             })
@@ -61,30 +61,27 @@ public class RunCommandLaterCommand extends Command implements Registerable {
 
         new CommandTree("runcommandlater")
             .then(new LiteralArgument("run")
-                .then(ticksArg
+                .then(timeArg
                     .then(new TextArgument("Commands")
                         .executesConsole((sender, args) -> {
                             String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
-                            int ticks = args.getByArgument(ticksArg);
 
                             Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
                                 for (String command : commands) {
                                     server.dispatchCommand(console, command);
                                 }
-                            }, ticks);
+                            }, Utils.parseDuration(args.getByArgument(timeArg)).toMillis() / 50);
 
                         })
                         .then(playerArg
                             .executes((sender, args) -> {
                                 String[] commands = PlaceholderAPI.setPlaceholders(args.getByArgument(playerArg), ((String) args.getUnchecked("Commands")).replace("$", "%")).split(",,");
 
-                                int ticks = args.getByArgument(ticksArg);
-
                                 Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
                                     for (String command : commands) {
                                         server.dispatchCommand(console, command);
                                     }
-                                }, ticks);
+                                }, Utils.parseDuration(args.getByArgument(timeArg)).toMillis() / 50);
                             })
                         )
                     )

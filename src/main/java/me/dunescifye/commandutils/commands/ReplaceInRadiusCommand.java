@@ -76,11 +76,11 @@ public class ReplaceInRadiusCommand extends Command implements Registerable {
                                  * Replaces Blocks in a Radius, Command Defined Predicates
                                  * @author DuneSciFye
                                  * @since 1.0.4
-                                 * @param World World of the Blocks
-                                 * @param Location Location of the Center Block
-                                 * @param Integer Radius of the Blocks to go out
-                                 * @param Predicates List of Predicates to Replace From
-                                 * @param Materials List of Blocks to Replace To
+                                 * @param World of the Blocks
+                                 * @param Location of the Center Block
+                                 * @param Radius of the Blocks to go out
+                                 * @param List of Predicates to Replace From
+                                 * @param List of Blocks to Replace To
                                  */
                                 .executes((sender, args) -> {
                                     List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));

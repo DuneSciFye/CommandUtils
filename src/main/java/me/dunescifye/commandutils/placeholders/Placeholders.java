@@ -506,6 +506,30 @@ public class Placeholders extends PlaceholderExpansion {
                     }
                 }
             }
+            case "getblockrelative", "getrelative" -> {
+                String[] args = arguments.split(separator);
+                if (args.length < 4) return "Missing args";
+                int x = Integer.parseInt(args[0]);
+                int y = Integer.parseInt(args[1]);
+                int z = Integer.parseInt(args[2]);
+                for (int i = 4; i < args.length; i++) {
+                    switch (args[i].toUpperCase()) {
+                        case "UP" ->
+                            y++;
+                        case "DOWN" ->
+                            y--;
+                        case "NORTH" ->
+                            z--;
+                        case "EAST" ->
+                            x++;
+                        case "SOUTH" ->
+                            z++;
+                        case "WEST" ->
+                            x--;
+                    }
+                }
+                return x + args[3] + y + args[3] + z;
+            }
             case "slottovanilla" -> {
 
                 int slot = Integer.parseInt(arguments);
@@ -522,7 +546,7 @@ public class Placeholders extends PlaceholderExpansion {
             }
             case "isblocknatural" -> {
                 String[] isBlockNaturalArgs = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
-                Block isBlockNaturalBlock = Bukkit.getWorld(isBlockNaturalArgs[3]).getBlockAt(Integer.parseInt(isBlockNaturalArgs[0]), Integer.valueOf(isBlockNaturalArgs[1]), Integer.valueOf(isBlockNaturalArgs[2]));
+                Block isBlockNaturalBlock = Bukkit.getWorld(isBlockNaturalArgs[3]).getBlockAt(Integer.parseInt(isBlockNaturalArgs[0]), Integer.parseInt(isBlockNaturalArgs[1]), Integer.parseInt(isBlockNaturalArgs[2]));
                 return String.valueOf(Utils.isNaturallyGenerated(isBlockNaturalBlock));
             }
             case "weightedrandom" -> {

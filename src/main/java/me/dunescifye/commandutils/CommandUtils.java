@@ -122,6 +122,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("PreciseIf", new PreciseIfCommand());
         commands.put("CopyEffectsCommand", new CopyEffectsCommand());
         commands.put("DisableJump", new DisableJumpCommand());
+        commands.put("AddItem", new AddItemCommand());
 
         commands.put("CobwebPrison", new CobwebPrisonCommand());
 
@@ -180,6 +181,7 @@ public final class CommandUtils extends JavaPlugin {
         new BowForceTracker().bowForceHandler(this);
         new ExperienceTracker().experienceHandler(this);
         new CustomMobDrops().registerEvents(this);
+        new DisableSpectatorTeleporting().registerEvent(this);
     }
     public static CommandUtils getInstance(){
         return plugin;
