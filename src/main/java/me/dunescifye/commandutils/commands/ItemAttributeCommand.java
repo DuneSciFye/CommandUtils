@@ -31,6 +31,7 @@ public class ItemAttributeCommand extends Command implements Registerable {
         StringArgument operationArg = new StringArgument("Operation");
         StringArgument equipSlotArg = new StringArgument("Equipment Slot");
         StringArgument idArg = new StringArgument("ID");
+        BooleanArgument addDefaultAttributesArg = new BooleanArgument("Add Default Attributes");
 
         new CommandAPICommand("itemattribute")
             .withArguments(addArg, playerArg, slotArg.replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots())), attributeArg
@@ -40,6 +41,7 @@ public class ItemAttributeCommand extends Command implements Registerable {
                 , equipSlotArg
                     .replaceSuggestions(ArgumentSuggestions.strings(info -> Arrays.stream(getEquipmentSlotGroups()).map(EquipmentSlotGroup::toString).toList().toArray(new String[0])))
             )
+            .withOptionalArguments(addDefaultAttributesArg)
             .executes((sender, args) -> {
                 ItemStack item = Utils.getInvItem(
                     args.getByArgument(playerArg),
@@ -60,9 +62,11 @@ public class ItemAttributeCommand extends Command implements Registerable {
                 Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
                 if (meta.hasAttributeModifiers()) attributes.putAll(meta.getAttributeModifiers());
                 if (attributes.containsEntry(attribute, modifier)) return;
-                Multimap<Attribute, AttributeModifier> defaultAttributes = item.getType().getDefaultAttributeModifiers();
-                if (defaultAttributes != null)
-                    attributes.putAll(defaultAttributes);
+                if (args.getByArgumentOrDefault(addDefaultAttributesArg, false)) {
+                    Multimap<Attribute, AttributeModifier> defaultAttributes = item.getType().getDefaultAttributeModifiers();
+                    if (defaultAttributes != null)
+                        attributes.putAll(defaultAttributes);
+                }
                 attributes.put(attribute, modifier);
                 meta.setAttributeModifiers(attributes);
                 item.setItemMeta(meta);
