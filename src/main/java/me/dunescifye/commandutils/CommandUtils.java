@@ -122,7 +122,8 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("PreciseIf", new PreciseIfCommand());
         commands.put("CopyEffectsCommand", new CopyEffectsCommand());
         commands.put("DisableJump", new DisableJumpCommand());
-        commands.put("AddItem", new AddItemCommand());
+        commands.put("Give", new GiveCommand());
+        commands.put("SetFlight", new SetFlightCommand());
 
         commands.put("CobwebPrison", new CobwebPrisonCommand());
 
