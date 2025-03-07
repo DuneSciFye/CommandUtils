@@ -169,7 +169,7 @@ public final class CommandUtils extends JavaPlugin {
     @Override
     public void onDisable() {
         for (String commandName : commands.keySet()) {
-            CommandAPI.unregister(commandName);
+            CommandAPI.unregister(commandName.toLowerCase());
         }
 
         CommandAPI.onDisable();
