@@ -79,7 +79,7 @@ public class ReplaceInRadiusIfBlockRelative extends Command implements Registera
                         for (BlockFace blockFace : blocksFaces)
                             if (!Utils.testBlock(b.getRelative(blockFace), blocksRelative))
                                 continue block;
-                        if (item != null && !inv.removeItem(item).isEmpty()) return;
+                        if (item != null && !inv.removeItemAnySlot(item).isEmpty()) return;
                         b.setType(blocksTo.get(ThreadLocalRandom.current().nextInt(blocksTo.size())));
                     }
             })
@@ -120,7 +120,7 @@ public class ReplaceInRadiusIfBlockRelative extends Command implements Registera
                         for (BlockFace blockFace : blocksFaces)
                             if (!Utils.testBlock(b.getRelative(blockFace), blocksRelative))
                                 continue block;
-                        if (item != null && !inv.removeItem(item).isEmpty()) return;
+                        if (item != null && !inv.removeItemAnySlot(item).isEmpty()) return;
                         b.setBlockData(blockTo);
                     }
             })

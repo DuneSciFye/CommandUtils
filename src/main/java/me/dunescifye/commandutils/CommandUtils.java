@@ -124,6 +124,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("DisableJump", new DisableJumpCommand());
         commands.put("Give", new GiveCommand());
         commands.put("SetFlight", new SetFlightCommand());
+        commands.put("FlightSpeed", new FlightSpeedCommand());
 
         commands.put("CobwebPrison", new CobwebPrisonCommand());
 

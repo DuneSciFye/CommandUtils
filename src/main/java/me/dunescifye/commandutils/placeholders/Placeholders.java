@@ -990,6 +990,29 @@ public class Placeholders extends PlaceholderExpansion {
             case "isdisguised", "disguised" -> {
                 return CommandUtils.libsDisguisesEnabled ? String.valueOf(DisguiseAPI.isDisguised(p)) : "LibsDisguises not Enabled";
             }
+            case "croptoblock" -> {
+                String[] args = arguments.split(separator);
+                switch (args[0].toUpperCase()) {
+                    case "MELON_SEEDS" -> {
+                        return "melon_stem";
+                    }
+                    case "WHEAT_SEEDS" -> {
+                        return "wheat";
+                    }
+                    case "POTATO" -> {
+                        return "potatoes";
+                    }
+                    case "BEETROOT_SEEDS" -> {
+                        return "beetroots";
+                    }
+                    case "CARROT" -> {
+                        return "carrots";
+                    }
+                    default -> {
+                        return args[0].toUpperCase();
+                    }
+                }
+            }
             default -> {
                 return "Unknown function";
             }
