@@ -2,6 +2,7 @@ package me.dunescifye.commandutils.listeners;
 
 import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -14,7 +15,9 @@ public class DisableSpectatorTeleporting implements Listener {
 
     @EventHandler
     public void onSpectatorTeleport(PlayerTeleportEvent e) {
-        if (e.getCause().equals(PlayerTeleportEvent.TeleportCause.SPECTATE)) e.setCancelled(true);
+        if (e.getCause().equals(PlayerTeleportEvent.TeleportCause.SPECTATE) || e.getPlayer().getGameMode().equals(GameMode.SPECTATOR)) {
+            e.setCancelled(true);
+        }
     }
 
 }
