@@ -22,7 +22,9 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Rail;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -1011,6 +1013,17 @@ public class Placeholders extends PlaceholderExpansion {
                     default -> {
                         return args[0].toUpperCase();
                     }
+                }
+            }
+            case "smelt" -> {
+                String[] args = arguments.split(separator);
+                Material mat = Utils.getInvItem(p, args[0]).getType();
+                Iterator<Recipe> iter = Bukkit.recipeIterator();
+                while (iter.hasNext()) {
+                    Recipe recipe = iter.next();
+                    if (!(recipe instanceof FurnaceRecipe)) continue;
+                    if (((FurnaceRecipe) recipe).getInputChoice().getItemStack().getType() != mat) continue;
+                    return recipe.getResult().getType().toString();
                 }
             }
             default -> {

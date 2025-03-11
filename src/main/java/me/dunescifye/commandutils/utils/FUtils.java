@@ -2,6 +2,7 @@ package me.dunescifye.commandutils.utils;
 
 import com.massivecraft.factions.*;
 
+import com.massivecraft.factions.listeners.FactionsBlockListener;
 import com.massivecraft.factions.zcore.fperms.Access;
 import com.massivecraft.factions.zcore.fperms.PermissableAction;
 import me.dunescifye.commandutils.CommandUtils;
@@ -11,6 +12,8 @@ import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import static com.massivecraft.factions.listeners.FactionsBlockListener.playerCanBuildDestroyBlock;
+
 public class FUtils {
     public static boolean isInsideClaim(final Player player, final Location location) {
         if (CommandUtils.griefPreventionEnabled) {
@@ -18,7 +21,7 @@ public class FUtils {
             if (claim == null) return false;
             return claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
         } else if (CommandUtils.factionsUUIDEnabled) {
-            return Board.getInstance().getFactionAt(new FLocation(location)).getAccess(FPlayers.getInstance().getByPlayer(player), PermissableAction.DESTROY) == Access.ALLOW;
+            return playerCanBuildDestroyBlock(player, location, "destroy", true);
         }
 
         return true;
@@ -36,8 +39,7 @@ public class FUtils {
             final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
             return claim == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
         } else if (CommandUtils.factionsUUIDEnabled) {
-            Faction faction = Board.getInstance().getFactionAt(new FLocation(location));
-            return faction.isWilderness() || faction.getAccess(FPlayers.getInstance().getByPlayer(player), PermissableAction.DESTROY) == Access.ALLOW;
+            return playerCanBuildDestroyBlock(player, location, "destroy", true);
         }
 
         return true;
