@@ -416,7 +416,7 @@ public class Placeholders extends PlaceholderExpansion {
                         return String.valueOf(itemStack.getAmount());
                     }
                     case "isvanilla" -> {
-                        return String.valueOf(!itemStack.hasItemMeta());
+                        return String.valueOf(itemStack.isSimilar(new ItemStack(itemStack.getType(), 1)));
                     }
                     case "enchantlevel", "enchantlvl", "enchantmentlvl", "enchantmentlevel" -> {
                         if (inventoryInfoArgs.length < 3) return "";
