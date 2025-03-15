@@ -50,6 +50,14 @@ public class Utils {
             PREDICATES_LIST.add("!" + name);
         }
     }
+    public static final List<List<Predicate<Block>>> BONEMEALABLE_BLOCKS = List.of(
+        List.of( // Whitelist
+            block -> Tag.CROPS.isTagged(block.getType()),
+            block -> Tag.SAPLINGS.isTagged(block.getType())
+        ),
+        List.of( // Blacklist
+        )
+    );
 
     /**
      * Combines Similar ItemStacks into one ItemStack, Each Combined Stack Won't go Over Max Stack Size

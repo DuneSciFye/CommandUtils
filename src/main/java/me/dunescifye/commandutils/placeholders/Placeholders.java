@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static me.dunescifye.commandutils.utils.Utils.isInteger;
+import static me.dunescifye.commandutils.utils.Utils.*;
 
 public class Placeholders extends PlaceholderExpansion {
 
@@ -502,6 +502,11 @@ public class Placeholders extends PlaceholderExpansion {
                         if (b.getBlockData() instanceof Ageable ageable)
                             return String.valueOf(ageable.getAge() == ageable.getMaximumAge());
                         else return "Not Ageable";
+                    }
+                    case "canbonemeal" -> {
+                        if (b.getBlockData() instanceof Ageable ageable)
+                            return String.valueOf(ageable.getAge() != ageable.getMaximumAge());
+                        else return String.valueOf(testBlock(b, BONEMEALABLE_BLOCKS));
                     }
                     default -> {
                         return "Invalid infotype";
