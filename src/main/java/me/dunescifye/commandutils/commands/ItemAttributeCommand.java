@@ -12,10 +12,7 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
-import static me.dunescifye.commandutils.utils.Utils.getEquipmentSlotGroups;
+import static me.dunescifye.commandutils.utils.Utils.*;
 
 public class ItemAttributeCommand extends Command implements Registerable {
 
@@ -25,27 +22,23 @@ public class ItemAttributeCommand extends Command implements Registerable {
         LiteralArgument addArg = new LiteralArgument("add");
         LiteralArgument removeArg = new LiteralArgument("remove");
         PlayerArgument playerArg = new PlayerArgument("Player");
-        StringArgument slotArg = new StringArgument("Slot");
-        StringArgument attributeArg = new StringArgument("Attribute");
+        Argument<String> slotArg = slotArgument("Slot");
+        Argument<Attribute> attributeArg = attributeArgument("Attribute");
         DoubleArgument valueArg = new DoubleArgument("Value");
-        StringArgument operationArg = new StringArgument("Operation");
-        StringArgument equipSlotArg = new StringArgument("Equipment Slot");
+        Argument<AttributeModifier.Operation> operationArg = operationArgument("Operation");
+        Argument<EquipmentSlotGroup> equipSlotArg = equipmentSlotGroupArgument("Equipment Slot");
         StringArgument idArg = new StringArgument("ID");
         BooleanArgument addDefaultAttributesArg = new BooleanArgument("Add Default Attributes");
 
         new CommandAPICommand("itemattribute")
-            .withArguments(addArg, playerArg, slotArg.replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots())), attributeArg
-                    .replaceSuggestions(ArgumentSuggestions.strings(Arrays.stream(Attribute.values()).map(attribute -> attribute.getKey().value().toUpperCase()).collect(Collectors.toList())))
-                , idArg, valueArg, operationArg
-                    .replaceSuggestions(ArgumentSuggestions.strings(Arrays.stream(AttributeModifier.Operation.values()).map(operation -> operation.toString().toUpperCase()).collect(Collectors.toList())))
-                , equipSlotArg
-                    .replaceSuggestions(ArgumentSuggestions.strings(info -> Arrays.stream(getEquipmentSlotGroups()).map(EquipmentSlotGroup::toString).toList().toArray(new String[0])))
+            .withArguments(addArg, playerArg, slotArg, attributeArg
+                , idArg, valueArg, operationArg, equipSlotArg
             )
             .withOptionalArguments(addDefaultAttributesArg)
             .executes((sender, args) -> {
                 ItemStack item = Utils.getInvItem(
                     args.getByArgument(playerArg),
-                    args.getByArgument(slotArg)
+                    (String) args.get("Slot")
                 );
                 if (item == null)
                     return;
@@ -53,9 +46,9 @@ public class ItemAttributeCommand extends Command implements Registerable {
                 ItemMeta meta = item.getItemMeta();
 
                 double amount = args.getByArgument(valueArg);
-                Attribute attribute = Attribute.valueOf(args.getByArgument(attributeArg).toUpperCase());
-                AttributeModifier.Operation operation = AttributeModifier.Operation.valueOf(args.getByArgument(operationArg).toUpperCase());
-                EquipmentSlotGroup equipmentSlot = EquipmentSlotGroup.getByName(args.getByArgument(equipSlotArg));
+                Attribute attribute = (Attribute) args.get("Attribute");
+                AttributeModifier.Operation operation = (AttributeModifier.Operation) args.get("Operation");
+                EquipmentSlotGroup equipmentSlot = (EquipmentSlotGroup) args.get("Equipment Slot");
                 NamespacedKey key = NamespacedKey.fromString(args.getByArgument(idArg).toLowerCase());
                 AttributeModifier modifier = new AttributeModifier(key, amount, operation, equipmentSlot);
 
@@ -76,21 +69,15 @@ public class ItemAttributeCommand extends Command implements Registerable {
             .register(this.getNamespace());
 
         new CommandAPICommand("itemattribute")
-            .withArguments(removeArg, playerArg, slotArg.replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots())), attributeArg
-                    .replaceSuggestions(ArgumentSuggestions.strings(Arrays.stream(Attribute.values()).map(attribute -> attribute.getKey().value().toUpperCase()).collect(Collectors.toList())))
-                , idArg)
+            .withArguments(removeArg, playerArg, slotArg, attributeArg, idArg)
             .executes((sender, args) -> {
-                ItemStack item = Utils.getInvItem(
-                    args.getByArgument(playerArg),
-                    args.getByArgument(slotArg)
-                );
-                if (item == null || !item.hasItemMeta())
-                    return;
+                ItemStack item = Utils.getInvItem(args.getByArgument(playerArg), (String) args.get("Slot"));
+                if (item == null || !item.hasItemMeta()) return;
 
                 ItemMeta meta = item.getItemMeta();
 
                 double amount = 1;
-                Attribute attribute = Attribute.valueOf(args.getByArgument(attributeArg).toUpperCase());
+                Attribute attribute = (Attribute) args.get("Attribute");
                 AttributeModifier.Operation operation = AttributeModifier.Operation.ADD_NUMBER;
                 NamespacedKey key = NamespacedKey.fromString(args.getByArgument(idArg).toLowerCase());
                 AttributeModifier modifier = new AttributeModifier(key, amount, operation);

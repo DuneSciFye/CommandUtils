@@ -5,6 +5,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.FUtils;
+import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,8 +26,6 @@ public class BreakInVeinCommand extends Command implements Configurable {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register(YamlDocument config) {
-
-        if (!this.getEnabled()) return;
 
         Logger logger = CommandUtils.getInstance().getLogger();
         boolean defaultCheckClaim, defaultTriggerBlockBreakEvent;
@@ -68,7 +67,7 @@ public class BreakInVeinCommand extends Command implements Configurable {
             config.set("Commands.BreakInVein.DefaultTriggerBlockBreakEvent", true);
         }
 
-        StringArgument worldArg = new StringArgument("World");
+        Argument<World> worldArg = Utils.bukkitWorldArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         PlayerArgument playerArg = new PlayerArgument("Player");
         BlockStateArgument blockArg = new BlockStateArgument("Block");
@@ -76,15 +75,13 @@ public class BreakInVeinCommand extends Command implements Configurable {
         BooleanArgument checkClaimArg = new BooleanArgument("Check Claim");
         BooleanArgument triggerBlockBreakArg = new BooleanArgument("Trigger Block Break Event");
         BooleanArgument autoPickupArg = new BooleanArgument("Auto Pickup");
+        BooleanArgument breakOriginalBlockArg = new BooleanArgument("Break Original Block");
 
         new CommandAPICommand("breakinvein")
-            .withArguments(worldArg)
-            .withArguments(locArg)
-            .withOptionalArguments(blockArg)
-            .withOptionalArguments(maxBlocksArg)
+            .withArguments(worldArg, locArg)
+            .withOptionalArguments(blockArg, maxBlocksArg)
             .executes((sender, args) -> {
-                World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                if (world == null) return;
+                World world = (World) args.get("World");
                 Location loc = args.getByArgument(locArg);
                 loc.setWorld(world);
                 Block block = loc.getBlock();
@@ -93,7 +90,7 @@ public class BreakInVeinCommand extends Command implements Configurable {
                 Material material = args.getByArgumentOrDefault(blockArg, block.getBlockData()).getMaterial();
                 int maxSize = args.getByArgumentOrDefault(maxBlocksArg, defaultMaxBlocks);
 
-                getVeinOres(block, drops, material, maxSize);
+                getVeinOresBasic(block, drops, material, maxSize);
                 dropAllItemStacks(world, block.getLocation(), drops);
             })
             .withPermission(this.getPermission())
@@ -102,9 +99,9 @@ public class BreakInVeinCommand extends Command implements Configurable {
 
         new CommandAPICommand("breakinvein")
             .withArguments(worldArg, locArg, playerArg)
-            .withOptionalArguments(blockArg, triggerBlockBreakArg, maxBlocksArg, checkClaimArg, autoPickupArg)
+            .withOptionalArguments(blockArg, triggerBlockBreakArg, maxBlocksArg, checkClaimArg, autoPickupArg, breakOriginalBlockArg)
             .executes((sender, args) -> {
-                World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                World world = (World) args.get("World");
                 Location loc = args.getByArgument(locArg);
                 loc.setWorld(world);
                 Block block = loc.getBlock();
@@ -118,20 +115,10 @@ public class BreakInVeinCommand extends Command implements Configurable {
                 int maxSize = args.getByArgumentOrDefault(maxBlocksArg, defaultMaxBlocks);
                 boolean checkClaim = CommandUtils.griefPreventionEnabled ? args.getByArgumentOrDefault(checkClaimArg, defaultCheckClaim) : false;
                 boolean triggerBlockBreak = args.getByArgumentOrDefault(triggerBlockBreakArg, defaultTriggerBlockBreakEvent);
+                boolean breakOriginalBlock = args.getByArgumentOrDefault(breakOriginalBlockArg, true);
                 player.setMetadata("ignoreBlockBreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
-                if (checkClaim) {
-                    if (triggerBlockBreak) {
-                        getVeinOresCheckClaimTriggerBlockBreak(block, drops, material, maxSize, player, item);
-                    } else {
-                        getVeinOresCheckClaim(block, drops, material, maxSize, player, item);
-                    }
-                } else {
-                    if (triggerBlockBreak) {
-                        getVeinOresTriggerBlockBreak(block, drops, material, maxSize, player, item);
-                    } else {
-                        getVeinOresItem(block, drops, material, maxSize, item);
-                    }
-                }
+
+                getVeinOres(block, block, drops, material, maxSize, player, item, triggerBlockBreak, checkClaim, breakOriginalBlock);
 
                 if (args.getByArgumentOrDefault(autoPickupArg, false)) drops = player.getInventory().addItem(drops.toArray(new ItemStack[0])).values();
 
@@ -145,91 +132,34 @@ public class BreakInVeinCommand extends Command implements Configurable {
 
     }
 
-    private void getVeinOres(Block center, Collection<ItemStack> drops, Material material, int maxSize) {
-        for (int x = -1; x <= 1; x++) { //These 3 for loops check a 3x3x3 cube around the block in question
-            for (int y = -1; y <= 1; y++) {
-                for (int z = -1; z <= 1; z++) {
-                    Block relative = center.getRelative(x, y, z);
-                    if (relative.getType() == material) {
-                        if (drops.size() >= maxSize) {
-                            return;
-                        }
-                        drops.addAll(relative.getDrops());
-
-                        relative.setType(Material.AIR);
-
-                        this.getVeinOres(relative, drops, material, maxSize);
-                    }
-                }
-            }
-        }
-    }
-
-    private void getVeinOresItem(Block center, Collection<ItemStack> drops, Material material, int maxSize, ItemStack item) {
+    private void getVeinOresBasic(Block center, Collection<ItemStack> drops, Material material, int maxSize) {
         for (Block b : getBlocksInRadius(center, 1)) {
+            if (drops.size() >= maxSize) return;
             if (b.getType() == material) {
-                if (drops.size() >= maxSize) return;
-                drops.addAll(b.getDrops(item));
+                drops.addAll(b.getDrops());
 
                 b.setType(Material.AIR);
 
-                this.getVeinOresItem(b, drops, material, maxSize, item);
+                this.getVeinOresBasic(b, drops, material, maxSize);
             }
         }
     }
 
-    private void getVeinOresTriggerBlockBreak(Block center, Collection<ItemStack> drops, Material material, int maxSize, Player player, ItemStack item) {
+    private void getVeinOres(Block center, final Block original, Collection<ItemStack> drops, Material material, int maxSize, final Player p, final ItemStack item, final boolean triggerBlockBreakEvent, final boolean checkClaim, final boolean breakOriginalBlock) {
         for (Block b : getBlocksInRadius(center, 1)) {
+            if ((checkClaim && !FUtils.isInClaimOrWilderness(p, b.getLocation())) || drops.size() >= maxSize) return;
             if (b.getType() == material) {
-                if (drops.size() >= maxSize) return;
+                if (item == null) drops.addAll(b.getDrops());
+                else drops.addAll(b.getDrops(item));
 
-                drops.addAll(b.getDrops(item));
-
-                BlockBreakEvent blockBreakEvent = new BlockBreakEvent(b, player);
-                Bukkit.getServer().getPluginManager().callEvent(blockBreakEvent);
-
-                b.setType(Material.AIR);
-
-                this.getVeinOresTriggerBlockBreak(b, drops, material, maxSize, player, item);
-            }
-        }
-    }
-
-    private void getVeinOresCheckClaim(Block center, Collection<ItemStack> drops, Material material, int maxSize, Player player, ItemStack item) {
-        for (Block b : getBlocksInRadius(center, 1)) {
-            if (b.getType() == material) {
-                //Testing claim
-                Location relativeLocation = b.getLocation();
-                if (FUtils.isInsideClaim(player, relativeLocation) || FUtils.isWilderness(relativeLocation)) {
-                    if (drops.size() >= maxSize) return;
-
-                    drops.addAll(b.getDrops(item));
-
-                    b.setType(Material.AIR);
-
-                    this.getVeinOresCheckClaim(b, drops, material, maxSize, player, item);
-                }
-            }
-        }
-    }
-
-    private void getVeinOresCheckClaimTriggerBlockBreak(Block center, Collection<ItemStack> drops, Material material, int maxSize, Player player, ItemStack item) {
-        for (Block b : getBlocksInRadius(center, 1)) {
-            if (b.getType() == material) {
-                //Testing claim
-                Location relativeLocation = b.getLocation();
-                if (FUtils.isInsideClaim(player, relativeLocation) || FUtils.isWilderness(relativeLocation)) {
-                    if (drops.size() >= maxSize) return;
-
-                    drops.addAll(item == null ? b.getDrops() : b.getDrops(item));
-
-                    BlockBreakEvent blockBreakEvent = new BlockBreakEvent(b, player);
+                // Trigger Block Break Event
+                if (triggerBlockBreakEvent) {
+                    BlockBreakEvent blockBreakEvent = new BlockBreakEvent(b, p);
                     Bukkit.getServer().getPluginManager().callEvent(blockBreakEvent);
-
-                    b.setType(Material.AIR);
-
-                    this.getVeinOresCheckClaimTriggerBlockBreak(b, drops, material, maxSize, player, item);
                 }
+                if (breakOriginalBlock || !b.equals(original)) b.setType(Material.AIR);
+
+                this.getVeinOres(b, original, drops, material, maxSize, p, item, triggerBlockBreakEvent, checkClaim, breakOriginalBlock);
             }
         }
     }

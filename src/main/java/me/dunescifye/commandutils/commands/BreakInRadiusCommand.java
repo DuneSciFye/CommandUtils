@@ -24,7 +24,7 @@ public class BreakInRadiusCommand extends Command implements Registerable {
         if (!this.getEnabled()) return;
 
         StringArgument whitelistedBlocksArgument = new StringArgument("Whitelisted Blocks");
-        StringArgument worldArg = new StringArgument("World");
+        Argument<World> worldArg = Utils.bukkitWorldArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
         PlayerArgument playerArg = new PlayerArgument("Player");
@@ -32,7 +32,7 @@ public class BreakInRadiusCommand extends Command implements Registerable {
         LiteralArgument whitelistArg = new LiteralArgument("whitelist");
         LiteralArgument forcedropArg = new LiteralArgument("forcedrop");
 
-            /**
+            /*
              * Breaks Blocks in Radius
              * @author DuneSciFye
              * @since 1.0.0
@@ -47,8 +47,7 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                 .withArguments(playerArg)
                 .withArguments(radiusArg)
                 .executes((sender, args) -> {
-                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                    if (world == null) return;
+                    World world = (World) args.get("World");
                     Location location = args.getByArgument(locArg);
                     location.setWorld(world);
                     Player player = args.getByArgument(playerArg);
@@ -68,7 +67,7 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                 .withAliases(this.getCommandAliases())
                 .register(this.getNamespace());
 
-            /**
+            /*
              * Breaks Blocks in Radius, Command Defined Predicates
              * @author DuneSciFye
              * @since 1.0.0
@@ -92,8 +91,7 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                 .executes((sender, args) -> {
                     List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
-                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                    if (world == null) return;
+                    World world = (World) args.get("World");
                     Location location = args.getByArgument(locArg);
                     location.setWorld(world);
 
@@ -102,7 +100,7 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
                 .register(this.getNamespace());
-        /**
+        /*
          * Breaks Blocks in Radius Command Defined Predicates, Custom Drop
          * @author DuneSciFye
          * @since 1.0.0
@@ -128,8 +126,8 @@ public class BreakInRadiusCommand extends Command implements Registerable {
             .executes((sender, args) -> {
                 List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
-                World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                if (world == null) return;
+                World world = (World) args.get("World");
+                
                 Location location = args.getByArgument(locArg);
                 location.setWorld(world);
 
@@ -139,7 +137,7 @@ public class BreakInRadiusCommand extends Command implements Registerable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /**
+        /*
          * Breaks Blocks in Radius Command Defined Predicates, Force Drop
          * @author DuneSciFye
          * @since 1.0.0
@@ -165,8 +163,8 @@ public class BreakInRadiusCommand extends Command implements Registerable {
             .executes((sender, args) -> {
                 List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
-                World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                if (world == null) return;
+                World world = (World) args.get("World");
+                
                 Location location = args.getByArgument(locArg);
                 location.setWorld(world);
 
@@ -176,14 +174,14 @@ public class BreakInRadiusCommand extends Command implements Registerable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-            /**
+            /*
              * Breaks Blocks in Radius, Config Defined Predicates
              * @author DuneSciFye
              * @since 1.0.0
-             * @param World World of the Blocks
-             * @param Location Location of the Center Block
-             * @param Player Player who is Breaking the Blocks
-             * @param Radius Radius to Break Blocks In
+             * @param World of the Blocks
+             * @param Location of the Center Block
+             * @param Player who is Breaking the Blocks
+             * @param Radius to Break Blocks In
              * @param Predicate Config Defined Predicate
              */
             new CommandAPICommand("breakinradius")
@@ -197,8 +195,7 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                 .executes((sender, args) -> {
                     List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
-                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                    if (world == null) return;
+                    World world = (World) args.get("World");
                     Location location = args.getByArgument(locArg);
                     location.setWorld(world);
 
@@ -207,14 +204,14 @@ public class BreakInRadiusCommand extends Command implements Registerable {
                 .withPermission(this.getPermission())
                 .withAliases(this.getCommandAliases())
                 .register(this.getNamespace());
-        /**
+        /*
          * Breaks Blocks in Radius, Config Defined Predicates, Custom Item Drops
          * @author DuneSciFye
          * @since 1.0.0
-         * @param World World of the Blocks
-         * @param Location Location of the Center Block
-         * @param Player Player who is Breaking the Blocks
-         * @param Radius Radius to Break Blocks In
+         * @param World of the Blocks
+         * @param Location of the Center Block
+         * @param Player who is Breaking the Blocks
+         * @param Radius to Break Blocks In
          * @param Predicate Config Defined Predicate
          * @param ItemStack Item to Drop
          */
@@ -230,8 +227,8 @@ public class BreakInRadiusCommand extends Command implements Registerable {
             .executes((sender, args) -> {
                 List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
-                World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                if (world == null) return;
+                World world = (World) args.get("World");
+                
                 Location location = args.getByArgument(locArg);
                 location.setWorld(world);
 
@@ -241,7 +238,7 @@ public class BreakInRadiusCommand extends Command implements Registerable {
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /**
+        /*
          * Breaks Blocks in Radius, Config Defined Predicates, Force Drop
          * @author DuneSciFye
          * @since 1.0.0
@@ -264,8 +261,8 @@ public class BreakInRadiusCommand extends Command implements Registerable {
             .executes((sender, args) -> {
                 List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
-                World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                if (world == null) return;
+                World world = (World) args.get("World");
+                
                 Location location = args.getByArgument(locArg);
                 location.setWorld(world);
 

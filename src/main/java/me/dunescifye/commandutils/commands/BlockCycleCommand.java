@@ -27,13 +27,13 @@ public class BlockCycleCommand extends Command implements Registerable {
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         LiteralArgument waxArg = new LiteralArgument("wax");
 
-        /**
+        /*
          * Switches Oxidization States of Copper
          * @author DuneSciFye
          * @since 1.0.0
          * @param oxidize Identifier for this subcommand
-         * @param World World of the Block
-         * @param Location Location of the Block
+         * @param World of the Block
+         * @param Location of the Block
          */
         new CommandAPICommand("blockcycle")
             .withArguments(oxidizeArg)

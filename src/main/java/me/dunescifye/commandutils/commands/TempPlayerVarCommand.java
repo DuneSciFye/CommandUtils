@@ -5,12 +5,12 @@ import dev.jorel.commandapi.arguments.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 import java.util.HashMap;
 
 public class TempPlayerVarCommand extends Command implements Registerable {
-    private static final HashMap<Player, HashMap<String, String>> playerVars = new HashMap<>(); //Player Var
+    private static final HashMap<OfflinePlayer, HashMap<String, String>> playerVars = new HashMap<>(); //Player Var
 
     @SuppressWarnings("ConstantConditions")
     @Override
@@ -19,7 +19,7 @@ public class TempPlayerVarCommand extends Command implements Registerable {
         TextArgument varArg = new TextArgument("Variable Name");
         GreedyStringArgument contentArg = new GreedyStringArgument("Content");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "set", "get", "clear", "remove", "setifempty", "append");
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        OfflinePlayerArgument playerArg = new OfflinePlayerArgument("Player");
         AdventureChatArgument chatArg = new AdventureChatArgument("Content");
 
         /*
@@ -32,7 +32,7 @@ public class TempPlayerVarCommand extends Command implements Registerable {
             .withArguments(functionArg, playerArg, varArg)
             .withOptionalArguments(chatArg)
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
+                OfflinePlayer p = args.getByArgument(playerArg);
                 String varName = args.getByArgument(varArg);
                 String content = LegacyComponentSerializer.legacyAmpersand().serialize(args.getByArgumentOrDefault(chatArg, Component.empty()));
                 HashMap<String, String> vars = playerVars.get(p);
@@ -65,7 +65,7 @@ public class TempPlayerVarCommand extends Command implements Registerable {
             .register(this.getNamespace());
     }
 
-    public static String getPlayerVar(final Player p, final String varName) {
+    public static String getPlayerVar(final OfflinePlayer p, final String varName) {
         HashMap<String, String> vars = playerVars.get(p);
         if (vars == null) return "";
         return vars.getOrDefault(varName, "");

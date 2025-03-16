@@ -22,7 +22,12 @@ public final class CommandUtils extends JavaPlugin {
     public static final NamespacedKey keyCustomLevel = new NamespacedKey("score", "score-customlevel");
     public static final NamespacedKey keyNoDamagePlayer = new NamespacedKey("lunaritems", "nodamageplayer");
     public static final NamespacedKey noGravityKey = new NamespacedKey("lunaritems", "nogravity");
-    public static boolean griefPreventionEnabled = false, placeholderAPIEnabled = false, factionsUUIDEnabled = false, coreProtectEnabled = false, libsDisguisesEnabled = false;
+    public static boolean griefPreventionEnabled = false;
+    public static boolean placeholderAPIEnabled = false;
+    public static boolean factionsUUIDEnabled = false;
+    public static boolean coreProtectEnabled = false;
+    public static boolean libsDisguisesEnabled = false;
+    public static boolean leafAPIEnabled = false;
     private static final HashMap<String, Command> commands = new HashMap<>();
 
     @Override
@@ -157,6 +162,14 @@ public final class CommandUtils extends JavaPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             commands.put("ParsePlaceholder", new ParsePlaceholderCommand());
             placeholderAPIEnabled = true;
+            logger.info("Detected PlaceholderAPI, enabling support for it.");
+        }
+
+        try {
+            Class.forName("org.dreeam.leaf.event.player.PlayerInventoryOverflowEvent");
+            leafAPIEnabled = true;
+            logger.info("Detected LeafAPI, enabling support for it.");
+        } catch (ClassNotFoundException ignored) {
         }
 
         Config.setup(this);

@@ -18,12 +18,10 @@ import static me.dunescifye.commandutils.utils.Utils.*;
 
 public class BreakInFacingCommand extends Command implements Registerable {
 
-        @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        if (!this.getEnabled()) return;
-
-        StringArgument worldArg = new StringArgument("World");
+        Argument<World> worldArg = Utils.bukkitWorldArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
         PlayerArgument playerArg = new PlayerArgument("Player");
@@ -41,7 +39,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                         .then(radiusArg
                             .then(depthArg
                                 .executes((sender, args) -> {
-                                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                    World world = (World) args.get("World");
                                     Location location = args.getByArgument(locArg);
                                     Player player = args.getByArgument(playerArg);
                                     Collection<ItemStack> drops = new ArrayList<>();
@@ -58,7 +56,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                         .withStringMapper()
                                         .buildText()
                                         .executes((sender, args) -> {
-                                            World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                            World world = (World) args.get("World");
                                             Location location = args.getByArgument(locArg);
                                             Player player = args.getByArgument(playerArg);
                                             ItemStack heldItem = player.getInventory().getItemInMainHand();
@@ -75,7 +73,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                         })
                                         .then(dropArg
                                             .executes((sender, args) -> {
-                                                World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                                World world = (World) args.get("World");
                                                 Location location = args.getByArgument(locArg);
                                                 Player player = args.getByArgument(playerArg);
                                                 ItemStack drop = args.getByArgument(dropArg);
@@ -93,7 +91,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                         )
                                         .then(forceDropArg
                                             .executes((sender, args) -> {
-                                                World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                                World world = (World) args.get("World");
                                                 Location location = args.getByArgument(locArg);
                                                 location.setWorld(world);
                                                 Player player = args.getByArgument(playerArg);
@@ -114,7 +112,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                 .then(whitelistedBlocksArgument
                                     .replaceSuggestions(ArgumentSuggestions.strings(Config.getPredicates()))
                                     .executes((sender, args) -> {
-                                        World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                        World world = (World) args.get("World");
                                         Location location = args.getByArgument(locArg);
                                         Player player = args.getByArgument(playerArg);
                                         ItemStack heldItem = player.getInventory().getItemInMainHand();
@@ -131,7 +129,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                     })
                                     .then(dropArg
                                         .executes((sender, args) -> {
-                                            World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                            World world = (World) args.get("World");
                                             Location location = args.getByArgument(locArg);
                                             Player player = args.getByArgument(playerArg);
                                             ItemStack drop = args.getByArgument(dropArg);
@@ -149,7 +147,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                     )
                                     .then(forceDropArg
                                         .executes((sender, args) -> {
-                                            World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                                            World world = (World) args.get("World");
                                             Location location = args.getByArgument(locArg);
                                             location.setWorld(world);
                                             Player player = args.getByArgument(playerArg);

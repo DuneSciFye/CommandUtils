@@ -20,7 +20,7 @@ public class AddItemNBTCommand extends Command implements Registerable {
         if (!this.getEnabled()) return;
 
         PlayerArgument playerArg = new PlayerArgument("Player");
-        StringArgument slotArg = new StringArgument("Slot");
+        Argument<String> slotArg = Utils.slotArgument("Slot");
         TextArgument namespaceArg = new TextArgument("Namespace");
         TextArgument keyArg = new TextArgument("Key");
         GreedyStringArgument contentArg = new GreedyStringArgument("Content");
@@ -36,15 +36,10 @@ public class AddItemNBTCommand extends Command implements Registerable {
          * @param Amount to Add
          */
         new CommandAPICommand("additemnbt")
-            .withArguments(playerArg)
-            .withArguments(slotArg
-                .replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots()))
-            )
-            .withArguments(namespaceArg)
-            .withArguments(keyArg)
+            .withArguments(playerArg, slotArg, namespaceArg, keyArg)
             .withOptionalArguments(contentArg)
             .executes((sender, args) -> {
-                String slot = args.getByArgument(slotArg);
+                String slot = (String) args.get("Slot");
                 ItemStack item = Utils.getInvItem(args.getByArgument(playerArg), slot);
                 String namespace = args.getByArgument(namespaceArg);
                 String inputKey = args.getByArgument(keyArg);

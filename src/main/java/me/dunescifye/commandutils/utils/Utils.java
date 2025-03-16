@@ -8,6 +8,8 @@ import me.dunescifye.commandutils.CommandUtils;
 import net.coreprotect.CoreProtectAPI;
 import net.coreprotect.CoreProtect;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.ConsoleCommandSender;
@@ -24,7 +26,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.bukkit.Bukkit.getServer;
 
@@ -445,6 +446,19 @@ public class Utils {
         return totalDuration;
     }
 
+    public static Argument<World> bukkitWorldArgument(String nodeName) {
+        return new CustomArgument<>(new StringArgument(nodeName), info -> {
+            World world = Bukkit.getWorld(info.input());
+
+            if (world == null) {
+                throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Unknown world ").appendArgInput());
+            } else {
+                return world;
+            }
+        }).replaceSuggestions(ArgumentSuggestions.strings(info ->
+            Bukkit.getWorlds().stream().map(World::getName).toArray(String[]::new))
+        );
+    }
 
     public static Argument<EquipmentSlotGroup> equipmentSlotGroupArgument(String nodeName) {
 
@@ -452,16 +466,50 @@ public class Utils {
             EquipmentSlotGroup equipmentSlotGroup = EquipmentSlotGroup.getByName(info.input());
 
             if (equipmentSlotGroup == null) {
-                throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Unknown Equipment Slot Group: ").appendArgInput());
+                throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Unknown Equipment Slot Group ").appendArgInput());
             } else {
                 return equipmentSlotGroup;
             }
         }).replaceSuggestions(ArgumentSuggestions.strings(info ->
-            Stream.of(EquipmentSlotGroup.ANY, EquipmentSlotGroup.ARMOR, EquipmentSlotGroup.BODY, EquipmentSlotGroup.FEET, EquipmentSlotGroup.CHEST, EquipmentSlotGroup.HAND, EquipmentSlotGroup.HEAD, EquipmentSlotGroup.ARMOR, EquipmentSlotGroup.LEGS, EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND).map(EquipmentSlotGroup::toString).toArray(String[]::new))
+            Arrays.stream(getEquipmentSlotGroups()).map(EquipmentSlotGroup::toString).toArray(String[]::new))
         );
     }
 
+    public static Argument<Attribute> attributeArgument(String nodeName) {
+
+        return new CustomArgument<>(new StringArgument(nodeName), info -> {
+            try {
+                return Attribute.valueOf(info.input().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Unknown Attribute ").appendArgInput());
+            }
+
+        }).replaceSuggestions(ArgumentSuggestions.strings(Arrays.stream(Attribute.values()).map(attribute ->
+            attribute.getKey().value().toUpperCase()).collect(Collectors.toList()))
+        );
+    }
+
+    public static Argument<AttributeModifier.Operation> operationArgument(String nodeName) {
+
+        return new CustomArgument<>(new StringArgument(nodeName), info -> {
+            try {
+                return AttributeModifier.Operation.valueOf(info.input().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Unknown Operation ").appendArgInput());
+            }
+
+        }).replaceSuggestions(ArgumentSuggestions.strings(Arrays.stream(AttributeModifier.Operation.values()).map(operation ->
+            operation.toString().toUpperCase()).collect(Collectors.toList()))
+        );
+    }
+
+    public static Argument<String> slotArgument(String nodeName) {
+        return new CustomArgument<>(new StringArgument(nodeName), info ->
+            info.input().toLowerCase()
+        ).replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots()));
+    }
+
     public static EquipmentSlotGroup[] getEquipmentSlotGroups() {
-        return new EquipmentSlotGroup[]{EquipmentSlotGroup.ANY, EquipmentSlotGroup.ARMOR, EquipmentSlotGroup.BODY, EquipmentSlotGroup.FEET, EquipmentSlotGroup.CHEST, EquipmentSlotGroup.HAND, EquipmentSlotGroup.HEAD, EquipmentSlotGroup.ARMOR, EquipmentSlotGroup.LEGS, EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND};
+        return new EquipmentSlotGroup[]{ EquipmentSlotGroup.ANY, EquipmentSlotGroup.ARMOR, EquipmentSlotGroup.BODY, EquipmentSlotGroup.FEET, EquipmentSlotGroup.CHEST, EquipmentSlotGroup.HAND, EquipmentSlotGroup.HEAD, EquipmentSlotGroup.ARMOR, EquipmentSlotGroup.LEGS, EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND };
     }
 }

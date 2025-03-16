@@ -5,13 +5,14 @@ import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.ItemStackArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
+import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.dreeam.leaf.event.player.PlayerInventoryOverflowEvent;
 
 import java.util.Map;
+
+import static me.dunescifye.commandutils.utils.Overflow.addOverflow;
 
 @SuppressWarnings("DataFlowIssue")
 public class GiveCommand extends Command implements Registerable {
@@ -36,7 +37,7 @@ public class GiveCommand extends Command implements Registerable {
                 if (!excess.isEmpty() && args.getByArgumentOrDefault(dropExcessArg, true)) {
                     Utils.dropAllItemStacks(p.getWorld(), p.getLocation(), excess.values());
                 }
-                else Bukkit.getPluginManager().callEvent(new PlayerInventoryOverflowEvent(p, excess));
+                else if (CommandUtils.leafAPIEnabled) addOverflow(p, excess);
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
