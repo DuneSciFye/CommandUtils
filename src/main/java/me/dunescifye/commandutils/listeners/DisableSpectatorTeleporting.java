@@ -18,7 +18,7 @@ public class DisableSpectatorTeleporting implements Listener {
     public void onSpectatorTeleport(PlayerTeleportEvent e) {
         Player p = e.getPlayer();
         if (p.hasPermission("survival.staff")) return;
-        if (e.getCause().equals(PlayerTeleportEvent.TeleportCause.SPECTATE) || p.getGameMode().equals(GameMode.SPECTATOR)) {
+        if (e.getCause().equals(PlayerTeleportEvent.TeleportCause.SPECTATE)) {
             e.setCancelled(true);
         }
     }
