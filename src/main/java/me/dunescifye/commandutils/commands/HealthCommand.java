@@ -41,7 +41,7 @@ public class HealthCommand extends Command implements Registerable {
                             case "remove" ->
                                 livingEntity.setHealth(livingEntity.getHealth() - amount);
                             case "set" ->
-                                livingEntity.setHealth(livingEntity.getHealth());
+                                livingEntity.setHealth(amount);
                         }
                     }
                 }
