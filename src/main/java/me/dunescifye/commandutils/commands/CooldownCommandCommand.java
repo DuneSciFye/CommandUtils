@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static me.dunescifye.commandutils.files.Config.getPrefix;
+import static me.dunescifye.commandutils.utils.Utils.timeArgument;
 
 public class CooldownCommandCommand extends Command implements Configurable {
 
@@ -39,7 +40,7 @@ public class CooldownCommandCommand extends Command implements Configurable {
         MultiLiteralArgument resetArg = new MultiLiteralArgument("Function", "reset", "clear");
         MultiLiteralArgument runArg = new MultiLiteralArgument("Function", "run", "silent");
         MultiLiteralArgument getCooldownArg = new MultiLiteralArgument("Function", "getcooldown", "getcd");
-        StringArgument timeArg = new StringArgument("Time");
+        Argument<Duration> timeArg = timeArgument("Time");
         TextArgument commandsArg = new TextArgument("Commands");
         TextArgument commandSeparatorArg = new TextArgument("Command Separator");
 
@@ -54,7 +55,7 @@ public class CooldownCommandCommand extends Command implements Configurable {
                 if (hasCooldown(playerCDs, id))
                     p.sendActionBar(getCooldownMessage(p, getRemainingCooldown(playerCDs, id)));
                 else {
-                    setCooldown(playerCDs, id, Utils.parseDuration(args.getByArgument(timeArg)));
+                    setCooldown(playerCDs, id, args.getUnchecked("Time"));
                     Utils.runConsoleCommands(args.getByArgument(commandsArg).split(args.getByArgumentOrDefault(commandSeparatorArg, ",,")));
                 }
             })
@@ -78,7 +79,7 @@ public class CooldownCommandCommand extends Command implements Configurable {
             .executes((sender, args) -> {
                 Player p = args.getByArgument(playerArg);
                 String id = args.getByArgument(idArg);
-                String time = args.getByArgument(timeArg);
+                Duration time = args.getUnchecked("Time");
                 String[] commands = args.getByArgument(commandsArg).split(args.getByArgumentOrDefault(commandSeparatorArg, ",,"));
                 HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p, k -> new HashMap<>());
 
@@ -87,13 +88,13 @@ public class CooldownCommandCommand extends Command implements Configurable {
                         if (hasCooldown(playerCDs, id))
                             p.sendActionBar(getCooldownMessage(p, getRemainingCooldown(playerCDs, id)));
                         else {
-                            setCooldown(playerCDs, id, Utils.parseDuration(time));
+                            setCooldown(playerCDs, id, time);
                             Utils.runConsoleCommands(commands);
                         }
                     }
                     case "silent" -> {
                         if (hasCooldown(playerCDs, id)) return;
-                        setCooldown(playerCDs, id, Utils.parseDuration(time));
+                        setCooldown(playerCDs, id, time);
                         Utils.runConsoleCommands(commands);
                     }
                 }

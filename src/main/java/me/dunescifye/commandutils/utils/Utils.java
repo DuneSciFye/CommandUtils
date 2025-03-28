@@ -1,9 +1,6 @@
 package me.dunescifye.commandutils.utils;
 
-import dev.jorel.commandapi.arguments.Argument;
-import dev.jorel.commandapi.arguments.ArgumentSuggestions;
-import dev.jorel.commandapi.arguments.CustomArgument;
-import dev.jorel.commandapi.arguments.StringArgument;
+import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.CommandUtils;
 import net.coreprotect.CoreProtectAPI;
 import net.coreprotect.CoreProtect;
@@ -29,7 +26,7 @@ import java.util.stream.Collectors;
 
 import static org.bukkit.Bukkit.getServer;
 
-@SuppressWarnings("UnstableApiUsage")
+@SuppressWarnings({"UnstableApiUsage", "unchecked"})
 public class Utils {
 
     private static final Collection<String> PREDICATES_LIST = new ArrayList<>();
@@ -420,6 +417,14 @@ public class Utils {
                 server.dispatchCommand(console, command);
     }
 
+    public static void runConsoleCommands(List<String> commands){
+        Server server = Bukkit.getServer();
+        ConsoleCommandSender console = server.getConsoleSender();
+        for (String command : commands)
+            if (!Objects.equals(command, ""))
+                server.dispatchCommand(console, command);
+    }
+
     public static List<Material> getBlockMaterials() {
         return blockMaterials;
     }
@@ -491,17 +496,28 @@ public class Utils {
 
     public static Argument<AttributeModifier.Operation> operationArgument(String nodeName) {
 
-        return new CustomArgument<>(new StringArgument(nodeName), info -> {
-            try {
-                return AttributeModifier.Operation.valueOf(info.input().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Unknown Operation ").appendArgInput());
-            }
-
-        }).replaceSuggestions(ArgumentSuggestions.strings(Arrays.stream(AttributeModifier.Operation.values()).map(operation ->
-            operation.toString().toUpperCase()).collect(Collectors.toList()))
-        );
+        return new CustomArgument<>(new StringArgument(nodeName), info -> AttributeModifier.Operation.valueOf(info.input().toUpperCase()));
     }
+
+    public static Argument<Duration> timeArgument(String nodeName) {
+
+        return new CustomArgument<>(new StringArgument(nodeName), info -> Utils.parseDuration(info.input()));
+    }
+
+
+    public static Argument<List<List<Predicate<Block>>>> commandWhitelistArgument(String nodeName) {
+
+        Argument<List> listArgument = new ListArgumentBuilder<String>(nodeName)
+            .withList(Utils.getPredicatesList())
+            .withStringMapper()
+            .buildText();
+
+        return new CustomArgument<>(
+            listArgument,
+            info -> Utils.stringListToPredicate((List<String>) info.currentInput())
+        ).replaceSuggestions(listArgument.getOverriddenSuggestions().get());
+    }
+
 
     public static Argument<String> slotArgument(String nodeName) {
         return new CustomArgument<>(new StringArgument(nodeName), info ->

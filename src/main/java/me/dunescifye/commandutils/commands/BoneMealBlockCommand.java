@@ -4,7 +4,6 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
@@ -21,15 +20,15 @@ public class BoneMealBlockCommand extends Command implements Registerable {
         IntegerArgument radiusArg = new IntegerArgument("Radius");
         BooleanArgument affectTargetBlockArg = new BooleanArgument("Affect Target Block");
 
-        /**
+        /*
          * Bonemeals Blocks in a Radius
          * @author DuneSciFye
          * @since 1.0.0
-         * @param World World of the Blocks
-         * @param Location Location of the Center Block
-         * @param Amount Number of Times to Bonemeal
-         * @param Radius Radius to Bonemeal in
-         * @param AffectTargetBlock If the Center Block is Bonemealed
+         * @param World of the Blocks
+         * @param Location of the Center Block
+         * @param Number of Times to Bonemeal
+         * @param Radius to Bonemeal in
+         * @param If the Center Block is Bonemealed
          */
         new CommandAPICommand("bonemealblock")
             .withArguments(worldArg)

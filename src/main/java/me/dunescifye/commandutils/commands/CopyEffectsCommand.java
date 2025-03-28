@@ -6,7 +6,6 @@ import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Registry;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Mob;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 

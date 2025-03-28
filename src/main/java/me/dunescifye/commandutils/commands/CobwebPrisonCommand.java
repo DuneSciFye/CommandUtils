@@ -19,15 +19,15 @@ public class CobwebPrisonCommand extends Command implements Registerable {
         IntegerArgument heightArg = new IntegerArgument("Height");
         IntegerArgument durationArg = new IntegerArgument("Duration");
 
-        /**
+        /*
          * Spawns a temporary cobweb prison using SCore
          * @author DuneSciFye
          * @since 1.0.3
-         * @param World World to Spawn in
-         * @param Location Location of Center Block
-         * @param Player Player to run SCore command for
-         * @param Radius Radius of the Prison
-         * @param Height Height of the Prison
+         * @param World to Spawn in
+         * @param Location of Center Block
+         * @param Player to run SCore command for
+         * @param Radius of the Prison
+         * @param Height of the Prison
          * @param Duration How long the cobwebs will last for in Ticks
          */
         new CommandAPICommand("cobwebprison")

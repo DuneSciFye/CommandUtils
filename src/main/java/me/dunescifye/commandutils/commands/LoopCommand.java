@@ -12,9 +12,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import static me.dunescifye.commandutils.utils.Utils.timeArgument;
 
 public class LoopCommand extends Command implements Configurable {
 
@@ -39,8 +42,8 @@ public class LoopCommand extends Command implements Configurable {
         }
 
         IntegerArgument loopAmountArg = new IntegerArgument("Loop Amount");
-        IntegerArgument delayArg = new IntegerArgument("Delay In Ticks");
-        IntegerArgument periodArg = new IntegerArgument("Period In Ticks");
+        Argument<Duration> delayArg = timeArgument("Delay");
+        Argument<Duration> periodArg = timeArgument("Period");
         TextArgument commandsArg = new TextArgument("Commands");
         StringArgument commandIDArg = new StringArgument("Command ID");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "remove", "cancel", "list");
@@ -49,21 +52,17 @@ public class LoopCommand extends Command implements Configurable {
         PlayerArgument playerArg = new PlayerArgument("Player");
 
         new CommandAPICommand("loopcommand")
-            .withArguments(functionArg)
-            .withArguments(commandIDArg)
-            .withArguments(loopAmountArg)
-            .withArguments(delayArg)
-            .withArguments(periodArg)
-            .withArguments(commandsArg)
-            .withOptionalArguments(endCommandsArg)
-            .withOptionalArguments(playerArg)
+            .withArguments(functionArg, commandIDArg, loopAmountArg, delayArg, periodArg, commandsArg)
+            .withOptionalArguments(endCommandsArg, playerArg)
             .executes((sender, args) -> {
                 String commandID = args.getByArgument(commandIDArg);
                 switch (args.getByArgument(functionArg)) {
                     case "add" -> {
                         BukkitTask task = tasks.remove(commandID);
                         if (task != null) task.cancel();
-                        tasks.put(commandID, runCommands(args.getByArgument(loopAmountArg), args.getByArgument(commandsArg).split(commandSeparator), args.getByArgument(delayArg), args.getByArgument(periodArg), commandID, args.getByArgument(endCommandsArg), args.getByArgument(playerArg)));
+                        int delay = (int) (((Duration) args.getUnchecked("Delay")).toMillis() / 50);
+                        int period = (int) (((Duration) args.getUnchecked("Period")).toMillis() / 50);
+                        tasks.put(commandID, runCommands(args.getByArgument(loopAmountArg), args.getByArgument(commandsArg).split(commandSeparator), delay, period, commandID, args.getByArgument(endCommandsArg), args.getByArgument(playerArg)));
                     }
                     case "remove", "cancel" -> {
                         BukkitTask task = tasks.remove(commandID);
@@ -88,15 +87,12 @@ public class LoopCommand extends Command implements Configurable {
             .register(this.getNamespace());
 
         new CommandAPICommand("loopcommand")
-            .withArguments(runArg)
-            .withArguments(loopAmountArg)
-            .withArguments(delayArg)
-            .withArguments(periodArg)
-            .withArguments(commandsArg)
-            .withOptionalArguments(endCommandsArg)
-            .withOptionalArguments(playerArg)
+            .withArguments(runArg, loopAmountArg, delayArg, periodArg, commandsArg)
+            .withOptionalArguments(endCommandsArg, playerArg)
             .executes((sender, args) -> {
-                runCommands(args.getByArgument(loopAmountArg), args.getByArgument(commandsArg).split(commandSeparator), args.getByArgument(delayArg), args.getByArgument(periodArg), null, args.getByArgument(endCommandsArg), args.getByArgument(playerArg));
+                int delay = (int) (((Duration) args.getUnchecked("Delay")).toMillis() / 50);
+                int period = (int) (((Duration) args.getUnchecked("Period")).toMillis() / 50);
+                runCommands(args.getByArgument(loopAmountArg), args.getByArgument(commandsArg).split(commandSeparator), delay, period, null, args.getByArgument(endCommandsArg), args.getByArgument(playerArg));
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())

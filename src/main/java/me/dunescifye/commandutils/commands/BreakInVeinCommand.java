@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import static me.dunescifye.commandutils.utils.Utils.*;
@@ -70,27 +71,32 @@ public class BreakInVeinCommand extends Command implements Configurable {
         Argument<World> worldArg = Utils.bukkitWorldArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         PlayerArgument playerArg = new PlayerArgument("Player");
-        BlockStateArgument blockArg = new BlockStateArgument("Block");
         IntegerArgument maxBlocksArg = new IntegerArgument("Max Blocks");
         BooleanArgument checkClaimArg = new BooleanArgument("Check Claim");
         BooleanArgument triggerBlockBreakArg = new BooleanArgument("Trigger Block Break Event");
         BooleanArgument autoPickupArg = new BooleanArgument("Auto Pickup");
         BooleanArgument breakOriginalBlockArg = new BooleanArgument("Break Original Block");
+        Argument<List<List<Predicate<Block>>>> commandWhitelistArg = commandWhitelistArgument("Command Defined Whitelist");
 
         new CommandAPICommand("breakinvein")
             .withArguments(worldArg, locArg)
-            .withOptionalArguments(blockArg, maxBlocksArg)
+            .withOptionalArguments(commandWhitelistArg, maxBlocksArg)
             .executes((sender, args) -> {
                 World world = (World) args.get("World");
                 Location loc = args.getByArgument(locArg);
                 loc.setWorld(world);
                 Block block = loc.getBlock();
                 Collection<ItemStack> drops = new ArrayList<>();
-
-                Material material = args.getByArgumentOrDefault(blockArg, block.getBlockData()).getMaterial();
+                List<List<Predicate<Block>>> predicate = List.of(
+                    List.of(
+                        b -> b.getType().equals(block.getType())
+                    ),
+                    List.of()
+                );
+                List<List<Predicate<Block>>> predicates = args.getOrDefaultUnchecked("Command Defined Whitelist", predicate);
                 int maxSize = args.getByArgumentOrDefault(maxBlocksArg, defaultMaxBlocks);
 
-                getVeinOresBasic(block, drops, material, maxSize);
+                getVeinOresBasic(block, drops, predicates, maxSize);
                 dropAllItemStacks(world, block.getLocation(), drops);
             })
             .withPermission(this.getPermission())
@@ -99,7 +105,7 @@ public class BreakInVeinCommand extends Command implements Configurable {
 
         new CommandAPICommand("breakinvein")
             .withArguments(worldArg, locArg, playerArg)
-            .withOptionalArguments(blockArg, triggerBlockBreakArg, maxBlocksArg, checkClaimArg, autoPickupArg, breakOriginalBlockArg)
+            .withOptionalArguments(commandWhitelistArg, triggerBlockBreakArg, maxBlocksArg, checkClaimArg, autoPickupArg, breakOriginalBlockArg)
             .executes((sender, args) -> {
                 World world = (World) args.get("World");
                 Location loc = args.getByArgument(locArg);
@@ -108,17 +114,23 @@ public class BreakInVeinCommand extends Command implements Configurable {
                 Player player = args.getByArgument(playerArg);
                 ItemStack item = player.getInventory().getItemInMainHand();
                 Collection<ItemStack> drops = new ArrayList<>();
+                List<List<Predicate<Block>>> predicate = List.of(
+                    List.of(
+                        b -> b.getType().equals(block.getType())
+                    ),
+                    List.of()
+                );
+                List<List<Predicate<Block>>> predicates = args.getOrDefaultUnchecked("Command Defined Whitelist", predicate);
 
                 if (player.hasMetadata("ignoreBlockBreak")) return;
 
-                Material material = args.getByArgumentOrDefault(blockArg, block.getBlockData()).getMaterial();
                 int maxSize = args.getByArgumentOrDefault(maxBlocksArg, defaultMaxBlocks);
                 boolean checkClaim = CommandUtils.griefPreventionEnabled ? args.getByArgumentOrDefault(checkClaimArg, defaultCheckClaim) : false;
                 boolean triggerBlockBreak = args.getByArgumentOrDefault(triggerBlockBreakArg, defaultTriggerBlockBreakEvent);
                 boolean breakOriginalBlock = args.getByArgumentOrDefault(breakOriginalBlockArg, true);
                 player.setMetadata("ignoreBlockBreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
 
-                getVeinOres(block, block, drops, material, maxSize, player, item, triggerBlockBreak, checkClaim, breakOriginalBlock);
+                getVeinOres(block, block, drops, predicates, maxSize, player, item, triggerBlockBreak, checkClaim, breakOriginalBlock);
 
                 if (args.getByArgumentOrDefault(autoPickupArg, false)) drops = player.getInventory().addItem(drops.toArray(new ItemStack[0])).values();
 
@@ -132,23 +144,23 @@ public class BreakInVeinCommand extends Command implements Configurable {
 
     }
 
-    private void getVeinOresBasic(Block center, Collection<ItemStack> drops, Material material, int maxSize) {
+    private void getVeinOresBasic(Block center, Collection<ItemStack> drops, List<List<Predicate<Block>>> predicates, int maxSize) {
         for (Block b : getBlocksInRadius(center, 1)) {
             if (drops.size() >= maxSize) return;
-            if (b.getType() == material) {
+            if (testBlock(b, predicates)) {
                 drops.addAll(b.getDrops());
 
                 b.setType(Material.AIR);
 
-                this.getVeinOresBasic(b, drops, material, maxSize);
+                this.getVeinOresBasic(b, drops, predicates, maxSize);
             }
         }
     }
 
-    private void getVeinOres(Block center, final Block original, Collection<ItemStack> drops, Material material, int maxSize, final Player p, final ItemStack item, final boolean triggerBlockBreakEvent, final boolean checkClaim, final boolean breakOriginalBlock) {
+    private void getVeinOres(Block center, final Block original, Collection<ItemStack> drops, List<List<Predicate<Block>>> predicates, int maxSize, final Player p, final ItemStack item, final boolean triggerBlockBreakEvent, final boolean checkClaim, final boolean breakOriginalBlock) {
         for (Block b : getBlocksInRadius(center, 1)) {
             if ((checkClaim && !FUtils.isInClaimOrWilderness(p, b.getLocation())) || drops.size() >= maxSize) return;
-            if (b.getType() == material) {
+            if (testBlock(b, predicates)) {
                 if (item == null) drops.addAll(b.getDrops());
                 else drops.addAll(b.getDrops(item));
 
@@ -159,7 +171,7 @@ public class BreakInVeinCommand extends Command implements Configurable {
                 }
                 if (breakOriginalBlock || !b.equals(original)) b.setType(Material.AIR);
 
-                this.getVeinOres(b, original, drops, material, maxSize, p, item, triggerBlockBreakEvent, checkClaim, breakOriginalBlock);
+                this.getVeinOres(b, original, drops, predicates, maxSize, p, item, triggerBlockBreakEvent, checkClaim, breakOriginalBlock);
             }
         }
     }

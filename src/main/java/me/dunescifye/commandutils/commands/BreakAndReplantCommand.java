@@ -35,15 +35,15 @@ public class BreakAndReplantCommand extends Command implements Registerable {
         IntegerArgument zArg = new IntegerArgument("Z");
         BlockStateArgument blockArg = new BlockStateArgument("Original Block");
 
-        /**
+        /*
          * Bonemeals Blocks in a Radius with GriefPrevention
          * @author DuneSciFye
          * @since 1.0.0
-         * @param World World of the Blocks
-         * @param Location Location of the Center Block
-         * @param Player Player who is Breaking the Blocks
-         * @param Radius Radius to Break Blocks In
-         * @param Block Block Type to Break
+         * @param World of the Blocks
+         * @param Location of the Center Block
+         * @param Player who is Breaking the Blocks
+         * @param Radius to Break Blocks In
+         * @param Block Type to Break
          */
         new CommandAPICommand("breakandreplant")
             .withArguments(worldArg)
