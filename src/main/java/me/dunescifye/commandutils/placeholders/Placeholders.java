@@ -1,6 +1,8 @@
 package me.dunescifye.commandutils.placeholders;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.dunescifye.commandutils.CommandUtils;
@@ -403,9 +405,10 @@ public class Placeholders extends PlaceholderExpansion {
                 switch (infoType) {
                     case "armortrim", "trim" -> {
                         if (itemMeta instanceof ArmorMeta armorMeta) {
-                            if (armorMeta.hasTrim())
-                                // RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_PATTERN).get()
-                                return armorMeta.getTrim().getPattern().getKey().getKey();
+                            if (armorMeta.hasTrim()) {
+                                return RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_PATTERN).getKey(armorMeta.getTrim().getPattern()).getKey();
+                                //return armorMeta.getTrim().getPattern().getKey().getKey();
+                            }
                         }
                         return "";
                     }
@@ -902,7 +905,7 @@ public class Placeholders extends PlaceholderExpansion {
 
             }
             case "exists", "alive" -> {
-                String[] params = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
+                String[] params = arguments.split(separator);
                 if (params.length < 1) return null;
                 try {
                     UUID uuid = UUID.fromString(params[0]);
@@ -912,7 +915,7 @@ public class Placeholders extends PlaceholderExpansion {
                 }
             }
             case "inground", "inblock", "arrowinground", "arrowinblock" -> {
-                String[] params = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
+                String[] params = arguments.split(separator);
                 if (params.length < 1) return null;
                 try {
                     UUID uuid = UUID.fromString(params[0]);
@@ -1029,6 +1032,19 @@ public class Placeholders extends PlaceholderExpansion {
                     if (!(recipe instanceof FurnaceRecipe)) continue;
                     if (((FurnaceRecipe) recipe).getInputChoice().getItemStack().getType() != mat) continue;
                     return recipe.getResult().getType().toString();
+                }
+            }
+            case "villagerprofession", "profession" -> {
+                String[] args = arguments.split(separator);
+                try {
+                    Entity entity = Bukkit.getEntity(UUID.fromString(args[0]));
+                    if (entity instanceof Villager villager) {
+                        return villager.getProfession().getKey().getKey();
+                    } else {
+                        return "Not a villager";
+                    }
+                } catch (IllegalArgumentException e) {
+                    return "Invalid Entity";
                 }
             }
             default -> {

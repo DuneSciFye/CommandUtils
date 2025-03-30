@@ -4,6 +4,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Villager;
@@ -13,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unchecked")
 public class ChangeVillagerProfessionCommand extends Command implements Registerable {
 
     private static List<String> getAllVillagerProfession() {
@@ -42,12 +44,14 @@ public class ChangeVillagerProfessionCommand extends Command implements Register
             )
             .executes((sender, args) -> {
                 Collection<Entity> entities = args.getByArgument(villagersArg);
-                String profession = args.getByArgument(professionArg);
-                for (Entity entity : entities) {
+                String professionString = args.getByArgument(professionArg);
+                Villager.Profession profession = Registry.VILLAGER_PROFESSION.get(NamespacedKey.minecraft(professionString.toLowerCase()));
+
+                for (Entity entity : entities)
                     if (entity instanceof Villager villager) {
-                        villager.setProfession(Villager.Profession.valueOf(profession.toUpperCase()));
+                        villager.setProfession(profession);
+                        if (villager.getVillagerExperience() == 0) villager.setVillagerExperience(1);
                     }
-                }
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
