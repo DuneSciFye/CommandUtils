@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+import static me.dunescifye.commandutils.utils.Utils.isNumeric;
+
 public class IfCommand extends Command implements Configurable {
     private static String elseIfKeyword, elseKeyword, commandSeparator, conditionSeparator;
 
@@ -115,7 +117,9 @@ public class IfCommand extends Command implements Configurable {
                         String[] condition = conditions.split(" contains ", 2);
                         if (!condition[0].contains(condition[1])) continue elseif;
                     }
-                } catch (IllegalArgumentException ignored) {}
+                } catch (IllegalArgumentException ignored) {
+                    continue elseif;
+                }
             }
             return argSplit[2];
         }
@@ -162,11 +166,16 @@ public class IfCommand extends Command implements Configurable {
                     } else if (conditions.contains("=")) {
                         String[] condition = conditions.split("=", 2);
                         if (!Objects.equals(condition[0], condition[1])) continue elseif;
+                    } else if (conditions.contains(" !contains ")) {
+                        String[] condition = conditions.split(" !contains ", 2);
+                        if (condition[0].contains(condition[1])) continue elseif;
                     } else if (conditions.contains(" contains ")) {
                         String[] condition = conditions.split(" contains ", 2);
                         if (!condition[0].contains(condition[1])) continue elseif;
                     }
-                } catch (IllegalArgumentException ignored) {}
+                } catch (IllegalArgumentException | NullPointerException e) {
+                    continue elseif;
+                }
             }
             return PlaceholderAPI.setPlaceholders(p, argSplit[2].replace(placeholderSurrounder, "%"));
         }

@@ -48,7 +48,7 @@ repositories {
 
 dependencies {
 
-    compileOnly "io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT"
+    compileOnly "io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT"
     //compileOnly "dev.jorel:commandapi-bukkit-core:9.4.0"
     //annotationProcessor "dev.jorel:commandapi-annotations:9.4.0"
     compileOnly 'me.clip:placeholderapi:2.11.5'
