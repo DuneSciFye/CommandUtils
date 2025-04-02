@@ -108,7 +108,7 @@ public class Utils {
             return false;
         }
         if (lookup != null && !lookup.isEmpty()) {
-            CoreProtectAPI.ParseResult parseResult = getCoreProtect().parseResult(lookup.getFirst());
+            CoreProtectAPI.ParseResult parseResult = getCoreProtect().parseResult(lookup.get(0));
             return parseResult.getPlayer().startsWith("#") || parseResult.isRolledBack();
         }
         return true;
@@ -276,8 +276,8 @@ public class Utils {
 
     public static boolean testBlock(Block b, List<List<Predicate<Block>>> predicates) {
         if (predicates == null) return true; //Used for fully empty lists
-        List<Predicate<Block>> whitelistPredicates = predicates.getFirst();
-        List<Predicate<Block>> blacklistPredicates = predicates.getLast();
+        List<Predicate<Block>> whitelistPredicates = predicates.get(0);
+        List<Predicate<Block>> blacklistPredicates = predicates.get(1);
 
         // If whitelist is empty, only check blacklist
         if (whitelistPredicates.isEmpty())
@@ -484,14 +484,12 @@ public class Utils {
 
         return new CustomArgument<>(new StringArgument(nodeName), info -> {
             try {
-                return Attribute.valueOf(info.input().toUpperCase());
+                return Registry.ATTRIBUTE.get(NamespacedKey.fromString(info.input().toLowerCase()));
             } catch (IllegalArgumentException e) {
                 throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Unknown Attribute ").appendArgInput());
             }
 
-        }).replaceSuggestions(ArgumentSuggestions.strings(Arrays.stream(Attribute.values()).map(attribute ->
-            attribute.getKey().value().toUpperCase()).collect(Collectors.toList()))
-        );
+        });
     }
 
     public static Argument<AttributeModifier.Operation> operationArgument(String nodeName) {

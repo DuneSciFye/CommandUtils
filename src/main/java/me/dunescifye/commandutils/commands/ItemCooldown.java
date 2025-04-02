@@ -5,11 +5,7 @@ import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
-import io.papermc.paper.datacomponent.item.UseCooldown;
-import io.papermc.paper.event.player.PlayerItemGroupCooldownEvent;
 import me.dunescifye.commandutils.utils.Utils;
-import net.kyori.adventure.key.Key;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +21,6 @@ import static me.dunescifye.commandutils.utils.Utils.timeArgument;
 public class ItemCooldown extends Command implements Registerable {
     @Override
     public void register() {
-
         PlayerArgument playerArg = new PlayerArgument("Player");
         Argument<String> slotArg = slotArgument("Slot");
         LiteralArgument setCooldownGroupArg = new LiteralArgument("setcooldowngroup");
@@ -67,6 +62,7 @@ public class ItemCooldown extends Command implements Registerable {
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
+
 
     }
 }

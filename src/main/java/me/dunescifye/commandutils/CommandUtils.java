@@ -42,6 +42,8 @@ public final class CommandUtils extends JavaPlugin {
         plugin = this;
         Logger logger = plugin.getLogger();
 
+        String version = Bukkit.getServer().getMinecraftVersion();
+        double versionAmount = Double.parseDouble(version.substring(2));
 
         //Files first
 
@@ -133,7 +135,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("Health", new HealthCommand());
         commands.put("RunCommandFor", new RunCommandFor());
         commands.put("DisableSprint", new DisableSprintCommand());
-        commands.put("ItemCooldown", new ItemCooldown());
+        if (versionAmount > 21.1) commands.put("ItemCooldown", new ItemCooldown());
 
         commands.put("CobwebPrison", new CobwebPrisonCommand());
 

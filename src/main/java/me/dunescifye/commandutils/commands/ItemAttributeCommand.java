@@ -6,6 +6,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlotGroup;
@@ -31,7 +32,8 @@ public class ItemAttributeCommand extends Command implements Registerable {
         BooleanArgument addDefaultAttributesArg = new BooleanArgument("Add Default Attributes");
 
         new CommandAPICommand("itemattribute")
-            .withArguments(addArg, playerArg, slotArg, attributeArg
+            .withArguments(addArg, playerArg, slotArg,
+                attributeArg
                 , idArg, valueArg, operationArg, equipSlotArg
             )
             .withOptionalArguments(addDefaultAttributesArg)

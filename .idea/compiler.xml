@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="CommandUtils.api" target="17" />
+      <module name="CommandUtils.api.main" target="17" />
+      <module name="CommandUtils.api.test" target="17" />
+      <module name="CommandUtils.core" target="17" />
+      <module name="CommandUtils.core.main" target="17" />
+      <module name="CommandUtils.core.test" target="17" />
+      <module name="CommandUtils.plugin" target="17" />
+      <module name="CommandUtils.plugin.main" target="17" />
+      <module name="CommandUtils.plugin.test" target="17" />
+      <module name="CommandUtils.v1_21_1" target="21" />
+      <module name="CommandUtils.v1_21_4" target="21" />
+      <module name="CommandUtils.versions" target="17" />
+      <module name="CommandUtils.versions.main" target="17" />
+      <module name="CommandUtils.versions.test" target="17" />
+      <module name="CommandUtils.versions.v1_21_1" target="17" />
+      <module name="CommandUtils.versions.v1_21_1.main" target="17" />
+      <module name="CommandUtils.versions.v1_21_1.test" target="17" />
+      <module name="CommandUtils.versions.v1_21_4" target="17" />
+      <module name="CommandUtils.versions.v1_21_4.main" target="17" />
+      <module name="CommandUtils.versions.v1_21_4.test" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
