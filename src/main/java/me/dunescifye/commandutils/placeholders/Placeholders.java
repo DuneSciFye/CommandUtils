@@ -1,5 +1,11 @@
 package me.dunescifye.commandutils.placeholders;
 
+import cc.javajobs.wgbridge.provider.WorldGuardProviderManager;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
@@ -43,8 +49,11 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import static me.dunescifye.commandutils.CommandUtils.worldGuardEnabled;
 import static me.dunescifye.commandutils.utils.Utils.*;
+import static me.dunescifye.commandutils.utils.WorldGuardUtils.getRegions;
 
 public class Placeholders extends PlaceholderExpansion {
 
@@ -1046,6 +1055,16 @@ public class Placeholders extends PlaceholderExpansion {
                 } catch (IllegalArgumentException e) {
                     return "Invalid Entity";
                 }
+            }
+            case "worldguardregions" -> {
+                if (worldGuardEnabled) return String.join(",", getRegions(p.getLocation()));
+                else return "World Guard not Enabled.";
+            }
+            case "notinregion" -> {
+                String[] args = arguments.split(separator);
+                if (args.length < 1) return "Missing args.";
+                if (worldGuardEnabled) return String.valueOf(!getRegions(p.getLocation()).contains(args[0]));
+                else return "World Guard not Enabled.";
             }
             default -> {
                 return "Unknown function";

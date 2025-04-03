@@ -1,6 +1,8 @@
 package me.dunescifye.commandutils;
 
+import cc.javajobs.wgbridge.provider.WorldGuardProviderManager;
 import com.jeff_media.customblockdata.CustomBlockData;
+import com.sk89q.worldguard.WorldGuard;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import me.dunescifye.commandutils.commands.*;
@@ -28,6 +30,7 @@ public final class CommandUtils extends JavaPlugin {
     public static boolean coreProtectEnabled = false;
     public static boolean libsDisguisesEnabled = false;
     public static boolean leafAPIEnabled = false;
+    public static boolean worldGuardEnabled = false;
     private static final HashMap<String, Command> commands = new HashMap<>();
 
     @Override
@@ -157,6 +160,11 @@ public final class CommandUtils extends JavaPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("LibsDisguises")) {
             logger.info("Detected LibsDisguises, enabling support for it.");
             libsDisguisesEnabled = true;
+        }
+
+        if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
+            logger.info("Detected WorldGuard, enabling support for it.");
+            worldGuardEnabled = true;
         }
 
         //Special Commands

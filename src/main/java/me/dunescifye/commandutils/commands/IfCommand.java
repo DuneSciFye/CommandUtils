@@ -181,6 +181,6 @@ public class IfCommand extends Command implements Configurable {
         }
 
         //Else
-        return elseCmd == null ? "" : elseCmd;
+        return elseCmd == null ? "" : PlaceholderAPI.setPlaceholders(p, elseCmd.replace(placeholderSurrounder, "%"));
     }
 }
