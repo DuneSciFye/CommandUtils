@@ -128,6 +128,7 @@ public class IfCommand extends Command implements Configurable {
         return elseCmd == null ? "" : elseCmd;
     }
     public static String parseIf(String arguments, Player p, String placeholderSurrounder) {
+        arguments = PlaceholderAPI.setPlaceholders(p, arguments.replace(placeholderSurrounder, "%"));
         ArrayList<String> inputSplit = new ArrayList<>(List.of(arguments.split(" " + elseIfKeyword + " ")));
         String[] elseSplit = inputSplit.removeLast().split(" " + elseKeyword + " ", 2);
         inputSplit.add(elseSplit[0]);
@@ -177,10 +178,10 @@ public class IfCommand extends Command implements Configurable {
                     continue elseif;
                 }
             }
-            return PlaceholderAPI.setPlaceholders(p, argSplit[2].replace(placeholderSurrounder, "%"));
+            return argSplit[2];
         }
 
         //Else
-        return elseCmd == null ? "" : PlaceholderAPI.setPlaceholders(p, elseCmd.replace(placeholderSurrounder, "%"));
+        return elseCmd == null ? "" : elseCmd;
     }
 }

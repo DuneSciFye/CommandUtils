@@ -11,6 +11,7 @@ import me.dunescifye.commandutils.listeners.*;
 import me.dunescifye.commandutils.commands.Command;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Creaking;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
@@ -44,6 +45,7 @@ public final class CommandUtils extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         Logger logger = plugin.getLogger();
+
 
         String version = Bukkit.getServer().getMinecraftVersion();
         double versionAmount = Double.parseDouble(version.substring(2));
