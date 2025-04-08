@@ -430,21 +430,20 @@ public class Utils {
     }
 
     public static Duration parseDuration(String duration) {
-        Pattern pattern = Pattern.compile("(\\d+)([a-zA-Z]*)");
+        Pattern pattern = Pattern.compile("([\\d.]+)([a-zA-Z]*)");
         Matcher matcher = pattern.matcher(duration);
         Duration totalDuration = Duration.ZERO;
 
         while (matcher.find()) {
-            int value = Integer.parseInt(matcher.group(1));
+            double value = Double.parseDouble(matcher.group(1));
             String unit = matcher.group(2);
 
             totalDuration = switch (unit.toLowerCase()) {
-                case "s", "sec", "secs", "second", "seconds" -> totalDuration.plusSeconds(value);
-                case "m", "min", "mins", "minute", "minutes" -> totalDuration.plusMinutes(value);
-                case "h", "hr", "hrs", "hour", "hours" -> totalDuration.plusHours(value);
-                case "d", "day", "days" -> totalDuration.plusDays(value);
-                case "w", "week", "weeks" -> totalDuration.plusDays(value * 7L);
-                default -> totalDuration.plusMillis(value * 50L);
+                case "s", "sec", "secs", "second", "seconds" -> totalDuration.plusMillis((long) (1000 * value));
+                case "m", "min", "mins", "minute", "minutes" -> totalDuration.plusMillis((long) (1000 * 60 * value));
+                case "h", "hr", "hrs", "hour", "hours" -> totalDuration.plusMillis((long) (1000 * 60 * 60 * value));
+                case "d", "day", "days" -> totalDuration.plusMillis((long) (1000 * 60 * 60 * 24 * value));
+                default -> totalDuration.plusMillis((long) (value * 50L));
             };
         }
 
