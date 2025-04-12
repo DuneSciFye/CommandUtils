@@ -405,7 +405,7 @@ public class Placeholders extends PlaceholderExpansion {
                 if (inventoryInfoArgs == null || inventoryInfoArgs.length < 2) return "Missing arguments";
                 if (p == null) return "Invalid Player";
 
-                ItemStack itemStack = Utils.getInvItem(p, inventoryInfoArgs[0]);
+                ItemStack itemStack = getInvItem(p, inventoryInfoArgs[0]);
                 if (itemStack == null) return "";
                 ItemMeta itemMeta = itemStack.getItemMeta();
 
@@ -566,7 +566,7 @@ public class Placeholders extends PlaceholderExpansion {
             case "isblocknatural" -> {
                 String[] isBlockNaturalArgs = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
                 Block isBlockNaturalBlock = Bukkit.getWorld(isBlockNaturalArgs[3]).getBlockAt(Integer.parseInt(isBlockNaturalArgs[0]), Integer.parseInt(isBlockNaturalArgs[1]), Integer.parseInt(isBlockNaturalArgs[2]));
-                return String.valueOf(Utils.isNaturallyGenerated(isBlockNaturalBlock));
+                return String.valueOf(isNaturallyGenerated(isBlockNaturalBlock));
             }
             case "weightedrandom" -> {
                 String[] weightedRandomArgs = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
@@ -681,7 +681,7 @@ public class Placeholders extends PlaceholderExpansion {
                     return "null player";
                 }
 
-                ItemStack item = Utils.getInvItem(p, arguments);
+                ItemStack item = getInvItem(p, arguments);
 
                 if (item == null) {
                     return "AIR";
@@ -694,7 +694,7 @@ public class Placeholders extends PlaceholderExpansion {
                 if (p == null) return "Null player";
                 if (argsNbt.length < 3) return "Missing arguments";
 
-                ItemStack item = Utils.getInvItem(p, argsNbt[0]);
+                ItemStack item = getInvItem(p, argsNbt[0]);
                 if (item == null || !item.hasItemMeta()) return "";
 
                 PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
@@ -712,7 +712,7 @@ public class Placeholders extends PlaceholderExpansion {
                 if (p == null) return "Null player";
                 if (args.length < 1) return "Missing arguments";
 
-                ItemStack item = Utils.getInvItem(p, args[0]);
+                ItemStack item = getInvItem(p, args[0]);
                 if (item == null || !item.hasItemMeta()) return "";
 
                 return item.getType().toString().toLowerCase() + item.getItemMeta().getAsComponentString();
@@ -725,7 +725,7 @@ public class Placeholders extends PlaceholderExpansion {
             case "amount", "amt" -> {
                 if (p == null) return "null player";
                 String[] args = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
-                ItemStack item = Utils.getInvItem(p, args[0]);
+                ItemStack item = getInvItem(p, args[0]);
 
                 if (item == null) { //Argument is not an inv slot
                     Material mat = Material.getMaterial(args[0].toUpperCase());
@@ -1034,7 +1034,7 @@ public class Placeholders extends PlaceholderExpansion {
             }
             case "smelt" -> {
                 String[] args = arguments.split(separator);
-                Material mat = Utils.getInvItem(p, args[0]).getType();
+                Material mat = getInvItem(p, args[0]).getType();
                 Iterator<Recipe> iter = Bukkit.recipeIterator();
                 while (iter.hasNext()) {
                     Recipe recipe = iter.next();
@@ -1064,7 +1064,20 @@ public class Placeholders extends PlaceholderExpansion {
                 String[] args = arguments.split(separator);
                 if (args.length < 1) return "Missing args.";
                 if (worldGuardEnabled) return String.valueOf(!getRegions(p.getLocation()).contains(args[0]));
-                else return "World Guard not Enabled.";
+                else return "WorldGuard not Enabled.";
+            }
+            case "simulateblockdrops" -> {
+                String[] args = arguments.split(separator);
+
+                // Block Material, Function
+                if (args.length < 2) return "Missing args.";
+
+                switch (args[1].toUpperCase()) {
+                    case "AMOUNT" -> {
+                        Block block = null;
+                        block.getDrops(p.getInventory().getItemInMainHand());
+                    }
+                }
             }
             default -> {
                 return "Unknown function";

@@ -12,8 +12,6 @@ public class BoneMealBlockCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register(){
 
-        if (!this.getEnabled()) return;
-
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         StringArgument worldArg = new StringArgument("World");
         IntegerArgument amountArg = new IntegerArgument("Amount");
@@ -31,29 +29,19 @@ public class BoneMealBlockCommand extends Command implements Registerable {
          * @param If the Center Block is Bonemealed
          */
         new CommandAPICommand("bonemealblock")
-            .withArguments(worldArg)
-            .withArguments(locArg)
-            .withOptionalArguments(amountArg)
-            .withOptionalArguments(radiusArg)
-            .withOptionalArguments(affectTargetBlockArg)
+            .withArguments(worldArg, locArg)
+            .withOptionalArguments(amountArg, radiusArg, affectTargetBlockArg)
             .executes((sender, args) -> {
                 Block block = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
                 int amount = args.getByArgumentOrDefault(amountArg, 1);
                 int radius = args.getByArgumentOrDefault(radiusArg, 0);
                 boolean affectTargetBlock = args.getByArgumentOrDefault(affectTargetBlockArg, true);
 
-                if (affectTargetBlock) {
-                    for (Block b : Utils.getBlocksInRadius(block, radius)) {
-                        for (int i = 0; i < amount; i++) {
-                            b.applyBoneMeal(BlockFace.UP);
-                        }
-                    }
-                } else {
-                    for (Block b : Utils.getBlocksInRadius(block, radius)) {
-                        if (b.equals(block)) continue;
-                        for (int i = 0; i < amount; i++) {
-                            b.applyBoneMeal(BlockFace.UP);
-                        }
+                for (Block b : Utils.getBlocksInRadius(block, radius)) {
+                    if (!affectTargetBlock && b.equals(block)) continue;
+
+                    for (int i = 0; i < amount; i++) {
+                        b.applyBoneMeal(BlockFace.UP);
                     }
                 }
             })

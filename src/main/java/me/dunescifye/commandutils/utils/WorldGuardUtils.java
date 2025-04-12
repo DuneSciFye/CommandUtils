@@ -15,7 +15,7 @@ public class WorldGuardUtils {
     public static List<String> getRegions(Location loc) {
         WorldGuard worldGuard = WorldGuard.getInstance();
         ApplicableRegionSet regions = worldGuard.getPlatform().getRegionContainer().get(BukkitAdapter.adapt(loc.getWorld())).getApplicableRegions(BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()));
-        return regions.getRegions().stream().map(ProtectedRegion::getId).collect(Collectors.toList());
+        return regions.getRegions().stream().map(ProtectedRegion::getId).toList();
     }
 
 }

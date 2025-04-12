@@ -51,7 +51,9 @@ public class Utils {
     public static final List<List<Predicate<Block>>> BONEMEALABLE_BLOCKS = List.of(
         List.of( // Whitelist
             block -> Tag.CROPS.isTagged(block.getType()),
-            block -> Tag.SAPLINGS.isTagged(block.getType())
+            block -> Tag.SAPLINGS.isTagged(block.getType()),
+            block -> block.getType().equals(Material.GRASS_BLOCK),
+            block -> block.getType().equals(Material.NETHERRACK) && (block.getRelative(BlockFace.NORTH).getType().equals(Material.CRIMSON_NYLIUM) || block.getRelative(BlockFace.EAST).getType().equals(Material.CRIMSON_NYLIUM) || block.getRelative(BlockFace.SOUTH).getType().equals(Material.CRIMSON_NYLIUM) || block.getRelative(BlockFace.WEST).getType().equals(Material.CRIMSON_NYLIUM))
         ),
         List.of( // Blacklist
         )
