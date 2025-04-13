@@ -48,7 +48,7 @@ public class SendMessageCommand extends Command implements Configurable {
             config.set("Commands.SendMessage.ColorCodesByDefault", true);
         }
 
-        EntitySelectorArgument.ManyPlayers playersArg = new EntitySelectorArgument.ManyPlayers("Players");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         TextArgument textArg = new TextArgument("Message");
         AdventureChatArgument messageArg = new AdventureChatArgument("Message");
         BooleanArgument colorCodesArg = new BooleanArgument("Color Codes");
@@ -56,9 +56,9 @@ public class SendMessageCommand extends Command implements Configurable {
         BooleanArgument useAmpersandArg = new BooleanArgument("Use Ampersand For Color Codes");
 
         new CommandAPICommand("sendmessage")
-            .withArguments(playersArg, messageArg)
+            .withArguments(playerArg, messageArg)
             .executes((sender, args) -> {
-                sendMessage(args.getUnchecked("Players"),
+                sendMessage(args.getByArgument(playerArg),
                     LegacyComponentSerializer.legacyAmpersand().serialize(args.getByArgument(messageArg)),
                     parsePlaceholdersByDefault,
                     colorCodesByDefault,
@@ -70,38 +70,26 @@ public class SendMessageCommand extends Command implements Configurable {
 
     }
 
-    private void sendMessage(Collection<Player> players, String message, boolean parsePlaceholders, boolean useColorCodes, boolean useAmpersand) {
+    private void sendMessage(Player player, String message, boolean parsePlaceholders, boolean useColorCodes, boolean useAmpersand) {
         if (parsePlaceholders) {
             if (useColorCodes) {
                 if (useAmpersand) {
-                    for (Player player : players) {
-                        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                    }
+                    player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
                 } else {
-                    for (Player player : players) {
-                        player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
-                    }
+                    player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(PlaceholderAPI.setPlaceholders(player, message)));
                 }
             } else {
-                for (Player player : players) {
-                    player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
-                }
+                player.sendMessage(PlaceholderAPI.setPlaceholders(player, message));
             }
         } else {
             if (useColorCodes) {
                 if (useAmpersand) {
-                    for (Player player : players) {
-                        player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
-                    }
+                    player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
                 } else {
-                    for (Player player : players) {
-                        player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
-                    }
+                    player.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
                 }
             } else {
-                for (Player player : players) {
-                    player.sendMessage(message);
-                }
+                player.sendMessage(message);
             }
         }
     }

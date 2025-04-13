@@ -11,7 +11,7 @@ public class SaturationCommand extends Command implements Registerable {
     public void register() {
 
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "remove", "set", "get");
-        EntitySelectorArgument.ManyPlayers playersArg = new EntitySelectorArgument.ManyPlayers("Players");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         FloatArgument amountArg = new FloatArgument("Amount");
 
         /*
@@ -24,20 +24,18 @@ public class SaturationCommand extends Command implements Registerable {
          */
         new CommandAPICommand("saturation")
             .withArguments(functionArg)
-            .withArguments(playersArg)
+            .withArguments(playerArg)
             .withArguments(amountArg)
             .executes((sender, args) -> {
-                Collection<Player> players = args.getByArgument(playersArg);
+                Player p = args.getByArgument(playerArg);
                 float amount = args.getByArgument(amountArg);
 
-                for (Player p : players) {
-                    int foodLevel = p.getFoodLevel();
-                    switch (args.getByArgument(functionArg)) {
-                        case "add" -> p.setSaturation(foodLevel + amount);
-                        case "remove" -> p.setSaturation(foodLevel - amount);
-                        case "set" -> p.setSaturation(amount);
-                        case "get" -> sender.sendMessage(String.valueOf(p.getSaturation()));
-                    }
+                int foodLevel = p.getFoodLevel();
+                switch (args.getByArgument(functionArg)) {
+                    case "add" -> p.setSaturation(foodLevel + amount);
+                    case "remove" -> p.setSaturation(foodLevel - amount);
+                    case "set" -> p.setSaturation(amount);
+                    case "get" -> sender.sendMessage(String.valueOf(p.getSaturation()));
                 }
             })
             .withPermission(this.getPermission())
