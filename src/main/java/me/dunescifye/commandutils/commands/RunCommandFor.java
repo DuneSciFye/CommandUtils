@@ -33,8 +33,7 @@ public class RunCommandFor extends Command implements Registerable {
                 List<String> commands = List.of(commandsInput.split(commandSeparator));
 
                 for (Player p : players) {
-                    commands = PlaceholderAPI.setPlaceholders(p, commands);
-                    Utils.runConsoleCommands(commands);
+                    Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders(p, commands));
                 }
             })
             .withPermission(this.getPermission())
