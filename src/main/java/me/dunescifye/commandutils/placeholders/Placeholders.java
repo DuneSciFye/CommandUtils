@@ -1027,6 +1027,9 @@ public class Placeholders extends PlaceholderExpansion {
                     case "CARROT" -> {
                         return "carrots";
                     }
+                    case "TORCHFLOWER_SEEDS" -> {
+                        return "torchflower_crop";
+                    }
                     default -> {
                         return args[0].toUpperCase();
                     }
