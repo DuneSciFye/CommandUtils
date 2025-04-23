@@ -17,6 +17,7 @@ import me.dunescifye.commandutils.commands.TempVarCommand;
 import me.dunescifye.commandutils.listeners.BowForceTracker;
 import me.dunescifye.commandutils.listeners.ExperienceTracker;
 import me.dunescifye.commandutils.listeners.PlayerDamageTracker;
+import me.dunescifye.commandutils.utils.FUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import me.libraryaddict.disguise.DisguiseAPI;
 import org.apache.commons.lang3.ArrayUtils;
@@ -1068,6 +1069,15 @@ public class Placeholders extends PlaceholderExpansion {
                 if (args.length < 1) return "Missing args.";
                 if (worldGuardEnabled) return String.valueOf(!getRegions(p.getLocation()).contains(args[0]));
                 else return "WorldGuard not Enabled.";
+            }
+            case "isinclaim", "inclaim", "insideclaim", "isinsideclaim" -> {
+                return String.valueOf(FUtils.isInsideClaim(p, p.getLocation()));
+            }
+            case "isinwilderness", "inwilderness", "inwild", "isinwild" -> {
+                return String.valueOf(FUtils.isWilderness(p.getLocation()));
+            }
+            case "inclaimorwilderness", "insideclaimorwilderness", "inclaimorwild", "insideclaimorwild" -> {
+                return String.valueOf(FUtils.isInClaimOrWilderness(p, p.getLocation()));
             }
             default -> {
                 return "Unknown function";
