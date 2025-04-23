@@ -1069,19 +1069,6 @@ public class Placeholders extends PlaceholderExpansion {
                 if (worldGuardEnabled) return String.valueOf(!getRegions(p.getLocation()).contains(args[0]));
                 else return "WorldGuard not Enabled.";
             }
-            case "simulateblockdrops" -> {
-                String[] args = arguments.split(separator);
-
-                // Block Material, Function
-                if (args.length < 2) return "Missing args.";
-
-                switch (args[1].toUpperCase()) {
-                    case "AMOUNT" -> {
-                        Block block = null;
-                        block.getDrops(p.getInventory().getItemInMainHand());
-                    }
-                }
-            }
             default -> {
                 return "Unknown function";
             }
