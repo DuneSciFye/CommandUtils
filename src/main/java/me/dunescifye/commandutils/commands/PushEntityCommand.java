@@ -60,7 +60,10 @@ public class PushEntityCommand extends Command implements Registerable {
                 for (Entity entity : entities) {
                     if (entity.getWorld() != world) continue;
 
-                    entity.setVelocity(vector.subtract(entity.getLocation().toVector()).normalize().multiply(multiplier));
+                    Vector direction = vector.clone().subtract(entity.getLocation().toVector());
+                    if (direction.lengthSquared() == 0) continue;
+
+                    entity.setVelocity(direction.normalize().multiply(multiplier));
                 }
             })
             .withPermission(this.getPermission())
@@ -81,7 +84,11 @@ public class PushEntityCommand extends Command implements Registerable {
 
                 for (Entity entity : entities) {
                     if (entity.getWorld() != world) continue;
-                    entity.setVelocity(vector.subtract(entity.getLocation().toVector()).normalize().multiply(multiplier));
+
+                    Vector direction = vector.clone().subtract(entity.getLocation().toVector());
+                    if (direction.lengthSquared() == 0) continue;
+
+                    entity.setVelocity(direction.normalize().multiply(multiplier));
                 }
 
             })

@@ -4,6 +4,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Registry;
+import org.bukkit.command.ProxiedCommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
@@ -29,14 +30,21 @@ public class CopyEffectsCommand extends Command implements Registerable {
             .withArguments(entitiesArg, potionsArg)
             .withOptionalArguments(amplifierArg, durationArg)
             .executes((sender, args) -> {
-                if (!(sender instanceof LivingEntity)) return;
+                LivingEntity commandSender;
+                if (sender instanceof LivingEntity livingEntity) {
+                    commandSender = livingEntity;
+                } else if (sender instanceof ProxiedCommandSender proxy) {
+                    commandSender = (LivingEntity) proxy.getCallee();
+                } else {
+                    return;
+                }
                 final Collection<Entity> entities = args.getByArgument(entitiesArg);
                 final Collection<PotionEffectType> effects = args.getByArgument(potionsArg);
                 for (Entity entity : entities)
                     if (entity instanceof LivingEntity livingEntity)
                         for (PotionEffect potion : livingEntity.getActivePotionEffects())
                             if (effects.contains(potion.getType()))
-                                ((LivingEntity) sender).addPotionEffect(potion
+                                commandSender.addPotionEffect(potion
                                     .withAmplifier(args.getByArgumentOrDefault(amplifierArg, potion.getAmplifier()))
                                     .withDuration((int) (Utils.parseDuration(args.getByArgumentOrDefault(durationArg, String.valueOf(potion.getDuration()))).toMillis() / 50L)));
             })
