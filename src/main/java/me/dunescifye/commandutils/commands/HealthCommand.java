@@ -42,7 +42,7 @@ public class HealthCommand extends Command implements Registerable {
                             case "remove" ->
                                 livingEntity.setHealth(Math.max(livingEntity.getHealth() - amount, 0));
                             case "set" ->
-                                livingEntity.setHealth(Math.min(amount, livingEntity.getAttribute(Attribute.MAX_HEALTH).getValue()));
+                                livingEntity.setHealth(Math.max(Math.min(amount, livingEntity.getAttribute(Attribute.MAX_HEALTH).getValue()), 0));
                         }
                     }
                 }
