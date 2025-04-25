@@ -4,6 +4,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.DoubleArgument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.MultiLiteralArgument;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
@@ -37,11 +38,11 @@ public class HealthCommand extends Command implements Registerable {
                     if (entity instanceof LivingEntity livingEntity) {
                         switch (function) {
                             case "add" ->
-                                livingEntity.setHealth(livingEntity.getHealth() + amount);
+                                livingEntity.setHealth(Math.min(livingEntity.getHealth() + amount, livingEntity.getAttribute(Attribute.MAX_HEALTH).getValue()));
                             case "remove" ->
-                                livingEntity.setHealth(livingEntity.getHealth() - amount);
+                                livingEntity.setHealth(Math.max(livingEntity.getHealth() - amount, 0));
                             case "set" ->
-                                livingEntity.setHealth(amount);
+                                livingEntity.setHealth(Math.min(amount, livingEntity.getAttribute(Attribute.MAX_HEALTH).getValue()));
                         }
                     }
                 }
