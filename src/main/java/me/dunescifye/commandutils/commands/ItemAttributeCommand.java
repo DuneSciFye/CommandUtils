@@ -32,10 +32,7 @@ public class ItemAttributeCommand extends Command implements Registerable {
         BooleanArgument addDefaultAttributesArg = new BooleanArgument("Add Default Attributes");
 
         new CommandAPICommand("itemattribute")
-            .withArguments(addArg, playerArg, slotArg,
-                attributeArg
-                , idArg, valueArg, operationArg, equipSlotArg
-            )
+            .withArguments(addArg, playerArg, slotArg, attributeArg, idArg, valueArg, operationArg, equipSlotArg)
             .withOptionalArguments(addDefaultAttributesArg)
             .executes((sender, args) -> {
                 ItemStack item = Utils.getInvItem(

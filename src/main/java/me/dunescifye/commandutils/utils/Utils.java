@@ -490,12 +490,17 @@ public class Utils {
                 throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Unknown Attribute ").appendArgInput());
             }
 
-        });
+        }).replaceSuggestions(ArgumentSuggestions.strings(
+            Registry.ATTRIBUTE.stream().map(Attribute::toString).toArray(String[]::new)
+        ));
     }
 
     public static Argument<AttributeModifier.Operation> operationArgument(String nodeName) {
 
-        return new CustomArgument<>(new StringArgument(nodeName), info -> AttributeModifier.Operation.valueOf(info.input().toUpperCase()));
+        return new CustomArgument<>(new StringArgument(nodeName), info -> AttributeModifier.Operation.valueOf(info.input().toUpperCase()))
+            .replaceSuggestions(ArgumentSuggestions.strings(
+                Arrays.stream(AttributeModifier.Operation.values()).map(AttributeModifier.Operation::toString).toArray(String[]::new))
+            );
     }
 
     public static Argument<Duration> timeArgument(String nodeName) {
