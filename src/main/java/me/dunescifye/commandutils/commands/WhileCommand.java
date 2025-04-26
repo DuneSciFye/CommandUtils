@@ -45,7 +45,7 @@ public class WhileCommand extends Command implements Configurable {
                 .withArguments(playerArg)
                 .withArguments(compare1Arg)
                 .withArguments(compareMethodArg
-                    .replaceSuggestions(ArgumentSuggestions.strings("==", "!=", "contains", "!contains"))
+                    .replaceSuggestions(ArgumentSuggestions.strings("==", "!=", "contains", "!contains", ">", "<", ">=", "<="))
                 )
                 .withArguments(compare2Arg)
                 .withArguments(delayArg)
@@ -61,7 +61,7 @@ public class WhileCommand extends Command implements Configurable {
                     long period = ((Duration) args.get("Period")).toMillis() / 50;
                     String commandsInput = args.getByArgument(commandsArg);
                     commandsInput = commandsInput.replace("$", "%");
-                    List<String> commands = PlaceholderAPI.setPlaceholders(p, List.of(commandsInput.split(",,")));
+                    List<String> commands = List.of(commandsInput.split(",,"));
 
                     BukkitTask task = null;
 
@@ -69,45 +69,97 @@ public class WhileCommand extends Command implements Configurable {
                         case "==" -> task = new BukkitRunnable() {
                             @Override
                             public void run() {
-                                if (!p.isOnline() || !Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                if (p.isOnline() && Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                    runConsoleCommands(PlaceholderAPI.setPlaceholders(p, commands));
+                                } else {
                                     tasks.remove(commandID);
                                     this.cancel();
-                                    return;
                                 }
-                                runConsoleCommands(commands);
                             }
                         }.runTaskTimer(CommandUtils.getInstance(), delay, period);
                         case "!=" -> task = new BukkitRunnable() {
                             @Override
                             public void run() {
-                                if (!p.isOnline() || Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                if (p.isOnline() && !Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                    runConsoleCommands(PlaceholderAPI.setPlaceholders(p, commands));
+                                } else {
                                     tasks.remove(commandID);
                                     this.cancel();
-                                    return;
                                 }
-                                runConsoleCommands(commands);
                             }
                         }.runTaskTimer(CommandUtils.getInstance(), delay, period);
                         case "contains" -> task = new BukkitRunnable() {
                             @Override
                             public void run() {
-                                if (!p.isOnline() || !PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                if (p.isOnline() && PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                    runConsoleCommands(PlaceholderAPI.setPlaceholders(p, commands));
+                                } else {
                                     tasks.remove(commandID);
                                     this.cancel();
-                                    return;
                                 }
-                                runConsoleCommands(commands);
                             }
                         }.runTaskTimer(CommandUtils.getInstance(), delay, period);
                         case "!contains" -> task = new BukkitRunnable() {
                             @Override
                             public void run() {
-                                if (!p.isOnline() || PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                if (p.isOnline() && !PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                    runConsoleCommands(PlaceholderAPI.setPlaceholders(p, commands));
+                                } else {
                                     tasks.remove(commandID);
                                     this.cancel();
-                                    return;
                                 }
-                                runConsoleCommands(commands);
+                            }
+                        }.runTaskTimer(CommandUtils.getInstance(), delay, period);
+                        case ">" -> task = new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    if (p.isOnline() && Double.parseDouble(PlaceholderAPI.setPlaceholders(p, compare1)) > Double.parseDouble(PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                        runConsoleCommands(PlaceholderAPI.setPlaceholders(p, commands));
+                                        return;
+                                    }
+                                } catch (IllegalArgumentException | NullPointerException ignored) {}
+                                tasks.remove(commandID);
+                                this.cancel();
+                            }
+                        }.runTaskTimer(CommandUtils.getInstance(), delay, period);
+                        case ">=" -> task = new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    if (p.isOnline() && Double.parseDouble(PlaceholderAPI.setPlaceholders(p, compare1)) >= Double.parseDouble(PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                        runConsoleCommands(PlaceholderAPI.setPlaceholders(p, commands));
+                                        return;
+                                    }
+                            } catch (IllegalArgumentException | NullPointerException ignored) {}
+                                tasks.remove(commandID);
+                                this.cancel();
+                            }
+                        }.runTaskTimer(CommandUtils.getInstance(), delay, period);
+                        case "<" -> task = new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    if (p.isOnline() && Double.parseDouble(PlaceholderAPI.setPlaceholders(p, compare1)) < Double.parseDouble(PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                        runConsoleCommands(PlaceholderAPI.setPlaceholders(p, commands));
+                                        return;
+                                    }
+                                } catch (IllegalArgumentException | NullPointerException ignored) { }
+                                tasks.remove(commandID);
+                                this.cancel();
+                            }
+                        }.runTaskTimer(CommandUtils.getInstance(), delay, period);
+                        case "<=" -> task = new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    if (p.isOnline() && Double.parseDouble(PlaceholderAPI.setPlaceholders(p, compare1)) <= Double.parseDouble(PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                        runConsoleCommands(PlaceholderAPI.setPlaceholders(p, commands));
+                                        return;
+                                    }
+                                } catch (IllegalArgumentException | NullPointerException ignored) {}
+                                tasks.remove(commandID);
+                                this.cancel();
                             }
                         }.runTaskTimer(CommandUtils.getInstance(), delay, period);
                     }
@@ -147,7 +199,7 @@ public class WhileCommand extends Command implements Configurable {
                             message.append(commandID).append(", ");
                         }
 
-                        message.deleteCharAt(message.length() - 1);
+                        if (!message.isEmpty()) message.deleteCharAt(message.length() - 1);
 
                         sender.sendMessage(message.toString());
                     })
