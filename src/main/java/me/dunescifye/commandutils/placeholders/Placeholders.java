@@ -1001,6 +1001,12 @@ public class Placeholders extends PlaceholderExpansion {
             case "lastfinaldamage", "lastfinaldamagetaken" -> {
                 return String.valueOf(PlayerDamageTracker.getLastFinalDamageTaken(p));
             }
+            case "lastrawdamagedealt" -> {
+                return String.valueOf(PlayerDamageTracker.getLastRawDamageDealt(p));
+            }
+            case "lastfinaldamagedealt" -> {
+                return String.valueOf(PlayerDamageTracker.getLastFinalDamageDealt(p));
+            }
             case "lastbowforce", "bowforce", "recentbowforce" -> {
                 return String.valueOf(BowForceTracker.getBowForce(p));
             }

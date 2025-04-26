@@ -14,6 +14,8 @@ public class PlayerDamageTracker implements Listener {
 
     private static final HashMap<Player, Double> lastRawDamageTaken = new HashMap<>();
     private static final HashMap<Player, Double> lastFinalDamageTaken = new HashMap<>();
+    private static final HashMap<Player, Double> lastRawDamageDealt = new HashMap<>();
+    private static final HashMap<Player, Double> lastFinalDamageDealt = new HashMap<>();
 
     public void damageTrackerHandler(CommandUtils plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -25,6 +27,10 @@ public class PlayerDamageTracker implements Listener {
             lastRawDamageTaken.put(p, e.getDamage());
             lastFinalDamageTaken.put(p, e.getFinalDamage());
         }
+        if (e.getDamageSource().getCausingEntity() instanceof Player p) {
+            lastRawDamageDealt.put(p, e.getDamage());
+            lastFinalDamageDealt.put(p, e.getFinalDamage());
+        }
     }
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
@@ -34,6 +40,10 @@ public class PlayerDamageTracker implements Listener {
             lastRawDamageTaken.remove(p);
             lastFinalDamageTaken.remove(p);
         }
+        if (lastFinalDamageTaken.containsKey(p)) {
+            lastFinalDamageTaken.remove(p);
+            lastRawDamageDealt.remove(p);
+        }
     }
 
     public static Double getLastRawDamageTaken(Player p) {
@@ -41,5 +51,11 @@ public class PlayerDamageTracker implements Listener {
     }
     public static Double getLastFinalDamageTaken(Player p) {
         return lastFinalDamageTaken.get(p);
+    }
+    public static Double getLastRawDamageDealt(Player p) {
+        return lastRawDamageDealt.get(p);
+    }
+    public static Double getLastFinalDamageDealt(Player p) {
+        return lastFinalDamageDealt.get(p);
     }
 }
