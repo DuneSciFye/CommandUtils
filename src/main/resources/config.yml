@@ -37,6 +37,8 @@ Placeholders:
       ArgsSeparator: ","
     Amount:
       ArgsSeparator: ","
+  BlockUtils:
+    Enabled: true
 
 Commands:
   AddItemNBT:

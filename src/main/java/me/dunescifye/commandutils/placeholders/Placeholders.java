@@ -1,11 +1,5 @@
 package me.dunescifye.commandutils.placeholders;
 
-import cc.javajobs.wgbridge.provider.WorldGuardProviderManager;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
@@ -18,7 +12,6 @@ import me.dunescifye.commandutils.listeners.BowForceTracker;
 import me.dunescifye.commandutils.listeners.ExperienceTracker;
 import me.dunescifye.commandutils.listeners.PlayerDamageTracker;
 import me.dunescifye.commandutils.utils.FUtils;
-import me.dunescifye.commandutils.utils.Utils;
 import me.libraryaddict.disguise.DisguiseAPI;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -50,7 +43,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static me.dunescifye.commandutils.CommandUtils.worldGuardEnabled;
 import static me.dunescifye.commandutils.utils.Utils.*;
@@ -834,20 +826,20 @@ public class Placeholders extends PlaceholderExpansion {
              * @param StopAtBlock Optional; Should it give first block encountered
              */
             case "raytrace" -> {
-                String[] rayTraceArgs = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
-                if (p == null || rayTraceArgs.length < 2 || !NumberUtils.isCreatable(rayTraceArgs[0])) return null;
+                String[] args = arguments.split(separator);
+                if (p == null || args.length < 2 || !NumberUtils.isCreatable(args[0])) return null;
 
                 Block b;
 
-                if (rayTraceArgs.length > 2 && rayTraceArgs[2].equalsIgnoreCase("true")) {
-                    RayTraceResult result = p.rayTraceBlocks(Double.parseDouble(rayTraceArgs[0]));
+                if (args.length > 2 && args[2].equalsIgnoreCase("true")) {
+                    RayTraceResult result = p.rayTraceBlocks(Double.parseDouble(args[0]));
                     if (result == null || result.getHitBlock() == null) return "AIR";
                     b = result.getHitBlock();
                 } else {
-                    b = p.getEyeLocation().add(p.getEyeLocation().getDirection().multiply(Double.parseDouble(rayTraceArgs[0]))).getBlock();
+                    b = p.getEyeLocation().add(p.getEyeLocation().getDirection().multiply(Double.parseDouble(args[0]))).getBlock();
                 }
 
-                switch (rayTraceArgs[1]) {
+                switch (args[1]) {
                     case
                         "coordinates",
                         "coord",
@@ -1084,6 +1076,9 @@ public class Placeholders extends PlaceholderExpansion {
             }
             case "inclaimorwilderness", "insideclaimorwilderness", "inclaimorwild", "insideclaimorwild" -> {
                 return String.valueOf(FUtils.isInClaimOrWilderness(p, p.getLocation()));
+            }
+            case "facing", "getfacing" -> {
+                return p.getFacing().toString();
             }
             default -> {
                 return "Unknown function";
