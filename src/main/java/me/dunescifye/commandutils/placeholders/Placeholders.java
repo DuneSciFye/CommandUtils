@@ -829,14 +829,11 @@ public class Placeholders extends PlaceholderExpansion {
                 String[] args = arguments.split(separator);
                 if (p == null || args.length < 2 || !NumberUtils.isCreatable(args[0])) return null;
 
-                Block b;
+                Block b = p.getEyeLocation().add(p.getEyeLocation().getDirection().multiply(Double.parseDouble(args[0]))).getBlock();
 
                 if (args.length > 2 && args[2].equalsIgnoreCase("true")) {
                     RayTraceResult result = p.rayTraceBlocks(Double.parseDouble(args[0]));
-                    if (result == null || result.getHitBlock() == null) return "AIR";
-                    b = result.getHitBlock();
-                } else {
-                    b = p.getEyeLocation().add(p.getEyeLocation().getDirection().multiply(Double.parseDouble(args[0]))).getBlock();
+                    if (result != null && result.getHitBlock() != null) b = result.getHitBlock();
                 }
 
                 switch (args[1]) {
