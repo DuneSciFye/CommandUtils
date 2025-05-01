@@ -25,6 +25,7 @@ public class CopyEffectsCommand extends Command implements Registerable {
             .buildText();
         IntegerArgument amplifierArg = new IntegerArgument("Amplifier", 0);
         StringArgument durationArg = new StringArgument("Duration");
+        BooleanArgument removeEffectArg = new BooleanArgument("Remove Effect From Targets");
 
         new CommandAPICommand("copyeffects")
             .withArguments(entitiesArg, potionsArg)
@@ -40,13 +41,22 @@ public class CopyEffectsCommand extends Command implements Registerable {
                 }
                 final Collection<Entity> entities = args.getByArgument(entitiesArg);
                 final Collection<PotionEffectType> effects = args.getByArgument(potionsArg);
-                for (Entity entity : entities)
-                    if (entity instanceof LivingEntity livingEntity)
-                        for (PotionEffect potion : livingEntity.getActivePotionEffects())
-                            if (effects.contains(potion.getType()))
-                                commandSender.addPotionEffect(potion
-                                    .withAmplifier(args.getByArgumentOrDefault(amplifierArg, potion.getAmplifier()))
-                                    .withDuration((int) (Utils.parseDuration(args.getByArgumentOrDefault(durationArg, String.valueOf(potion.getDuration()))).toMillis() / 50L)));
+                final boolean removeEffect = args.getByArgumentOrDefault(removeEffectArg, false);
+
+                for (Entity entity : entities) {
+                    if (!(entity instanceof LivingEntity livingEntity))
+                        continue;
+
+                    for (PotionEffect potion : livingEntity.getActivePotionEffects())
+                        if (effects.contains(potion.getType())) {
+                            commandSender.addPotionEffect(potion
+                                .withAmplifier(args.getByArgumentOrDefault(amplifierArg, potion.getAmplifier()))
+                                .withDuration((int) (Utils.parseDuration(args.getByArgumentOrDefault(durationArg, String.valueOf(potion.getDuration()))).toMillis() / 50L)));
+                            if (removeEffect) {
+                                livingEntity.removePotionEffect(potion.getType());
+                            }
+                        }
+                }
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
