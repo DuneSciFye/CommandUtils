@@ -8,6 +8,7 @@ import me.dunescifye.commandutils.placeholders.Placeholders;
 import me.dunescifye.commandutils.commands.Command;
 import me.dunescifye.commandutils.commands.Configurable;
 import me.dunescifye.commandutils.commands.Registerable;
+import me.dunescifye.commandutils.placeholders.PlayerPlaceholders;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
@@ -127,6 +128,9 @@ public class Config {
                     }
                     if (config.getBoolean("Placeholders.BlockUtils.Enabled", true)) {
                         new BlockPlaceholders().register();
+                    }
+                    if (config.getBoolean("Placeholders.PlayerUtils.Enabled", true)) {
+                        new PlayerPlaceholders().register();
                     }
                 }
             }

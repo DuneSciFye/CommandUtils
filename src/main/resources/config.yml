@@ -39,6 +39,8 @@ Placeholders:
       ArgsSeparator: ","
   BlockUtils:
     Enabled: true
+  PlayerUtils:
+    Enabled: true
 
 Commands:
   AddItemNBT:

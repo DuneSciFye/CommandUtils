@@ -1077,6 +1077,9 @@ public class Placeholders extends PlaceholderExpansion {
             case "facing", "getfacing" -> {
                 return p.getFacing().toString();
             }
+            case "underwater", "isunderwater" -> {
+                return String.valueOf(p.isUnderWater());
+            }
             default -> {
                 return "Unknown function";
             }
