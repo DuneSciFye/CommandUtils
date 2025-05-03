@@ -490,9 +490,10 @@ public class Utils {
                 throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Unknown Attribute ").appendArgInput());
             }
 
-        }).replaceSuggestions(ArgumentSuggestions.strings(
+        })/*.replaceSuggestions(ArgumentSuggestions.strings(
             Registry.ATTRIBUTE.stream().map(Attribute::toString).toArray(String[]::new)
-        ));
+
+        ))*/;
     }
 
     public static Argument<AttributeModifier.Operation> operationArgument(String nodeName) {
