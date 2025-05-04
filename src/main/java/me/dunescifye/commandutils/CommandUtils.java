@@ -140,6 +140,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("Health", new HealthCommand());
         commands.put("RunCommandFor", new RunCommandFor());
         commands.put("DisableSprint", new DisableSprintCommand());
+        commands.put("RefreshVillagerTrades", new RefreshVillagerTradesCommand());
         if (versionAmount > 21.1) commands.put("ItemCooldown", new ItemCooldown());
 
         commands.put("CobwebPrison", new CobwebPrisonCommand());
