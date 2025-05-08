@@ -36,6 +36,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -856,13 +857,55 @@ public class Placeholders extends PlaceholderExpansion {
                 switch (args[1]) {
                     case
                         "coordinates",
-                        "coord",
-                        "coords" -> {
+                            "coord",
+                            "coords" -> {
                         return b.getX() + " " + b.getY() + " " + b.getZ();
                     }
                     case
                         "material",
-                        "mat" -> {
+                            "mat" -> {
+                        return b.getType().toString();
+                    }
+                    case "x" -> {
+                        return String.valueOf(b.getX());
+                    }
+                    case "y" -> {
+                        return String.valueOf(b.getY());
+                    }
+                    case "z" -> {
+                        return String.valueOf(b.getZ());
+                    }
+                }
+            }
+            case "raytraceonlyair" -> {
+                String[] args = arguments.split(separator);
+                if (p == null || args.length < 2 || !NumberUtils.isCreatable(args[0])) return null;
+
+                Block b = p.getLocation().getBlock();
+                Location eyeLoc = p.getEyeLocation();
+                Vector direction = eyeLoc.getDirection().normalize();
+
+                for (int i = 0; i <= Double.parseDouble(args[0]); i++) {
+                    Block currentBlock = eyeLoc.clone().add(direction.clone().multiply(i)).getBlock();
+
+                    if (!currentBlock.getType().isAir()) {
+                        // Hit a non-air block: return the last air block before this
+                        break;
+                    }
+
+                    b = currentBlock;
+                }
+
+                switch (args[1]) {
+                    case
+                        "coordinates",
+                            "coord",
+                            "coords" -> {
+                        return b.getX() + " " + b.getY() + " " + b.getZ();
+                    }
+                    case
+                        "material",
+                            "mat" -> {
                         return b.getType().toString();
                     }
                     case "x" -> {
