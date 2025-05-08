@@ -29,6 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -443,6 +444,22 @@ public class Placeholders extends PlaceholderExpansion {
                     case "dumpitem", "dumpinfo", "dumpdata" -> {
                         if (itemMeta == null) return "";
                         return itemMeta.getAsComponentString();
+                    }
+                    case "colorrgb" -> {
+                        if (!(itemMeta instanceof LeatherArmorMeta armorMeta)) return "";
+                        return String.valueOf(armorMeta.getColor().asRGB());
+                    }
+                    case "colorargb" -> {
+                        if (!(itemMeta instanceof LeatherArmorMeta armorMeta)) return "";
+                        return String.valueOf(armorMeta.getColor().asARGB());
+                    }
+                    case "colorbgr" -> {
+                        if (!(itemMeta instanceof LeatherArmorMeta armorMeta)) return "";
+                        return String.valueOf(armorMeta.getColor().asBGR());
+                    }
+                    case "color" -> {
+                        if (!(itemMeta instanceof LeatherArmorMeta armorMeta)) return "";
+                        return armorMeta.getColor().toString();
                     }
                     default -> {
                         return "Invalid infotype";
