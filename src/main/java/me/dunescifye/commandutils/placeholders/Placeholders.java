@@ -882,11 +882,20 @@ public class Placeholders extends PlaceholderExpansion {
                 if (p == null || args.length < 2 || !NumberUtils.isCreatable(args[0])) return null;
 
                 Block b = p.getLocation().getBlock();
-                Location eyeLoc = p.getEyeLocation();
-                Vector direction = eyeLoc.getDirection().normalize();
+                Location startLoc = p.getEyeLocation();
+
+                if (args.length == 5) {
+                    try {
+                        startLoc.add(Double.parseDouble(args[2]), Double.parseDouble(args[3]), Double.parseDouble(args[4]));
+                    } catch (NumberFormatException e) {
+                        return "Invalid start coordinate modifiers for raytraceonlyair placeholder.";
+                    }
+                }
+
+                Vector direction = startLoc.getDirection().normalize();
 
                 for (int i = 0; i <= Double.parseDouble(args[0]); i++) {
-                    Block currentBlock = eyeLoc.clone().add(direction.clone().multiply(i)).getBlock();
+                    Block currentBlock = startLoc.clone().add(direction.clone().multiply(i)).getBlock();
 
                     if (!currentBlock.getType().isAir()) {
                         // Hit a non-air block: return the last air block before this

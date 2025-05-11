@@ -34,7 +34,7 @@ public class FUtils {
     public static boolean isInClaimOrWilderness(final Player player, final Location location) {
         if (CommandUtils.griefPreventionEnabled) {
             final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
-            return claim == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
+            return claim == null || claim.getOwnerID() == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
         } else if (CommandUtils.factionsUUIDEnabled) {
             return playerCanBuildDestroyBlock(player, location, "destroy", true);
         }

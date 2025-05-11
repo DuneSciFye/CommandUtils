@@ -62,6 +62,24 @@ public class BlockPlaceholders extends PlaceholderExpansion {
                     default -> "Unknown function";
                 };
             }
+            case "getrelativeonlyair" -> {
+                if (args.length < 7) return "Missing arguments";
+                int amount = Integer.parseInt(args[5]);
+
+                BlockFace blockFace = BlockFace.valueOf(args[4].toUpperCase());
+                b = b.getRelative(blockFace, amount);
+
+                return switch (args[6]) {
+                    case "material", "mat" ->
+                        b.getType().toString();
+                    case "coords", "coord" ->
+                        b.getX() + " " + b.getY() + " " + b.getZ();
+                    case "x" -> String.valueOf(b.getX());
+                    case "y" -> String.valueOf(b.getY());
+                    case "z" -> String.valueOf(b.getZ());
+                    default -> "Unknown function";
+                };
+            }
             default -> {
                 return null;
             }
