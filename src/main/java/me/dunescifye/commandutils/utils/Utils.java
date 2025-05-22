@@ -11,9 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlotGroup;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.*;
 import org.bukkit.plugin.Plugin;
 
 import java.time.Duration;
@@ -532,5 +530,16 @@ public class Utils {
 
     public static EquipmentSlotGroup[] getEquipmentSlotGroups() {
         return new EquipmentSlotGroup[]{ EquipmentSlotGroup.ANY, EquipmentSlotGroup.ARMOR, EquipmentSlotGroup.BODY, EquipmentSlotGroup.FEET, EquipmentSlotGroup.CHEST, EquipmentSlotGroup.HAND, EquipmentSlotGroup.HEAD, EquipmentSlotGroup.ARMOR, EquipmentSlotGroup.LEGS, EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND };
+    }
+
+    public static Material smeltMaterial(Material mat) {
+        Iterator<Recipe> iter = Bukkit.recipeIterator();
+        while (iter.hasNext()) {
+            Recipe recipe = iter.next();
+            if (!(recipe instanceof FurnaceRecipe furnaceRecipe)) continue;
+            if (furnaceRecipe.getInput().getType() != mat) continue;
+            return recipe.getResult().getType();
+        }
+        return mat;
     }
 }

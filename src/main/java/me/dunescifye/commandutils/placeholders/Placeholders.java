@@ -1102,7 +1102,9 @@ public class Placeholders extends PlaceholderExpansion {
             }
             case "smelt" -> {
                 String[] args = arguments.split(separator);
-                Material mat = getInvItem(p, args[0]).getType();
+                Material mat = Material.getMaterial(args[0].toUpperCase());
+                if (mat == null) return "Invalid Material";
+
                 Iterator<Recipe> iter = Bukkit.recipeIterator();
                 while (iter.hasNext()) {
                     Recipe recipe = iter.next();
@@ -1110,6 +1112,7 @@ public class Placeholders extends PlaceholderExpansion {
                     if (((FurnaceRecipe) recipe).getInputChoice().getItemStack().getType() != mat) continue;
                     return recipe.getResult().getType().toString();
                 }
+                return mat.toString();
             }
             case "villagerprofession", "profession" -> {
                 String[] args = arguments.split(separator);
