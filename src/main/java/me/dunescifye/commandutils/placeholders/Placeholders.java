@@ -6,6 +6,7 @@ import io.papermc.paper.registry.RegistryKey;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.commands.IfCommand;
 import me.dunescifye.commandutils.commands.TempPlayerVarCommand;
 import me.dunescifye.commandutils.commands.TempVarCommand;
 import me.dunescifye.commandutils.listeners.BowForceTracker;
@@ -642,49 +643,7 @@ public class Placeholders extends PlaceholderExpansion {
                 return p.getWorld().getEnvironment().toString();
             }
             case "if" -> {
-                String[] inputSplit = arguments.split(elseIfKeyword);
-                String[] elseSplit = inputSplit[inputSplit.length - 1].split(elseKeyword);
-
-                String[] combinedSplit = ArrayUtils.addAll(inputSplit, elseSplit);
-
-                //If and Else If's
-                for (int i = 0; i <= combinedSplit.length; i++) {
-                    String[] argSplit = combinedSplit[i].split(conditionSeparator, 3);
-                    if (argSplit[1].contains("=")) {
-                        String[] condition = argSplit[1].split("=", 2);
-                        if (Objects.equals(condition[0], condition[1])) {
-                            return argSplit[2];
-                        }
-                    } else if (argSplit[1].contains("!=")) {
-                        String[] condition = argSplit[1].split("!=", 2);
-                        if (!Objects.equals(condition[0], condition[1])) {
-                            return argSplit[2];
-                        }
-                    } else if (argSplit[1].contains(">")) {
-                        String[] condition = argSplit[1].split(">", 2);
-                        if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) > Double.parseDouble(condition[1]))) {
-                            return argSplit[2];
-                        }
-                    } else if (argSplit[1].contains("<")) {
-                        String[] condition = argSplit[1].split("<", 2);
-                        if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) < Double.parseDouble(condition[1]))) {
-                            return argSplit[2];
-                        }
-                    } else if (argSplit[1].contains(">=")) {
-                        String[] condition = argSplit[1].split(">=", 2);
-                        if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) >= Double.parseDouble(condition[1]))) {
-                            return argSplit[2];
-                        }
-                    } else if (argSplit[1].contains("<=")) {
-                        String[] condition = argSplit[1].split("<=", 2);
-                        if (NumberUtils.isCreatable(condition[0]) && NumberUtils.isCreatable(condition[1]) && (Double.parseDouble(condition[0]) <= Double.parseDouble(condition[1]))) {
-                            return argSplit[2];
-                        }
-                    }
-                }
-
-                //Else
-                return combinedSplit[combinedSplit.length - 1];
+                return IfCommand.parseIf(arguments, p, separator);
             }
             case "material", "mat" -> {
 

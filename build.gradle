@@ -75,6 +75,9 @@ shadowJar {
     relocate 'com.jeff_media.morepersistentdatatypes', 'me.dunescifye.libs.morepersistentdatatypes'
     relocate 'dev.jorel.commandapi', 'me.dunescifye.libs.commandutils.commandapi'
     relocate 'dev.dejvokep.boostedyaml', 'me.dunescifye.libs'
+    archiveBaseName.set("CommandUtils")
+    archiveClassifier.set("") // removes the "-all" suffix
+    archiveVersion.set("")    // removes the version number
 }
 
 subprojects {

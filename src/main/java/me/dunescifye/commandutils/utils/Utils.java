@@ -508,19 +508,6 @@ public class Utils {
     }
 
 
-    public static Argument<List<List<Predicate<Block>>>> commandWhitelistArgument(String nodeName) {
-
-        Argument<List> listArgument = new ListArgumentBuilder<String>(nodeName)
-            .withList(Utils.getPredicatesList())
-            .withStringMapper()
-            .buildText();
-
-        return new CustomArgument<>(
-            listArgument,
-            info -> Utils.stringListToPredicate((List<String>) info.currentInput())
-        ).replaceSuggestions(listArgument.getOverriddenSuggestions().get());
-    }
-
 
     public static Argument<String> slotArgument(String nodeName) {
         return new CustomArgument<>(new StringArgument(nodeName), info ->

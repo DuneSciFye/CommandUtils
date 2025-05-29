@@ -121,7 +121,7 @@ public class IfCommand extends Command implements Configurable {
                     continue elseif;
                 }
             }
-            return argSplit[2];
+            return argSplit[2].trim();
         }
 
         //Else

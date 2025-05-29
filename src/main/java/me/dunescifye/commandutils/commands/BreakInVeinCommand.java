@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
+import static me.dunescifye.commandutils.utils.ArgumentUtils.commandWhitelistArgument;
 import static me.dunescifye.commandutils.utils.Utils.*;
 
 public class BreakInVeinCommand extends Command implements Configurable {

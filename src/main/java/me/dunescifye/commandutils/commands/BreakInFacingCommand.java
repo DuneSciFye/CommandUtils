@@ -26,7 +26,6 @@ public class BreakInFacingCommand extends Command implements Registerable {
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
         PlayerArgument playerArg = new PlayerArgument("Player");
         IntegerArgument depthArg = new IntegerArgument("Depth", 0);
-        IntegerArgument zArg = new IntegerArgument("Z", 0);
         LiteralArgument whitelistArg = new LiteralArgument("whitelist");
         StringArgument whitelistedBlocksArgument = new StringArgument("Whitelisted Blocks");
         LiteralArgument forceDropArg = new LiteralArgument("forcedrop");
@@ -56,7 +55,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                         .withStringMapper()
                                         .buildText()
                                         .executes((sender, args) -> {
-                                            World world = (World) args.get("World");
+                                            World world = args.getUnchecked("World");
                                             Location location = args.getByArgument(locArg);
                                             Player player = args.getByArgument(playerArg);
                                             ItemStack heldItem = player.getInventory().getItemInMainHand();
@@ -73,7 +72,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                         })
                                         .then(dropArg
                                             .executes((sender, args) -> {
-                                                World world = (World) args.get("World");
+                                                World world = args.getUnchecked("World");
                                                 Location location = args.getByArgument(locArg);
                                                 Player player = args.getByArgument(playerArg);
                                                 ItemStack drop = args.getByArgument(dropArg);
@@ -91,7 +90,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                         )
                                         .then(forceDropArg
                                             .executes((sender, args) -> {
-                                                World world = (World) args.get("World");
+                                                World world = args.getUnchecked("World");
                                                 Location location = args.getByArgument(locArg);
                                                 location.setWorld(world);
                                                 Player player = args.getByArgument(playerArg);
@@ -112,7 +111,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                 .then(whitelistedBlocksArgument
                                     .replaceSuggestions(ArgumentSuggestions.strings(Config.getPredicates()))
                                     .executes((sender, args) -> {
-                                        World world = (World) args.get("World");
+                                        World world = args.getUnchecked("World");
                                         Location location = args.getByArgument(locArg);
                                         Player player = args.getByArgument(playerArg);
                                         ItemStack heldItem = player.getInventory().getItemInMainHand();
@@ -129,7 +128,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                     })
                                     .then(dropArg
                                         .executes((sender, args) -> {
-                                            World world = (World) args.get("World");
+                                            World world = args.getUnchecked("World");
                                             Location location = args.getByArgument(locArg);
                                             Player player = args.getByArgument(playerArg);
                                             ItemStack drop = args.getByArgument(dropArg);
@@ -147,7 +146,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                     )
                                     .then(forceDropArg
                                         .executes((sender, args) -> {
-                                            World world = (World) args.get("World");
+                                            World world = args.getUnchecked("World");
                                             Location location = args.getByArgument(locArg);
                                             location.setWorld(world);
                                             Player player = args.getByArgument(playerArg);
