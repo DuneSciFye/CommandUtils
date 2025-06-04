@@ -1111,6 +1111,17 @@ public class Placeholders extends PlaceholderExpansion {
             case "underwater", "isunderwater" -> {
                 return String.valueOf(p.isUnderWater());
             }
+            case "nearwither" -> {
+                String[] args = arguments.split(separator);
+                if (args.length < 1) return "Missing args.";
+                double distance = Double.parseDouble(args[0]);
+                for (Entity e : p.getNearbyEntities(distance, distance, distance)) {
+                    if (e instanceof Wither) {
+                        return "true";
+                    }
+                }
+                return "false";
+            }
             default -> {
                 return "Unknown function";
             }

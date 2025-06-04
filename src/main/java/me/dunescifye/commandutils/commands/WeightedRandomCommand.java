@@ -100,11 +100,11 @@ public class WeightedRandomCommand extends Command implements Configurable {
                 for (Integer number : map.keySet())
                     if (random <= number) {
                         if (sender instanceof OfflinePlayer)
-                            Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders((OfflinePlayer) sender, map.get(number)).split(commandSeparator));
+                            Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders((OfflinePlayer) sender, map.get(number).replace("$", "%")).split(commandSeparator));
                         else if (sender instanceof ProxiedCommandSender proxy)
-                            Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders((OfflinePlayer) proxy.getCallee(), map.get(number)).split(commandSeparator));
+                            Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders((OfflinePlayer) proxy.getCallee(), map.get(number).replace("$", "%")).split(commandSeparator));
                         else
-                            Utils.runConsoleCommands(map.get(number).split(commandSeparator));
+                            Utils.runConsoleCommands(map.get(number).replace("$", "%").split(commandSeparator));
                         return;
                     }
             })
