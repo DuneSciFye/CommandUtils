@@ -28,10 +28,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.meta.ArmorMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.*;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
@@ -462,6 +459,10 @@ public class Placeholders extends PlaceholderExpansion {
                     case "color" -> {
                         if (!(itemMeta instanceof LeatherArmorMeta armorMeta)) return "";
                         return armorMeta.getColor().toString();
+                    }
+                    case "flightduration" -> {
+                        if (!(itemMeta instanceof FireworkMeta fireworkMeta)) return "";
+                        return String.valueOf(fireworkMeta.getPower());
                     }
                     default -> {
                         return "Invalid infotype";
