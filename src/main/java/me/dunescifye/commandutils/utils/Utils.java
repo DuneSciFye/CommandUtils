@@ -464,21 +464,6 @@ public class Utils {
         );
     }
 
-    public static Argument<EquipmentSlotGroup> equipmentSlotGroupArgument(String nodeName) {
-
-        return new CustomArgument<>(new StringArgument(nodeName), info -> {
-            EquipmentSlotGroup equipmentSlotGroup = EquipmentSlotGroup.getByName(info.input());
-
-            if (equipmentSlotGroup == null) {
-                throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Unknown Equipment Slot Group ").appendArgInput());
-            } else {
-                return equipmentSlotGroup;
-            }
-        }).replaceSuggestions(ArgumentSuggestions.strings(info ->
-            Arrays.stream(getEquipmentSlotGroups()).map(EquipmentSlotGroup::toString).toArray(String[]::new))
-        );
-    }
-
     public static Argument<Attribute> attributeArgument(String nodeName) {
 
         return new CustomArgument<>(new StringArgument(nodeName), info -> {
@@ -515,9 +500,6 @@ public class Utils {
         ).replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots()));
     }
 
-    public static EquipmentSlotGroup[] getEquipmentSlotGroups() {
-        return new EquipmentSlotGroup[]{ EquipmentSlotGroup.ANY, EquipmentSlotGroup.ARMOR, EquipmentSlotGroup.BODY, EquipmentSlotGroup.FEET, EquipmentSlotGroup.CHEST, EquipmentSlotGroup.HAND, EquipmentSlotGroup.HEAD, EquipmentSlotGroup.ARMOR, EquipmentSlotGroup.LEGS, EquipmentSlotGroup.MAINHAND, EquipmentSlotGroup.OFFHAND };
-    }
 
     public static Material smeltMaterial(Material mat) {
         Iterator<Recipe> iter = Bukkit.recipeIterator();

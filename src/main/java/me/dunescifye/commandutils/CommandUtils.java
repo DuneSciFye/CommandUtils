@@ -64,7 +64,6 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("ChangeVillagerProfession", new ChangeVillagerProfessionCommand());
         commands.put("Food", new FoodCommand());
         commands.put("HighlightBlocks", new HighlightBlocksCommand());
-        commands.put("ItemAttribute", new ItemAttributeCommand());
         commands.put("LaunchProjectile", new LaunchProjectileCommand());
         commands.put("LaunchFirework", new LaunchFireworkCommand());
         commands.put("LoadCrossbow", new LoadCrossbowCommand());
@@ -143,7 +142,10 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("RefreshVillagerTrades", new RefreshVillagerTradesCommand());
         commands.put("SmeltItem", new SmeltItemCommand());
         commands.put("SelectBlocks", new SelectBlocksCommand());
+        commands.put("MetaData", new MetaDataCommand());
         if (versionAmount > 21.1) commands.put("ItemCooldown", new ItemCooldown());
+        if (versionAmount > 21.1) commands.put("ItemAttribute", new ItemAttributeCommand());
+        if (versionAmount > 21.1) commands.put("LifeSteal", new LifeStealCommand());
 
         commands.put("CobwebPrison", new CobwebPrisonCommand());
 

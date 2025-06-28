@@ -14,7 +14,6 @@ import me.dunescifye.commandutils.listeners.ExperienceTracker;
 import me.dunescifye.commandutils.listeners.PlayerDamageTracker;
 import me.dunescifye.commandutils.utils.FUtils;
 import me.libraryaddict.disguise.DisguiseAPI;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.*;
@@ -995,6 +994,9 @@ public class Placeholders extends PlaceholderExpansion {
                         case "owner" -> {
                             if (e instanceof Tameable tameable && tameable.isTamed())
                                 return tameable.getOwner().getName();
+                        }
+                        case "damage" -> {
+                            if (e instanceof Arrow arrow) return String.valueOf(arrow.getDamage());
                         }
                     }
                 } catch (IllegalArgumentException e) {

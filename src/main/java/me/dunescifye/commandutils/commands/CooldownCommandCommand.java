@@ -39,29 +39,61 @@ public class CooldownCommandCommand extends Command implements Configurable {
         StringArgument idArg = new StringArgument("ID");
         MultiLiteralArgument resetArg = new MultiLiteralArgument("Function", "reset", "clear");
         MultiLiteralArgument runArg = new MultiLiteralArgument("Function", "run", "silent");
+        MultiLiteralArgument run2Arg = new MultiLiteralArgument("Function2", "run2", "silent2");
         MultiLiteralArgument getCooldownArg = new MultiLiteralArgument("Function", "getcooldown", "getcd");
         Argument<Duration> timeArg = timeArgument("Time");
-        TextArgument commandsArg = new TextArgument("Commands");
+      TextArgument commandsArg = new TextArgument("Commands");
+      AdventureChatArgument commands2Arg = new AdventureChatArgument("Commands2");
         TextArgument commandSeparatorArg = new TextArgument("Command Separator");
 
-        new CommandAPICommand("cooldowncommand")
-            .withArguments(playerArg, idArg, timeArg, commandsArg)
-            .withOptionalArguments(commandSeparatorArg)
-            .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
-                String id = args.getByArgument(idArg);
-                HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p, k -> new HashMap<>());
+      new CommandAPICommand("cooldowncommand")
+        .withArguments(playerArg, idArg, timeArg, commandsArg)
+        .withOptionalArguments(commandSeparatorArg)
+        .executes((sender, args) -> {
+          Player p = args.getByArgument(playerArg);
+          String id = args.getByArgument(idArg);
+          HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p, k -> new HashMap<>());
 
-                if (hasCooldown(playerCDs, id))
-                    p.sendActionBar(getCooldownMessage(p, getRemainingCooldown(playerCDs, id)));
-                else {
-                    setCooldown(playerCDs, id, args.getUnchecked("Time"));
-                    Utils.runConsoleCommands(args.getByArgument(commandsArg).split(args.getByArgumentOrDefault(commandSeparatorArg, ",,")));
-                }
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
+          if (hasCooldown(playerCDs, id))
+            p.sendActionBar(getCooldownMessage(p, getRemainingCooldown(playerCDs, id)));
+          else {
+            setCooldown(playerCDs, id, args.getUnchecked("Time"));
+            Utils.runConsoleCommands(args.getByArgument(commandsArg).split(args.getByArgumentOrDefault(commandSeparatorArg, ",,")));
+          }
+        })
+        .withPermission(this.getPermission())
+        .withAliases(this.getCommandAliases())
+        .register(this.getNamespace());
+
+      new CommandAPICommand("cooldowncommand")
+        .withArguments(run2Arg, playerArg, idArg, timeArg, commands2Arg)
+        .executes((sender, args) -> {
+          Player p = args.getByArgument(playerArg);
+          String id = args.getByArgument(idArg);
+          Duration time = args.getUnchecked("Time");
+          String[] commands =
+            LegacyComponentSerializer.legacyAmpersand().serialize(args.getByArgument(commands2Arg)).split(",,");
+          HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p, k -> new HashMap<>());
+
+          switch (args.getByArgument(run2Arg)) {
+            case "run2" -> {
+              if (hasCooldown(playerCDs, id))
+                p.sendActionBar(getCooldownMessage(p, getRemainingCooldown(playerCDs, id)));
+              else {
+                setCooldown(playerCDs, id, time);
+                Utils.runConsoleCommands(commands);
+              }
+            }
+            case "silent2" -> {
+              if (hasCooldown(playerCDs, id)) return;
+              setCooldown(playerCDs, id, time);
+              Utils.runConsoleCommands(commands);
+            }
+          }
+        })
+        .withPermission(this.getPermission())
+        .withAliases(this.getCommandAliases())
+        .register(this.getNamespace());
 
         /*
          * Runs a Cooldown Command with various functions

@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.placeholders;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.WeatherType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,6 +37,26 @@ public class PlayerPlaceholders extends PlaceholderExpansion {
         switch (function) {
             case "velocity", "speed" -> {
                 return String.valueOf(p.getVelocity().length());
+            }
+            case "falldistance" -> {
+                return String.valueOf(p.getFallDistance());
+            }
+            case "playertime" -> {
+                return String.valueOf(p.getPlayerTime() % 24000L);
+            }
+            case "ptimeisday" ->{
+                long pTime = p.getPlayerTime() % 24000L;
+                return String.valueOf(pTime < 12300 || pTime > 23850);
+            }
+            case "ptimeisnight" ->{
+                long pTime = p.getPlayerTime() % 24000L;
+                return String.valueOf(pTime >= 12300 && pTime <= 23850);
+            }
+            case "isthundering" -> {
+                return String.valueOf(p.getWorld().isThundering());
+            }
+            case "israining" -> {
+                return String.valueOf(p.getWorld().hasStorm());
             }
             default -> {
                 return null;

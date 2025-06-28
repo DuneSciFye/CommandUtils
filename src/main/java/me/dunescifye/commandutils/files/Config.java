@@ -52,15 +52,7 @@ public class Config {
                 }
                 Section keySection = commandSection.getSection(key);
                 Command command = commands.get(key);
-                if (keySection.getOptionalString("Enabled").isPresent()) {
-                    if (keySection.isBoolean("Enabled")) {
-                        command.setEnabled(keySection.getBoolean("Enabled"));
-                    } else {
-                        logger.warning("Configuration Commands." + key + ".Enabled is not a boolean. Found " + keySection.get("Enabled"));
-                    }
-                } else {
-                    config.set("Commands." + key + ".Enabled", true);
-                }
+                command.setEnabled(config.getBoolean("Commands." + key + ".Enabled", true));
 
                 if (keySection.getOptionalStringList("Aliases").isPresent()) {
                     if (keySection.isList("Aliases")) {
@@ -70,11 +62,7 @@ public class Config {
                     }
                 }
 
-                if (keySection.getOptionalString("Permission").isPresent()) {
-                    command.setPermission(keySection.getString("Permission"));
-                } else {
-                    command.setPermission("commandutils.command." + key.toLowerCase());
-                }
+                command.setPermission(keySection.getString("Permission", "commandutils.command." + key.toLowerCase()));
 
                 if (keySection.getOptionalString("NameSpace").isPresent()) {
                     if (keySection.isString("Namespace")) {

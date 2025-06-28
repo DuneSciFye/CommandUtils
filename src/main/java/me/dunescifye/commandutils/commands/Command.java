@@ -5,13 +5,13 @@ import org.apache.commons.lang3.ArrayUtils;
 
 public abstract class Command {
 
-    private static boolean enabled = true;
+    private boolean enabled = true;
     private String[] commandAliases = new String[0];
     private String permission;
     private String namespace = Config.getNamespace();
 
     public void setEnabled(boolean enabled) {
-        Command.enabled = enabled;
+        this.enabled = enabled;
     }
 
     public boolean getEnabled() {
