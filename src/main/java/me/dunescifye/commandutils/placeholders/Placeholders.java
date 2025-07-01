@@ -1042,6 +1042,9 @@ public class Placeholders extends PlaceholderExpansion {
                     case "MELON_SEEDS" -> {
                         return "melon_stem";
                     }
+                    case "PUMPKIN_SEEDS" -> {
+                        return "pumpkin_stem";
+                    }
                     case "WHEAT_SEEDS" -> {
                         return "wheat";
                     }
