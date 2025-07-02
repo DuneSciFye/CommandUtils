@@ -413,16 +413,16 @@ public class Utils {
         Server server = Bukkit.getServer();
         ConsoleCommandSender console = server.getConsoleSender();
         for (String command : commands)
-            if (!Objects.equals(command, ""))
-                server.dispatchCommand(console, command);
+            if (!command.isBlank())
+                server.dispatchCommand(console, command.trim());
     }
 
     public static void runConsoleCommands(List<String> commands){
         Server server = Bukkit.getServer();
         ConsoleCommandSender console = server.getConsoleSender();
         for (String command : commands)
-            if (!Objects.equals(command, ""))
-                server.dispatchCommand(console, command);
+            if (!command.isBlank())
+                server.dispatchCommand(console, command.trim());
     }
 
     public static List<Material> getBlockMaterials() {

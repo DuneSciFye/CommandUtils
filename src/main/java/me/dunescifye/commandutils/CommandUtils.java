@@ -36,7 +36,7 @@ public final class CommandUtils extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
+        CommandAPI.onLoad(new CommandAPIBukkitConfig(this).beLenientForMinorVersions(true));
     }
 
 
