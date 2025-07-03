@@ -32,7 +32,7 @@ public class MobTargetCommand extends Command implements Registerable {
 
                 for (Entity entity : entities) {
                     if (entity instanceof Creature creature) {
-                        Entity target = targetsArray[ThreadLocalRandom.current().nextInt(targetsArray.length)];
+                        Entity target = targetsArray[ThreadLocalRandom.current().nextInt(Math.max(0, targetsArray.length))];
                         if (!(target instanceof LivingEntity livingEntity)) continue;
 
                         creature.setTarget(livingEntity);
