@@ -72,6 +72,7 @@ public class RayTraceParticleCommand extends Command implements Registerable {
                         this.cancel();
                         return;
                     }
+                    currentPoint++;
 
                     // Calculate the next point
                     Location pointLocation = startLocation.clone().add(direction.clone().multiply(currentPoint * spacing));
@@ -85,8 +86,6 @@ public class RayTraceParticleCommand extends Command implements Registerable {
                             .replace(xPlaceholder, String.valueOf(pointLocation.getX()))
                             .replace(yPlaceholder, String.valueOf(pointLocation.getY()))
                             .replace(zPlaceholder, String.valueOf(pointLocation.getZ())).split(commandSeparator));
-
-                    currentPoint++;
                 }
             }.runTaskTimer(CommandUtils.getInstance(), 0, period);
         } else {

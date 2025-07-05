@@ -4,6 +4,7 @@ import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -58,8 +60,7 @@ public class RunCommandWhenCommand extends Command implements Registerable {
                                                                 }
                                                                 if (Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2))) {
                                                                     this.cancel();
-                                                                    for (String command : commands)
-                                                                        server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(p, command));
+                                                                  Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders(p, Arrays.asList(commands)));
                                                                 }
                                                             }
                                                         }.runTaskTimer(CommandUtils.getInstance(), delay, interval);
@@ -72,8 +73,7 @@ public class RunCommandWhenCommand extends Command implements Registerable {
                                                                 }
                                                                 if (!Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2))) {
                                                                     this.cancel();
-                                                                    for (String command : commands)
-                                                                        server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(p, command));
+                                                                  Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders(p, Arrays.asList(commands)));
                                                                 }
                                                             }
                                                         }.runTaskTimer(CommandUtils.getInstance(), delay, interval);
@@ -86,8 +86,7 @@ public class RunCommandWhenCommand extends Command implements Registerable {
                                                                 }
                                                                 if (PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2))) {
                                                                     this.cancel();
-                                                                    for (String command : commands)
-                                                                        server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(p, command));
+                                                                  Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders(p, Arrays.asList(commands)));
                                                                 }
                                                             }
                                                         }.runTaskTimer(CommandUtils.getInstance(), delay, interval);
@@ -100,8 +99,7 @@ public class RunCommandWhenCommand extends Command implements Registerable {
                                                                 }
                                                                 if (!PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2))) {
                                                                     this.cancel();
-                                                                    for (String command : commands)
-                                                                        server.dispatchCommand(console, PlaceholderAPI.setPlaceholders(p, command));
+                                                                    Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders(p, Arrays.asList(commands)));
                                                                 }
                                                             }
                                                         }.runTaskTimer(CommandUtils.getInstance(), delay, interval);
