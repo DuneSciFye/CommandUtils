@@ -5,14 +5,13 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.commandutils.CommandUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Server;
-import org.bukkit.command.ConsoleCommandSender;
+import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -62,7 +61,7 @@ public class LoopCommand extends Command implements Configurable {
                         if (task != null) task.cancel();
                         int delay = (int) (((Duration) args.getUnchecked("Delay")).toMillis() / 50);
                         int period = (int) (((Duration) args.getUnchecked("Period")).toMillis() / 50);
-                        tasks.put(commandID, runCommands(args.getByArgument(loopAmountArg), args.getByArgument(commandsArg).split(commandSeparator), delay, period, commandID, args.getByArgument(endCommandsArg), args.getByArgument(playerArg)));
+                        tasks.put(commandID, runCommands(args.getByArgument(loopAmountArg), args.getByArgument(commandsArg).replace("$", "%").split(commandSeparator), delay, period, commandID, args.getByArgument(endCommandsArg), args.getByArgument(playerArg)));
                     }
                     case "remove", "cancel" -> {
                         BukkitTask task = tasks.remove(commandID);
@@ -92,7 +91,7 @@ public class LoopCommand extends Command implements Configurable {
             .executes((sender, args) -> {
                 int delay = (int) (((Duration) args.getUnchecked("Delay")).toMillis() / 50);
                 int period = (int) (((Duration) args.getUnchecked("Period")).toMillis() / 50);
-                runCommands(args.getByArgument(loopAmountArg), args.getByArgument(commandsArg).split(commandSeparator), delay, period, null, args.getByArgument(endCommandsArg), args.getByArgument(playerArg));
+                runCommands(args.getByArgument(loopAmountArg), args.getByArgument(commandsArg).replace("$", "%").split(commandSeparator), delay, period, null, args.getByArgument(endCommandsArg), args.getByArgument(playerArg));
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
@@ -100,22 +99,18 @@ public class LoopCommand extends Command implements Configurable {
     }
 
     private BukkitTask runCommands(int maxCount, String[] commands, int delay, int period, String commandID, String endCommands, Player player) {
-        Server server = Bukkit.getServer();
-        ConsoleCommandSender console = server.getConsoleSender();
         return new BukkitRunnable() {
             int count = 1;
             @Override
             public void run() {
                 if (count > maxCount) {
-                    if (endCommands != null && !endCommands.isEmpty()) for (String command : endCommands.split(",,")) server.dispatchCommand(console, player == null ? command : PlaceholderAPI.setPlaceholders(player, command.replace("$", "%")));
+                    if (endCommands != null && !endCommands.isEmpty()) Utils.runConsoleCommands(player == null ? Arrays.asList(endCommands.split(",,")) : PlaceholderAPI.setPlaceholders(player, Arrays.asList(endCommands.split(",,"))));
                     tasks.remove(commandID);
                     cancel();
                     return;
                 }
 
-                for (String command : commands)
-                    server.dispatchCommand(console, player == null ? command : PlaceholderAPI.setPlaceholders(player, command.replace("$", "%")));
-
+                Utils.runConsoleCommands(player == null ? Arrays.asList(commands) : PlaceholderAPI.setPlaceholders(player, Arrays.asList(commands)));
                 count ++;
             }
         }.runTaskTimer(CommandUtils.getInstance(), delay, period);

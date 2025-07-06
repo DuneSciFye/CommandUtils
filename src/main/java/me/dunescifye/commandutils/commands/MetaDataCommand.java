@@ -1,19 +1,17 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandTree;
+import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
-import dev.jorel.commandapi.arguments.MultiLiteralArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import me.dunescifye.commandutils.CommandUtils;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MetaDataCommand extends Command implements Registerable {
   @Override
@@ -22,46 +20,46 @@ public class MetaDataCommand extends Command implements Registerable {
     LiteralArgument setArg = new LiteralArgument("set");
     LiteralArgument removeArg = new LiteralArgument("remove");
     LiteralArgument listArg = new LiteralArgument("list");
-    PlayerArgument playerArg = new PlayerArgument("Player");
+    EntitySelectorArgument.OneEntity entityArg = new EntitySelectorArgument.OneEntity("Entity");
     StringArgument keyArg = new StringArgument("Key");
     StringArgument valueArg = new  StringArgument("Value");
 
     new CommandTree("metadata")
       .then(setArg
-        .then(playerArg
+        .then(entityArg
           .then(keyArg
             .then(valueArg
               .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
+                Entity e = args.getByArgument(entityArg);
                 String key = args.getByArgument(keyArg);
                 String value = args.getByArgument(valueArg);
 
-                p.setMetadata(key, new FixedMetadataValue(CommandUtils.getInstance(), value));
+                e.setMetadata(key, new FixedMetadataValue(CommandUtils.getInstance(), value));
               })
             )
           )
         )
       )
       .then(removeArg
-        .then(playerArg
+        .then(entityArg
           .then(keyArg
             .executes((sender, args) -> {
-              Player p = args.getByArgument(playerArg);
+              Entity e = args.getByArgument(entityArg);
               String key = args.getByArgument(keyArg);
 
-              p.removeMetadata(key, CommandUtils.getInstance());
+              e.removeMetadata(key, CommandUtils.getInstance());
             })
           )
         )
       )
       .then(listArg
-        .then(playerArg
+        .then(entityArg
           .then(keyArg
             .executes((sender, args) -> {
-              Player p = args.getByArgument(playerArg);
+              Entity e = args.getByArgument(entityArg);
               String key = args.getByArgument(keyArg);
 
-              List<MetadataValue> values = p.getMetadata(key);
+              List<MetadataValue> values = e.getMetadata(key);
               List<String> stringValues = values.stream().map(MetadataValue::asString).toList();
 
               sender.sendMessage(String.join(", ", stringValues));
