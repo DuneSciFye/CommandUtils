@@ -4,14 +4,10 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.DoubleArgument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.executors.ExecutorType;
-import org.bukkit.Bukkit;
 import org.bukkit.command.ProxiedCommandSender;
-import org.bukkit.damage.DamageSource;
-import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 
 import java.util.Collection;
@@ -31,11 +27,7 @@ public class LifeStealCommand extends Command implements Registerable {
         Collection<Entity> entities = args.getByArgument(targetArg);
         Double amount = args.getByArgument(amountArg);
 
-        DamageSource damageSource = DamageSource.builder(DamageType.PLAYER_ATTACK).build();
-
         for (Entity entity : entities) {
-          EntityDamageEvent event = new EntityDamageEvent(entity, EntityDamageEvent.DamageCause.ENTITY_ATTACK,
-            damageSource, amount);
           if (entity instanceof LivingEntity livingEntity) {
             livingEntity.damage(amount, player);
             double finalDamage = livingEntity.getLastDamage();

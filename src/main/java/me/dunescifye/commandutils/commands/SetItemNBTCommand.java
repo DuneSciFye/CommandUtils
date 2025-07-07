@@ -18,7 +18,6 @@ public class SetItemNBTCommand extends Command implements Registerable {
 
         PlayerArgument playerArg = new PlayerArgument("Player");
         StringArgument slotArg = new StringArgument("Slot");
-        MultiLiteralArgument textSlotArg = new MultiLiteralArgument("Slot", "main", "mainhand", "off", "offhand", "cursor");
         TextArgument namespaceArg = new TextArgument("Namespace");
         TextArgument keyArg = new TextArgument("Key");
         GreedyStringArgument contentArg = new GreedyStringArgument("Content");
@@ -42,7 +41,7 @@ public class SetItemNBTCommand extends Command implements Registerable {
             .withArguments(keyArg)
             .withOptionalArguments(contentArg)
             .executes((sender, args) -> {
-                String slot = args.getByArgument(textSlotArg);
+                String slot = args.getByArgument(slotArg);
                 if (Arrays.stream(Utils.getItemSlots()).noneMatch(slot::equals)) throw CommandAPI.failWithString("Unknown slot for command SetItemNBT! Found: " + slot);
                 ItemStack item = Utils.getInvItem(args.getByArgument(playerArg), slot);
                 String namespace = args.getByArgument(namespaceArg);
