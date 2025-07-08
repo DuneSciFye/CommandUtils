@@ -144,6 +144,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("SelectBlocks", new SelectBlocksCommand());
         commands.put("MetaData", new MetaDataCommand());
         commands.put("SetEnchantment", new SetEnchantmentCommand());
+        commands.put("SelectBlocksFacing", new SelectBlocksFacingCommand());
         if (versionAmount > 21.1) commands.put("ItemCooldown", new ItemCooldown());
         if (versionAmount > 21.1) commands.put("ItemAttribute", new ItemAttributeCommand());
         if (versionAmount > 21.1) commands.put("LifeSteal", new LifeStealCommand());

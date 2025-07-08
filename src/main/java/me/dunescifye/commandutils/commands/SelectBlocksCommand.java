@@ -12,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -31,85 +32,91 @@ public class SelectBlocksCommand extends Command implements Registerable {
         Argument<World> worldArg = Utils.bukkitWorldArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
-        IntegerArgument depthArg = new IntegerArgument("Depth", 0);
         PlayerArgument playerArg = new PlayerArgument("Player");
         TextArgument commandSeparatorArg = new TextArgument("Command Separator");
         TextArgument placeholderSurrounderArg = new TextArgument("Placeholder Surrounder");
         BooleanArgument customPlaceholdersArg = new BooleanArgument("Custom Placeholders");
         GreedyStringArgument functionsArg = new GreedyStringArgument("Functions");
-        LiteralArgument whitelistArg = new LiteralArgument("whitelist");
         Argument<List<List<Predicate<Block>>>> configPredicateArg = configPredicateArgument("Config Predicate");
         Argument<List<List<Predicate<Block>>>> commandWhitelistArg = commandWhitelistArgument("Command Defined Whitelist");
 
-        new CommandAPICommand("selectblocks")
-            .withArguments(worldArg, locArg, playerArg, radiusArg, configPredicateArg, commandSeparatorArg, placeholderSurrounderArg, customPlaceholdersArg, functionsArg)
-            .executes((sender, args) -> {
-                World world = args.getUnchecked("World");
-                Location location = args.getByArgument(locArg);
-                location.setWorld(world);
-                Block center = location.getBlock();
+      new CommandAPICommand("selectblocks")
+        .withArguments(worldArg, locArg, playerArg, radiusArg, configPredicateArg, commandSeparatorArg, placeholderSurrounderArg, customPlaceholdersArg, functionsArg)
+        .executes((sender, args) -> {
+          World world = args.getUnchecked("World");
+          Location location = args.getByArgument(locArg);
+          location.setWorld(world);
+          Block center = location.getBlock();
 
-                Player player = args.getByArgument(playerArg);
-                Collection<ItemStack> drops = new ArrayList<>();
-                List<List<Predicate<Block>>> predicates = args.getUnchecked("Config Predicate");
-                int radius = args.getByArgument(radiusArg);
+          Player player = args.getByArgument(playerArg);
+          List<List<Predicate<Block>>> predicates = args.getUnchecked("Config Predicate");
+          int radius = args.getByArgument(radiusArg);
 
-                String commandSeparator = args.getByArgument(commandSeparatorArg);
-                String placeholderSurrounder = args.getByArgument(placeholderSurrounderArg);
-                boolean customPlaceholders = args.getByArgument(customPlaceholdersArg);
-                String functionsString = args.getByArgument(functionsArg);
-                if (!placeholderSurrounder.isEmpty()) functionsString = functionsString.replace(placeholderSurrounder, "%");
+          String commandSeparator = args.getByArgument(commandSeparatorArg);
+          String placeholderSurrounder = args.getByArgument(placeholderSurrounderArg);
+          boolean customPlaceholders = args.getByArgument(customPlaceholdersArg);
+          String functionsString = args.getByArgument(functionsArg);
+          if (!placeholderSurrounder.isEmpty()) functionsString = functionsString.replace(placeholderSurrounder, "%");
 
-                String[] functions = functionsString.split(commandSeparator);
+          String[] functions = functionsString.split(commandSeparator);
 
-                for (Block b : Utils.getBlocksInRadius(center, radius)) {
-                    if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
-                    triggerActions(center, b, player, functions);
-                }
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
+          for (Block b : Utils.getBlocksInRadius(center, radius)) {
+            if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
+            triggerActions(center, b, player, functions);
+          }
+        })
+        .withPermission(this.getPermission())
+        .withAliases(this.getCommandAliases())
+        .register(this.getNamespace());
 
-        new CommandAPICommand("selectblocks")
-            .withArguments(worldArg, locArg, playerArg, radiusArg, commandWhitelistArg, commandSeparatorArg, placeholderSurrounderArg, customPlaceholdersArg, functionsArg)
-            .executes((sender, args) -> {
-                World world = args.getUnchecked("World");
-                Location location = args.getByArgument(locArg);
-                location.setWorld(world);
-                Block center = location.getBlock();
+      new CommandAPICommand("selectblocks")
+        .withArguments(worldArg, locArg, playerArg, radiusArg, commandWhitelistArg, commandSeparatorArg, placeholderSurrounderArg, customPlaceholdersArg, functionsArg)
+        .executes((sender, args) -> {
+          World world = args.getUnchecked("World");
+          Location location = args.getByArgument(locArg);
+          location.setWorld(world);
+          Block center = location.getBlock();
 
-                Player player = args.getByArgument(playerArg);
-                Collection<ItemStack> drops = new ArrayList<>();
-                List<List<Predicate<Block>>> predicates = args.getUnchecked("Command Defined Whitelist");
-                int radius = args.getByArgument(radiusArg);
+          Player player = args.getByArgument(playerArg);
+          List<List<Predicate<Block>>> predicates = args.getUnchecked("Command Defined Whitelist");
+          int radius = args.getByArgument(radiusArg);
 
-                String commandSeparator = args.getByArgument(commandSeparatorArg);
-                String placeholderSurrounder = args.getByArgument(placeholderSurrounderArg);
-                boolean customPlaceholders = args.getByArgument(customPlaceholdersArg);
-                String functionsString = args.getByArgument(functionsArg);
-                if (!placeholderSurrounder.isEmpty()) functionsString = functionsString.replace(placeholderSurrounder, "%");
+          String commandSeparator = args.getByArgument(commandSeparatorArg);
+          String placeholderSurrounder = args.getByArgument(placeholderSurrounderArg);
+          boolean customPlaceholders = args.getByArgument(customPlaceholdersArg);
+          String functionsString = args.getByArgument(functionsArg);
+          if (!placeholderSurrounder.isEmpty()) functionsString = functionsString.replace(placeholderSurrounder, "%");
 
-                String[] functions = functionsString.split(commandSeparator);
+          String[] functions = functionsString.split(commandSeparator);
 
-                for (Block b : Utils.getBlocksInRadius(center, radius)) {
-                    if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
-                    triggerActions(center, b, player, functions);
-                }
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
-
+          for (Block b : Utils.getBlocksInRadius(center, radius)) {
+            if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
+            triggerActions(center, b, player, functions);
+          }
+        })
+        .withPermission(this.getPermission())
+        .withAliases(this.getCommandAliases())
+        .register(this.getNamespace());
     }
 
-    private void triggerActions(Block center, Block b, Player p, String[] functions) {
+    public static void triggerActions(Block center, Block b, Player p, String[] functions) {
         Collection<ItemStack> drops = new ArrayList<>();
         for (String function: functions) {
             function = function.trim();
             if (function.equals("BLOCK:CONDITION:FULLY_GROWN")) {
                 if (!(b.getBlockData() instanceof Ageable ageable && ageable.getAge() == ageable.getMaximumAge()))
                     break;
+            }
+            else if (function.equals("BLOCK:SILK_TOUCH")) {
+              drops.add(new ItemStack(b.getType(), 1));
+              b.setType(Material.AIR);
+            }
+            else if (function.equals("BLOCK:TRIGGER_BLOCK_BREAK")) {
+              BlockBreakEvent event = new BlockBreakEvent(b, p);
+              Bukkit.getPluginManager().callEvent(event);
+            }
+            else if (function.equals("BLOCK:REMOVE")) {
+              b.setType(Material.AIR);
             }
             else if (function.equals("BLOCK:BREAK")) {
                 drops.addAll(b.getDrops(p.getInventory().getItemInMainHand()));
