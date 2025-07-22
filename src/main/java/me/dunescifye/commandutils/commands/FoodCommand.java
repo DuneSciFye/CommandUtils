@@ -47,7 +47,7 @@ public class FoodCommand extends Command implements Registerable {
                     }
                     case
                         "remove" -> {
-                        if (allowOverflow || foodLevel + amount < 20) {
+                        if (allowOverflow || foodLevel - amount > 0) {
                             p.setFoodLevel(foodLevel - amount);
                         } else {
                             p.setFoodLevel(0);
