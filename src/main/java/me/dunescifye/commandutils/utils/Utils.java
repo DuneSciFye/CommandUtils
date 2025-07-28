@@ -28,6 +28,7 @@ import static org.bukkit.Bukkit.getServer;
 public class Utils {
 
     private static final Collection<String> PREDICATES_LIST = new ArrayList<>();
+    private static final Collection<String> MATERIALS_LIST = new ArrayList<>();
     private static final List<Material> blockMaterials = Arrays.stream(Material.values())
         .filter(Material::isBlock)
         .toList();
@@ -43,8 +44,13 @@ public class Utils {
         for (Material mat : Material.values()) {
             String name = mat.name();
             PREDICATES_LIST.add(name);
+            MATERIALS_LIST.add(name);
             PREDICATES_LIST.add("!" + name);
+            PREDICATES_LIST.add(name.toLowerCase());
+            MATERIALS_LIST.add(name.toLowerCase());
+            PREDICATES_LIST.add("!" + name.toLowerCase());
         }
+        MATERIALS_LIST.add("");
     }
     public static final List<List<Predicate<Block>>> BONEMEALABLE_BLOCKS = List.of(
         List.of( // Whitelist
@@ -204,7 +210,7 @@ public class Utils {
                         if (tag == null) continue;
                         blacklist.add(block -> tag.isTagged(block.getType()));
                     } catch (
-                        IllegalArgumentException e) {
+                      IllegalArgumentException e) {
                         logger.info("Invalid block tag: " + predicate);
                     }
                 }
@@ -217,7 +223,7 @@ public class Utils {
                         if (tag == null) continue;
                         blacklist.add(block -> tag.isTagged(block.getType()));
                     } catch (
-                        IllegalArgumentException e) {
+                      IllegalArgumentException e) {
                         logger.info("Invalid block tag: " + predicate);
                     }
                 }
@@ -237,7 +243,7 @@ public class Utils {
                         if (tag == null) continue;
                         whitelist.add(block -> tag.isTagged(block.getType()));
                     } catch (
-                        IllegalArgumentException e) {
+                      IllegalArgumentException e) {
                         logger.info("Invalid block tag: " + predicate);
                     }
                 }
@@ -250,7 +256,7 @@ public class Utils {
                         if (tag == null) continue;
                         whitelist.add(block -> tag.isTagged(block.getType()));
                     } catch (
-                        IllegalArgumentException e) {
+                      IllegalArgumentException e) {
                         logger.info("Invalid block tag: " + predicate);
                     }
                 }
@@ -263,9 +269,21 @@ public class Utils {
         }
         return List.of(whitelist, blacklist);
     }
+    public static List<Material> stringListToMaterials(List<String> inputs) {
+        List<Material> materials = new ArrayList<>();
+
+        for (String input : inputs) {
+            materials.add(Material.getMaterial(input));
+        }
+        return materials;
+    }
 
     public static Collection<String> getPredicatesList() {
         return PREDICATES_LIST;
+    }
+
+    public static Collection<String> getMaterialsList() {
+        return MATERIALS_LIST;
     }
 
     public static Collection<String> getPlayersList() {

@@ -56,7 +56,7 @@ public class SelectBlocksFacingCommand extends Command implements Registerable {
 
         for (Block b : Utils.getBlocksInFacing(center, radius, depth, player)) {
           if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
-          triggerActions(center, b, player, functions);
+          triggerActions(center, b, player, functions, placeholderSurrounder);
         }
       })
       .withPermission(this.getPermission())
@@ -86,7 +86,7 @@ public class SelectBlocksFacingCommand extends Command implements Registerable {
 
         for (Block b : Utils.getBlocksInFacing(center, radius, depth, player)) {
           if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
-          triggerActions(center, b, player, functions);
+          triggerActions(center, b, player, functions, placeholderSurrounder);
         }
       })
       .withPermission(this.getPermission())

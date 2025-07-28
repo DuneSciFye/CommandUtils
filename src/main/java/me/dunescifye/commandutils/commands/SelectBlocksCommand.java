@@ -2,6 +2,7 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.commandutils.utils.FUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
@@ -9,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -62,7 +64,7 @@ public class SelectBlocksCommand extends Command implements Registerable {
 
           for (Block b : Utils.getBlocksInRadius(center, radius)) {
             if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
-            triggerActions(center, b, player, functions);
+            triggerActions(center, b, player, functions, placeholderSurrounder);
           }
         })
         .withPermission(this.getPermission())
@@ -91,7 +93,7 @@ public class SelectBlocksCommand extends Command implements Registerable {
 
           for (Block b : Utils.getBlocksInRadius(center, radius)) {
             if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
-            triggerActions(center, b, player, functions);
+            triggerActions(center, b, player, functions, placeholderSurrounder);
           }
         })
         .withPermission(this.getPermission())
@@ -99,7 +101,7 @@ public class SelectBlocksCommand extends Command implements Registerable {
         .register(this.getNamespace());
     }
 
-    public static void triggerActions(Block center, Block b, Player p, String[] functions) {
+    public static void triggerActions(Block center, Block b, Player p, String[] functions, String placeholderSurrounder) {
         Collection<ItemStack> drops = new ArrayList<>();
         for (String function: functions) {
             function = function.trim();
@@ -132,6 +134,8 @@ public class SelectBlocksCommand extends Command implements Registerable {
                     ageable.setAge(0);
                     b.setBlockData(ageable);
                 }
+            } else if (function.equals("BLOCK:BONE_MEAL")) {
+                b.applyBoneMeal(BlockFace.UP);
             } else if (function.equals("ITEM:SMELT")) {
                 Collection<ItemStack> smeltedDrops = new ArrayList<>();
                 for (ItemStack drop : drops) {
@@ -162,7 +166,15 @@ public class SelectBlocksCommand extends Command implements Registerable {
 
                 Utils.dropAllItemStacks(loc.getWorld(), loc, drops);
             } else {
-                runConsoleCommands(function);
+                if (placeholderSurrounder.isEmpty()) runConsoleCommands(function);
+                else {
+                    function = function.replace(placeholderSurrounder, "%");
+                    function = function.replace("%block_x%", String.valueOf(b.getX()));
+                    function = function.replace("%block_y%", String.valueOf(b.getY()));
+                    function = function.replace("%block_z%", String.valueOf(b.getZ()));
+                    function = PlaceholderAPI.setBracketPlaceholders(p, function);
+                    runConsoleCommands(function);
+                }
             }
         }
     }

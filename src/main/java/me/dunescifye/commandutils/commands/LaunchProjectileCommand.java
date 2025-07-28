@@ -4,6 +4,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.DragonFireball;
 
 public class LaunchProjectileCommand extends Command implements Registerable {
@@ -20,7 +21,15 @@ public class LaunchProjectileCommand extends Command implements Registerable {
             )
             .withOptionalArguments(playerArg)
             .executesPlayer((p, args) -> {
-                DragonFireball fireball = p.launchProjectile(DragonFireball.class);
+                String projectile = args.getByArgument(projArg);
+                switch (projectile.toUpperCase()) {
+                    case "ARROW" -> {
+                        Arrow arrow = p.launchProjectile(Arrow.class);
+                    }
+                    case "DRAGONFIREBALL" -> {
+                      DragonFireball fireball = p.launchProjectile(DragonFireball.class);
+                    }
+                }
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())

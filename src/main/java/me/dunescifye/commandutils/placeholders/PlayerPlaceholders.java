@@ -4,6 +4,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.WeatherType;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,6 +58,16 @@ public class PlayerPlaceholders extends PlaceholderExpansion {
             }
             case "israining" -> {
                 return String.valueOf(p.getWorld().hasStorm());
+            }
+            case "vehicle" -> {
+                Entity v = p.getVehicle();
+                if (v == null) return "";
+                return String.valueOf(v.getType());
+            }
+            case "vehicleuuid" -> {
+                Entity v = p.getVehicle();
+                if (v == null) return "";
+                return String.valueOf(v.getUniqueId());
             }
             default -> {
                 return null;

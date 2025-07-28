@@ -38,6 +38,10 @@ public class EntityDamageByEntityListener implements Listener {
                 if (evokerFangs.hasMetadata("nodamage"))
                     e.setCancelled(true);
             }
+            case LightningStrike lightningStrike -> {
+                if (lightningStrike.hasMetadata("nodamage"))
+                    e.setCancelled(true);
+            }
             case WitherSkull witherSkull when entity instanceof ArmorStand -> {
                 if (witherSkull.hasMetadata("ignoreblockbreak"))
                     e.setCancelled(true);

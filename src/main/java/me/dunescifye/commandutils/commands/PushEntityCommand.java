@@ -20,31 +20,6 @@ public class PushEntityCommand extends Command implements Registerable {
         EntitySelectorArgument.OneEntity targetArg = new EntitySelectorArgument.OneEntity("Target");
         StringArgument worldArg = new StringArgument("World");
 
-        /*
-        new CommandAPICommand("pushentity")
-            .withArguments(entitiesArg)
-            .withArguments(worldArg)
-            .withArguments(locArg)
-            .withOptionalArguments(multiplierArg)
-            .executes((sender, args) -> {
-                Collection<Entity> entities = args.getByArgument(entitiesArg);
-                Location location = args.getByArgument(locArg);
-                World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                Vector vector = location.toVector();
-                double multiplier = args.getByArgumentOrDefault(multiplierArg, 1.0);
-
-                for (Entity entity : entities) {
-                    if (entity.getWorld() != world) continue;
-
-                    entity.setVelocity(vector.subtract(entity.getLocation().toVector()).normalize().multiply(multiplier));
-                }
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
-
-         */
-
         //No World Arg
         new CommandAPICommand("pushentity")
             .withArguments(entitiesArg)

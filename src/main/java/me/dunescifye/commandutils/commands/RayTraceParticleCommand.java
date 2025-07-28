@@ -7,6 +7,8 @@ import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -20,7 +22,7 @@ public class RayTraceParticleCommand extends Command implements Registerable {
         IntegerArgument lengthArg = new IntegerArgument("Length");
         DoubleArgument spacingArg = new DoubleArgument("Spacing");
         IntegerArgument periodArg = new IntegerArgument("Period");
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OneEntity entityArg = new EntitySelectorArgument.OneEntity("Entity");
         TextArgument commandsArg = new TextArgument("Commands");
         TextArgument commandSeparatorArg = new TextArgument("Command Separator");
         TextArgument xPlaceholder = new TextArgument("X Placeholder");
@@ -32,15 +34,17 @@ public class RayTraceParticleCommand extends Command implements Registerable {
             .withArguments(lengthArg)
             .withArguments(spacingArg)
             .withArguments(periodArg)
-            .withArguments(playerArg)
+            .withArguments(entityArg)
             .withOptionalArguments(commandsArg)
             .withOptionalArguments(commandSeparatorArg)
             .withOptionalArguments(xPlaceholder)
             .withOptionalArguments(yPlaceholder)
             .withOptionalArguments(zPlaceholder)
             .executes((sender, args) -> {
+                Entity entity = args.getByArgument(entityArg);
+                if (!(entity instanceof LivingEntity livingEntity)) return;
                 rayTraceParticle(
-                    args.getByArgument(playerArg),
+                    livingEntity,
                     args.getByArgument(particleArg),
                     args.getByArgument(lengthArg),
                     args.getByArgument(spacingArg),
@@ -57,10 +61,10 @@ public class RayTraceParticleCommand extends Command implements Registerable {
             .register(this.getNamespace());
     }
 
-    private static void rayTraceParticle(Player p, ParticleData<?> particle, int length, double spacing, int period, String commands, String commandSeparator, String xPlaceholder, String yPlaceholder, String zPlaceholder) {
-        Location startLocation = p.getEyeLocation();
+    private static void rayTraceParticle(LivingEntity e, ParticleData<?> particle, int length, double spacing, int period, String commands, String commandSeparator, String xPlaceholder, String yPlaceholder, String zPlaceholder) {
+        Location startLocation = e.getEyeLocation();
         Vector direction = startLocation.getDirection();
-        World world = p.getWorld();
+        World world = e.getWorld();
 
         if (period > 0) {
             new BukkitRunnable() {
