@@ -2,6 +2,7 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
 
@@ -25,10 +26,7 @@ public class RemoveEntityCommand extends Command implements Registerable {
             .executes((sender, args) -> {
                 Collection<Entity> entities = args.getByArgument(entitiesArg);
 
-                for (Entity entity : entities) {
-                    if (entity instanceof Mob mob)
-                        mob.remove();
-                }
+                for (Entity entity : entities) entity.remove();
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
