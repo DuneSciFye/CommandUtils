@@ -190,7 +190,7 @@ public class Placeholders extends PlaceholderExpansion {
 
                 try {
                     for (int i = 0; i < partsRandomInt.length; i++) {
-                        randomint[i] = Integer.parseInt(arguments);
+                        randomint[i] = Integer.parseInt(partsRandomInt[i]);
                     }
                 } catch (NumberFormatException e) {
                     return "Only integer numbers are allowed.";

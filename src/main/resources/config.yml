@@ -175,7 +175,7 @@ Commands:
     Aliases: []
     Permission: "commandutils.command.itemattributecommand"
 
-  ItemDurability:
+  ItemDamage:
     Enabled: true
     Aliases: []
 

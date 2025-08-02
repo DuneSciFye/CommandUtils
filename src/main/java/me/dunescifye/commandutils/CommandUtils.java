@@ -1,8 +1,6 @@
 package me.dunescifye.commandutils;
 
-import cc.javajobs.wgbridge.provider.WorldGuardProviderManager;
 import com.jeff_media.customblockdata.CustomBlockData;
-import com.sk89q.worldguard.WorldGuard;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import me.dunescifye.commandutils.commands.*;
@@ -11,7 +9,6 @@ import me.dunescifye.commandutils.listeners.*;
 import me.dunescifye.commandutils.commands.Command;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Creaking;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
@@ -112,7 +109,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("SetCompassTracking", new SetCompassTrackingCommand());
         commands.put("SpawnWitherSkull", new SpawnWitherSkullCommand());
         commands.put("SetArmorTrim", new SetArmorTrimCommand());
-        commands.put("ItemDurability", new ItemDurabilityCommand());
+        commands.put("ItemDamage", new ItemDamageCommand());
         commands.put("BreakBlockMultiplyDrops", new BreakBlockMultiplyDropsCommand());
         commands.put("Saturation", new SaturationCommand());
         commands.put("TempVar", new TempVarCommand());
