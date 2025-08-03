@@ -29,14 +29,8 @@ Placeholders:
       ElseIfKeyword: "elseif"
       ElseKeyword: "else"
       ConditionSeparator: "\""
-  InvUtils:
-    Enabled: true
-    FunctionSeparator: "_"
-    AllowCustomSeparator: true
-    Nbt:
-      ArgsSeparator: ","
-    Amount:
-      ArgsSeparator: ","
+    StaticString:
+      Prefix: "&aPrefix"
   BlockUtils:
     Enabled: true
   PlayerUtils:

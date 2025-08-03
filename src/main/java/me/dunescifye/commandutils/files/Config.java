@@ -4,7 +4,7 @@ import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.placeholders.BlockPlaceholders;
-import me.dunescifye.commandutils.placeholders.Placeholders;
+import me.dunescifye.commandutils.placeholders.StringPlaceholders;
 import me.dunescifye.commandutils.commands.Command;
 import me.dunescifye.commandutils.commands.Configurable;
 import me.dunescifye.commandutils.commands.Registerable;
@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 public class Config {
 
     private static final Map<String, List<List<Predicate<Block>>>> predicates = new HashMap<>();
+    public static final Map<String, String> STATIC_STRINGS = new HashMap<>();
 
     private static String namespace = "commandutils", prefix = "";
 
@@ -98,20 +99,27 @@ public class Config {
                         config.set("Placeholders.StringUtils.Enabled", true);
                     }
                     if (config.getBoolean("Placeholders.StringUtils.Enabled", true)) {
-                        new Placeholders(CommandUtils.getInstance(), config).register();
+                        new StringPlaceholders().register();
                         Section placeholderSection = config.getSection("Placeholders.StringUtils");
 
                         if (placeholderSection.getOptionalString("ArgumentSeparator").isEmpty()) {
                             placeholderSection.set("ArgumentSeparator", ",");
                         }
                         if (placeholderSection.isString("ArgumentSeparator")) {
-                            Placeholders.setSeparator(placeholderSection.getString("ArgumentSeparator"));
+                            StringPlaceholders.setSeparator(placeholderSection.getString("ArgumentSeparator"));
                         } else {
                             logger.warning("Configuration Placeholders.StringUtils.ArgumentSeparator is not a string. Found " + placeholderSection.get("ArgumentSeparator"));
                         }
 
                         if (placeholderSection.getOptionalBoolean("AllowCustomSeparator").isEmpty()) {
                             placeholderSection.set("AllowCustomSeparator", true);
+                        }
+
+                        Section staticStringSection = placeholderSection.getSection("StaticString");
+                        for (Object objectKey : staticStringSection.getKeys()) {
+                            if (objectKey instanceof String key) {
+                                STATIC_STRINGS.put(key, staticStringSection.getString(key));
+                            }
                         }
                     }
                     if (config.getBoolean("Placeholders.BlockUtils.Enabled", true)) {

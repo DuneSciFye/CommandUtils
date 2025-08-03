@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.placeholders;
 
-import dev.dejvokep.boostedyaml.YamlDocument;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -9,6 +8,7 @@ import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.commands.IfCommand;
 import me.dunescifye.commandutils.commands.TempPlayerVarCommand;
 import me.dunescifye.commandutils.commands.TempVarCommand;
+import me.dunescifye.commandutils.files.Config;
 import me.dunescifye.commandutils.listeners.BowForceTracker;
 import me.dunescifye.commandutils.listeners.ExperienceTracker;
 import me.dunescifye.commandutils.listeners.PlayerDamageTracker;
@@ -39,7 +39,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,67 +46,15 @@ import static me.dunescifye.commandutils.CommandUtils.worldGuardEnabled;
 import static me.dunescifye.commandutils.utils.Utils.*;
 import static me.dunescifye.commandutils.utils.WorldGuardUtils.getRegions;
 
-public class Placeholders extends PlaceholderExpansion {
+public class StringPlaceholders extends PlaceholderExpansion {
 
     private static String defaultSeparator = ",";
-    private static String elseIfKeyword, elseKeyword, conditionSeparator;
-    private static String nbtSeparator = ",";
-    private static String amountSeparator = ",";
 
     private static final BlockFace[] blockFaces = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
 
 
-    public Placeholders(CommandUtils plugin, YamlDocument config) {
-        Logger logger = plugin.getLogger();
-
-        if (config.isString("Placeholders.StringUtils.If.ElseIfKeyword")) {
-            elseIfKeyword = config.getString("Placeholders.StringUtils.If.ElseIfKeyword");
-            if (elseIfKeyword == null)
-                config.set("Placeholders.StringUtils.If.ElseIfKeyword", "elseif");
-        } else {
-            logger.warning("Configuration Placeholders.StringUtils.If.ElseIfKeyword is not a String. Using default value of `elseif`");
-            elseIfKeyword = "elseif";
-        }
-
-        if (config.isString("Placeholders.StringUtils.If.ElseKeyword")) {
-            elseKeyword = config.getString("Placeholders.StringUtils.If.ElseKeyword");
-            if (elseKeyword == null)
-                config.set("Placeholders.StringUtils.If.elseKeyword", "else");
-        } else {
-            logger.warning("Configuration Placeholders.StringUtils.If.ElseKeyword is not a String. Using default value of `else`");
-            elseKeyword = "else";
-        }
-
-        if (config.isString("Placeholders.StringUtils.If.ConditionSeparator")) {
-            conditionSeparator = config.getString("Placeholders.StringUtils.If.ConditionSeparator");
-            if (conditionSeparator == null)
-                config.set("Placeholders.StringUtils.If.ConditionSeparator", "\\\"");
-        } else {
-            logger.warning("Configuration Placeholders.StringUtils.If.ConditionSeparator is not a String. Using default value of `\"`");
-            conditionSeparator = "\"";
-        }
-        if (config.isString("Placeholders.InvUtils.Nbt.ArgsSeparator")) {
-            nbtSeparator = config.getString("Placeholders.InvUtils.Nbt.ArgsSeparator");
-            if (nbtSeparator == null)
-                config.set("Placeholders.InvUtils.Nbt.ArgsSeparator", ",");
-        } else {
-            logger.warning("Configuration Placeholders.InvUtils.Nbt.ArgsSeparator is not a String. Using default value of `,`");
-            nbtSeparator = ",";
-        }
-
-        if (config.isString("Placeholders.InvUtils.Amount.ArgsSeparator")) {
-            amountSeparator = config.getString("Placeholders.InvUtils.Amount.ArgsSeparator");
-            if (amountSeparator == null)
-                config.set("Placeholders.InvUtils.Amount.ArgsSeparator", ",");
-        } else {
-            logger.warning("Configuration Placeholders.InvUtils.Amount.ArgsSeparator is not a String. Using default value of `,`");
-            amountSeparator = ",";
-        }
-    }
-
-
     public static void setSeparator(String separator) {
-        Placeholders.defaultSeparator = separator;
+        StringPlaceholders.defaultSeparator = separator;
     }
 
     @Override
@@ -271,7 +218,7 @@ public class Placeholders extends PlaceholderExpansion {
                 }
 
                 String[] splitWeightedRandom = arguments.split(separator);
-                List<String> splitWeightedRandom2 = new ArrayList<String>();
+                List<String> splitWeightedRandom2 = new ArrayList<>();
 
                 for (int i = 0; i < splitWeightedRandom.length; i += 2) {
                     for (int j = 0; j < Integer.parseInt(splitWeightedRandom[i + 1]); j++) {
@@ -660,7 +607,7 @@ public class Placeholders extends PlaceholderExpansion {
                 return item.getType().toString();
             }
             case "nbt" -> {
-                String[] argsNbt = arguments.split(nbtSeparator);
+              String[] argsNbt = arguments.split(",");
                 if (p == null) return "Null player";
                 if (argsNbt.length < 3) return "Missing arguments";
 
@@ -1127,6 +1074,12 @@ public class Placeholders extends PlaceholderExpansion {
                     }
                 }
                 return "false";
+            }
+            case "staticstring" -> {
+                String[] args = arguments.split(separator);
+                if (args.length < 1) return "Missing args.";
+                String value = Config.STATIC_STRINGS.get(args[0]);
+                return value == null ? "" : value;
             }
             default -> {
                 return "Unknown function";
