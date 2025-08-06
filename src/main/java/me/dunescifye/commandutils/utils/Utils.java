@@ -491,10 +491,10 @@ public class Utils {
                 throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Unknown Attribute ").appendArgInput());
             }
 
-        })/*.replaceSuggestions(ArgumentSuggestions.strings(
+        }).replaceSuggestions(ArgumentSuggestions.strings(
             Registry.ATTRIBUTE.stream().map(Attribute::toString).toArray(String[]::new)
 
-        ))*/;
+        ));
     }
 
     public static Argument<AttributeModifier.Operation> operationArgument(String nodeName) {
@@ -528,5 +528,43 @@ public class Utils {
             return recipe.getResult().getType();
         }
         return mat;
+    }
+
+    public static boolean checkCondition(String input) {
+        for (String conditions : input.split("&&| and ")) {
+            try {
+                if (conditions.contains("!=")) {
+                    String[] condition = conditions.split("!=", 2);
+                    if (Objects.equals(condition[0].trim(), condition[1].trim())) return false;
+                } else if (conditions.contains(">=")) {
+                    String[] condition = conditions.split(">=", 2);
+                    if (!(Double.parseDouble(condition[0].trim()) >= Double.parseDouble(condition[1].trim()))) return false;
+                } else if (conditions.contains("<=")) {
+                    String[] condition = conditions.split("<=", 2);
+                    if (!(Double.parseDouble(condition[0]) <= Double.parseDouble(condition[1]))) return false;
+                } else if (conditions.contains(">")) {
+                    String[] condition = conditions.split(">", 2);
+                    if (!(Double.parseDouble(condition[0]) > Double.parseDouble(condition[1]))) return false;
+                } else if (conditions.contains("<")) {
+                    String[] condition = conditions.split("<", 2);
+                    if (!(Double.parseDouble(condition[0]) < Double.parseDouble(condition[1]))) return false;
+                } else if (conditions.contains("==")) {
+                    String[] condition = conditions.split("==", 2);
+                    if (!Objects.equals(condition[0].trim(), condition[1].trim())) return false;
+                } else if (conditions.contains("=")) {
+                    String[] condition = conditions.split("=", 2);
+                    if (!Objects.equals(condition[0].trim(), condition[1].trim())) return false;
+                } else if (conditions.contains(" !contains ")) {
+                    String[] condition = conditions.split(" !contains ", 2);
+                    if (condition[0].trim().contains(condition[1].trim())) return false;
+                } else if (conditions.contains(" contains ")) {
+                    String[] condition = conditions.split(" contains ", 2);
+                    if (!condition[0].trim().contains(condition[1].trim())) return false;
+                }
+            } catch (IllegalArgumentException | NullPointerException e) {
+                return false;
+            }
+        }
+        return true;
     }
 }

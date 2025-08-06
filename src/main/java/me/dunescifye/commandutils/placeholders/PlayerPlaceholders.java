@@ -5,7 +5,9 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.WeatherType;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Wither;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,6 +61,9 @@ public class PlayerPlaceholders extends PlaceholderExpansion {
             case "israining" -> {
                 return String.valueOf(p.getWorld().hasStorm());
             }
+            case "iscrouching" -> {
+                return String.valueOf(p.isSneaking());
+            }
             case "vehicle" -> {
                 Entity v = p.getVehicle();
                 if (v == null) return "";
@@ -68,6 +73,17 @@ public class PlayerPlaceholders extends PlaceholderExpansion {
                 Entity v = p.getVehicle();
                 if (v == null) return "";
                 return String.valueOf(v.getUniqueId());
+            }
+            case "nearentity" -> {
+                if (args == null || args.length < 2) return "Missing args.";
+                EntityType entity = EntityType.valueOf(args[0].toUpperCase());
+                double distance = Double.parseDouble(args[1]);
+                for (Entity e : p.getNearbyEntities(distance, distance, distance)) {
+                    if (e.getType().equals(entity)) {
+                        return "true";
+                    }
+                }
+                return "false";
             }
             default -> {
                 return null;
