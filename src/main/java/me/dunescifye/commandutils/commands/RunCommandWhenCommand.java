@@ -6,6 +6,7 @@ import dev.jorel.commandapi.arguments.*;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.Utils;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.ProxiedCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -26,8 +27,8 @@ public class RunCommandWhenCommand extends Command implements Registerable {
     LiteralArgument removeArg = new LiteralArgument("remove");
     StringArgument commandIDArg = new StringArgument("Command ID");
     TextArgument conditionArg = new TextArgument("Condition");
-    IntegerArgument delayArg = new IntegerArgument("Initial Delay");
-    IntegerArgument periodArg = new IntegerArgument("Period");
+    StringArgument delayArg = new StringArgument("Initial Delay");
+    StringArgument periodArg = new StringArgument("Period");
     TextArgument placeholderSurrounderArg = new TextArgument("Placeholder Surrounder");
     TextArgument commandSeparatorArg = new TextArgument("Command Separator");
     GreedyStringArgument commandsArg = new GreedyStringArgument("Commands");
@@ -36,13 +37,14 @@ public class RunCommandWhenCommand extends Command implements Registerable {
       .withArguments(addArg, commandIDArg, conditionArg, delayArg, periodArg, placeholderSurrounderArg,
         commandSeparatorArg, commandsArg)
       .executes((sender, args) -> {
-        Player p = sender instanceof ProxiedCommandSender proxy ? (Player) proxy.getCallee() : (Player) sender;
-        String condition = args.getByArgument(conditionArg);
+        Player p = sender instanceof ProxiedCommandSender proxy ? (Player) proxy.getCallee() :
+          sender instanceof OfflinePlayer ? (Player) sender : null;
         String commandID = args.getByArgument(commandIDArg);
-        int delay = args.getByArgument(delayArg);
-        int period = args.getByArgument(periodArg);
+        String delay = args.getByArgument(delayArg);
+        String period = args.getByArgument(periodArg);
         String placeholderSurrounder = args.getByArgument(placeholderSurrounderArg);
         String commandSeparator = args.getByArgument(commandSeparatorArg);
+        String condition = args.getByArgument(conditionArg).replace(placeholderSurrounder, "%");
         String[] commands = args.getByArgument(commandsArg).replace(placeholderSurrounder, "%").split(commandSeparator);
 
         //Cancel task with same ID
@@ -58,12 +60,13 @@ public class RunCommandWhenCommand extends Command implements Registerable {
               this.cancel();
               return;
             }
-            if (Utils.checkCondition(condition)) {
+            if (Utils.checkCondition(PlaceholderAPI.setPlaceholders(p, condition))) {
               this.cancel();
               Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders(p, Arrays.asList(commands)));
             }
           }
-        }.runTaskTimer(CommandUtils.getInstance(), delay, period);
+        }.runTaskTimer(CommandUtils.getInstance(), Utils.parseDuration(delay).toMillis() / 50,
+          Utils.parseDuration(period).toMillis() / 50);
 
         tasks.put(commandID, task);
       })
@@ -72,7 +75,7 @@ public class RunCommandWhenCommand extends Command implements Registerable {
       .register(this.getNamespace());
 
     new CommandTree("runcommandwhen")
-      .then(addArg
+      .then(new LiteralArgument("add")
         .then(new StringArgument("Command ID")
           .then(new PlayerArgument("Player")
             .then(new TextArgument("Compare 1")
