@@ -146,6 +146,9 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("SelectItems", new SelectItemsCommand());
         commands.put("SpawnNoDamageLightning", new SpawnNoDamageLightningCommand());
         commands.put("TrimCommand", new TrimCommandCommand());
+        commands.put("PlaceBlockFromInv", new PlaceBlockFromInvCommand());
+        commands.put("PlaceBlockFromSlot", new PlaceBlockFromSlotCommand());
+        commands.put("SilentSummon", new SilentSummonCommand());
         if (versionAmount > 21.1) commands.put("ItemCooldown", new ItemCooldown());
         if (versionAmount > 21.1) commands.put("ItemAttribute", new ItemAttributeCommand());
         if (versionAmount > 21.1) commands.put("LifeSteal", new LifeStealCommand());

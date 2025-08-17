@@ -2,6 +2,7 @@ package me.dunescifye.commandutils.files;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import dev.jorel.commandapi.CommandPermission;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.placeholders.BlockPlaceholders;
 import me.dunescifye.commandutils.placeholders.StringPlaceholders;
@@ -48,7 +49,7 @@ public class Config {
                 if (commandSection.getOptionalSection(key).isEmpty()) {
                     config.set("Commands." + key + ".Enabled", true);
                     config.set("Commands." + key + ".Aliases", new String[0]);
-                    config.set("Commands." + key + ".Permission", "commandutils.command." + key);
+                    config.set("Commands." + key + ".Permission", "commandutils.command." + key.toLowerCase());
                     continue;
                 }
                 Section keySection = commandSection.getSection(key);
@@ -62,8 +63,8 @@ public class Config {
                         logger.warning("Configuration Commands." + key + ".Aliases is not a list. Found " + keySection.get("Aliases"));
                     }
                 }
-
-                command.setPermission(keySection.getString("Permission", "commandutils.command." + key.toLowerCase()));
+                command.setPermission(CommandPermission.OP);
+                //command.setPermission(keySection.getString("Permission", "commandutils.command." + key.toLowerCase()));
 
                 if (keySection.getOptionalString("NameSpace").isPresent()) {
                     if (keySection.isString("Namespace")) {

@@ -3,159 +3,59 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.wrappers.ParticleData;
-import me.dunescifye.commandutils.CommandUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.command.ProxiedCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class SilentParticleCommand extends Command implements Registerable {
 
-    @SuppressWarnings("ConstantConditions")
-    public void register(){
+  @SuppressWarnings("ConstantConditions")
+  public void register(){
 
-        ParticleArgument particleArg = new ParticleArgument("Particle");
-        PlayerArgument playerArg = new PlayerArgument("Player");
-        IntegerArgument amountArg = new IntegerArgument("Amount");
-        DoubleArgument xOffsetArg = new DoubleArgument("X Offset");
-        DoubleArgument yOffsetArg = new DoubleArgument("Y Offset");
-        DoubleArgument zOffsetArg = new DoubleArgument("Z Offset");
-        StringArgument worldArg = new StringArgument("World");
-        LocationArgument locArg = new LocationArgument("Location");
-        IntegerArgument loopAmountArg = new IntegerArgument("Loop Amount");
-        IntegerArgument periodArg = new IntegerArgument("Period");
-        IntegerArgument delayArg = new IntegerArgument("Delay");
+    ParticleArgument particleArg = new ParticleArgument("Particle");
+    DoubleArgument xOffsetArg = new DoubleArgument("X Offset");
+    DoubleArgument yOffsetArg = new DoubleArgument("Y Offset");
+    DoubleArgument zOffsetArg = new DoubleArgument("Z Offset");
+    IntegerArgument amountArg = new IntegerArgument("Amount");
+    DoubleArgument speedArg = new DoubleArgument("Speed");
+    LocationArgument locArg = new LocationArgument("Location");
+    BooleanArgument forceArg = new BooleanArgument("Force");
+    EntitySelectorArgument.ManyPlayers viewersArg = new EntitySelectorArgument.ManyPlayers("Viewers");
 
-        /*
-         * Summons Particles, no Console messages
-         * @author DuneSciFye
-         * @since 1.0.0
-         * @param Particle to Spawn
-         * @param Player to Spawn Particles At
-         * @param Amount of Particles to Spawn
-         * @param XOffset Delta in the X Direction to Spawn Particles
-         * @param YOffset Delta in the Y Direction to Spawn Particles
-         * @param ZOffset Delta in the Z Direction to Spawn Particles
-         * @param Loop How many times to Loop Spawning Particles
-         * @param Period Time in between Spawns
-         * @param Delay Initial Delay Before Spawning
-         */
-        new CommandAPICommand("silentparticle")
-            .withArguments(particleArg)
-            .withArguments(playerArg)
-            .withOptionalArguments(amountArg)
-            .withOptionalArguments(xOffsetArg)
-            .withOptionalArguments(yOffsetArg)
-            .withOptionalArguments(zOffsetArg)
-            .withOptionalArguments(loopAmountArg)
-            .withOptionalArguments(periodArg)
-            .withOptionalArguments(delayArg)
-            .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
-                ParticleData<?> particleData = args.getByArgument(particleArg);
-                Particle particle = particleData.particle();
-                Location loc = p.getLocation();
-                int amount = args.getByArgumentOrDefault(amountArg, 1);
-                double xOffset = args.getByArgumentOrDefault(xOffsetArg, 0.0);
-                double yOffset = args.getByArgumentOrDefault(yOffsetArg, 0.0);
-                double zOffset = args.getByArgumentOrDefault(zOffsetArg, 0.0);
+    new CommandAPICommand("silentparticle")
+      .withArguments(particleArg, locArg)
+      .withOptionalArguments(xOffsetArg.combineWith(yOffsetArg).combineWith(zOffsetArg))
+      .withOptionalArguments(speedArg, amountArg, forceArg, viewersArg)
+      .executes((sender, args) -> {
+        final ParticleData<?> particleData = args.getByArgument(particleArg);
+        final Particle particle = particleData.particle();
+        final Location loc = args.getByArgument(locArg);
+        final World world = loc.getWorld();
+        final int amount = args.getByArgumentOrDefault(amountArg, 1);
+        final double speed = args.getByArgumentOrDefault(speedArg, 1.0);
+        final double xOffset = args.getByArgumentOrDefault(xOffsetArg, 0.0);
+        final double yOffset = args.getByArgumentOrDefault(yOffsetArg, 0.0);
+        final double zOffset = args.getByArgumentOrDefault(zOffsetArg, 0.0);
+        final boolean force = args.getByArgumentOrDefault(forceArg, false);
+        OfflinePlayer source = null;
+        final Collection<Player> viewers = args.getByArgumentOrDefault(viewersArg, null);
+        final List<Player> viewerList = viewers == null ? null : new ArrayList<>(viewers);
 
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        p.spawnParticle(
-                            particle, loc, amount, xOffset, yOffset, zOffset, particleData.data()
-                        );
-                    }
-                }.runTaskTimer(CommandUtils.getInstance(), args.getByArgumentOrDefault(delayArg, 0), args.getByArgumentOrDefault(periodArg, 5));
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
-        /*
-         * Summons Particles, no Console messages
-         * @author DuneSciFye
-         * @since 1.0.0
-         * @param Particle to Spawn
-         * @param World to Spawn Particles in
-         * @param Location to Spawn Particles in
-         * @param Amount of Particles to Spawn
-         * @param XOffset Delta in the X Direction to Spawn Particles
-         * @param YOffset Delta in the Y Direction to Spawn Particles
-         * @param ZOffset Delta in the Z Direction to Spawn Particles
-         */
-        new CommandAPICommand("silentparticle")
-            .withArguments(particleArg)
-            .withArguments(worldArg)
-            .withArguments(locArg)
-            .withOptionalArguments(amountArg)
-            .withOptionalArguments(xOffsetArg)
-            .withOptionalArguments(yOffsetArg)
-            .withOptionalArguments(zOffsetArg)
-            .executes((sender, args) -> {
-                ParticleData<?> particleData = args.getByArgument(particleArg);
-                Particle particle = particleData.particle();
-                World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                Location loc = args.getByArgument(locArg);
-                int amount = args.getByArgumentOrDefault(amountArg, 1);
-                double xOffset = args.getByArgumentOrDefault(xOffsetArg, 0.0);
-                double yOffset = args.getByArgumentOrDefault(yOffsetArg, 0.0);
-                double zOffset = args.getByArgumentOrDefault(zOffsetArg, 0.0);
+        if (sender instanceof OfflinePlayer p) {
+          source = p;
+        } else if (sender instanceof ProxiedCommandSender proxy) {
+          source = (OfflinePlayer) proxy.getCallee();
+        }
 
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        world.spawnParticle(
-                            particle, loc, amount, xOffset, yOffset, zOffset, particleData.data()
-                        );
-                    }
-                }.runTaskTimer(CommandUtils.getInstance(), args.getByArgumentOrDefault(delayArg, 0), args.getByArgumentOrDefault(periodArg, 5));
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
-        /*
-         * Summons Particles, no Console messages
-         * @author DuneSciFye
-         * @since 1.0.0
-         * @param Particle to Spawn
-         * @param Location to Spawn Particles in
-         * @param Amount of Particles to Spawn
-         * @param XOffset Delta in the X Direction to Spawn Particles
-         * @param YOffset Delta in the Y Direction to Spawn Particles
-         * @param ZOffset Delta in the Z Direction to Spawn Particles
-         */
-        new CommandAPICommand("silentparticle")
-            .withArguments(particleArg)
-            .withArguments(locArg)
-            .withOptionalArguments(amountArg)
-            .withOptionalArguments(xOffsetArg)
-            .withOptionalArguments(yOffsetArg)
-            .withOptionalArguments(zOffsetArg)
-            .executes((sender, args) -> {
-                ParticleData<?> particleData = args.getByArgument(particleArg);
-                Particle particle = particleData.particle();
-                Location loc = args.getByArgument(locArg);
-                World world = loc.getWorld();
-                int amount = args.getByArgumentOrDefault(amountArg, 1);
-                double xOffset = args.getByArgumentOrDefault(xOffsetArg, 0.0);
-                double yOffset = args.getByArgumentOrDefault(yOffsetArg, 0.0);
-                double zOffset = args.getByArgumentOrDefault(zOffsetArg, 0.0);
-
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        world.spawnParticle(
-                            particle, loc, amount, xOffset, yOffset, zOffset, particleData.data()
-                        );
-                    }
-                }.runTaskTimer(CommandUtils.getInstance(), args.getByArgumentOrDefault(delayArg, 0), args.getByArgumentOrDefault(periodArg, 5));
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
-    }
+        world.spawnParticle(particle, viewerList, source.getPlayer(), loc.getX(), loc.getY(), loc.getZ(), amount, xOffset, yOffset, zOffset, speed, particleData.data(), force);
+      })
+      .withPermission(this.getPermission())
+      .withAliases(this.getCommandAliases())
+      .register(this.getNamespace());
+  }
 
 }

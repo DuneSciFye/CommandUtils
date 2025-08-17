@@ -55,7 +55,10 @@ public class RemoveNBTItemCommand extends Command implements Registerable {
                 for (ItemStack invItem : items) {
                     if (invItem == null || !invItem.hasItemMeta()) continue;
                     PersistentDataContainer pdc = invItem.getItemMeta().getPersistentDataContainer();
-                    if (!pdc.has(key, PersistentDataType.STRING)  || !invItem.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING).equals(value)) continue;
+                    if ((!pdc.has(key, PersistentDataType.STRING) || !invItem.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING).equals(value))
+                    && (!pdc.has(key, PersistentDataType.DOUBLE) || !(invItem.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.DOUBLE) == Double.parseDouble(value)))
+                      && (!pdc.has(key, PersistentDataType.INTEGER) || !(invItem.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.INTEGER) == Integer.parseInt(value))))
+                      continue;
                     if (amountFound + invItem.getAmount() > maxamount) {
                         invItem.setAmount(invItem.getAmount() - maxamount + amountFound);
                         break;

@@ -29,7 +29,7 @@ public class ArgumentUtils {
         ).replaceSuggestions(listArgument.getOverriddenSuggestions().get());
     }
 
-    public static Argument<List<Material>> materialArgument(String nodeName) {
+    public static Argument<List<Material>> materialsArgument(String nodeName) {
 
         Argument<List> listArgument = new ListArgumentBuilder<String>(nodeName)
           .withList(Utils.getMaterialsList())
@@ -40,6 +40,12 @@ public class ArgumentUtils {
           listArgument,
           info -> Utils.stringListToMaterials((List<String>) info.currentInput())
         ).replaceSuggestions(listArgument.getOverriddenSuggestions().get());
+    }
+
+    public static Argument<Material> materialArgument(String nodeName) {
+        return new CustomArgument<>(new StringArgument(nodeName),
+          info -> Material.getMaterial(info.input().toUpperCase())
+        ).replaceSuggestions(ArgumentSuggestions.strings(Utils.getMaterialsList()));
     }
 
 }

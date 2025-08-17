@@ -26,7 +26,7 @@ public class SetEnchantmentCommand extends Command implements Registerable {
         Player player = sender instanceof ProxiedCommandSender proxy ? (Player) proxy.getCallee() : (Player) sender;
         String slot = args.getByArgument(slotArg);
         Enchantment enchant = args.getByArgument(enchantArg);
-        int level = args.getByArgument(levelArg);
+        Integer level = args.getByArgument(levelArg);
 
         ItemStack item = Utils.getInvItem(player, slot);
         if (item == null) return;

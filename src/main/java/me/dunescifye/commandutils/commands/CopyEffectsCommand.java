@@ -14,53 +14,56 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class CopyEffectsCommand extends Command implements Registerable {
-    @SuppressWarnings({"ConstantConditions", "unchecked"})
-    @Override
-    public void register() {
+  @SuppressWarnings({"ConstantConditions", "unchecked"})
+  @Override
+  public void register() {
 
-        EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities To Copy From");
-        ListTextArgument<PotionEffectType> potionsArg = new ListArgumentBuilder<PotionEffectType>("Potion Types")
-            .withList(Registry.EFFECT.stream().collect(Collectors.toList()))
-            .withMapper(potionEffectType -> potionEffectType.getKey().value())
-            .buildText();
-        IntegerArgument amplifierArg = new IntegerArgument("Amplifier", 0);
-        StringArgument durationArg = new StringArgument("Duration");
-        BooleanArgument removeEffectArg = new BooleanArgument("Remove Effect From Targets");
+    EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities To Copy From");
+    ListTextArgument<PotionEffectType> potionsArg = new ListArgumentBuilder<PotionEffectType>("Potion Types")
+      .withList(Registry.EFFECT.stream().collect(Collectors.toList()))
+      .withMapper(potionEffectType -> potionEffectType.getKey().value())
+      .buildText();
+    IntegerArgument amplifierArg = new IntegerArgument("Amplifier", 0);
+    StringArgument durationArg = new StringArgument("Duration");
+    BooleanArgument removeEffectArg = new BooleanArgument("Remove Effect From Targets");
+    BooleanArgument ignoreInfiniteArg = new BooleanArgument("Ignore Infinite Duration Effects");
 
-        new CommandAPICommand("copyeffects")
-            .withArguments(entitiesArg, potionsArg)
-            .withOptionalArguments(amplifierArg, durationArg)
-            .executes((sender, args) -> {
-                LivingEntity commandSender;
-                if (sender instanceof LivingEntity livingEntity) {
-                    commandSender = livingEntity;
-                } else if (sender instanceof ProxiedCommandSender proxy) {
-                    commandSender = (LivingEntity) proxy.getCallee();
-                } else {
-                    return;
-                }
-                final Collection<Entity> entities = args.getByArgument(entitiesArg);
-                final Collection<PotionEffectType> effects = args.getByArgument(potionsArg);
-                final boolean removeEffect = args.getByArgumentOrDefault(removeEffectArg, false);
+    new CommandAPICommand("copyeffects")
+      .withArguments(entitiesArg, potionsArg)
+      .withOptionalArguments(amplifierArg, durationArg, removeEffectArg, ignoreInfiniteArg)
+      .executes((sender, args) -> {
+        LivingEntity commandSender;
+        if (sender instanceof LivingEntity livingEntity) {
+          commandSender = livingEntity;
+        } else if (sender instanceof ProxiedCommandSender proxy) {
+          commandSender = (LivingEntity) proxy.getCallee();
+        } else {
+          return;
+        }
+        final Collection<Entity> entities = args.getByArgument(entitiesArg);
+        final Collection<PotionEffectType> effects = args.getByArgument(potionsArg);
+        final boolean removeEffect = args.getByArgumentOrDefault(removeEffectArg, false);
+        final boolean ignoreInfinite = args.getByArgumentOrDefault(ignoreInfiniteArg, false);
 
-                for (Entity entity : entities) {
-                    if (!(entity instanceof LivingEntity livingEntity))
-                        continue;
+        for (Entity entity : entities) {
+          if (!(entity instanceof LivingEntity livingEntity))
+            continue;
 
-                    for (PotionEffect potion : livingEntity.getActivePotionEffects())
-                        if (effects.contains(potion.getType())) {
-                            commandSender.addPotionEffect(potion
-                                .withAmplifier(args.getByArgumentOrDefault(amplifierArg, potion.getAmplifier()))
-                                .withDuration((int) (Utils.parseDuration(args.getByArgumentOrDefault(durationArg, String.valueOf(potion.getDuration()))).toMillis() / 50L)));
-                            if (removeEffect) {
-                                livingEntity.removePotionEffect(potion.getType());
-                            }
-                        }
-                }
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
+          for (PotionEffect potion : livingEntity.getActivePotionEffects())
+            if (effects.contains(potion.getType())) {
+              if (ignoreInfinite && potion.isInfinite()) continue;
+              commandSender.addPotionEffect(potion
+                .withAmplifier(args.getByArgumentOrDefault(amplifierArg, potion.getAmplifier()))
+                .withDuration((int) (Utils.parseDuration(args.getByArgumentOrDefault(durationArg, String.valueOf(potion.getDuration()))).toMillis() / 50L)));
+              if (removeEffect) {
+                livingEntity.removePotionEffect(potion.getType());
+              }
+            }
+        }
+      })
+      .withPermission(this.getPermission())
+      .withAliases(this.getCommandAliases())
+      .register(this.getNamespace());
 
-    }
+  }
 }

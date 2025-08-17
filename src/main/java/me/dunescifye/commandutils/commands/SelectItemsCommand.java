@@ -32,7 +32,7 @@ public class SelectItemsCommand extends Command implements Registerable {
     TextArgument placeholderSurrounderArg = new TextArgument("Placeholder Surrounder");
     BooleanArgument customPlaceholdersArg = new BooleanArgument("Custom Placeholders");
     GreedyStringArgument functionsArg = new GreedyStringArgument("Functions");
-    Argument<List<Material>> materialsArg = materialArgument("Materials");
+    Argument<List<Material>> materialsArg = materialsArgument("Materials");
 
     new CommandAPICommand("selectitems")
       .withArguments(worldArg, locArg, playerArg, radiusArg, materialsArg, commandSeparatorArg, placeholderSurrounderArg,

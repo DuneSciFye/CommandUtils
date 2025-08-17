@@ -35,6 +35,8 @@ public class LifeStealCommand extends Command implements Registerable {
           }
         }
       }, ExecutorType.PROXY, ExecutorType.PLAYER)
+      .withPermission(this.getPermission())
+      .withAliases(this.getCommandAliases())
       .register(this.getNamespace());
   }
 }

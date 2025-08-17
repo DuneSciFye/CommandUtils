@@ -1,5 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
+import dev.jorel.commandapi.CommandPermission;
 import me.dunescifye.commandutils.files.Config;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -7,7 +8,7 @@ public abstract class Command {
 
     private boolean enabled = true;
     private String[] commandAliases = new String[0];
-    private String permission;
+    private CommandPermission permission;
     private String namespace = Config.getNamespace();
 
     public void setEnabled(boolean enabled) {
@@ -28,13 +29,14 @@ public abstract class Command {
         this.commandAliases = ArrayUtils.addAll(this.commandAliases, commandAliases);
     }
 
-    public String getPermission() {
-        return permission;
+    public CommandPermission getPermission() {
+        return CommandPermission.OP;
     }
 
-    public void setPermission(String permission) {
+    public void setPermission(CommandPermission permission) {
         this.permission = permission;
     }
+
 
 
 

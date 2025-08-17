@@ -614,15 +614,23 @@ public class StringPlaceholders extends PlaceholderExpansion {
                 ItemStack item = getInvItem(p, argsNbt[0]);
                 if (item == null || !item.hasItemMeta()) return "";
 
-                PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
+                PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
                 NamespacedKey key = new NamespacedKey(argsNbt[1], argsNbt[2]);
-                if (!container.has(key)) return "";
+                if (!pdc.has(key)) return "";
 
-                try {
-                    return item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
-                } catch (IllegalArgumentException e) {
-                    return String.valueOf(item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.DOUBLE));
+                if (pdc.has(key, PersistentDataType.STRING)) {
+                    return pdc.get(key, PersistentDataType.STRING);
                 }
+                if (pdc.has(key, PersistentDataType.DOUBLE)) {
+                    Double d = pdc.get(key, PersistentDataType.DOUBLE);
+                    return d == null ? "" : String.valueOf(d);
+                }
+                if (pdc.has(key, PersistentDataType.INTEGER)) {
+                    Integer i = pdc.get(key, PersistentDataType.INTEGER);
+                    return i == null ? "" : String.valueOf(i);
+                }
+
+                return "Invalid key type";
             }
             case "dumpitem" -> {
                 String[] args = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);

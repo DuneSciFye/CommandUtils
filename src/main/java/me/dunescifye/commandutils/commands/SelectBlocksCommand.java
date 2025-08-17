@@ -136,7 +136,12 @@ public class SelectBlocksCommand extends Command implements Registerable {
                 }
             } else if (function.equals("BLOCK:BONE_MEAL")) {
                 b.applyBoneMeal(BlockFace.UP);
-            } else if (function.equals("ITEM:SMELT")) {
+            }
+            else if (function.equals("BLOCK:WAX")) {
+                Material waxedMat = Material.matchMaterial("WAXED_" + b.getType());
+                if (waxedMat != null) b.setType(waxedMat);
+            }
+            else if (function.equals("ITEM:SMELT")) {
                 Collection<ItemStack> smeltedDrops = new ArrayList<>();
                 for (ItemStack drop : drops) {
                     smeltedDrops.add(drop.withType(smeltMaterial(drop.getType())));
