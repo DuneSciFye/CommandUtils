@@ -5,10 +5,7 @@ import io.papermc.paper.registry.RegistryKey;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Registry;
+import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -146,12 +143,16 @@ public class PlayerPlaceholders extends PlaceholderExpansion {
                 );
                 if (biome == null) return "Invalid Biome";
 
-                BiomeSearchResult searchResult = p.getWorld().locateNearestBiome(p.getLocation(), radius, biome);
+                World world = p.getWorld();
+
+                BiomeSearchResult searchResult = world.locateNearestBiome(p.getLocation(), radius, biome);
                 if (searchResult == null) return "No biome found";
 
                 Location loc = searchResult.getLocation();
 
-                return loc.x() + " " + loc.y() + " " + loc.z();
+                int y = world.getHighestBlockYAt(loc);
+
+                return loc.x() + " " + y + " " + loc.z();
 
             }
             default -> {
