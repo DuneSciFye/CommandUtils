@@ -39,7 +39,7 @@ public class ItemAttributeCommand extends Command implements Registerable {
                     args.getByArgument(playerArg),
                     (String) args.get("Slot")
                 );
-                if (item == null)
+                if (item == null || !item.hasItemMeta())
                     return;
 
                 ItemMeta meta = item.getItemMeta();
