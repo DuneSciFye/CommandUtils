@@ -4,6 +4,9 @@ import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.files.Config;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ProxiedCommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -46,6 +49,10 @@ public class ArgumentUtils {
         return new CustomArgument<>(new StringArgument(nodeName),
           info -> Material.getMaterial(info.input().toUpperCase())
         ).replaceSuggestions(ArgumentSuggestions.strings(Utils.getMaterialsList()));
+    }
+
+    public static Player getPlayer(CommandSender sender) {
+        return sender instanceof ProxiedCommandSender proxy ? (Player) proxy.getCallee() : (Player) sender;
     }
 
 }

@@ -7,6 +7,8 @@ import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ProxiedCommandSender;
 import org.bukkit.entity.Player;
 
 import static com.massivecraft.factions.listeners.FactionsBlockListener.playerCanBuildDestroyBlock;

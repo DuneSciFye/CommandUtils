@@ -1,19 +1,23 @@
 package me.dunescifye.commandutils.utils;
 
-import dev.jorel.commandapi.arguments.*;
+import dev.jorel.commandapi.arguments.Argument;
+import dev.jorel.commandapi.arguments.ArgumentSuggestions;
+import dev.jorel.commandapi.arguments.CustomArgument;
+import dev.jorel.commandapi.arguments.StringArgument;
 import me.dunescifye.commandutils.CommandUtils;
-import net.coreprotect.CoreProtectAPI;
 import net.coreprotect.CoreProtect;
+import net.coreprotect.CoreProtectAPI;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.plugin.Plugin;
 
 import java.time.Duration;
@@ -26,7 +30,6 @@ import java.util.stream.Collectors;
 
 import static org.bukkit.Bukkit.getServer;
 
-@SuppressWarnings({"UnstableApiUsage", "unchecked"})
 public class Utils {
 
     private static final Collection<String> PREDICATES_LIST = new ArrayList<>();
@@ -116,7 +119,7 @@ public class Utils {
             return false;
         }
         if (lookup != null && !lookup.isEmpty()) {
-            CoreProtectAPI.ParseResult parseResult = getCoreProtect().parseResult(lookup.get(0));
+            CoreProtectAPI.ParseResult parseResult = getCoreProtect().parseResult(lookup.getFirst());
             return parseResult.getPlayer().startsWith("#") || parseResult.isRolledBack();
         }
         return true;
