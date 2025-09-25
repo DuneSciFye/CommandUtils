@@ -18,7 +18,6 @@ public class BowForceTracker implements Listener {
     public void bowForceHandler(CommandUtils plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
-
     @EventHandler
     public void onShoot(EntityShootBowEvent e) {
         if (!(e.getEntity() instanceof Player p)) return;
@@ -33,5 +32,4 @@ public class BowForceTracker implements Listener {
     public static float getBowForce(Player p) {
         return bowForces.getOrDefault(p, 0f);
     }
-
 }
