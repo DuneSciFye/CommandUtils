@@ -155,6 +155,9 @@ public class PlayerPlaceholders extends PlaceholderExpansion {
                 return loc.x() + " " + y + " " + loc.z();
 
             }
+            case "facing" -> {
+                return p.getFacing().toString().toLowerCase();
+            }
             default -> {
                 return null;
             }
