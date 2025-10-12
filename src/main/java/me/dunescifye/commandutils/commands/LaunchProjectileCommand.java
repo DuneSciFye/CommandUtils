@@ -6,6 +6,7 @@ import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.DragonFireball;
+import org.bukkit.entity.WindCharge;
 
 public class LaunchProjectileCommand extends Command implements Registerable {
 
@@ -28,6 +29,9 @@ public class LaunchProjectileCommand extends Command implements Registerable {
                     }
                     case "DRAGONFIREBALL" -> {
                       DragonFireball fireball = p.launchProjectile(DragonFireball.class);
+                    }
+                    case "WIND_CHARGE", "WINDCHARGE" -> {
+                        WindCharge windcharge = p.launchProjectile(WindCharge.class);
                     }
                 }
             })
