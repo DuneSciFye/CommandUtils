@@ -15,33 +15,37 @@ import java.util.logging.Logger;
 
 public class MobTargetCommand extends Command implements Registerable {
 
-    @SuppressWarnings("ConstantConditions")
-    @Override
-    public void register() {
+  @SuppressWarnings("ConstantConditions")
+  @Override
+  public void register() {
 
-        EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
-        EntitySelectorArgument.ManyEntities targetsArg = new EntitySelectorArgument.ManyEntities("Targets");
+    EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
+    EntitySelectorArgument.ManyEntities targetsArg = new EntitySelectorArgument.ManyEntities("Targets");
 
-        new CommandAPICommand("mobtarget")
-            .withArguments(entitiesArg)
-            .withArguments(targetsArg)
-            .executes((sender, args) -> {
-                Collection<Entity> entities = args.getByArgument(entitiesArg);
-                Collection<Entity> targets = args.getByArgument(targetsArg);
-                Entity[] targetsArray = targets.toArray(new Entity[0]);
+    new CommandAPICommand("mobtarget")
+      .withArguments(entitiesArg)
+      .withOptionalArguments(targetsArg)
+      .executes((sender, args) -> {
+        Collection<Entity> entities = args.getByArgument(entitiesArg);
+        Collection<Entity> targets = args.getByArgument(targetsArg);
+        Entity[] targetsArray = targets == null ? null : targets.toArray(new Entity[0]);
 
-                for (Entity entity : entities) {
-                    if (entity instanceof Creature creature) {
-                        Entity target = targetsArray[ThreadLocalRandom.current().nextInt(Math.max(0, targetsArray.length))];
-                        if (!(target instanceof LivingEntity livingEntity)) continue;
+        for (Entity entity : entities) {
+          if (entity instanceof Creature creature) {
+            if (targetsArray == null || targetsArray.length == 0) {
+              creature.setTarget(null);
+              continue;
+            }
+            Entity target = targetsArray[ThreadLocalRandom.current().nextInt(Math.max(0, targetsArray.length))];
+            if (!(target instanceof LivingEntity livingEntity)) continue;
 
-                        creature.setTarget(livingEntity);
-                    }
-                }
+            creature.setTarget(livingEntity);
+          }
+        }
 
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
-    }
+      })
+      .withPermission(this.getPermission())
+      .withAliases(this.getCommandAliases())
+      .register(this.getNamespace());
+  }
 }

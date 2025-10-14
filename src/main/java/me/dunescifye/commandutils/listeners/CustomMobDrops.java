@@ -2,6 +2,7 @@ package me.dunescifye.commandutils.listeners;
 
 import com.jeff_media.morepersistentdatatypes.DataType;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
@@ -17,6 +18,7 @@ public class CustomMobDrops implements Listener {
 
     public static final NamespacedKey noVanillaDropsKey = new NamespacedKey("commandutils", "novanilladrops");
     public static final NamespacedKey dropsKey = new NamespacedKey("commandutils", "drops");
+    public static final NamespacedKey commandDropsKey = new NamespacedKey("commandutils", "commanddrops");
 
     public void registerEvents(CommandUtils plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -31,6 +33,10 @@ public class CustomMobDrops implements Listener {
         if (container.has(dropsKey)) {
             ItemStack[] drops = container.get(dropsKey, DataType.ITEM_STACK_ARRAY);
             if (drops != null) e.getDrops().addAll(List.of(drops));
+        }
+        if (container.has(commandDropsKey)) {
+            String[] commands = container.get(commandDropsKey, DataType.STRING_ARRAY);
+            if (commands != null) Utils.runConsoleCommands(commands);
         }
     }
 

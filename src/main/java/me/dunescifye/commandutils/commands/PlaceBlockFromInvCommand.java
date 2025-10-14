@@ -46,7 +46,7 @@ public class PlaceBlockFromInvCommand extends Command implements Registerable {
 
         if (!mat.isBlock() || !block.getType().isAir()) return;
 
-        ItemStack item = player.getInventory().getItemInMainHand().clone();
+        ItemStack item = new ItemStack(mat);
 
         checkInv: if (consume) {
           PlayerInventory inv = player.getInventory();
@@ -68,7 +68,7 @@ public class PlaceBlockFromInvCommand extends Command implements Registerable {
           if (event.isCancelled()) return;
         }
 
-        item.setAmount(item.getAmount() - 1);
+        if (consume) item.setAmount(item.getAmount() - 1);
 
         BlockData newBlock = Bukkit.createBlockData(mat);
         block.setBlockData(newBlock, true);

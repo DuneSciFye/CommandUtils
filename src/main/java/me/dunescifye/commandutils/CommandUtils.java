@@ -150,6 +150,10 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("PlaceBlockFromSlot", new PlaceBlockFromSlotCommand());
         commands.put("SilentSummon", new SilentSummonCommand());
         commands.put("ItemName", new ItemNameCommand());
+        commands.put("SetHeldSlot", new SetHeldSlotCommand());
+        commands.put("LockHeldSlot", new LockHeldSlotCommand());
+        commands.put("MixInventory", new MixInventoryCommand());
+        commands.put("PreventMixInventory", new PreventMixInventoryCommand());
         if (versionAmount > 21.1) commands.put("ItemCooldown", new ItemCooldown());
         if (versionAmount > 21.1) commands.put("ItemAttribute", new ItemAttributeCommand());
         if (versionAmount > 21.1) commands.put("LifeSteal", new LifeStealCommand());

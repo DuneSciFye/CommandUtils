@@ -14,10 +14,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.*;
 import org.bukkit.plugin.Plugin;
 
 import java.time.Duration;
@@ -571,5 +568,32 @@ public class Utils {
             }
         }
         return true;
+    }
+
+
+
+    public static List<ItemStack> getIngredients(Material material) {
+        List<ItemStack> ingredients = new ArrayList<>();
+
+        // Get all recipes that produce this material
+        List<Recipe> recipes = Bukkit.getRecipesFor(new ItemStack(material));
+
+        if (recipes.isEmpty()) {
+            return ingredients; // No recipe found
+        }
+
+        Recipe recipe = recipes.getFirst(); // Take the first one (you could choose differently if multiple)
+
+        if (recipe instanceof ShapedRecipe shaped) {
+            for (ItemStack item : shaped.getIngredientMap().values()) {
+                if (item != null) {
+                    ingredients.add(item);
+                }
+            }
+        } else if (recipe instanceof ShapelessRecipe shapeless) {
+            ingredients.addAll(shapeless.getIngredientList());
+        }
+
+        return ingredients;
     }
 }

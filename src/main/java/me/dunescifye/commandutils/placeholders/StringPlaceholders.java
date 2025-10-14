@@ -13,6 +13,7 @@ import me.dunescifye.commandutils.listeners.BowForceTracker;
 import me.dunescifye.commandutils.listeners.ExperienceTracker;
 import me.dunescifye.commandutils.listeners.PlayerDamageTracker;
 import me.dunescifye.commandutils.utils.FUtils;
+import me.dunescifye.commandutils.utils.Utils;
 import me.libraryaddict.disguise.DisguiseAPI;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -24,6 +25,7 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Rail;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
+import org.bukkit.entity.Damageable;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -958,6 +960,9 @@ public class StringPlaceholders extends PlaceholderExpansion {
                         case "damage" -> {
                             if (e instanceof Arrow arrow) return String.valueOf(arrow.getDamage());
                         }
+                        case "health" -> {
+                            if (e instanceof Damageable damageable) return String.valueOf(damageable.getHealth());
+                        }
                     }
                 } catch (IllegalArgumentException e) {
                     return "Invalid UUID";
@@ -1093,6 +1098,28 @@ public class StringPlaceholders extends PlaceholderExpansion {
                 if (args.length < 1) return "Missing args.";
                 String value = Config.STATIC_STRINGS.get(args[0]);
                 return value == null ? "" : value;
+            }
+            // Material, Ingredient Number
+            case "getingredients" -> {
+                String[] args = arguments.split(separator);
+                if (args.length < 2) return "Missing args.";
+                Material mat = Material.getMaterial(args[0].toUpperCase());
+                if (mat == null) return "Invalid Material";
+                List<ItemStack> ingredients = Utils.getIngredients(mat);
+                Integer number = Integer.parseInt(args[1]);
+                if (number == null) return "Invalid Number";
+                if (number >= ingredients.size()) return "AIR";
+                return ingredients.get(number).getType().toString();
+            }
+            case "randomuuid" -> {
+                return UUID.randomUUID().toString();
+            }
+            // Entity selector
+            case "getuuid" -> {
+                String[] args = arguments.split(separator);
+                if (args.length < 1) return "Missing args.";
+                List<Entity> entities = Bukkit.getServer().selectEntities(p, args[0]);
+                return entities.getFirst().getUniqueId().toString();
             }
             default -> {
                 return "Unknown function";
