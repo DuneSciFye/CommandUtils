@@ -32,7 +32,7 @@ public class LaunchProjectileCommand extends Command implements Registerable {
         TextArgument commandSeparatorArg = new TextArgument("Command Separator");
         GreedyStringArgument commandsArg = new GreedyStringArgument("Commands");
 
-        final String[] projectiles = {"WIND_CHARGE", "DRAGONFIREBALL", "ARROW"};
+        final String[] projectiles = {"WIND_CHARGE", "DRAGONFIREBALL", "ARROW", "SNOWBALL"};
 
         new CommandAPICommand("launchprojectile")
           .withArguments(projArg
@@ -45,12 +45,7 @@ public class LaunchProjectileCommand extends Command implements Registerable {
               final String type = args.getByArgument(projArg);
               final ParticleData<?> particleData = args.getByArgument(particleArg);
 
-              final Projectile proj = switch (type.toUpperCase()) {
-                  case "ARROW" -> p.launchProjectile(Arrow.class);
-                  case "DRAGONFIREBALL" -> p.launchProjectile(DragonFireball.class);
-                  case "WIND_CHARGE", "WINDCHARGE" -> p.launchProjectile(WindCharge.class);
-                  default -> null;
-              };
+              final Projectile proj = summonProjectile(type, p);
 
               if (proj != null && particleData != null) {
                   final Particle particle = particleData.particle();
@@ -97,12 +92,7 @@ public class LaunchProjectileCommand extends Command implements Registerable {
               final Player p = ArgumentUtils.getPlayer(sender);
               final String type = args.getByArgument(projArg);
 
-              final Projectile proj = switch (type.toUpperCase()) {
-                  case "ARROW" -> p.launchProjectile(Arrow.class);
-                  case "DRAGONFIREBALL" -> p.launchProjectile(DragonFireball.class);
-                  case "WIND_CHARGE", "WINDCHARGE" -> p.launchProjectile(WindCharge.class);
-                  default -> null;
-              };
+              final Projectile proj = summonProjectile(type, p);
 
               final String commands = args.getByArgument(commandsArg);
 
@@ -147,6 +137,16 @@ public class LaunchProjectileCommand extends Command implements Registerable {
           .withPermission(this.getPermission())
           .withAliases(this.getCommandAliases())
           .register(this.getNamespace());
+    }
+
+    private Projectile summonProjectile(String projectileName, Player p) {
+        return switch (projectileName.toUpperCase()) {
+            case "ARROW" -> p.launchProjectile(Arrow.class);
+            case "DRAGONFIREBALL" -> p.launchProjectile(DragonFireball.class);
+            case "WIND_CHARGE", "WINDCHARGE" -> p.launchProjectile(WindCharge.class);
+            case "SNOWBALL" -> p.launchProjectile(Snowball.class);
+            default -> null;
+        };
     }
 
 }

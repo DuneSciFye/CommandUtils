@@ -582,7 +582,9 @@ public class Utils {
             return ingredients; // No recipe found
         }
 
-        Recipe recipe = recipes.getFirst(); // Take the first one (you could choose differently if multiple)
+        Recipe recipe = recipes.getFirst(); // Take the first one
+
+        if (recipe.getResult().getAmount() != 1) return ingredients;
 
         if (recipe instanceof ShapedRecipe shaped) {
             for (ItemStack item : shaped.getIngredientMap().values()) {
