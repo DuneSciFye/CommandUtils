@@ -1,5 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.executors.ExecutorType;
@@ -11,6 +12,7 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
 
@@ -130,6 +132,58 @@ public class LaunchProjectileCommand extends Command implements Registerable {
                   @Override
                   public void run() {
                       if (!proj.isDead()) proj.remove();
+                  }
+              }.runTaskLater(CommandUtils.getInstance(), maxAlive);
+
+          }, ExecutorType.PLAYER, ExecutorType.PROXY)
+          .withPermission(this.getPermission())
+          .withAliases(this.getCommandAliases())
+          .register(this.getNamespace());
+
+        // Projectile with commands to be run when it hits
+        new CommandAPICommand("launchprojectile")
+          .withArguments(projArg
+            .replaceSuggestions(ArgumentSuggestions.strings(projectiles))
+          )
+          .withArguments(timeArgument("Max Alive Time"))
+          .withArguments(new TextArgument("Command Separator"), new GreedyStringArgument("Commands"))
+          .executes((sender, args) -> {
+              final Player p = ArgumentUtils.getPlayer(sender);
+              final String type = args.getByArgument(projArg);
+
+              final Projectile proj = summonProjectile(type, p);
+
+              final String commands = args.getUnchecked("Commands");
+
+              final String commandSeparator = args.getUnchecked("Command Separator");
+              // Needs to be node name or immutable map error
+
+              BukkitTask task = new BukkitRunnable() {
+                  @Override
+                  public void run() {
+                      if (proj.isDead() || proj.isOnGround()) {
+                          Utils.runConsoleCommands(commands
+                            .replace("{projectile_uuid}", String.valueOf(proj.getUniqueId()))
+                            .replace("{projectile_x}", String.valueOf(proj.getX()))
+                            .replace("{projectile_y}", String.valueOf(proj.getY()))
+                            .replace("{projectile_z}", String.valueOf(proj.getZ()))
+                            .split(commandSeparator)
+                          );
+                          this.cancel();
+                      }
+                  }
+              }.runTaskTimer(CommandUtils.getInstance(), 0, 1L);
+
+              // Needs to be node name or an immutable map error will throw
+              long maxAlive = ((Duration) args.get("Max Alive Time")).toMillis() / 50;
+
+              new BukkitRunnable() {
+                  @Override
+                  public void run() {
+                      if (!proj.isDead()) {
+                          proj.remove();
+                          task.cancel();
+                      }
                   }
               }.runTaskLater(CommandUtils.getInstance(), maxAlive);
 

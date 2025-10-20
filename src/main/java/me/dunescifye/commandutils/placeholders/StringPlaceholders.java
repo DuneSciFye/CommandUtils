@@ -963,6 +963,9 @@ public class StringPlaceholders extends PlaceholderExpansion {
                         case "health" -> {
                             if (e instanceof Damageable damageable) return String.valueOf(damageable.getHealth());
                         }
+                        case "data" -> {
+                            return e.getAsString();
+                        }
                     }
                 } catch (IllegalArgumentException e) {
                     return "Invalid UUID";
