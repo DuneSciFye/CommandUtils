@@ -3,6 +3,7 @@ package me.dunescifye.commandutils;
 import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
+import dev.jorel.commandapi.network.CommandAPIProtocol;
 import me.dunescifye.commandutils.commands.*;
 import me.dunescifye.commandutils.files.Config;
 import me.dunescifye.commandutils.listeners.*;
@@ -50,6 +51,12 @@ public final class CommandUtils extends JavaPlugin {
         //Files first
 
         CommandAPI.onEnable();
+
+        for (String channelIdentifier : CommandAPIProtocol.getAllChannelIdentifiers()) {
+            Bukkit.getMessenger().unregisterIncomingPluginChannel(this, channelIdentifier);
+            Bukkit.getMessenger().unregisterOutgoingPluginChannel(this, channelIdentifier);
+        }
+
         commands.put("BlockCycle", new BlockCycleCommand());
         commands.put("BlockGravity", new BlockGravityCommand());
         commands.put("BoneMealBlock", new BoneMealBlockCommand());
