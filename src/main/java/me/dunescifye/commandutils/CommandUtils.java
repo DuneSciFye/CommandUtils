@@ -52,10 +52,13 @@ public final class CommandUtils extends JavaPlugin {
 
         CommandAPI.onEnable();
 
-        for (String channelIdentifier : CommandAPIProtocol.getAllChannelIdentifiers()) {
-            Bukkit.getMessenger().unregisterIncomingPluginChannel(this, channelIdentifier);
-            Bukkit.getMessenger().unregisterOutgoingPluginChannel(this, channelIdentifier);
-        }
+        Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
+            for (String channel : CommandAPIProtocol.getAllChannelIdentifiers()) {
+                Bukkit.getMessenger().unregisterIncomingPluginChannel(plugin, channel);
+                Bukkit.getMessenger().unregisterOutgoingPluginChannel(plugin, channel);
+
+            }
+        }, 20L);
 
         commands.put("BlockCycle", new BlockCycleCommand());
         commands.put("BlockGravity", new BlockGravityCommand());
@@ -161,6 +164,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("LockHeldSlot", new LockHeldSlotCommand());
         commands.put("MixInventory", new MixInventoryCommand());
         commands.put("PreventMixInventory", new PreventMixInventoryCommand());
+        commands.put("MobTargetTeam", new MobTargetTeamCommand());
         if (versionAmount > 21.1) commands.put("ItemCooldown", new ItemCooldown());
         if (versionAmount > 21.1) commands.put("ItemAttribute", new ItemAttributeCommand());
         if (versionAmount > 21.1) commands.put("LifeSteal", new LifeStealCommand());
