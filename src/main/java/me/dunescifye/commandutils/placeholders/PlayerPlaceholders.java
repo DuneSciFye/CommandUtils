@@ -161,6 +161,9 @@ public class PlayerPlaceholders extends PlaceholderExpansion {
             case "facing" -> {
                 return p.getFacing().toString().toLowerCase();
             }
+            case "getblock" -> {
+                return p.getLocation().getBlock().getType().toString();
+            }
             default -> {
                 return null;
             }
