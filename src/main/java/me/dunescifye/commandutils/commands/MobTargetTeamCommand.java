@@ -5,11 +5,11 @@ import dev.jorel.commandapi.arguments.ListArgumentBuilder;
 import dev.jorel.commandapi.arguments.ListTextArgument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
 import me.dunescifye.commandutils.utils.ArgumentUtils;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 
 import java.util.*;
@@ -65,8 +65,25 @@ public class MobTargetTeamCommand extends Command implements Registerable, Liste
 
       if (entities != null && entities.contains(entityType)) {
         e.setTarget(null);
-        e.setCancelled(true);
       }
     }
   }
+
+  @EventHandler
+  public void onMobAttack(EntityDamageByEntityEvent e) {
+
+    final Entity target = e.getEntity();
+    if (target instanceof Player p) {
+      final Collection<EntityType> entities = teams.get(p.getUniqueId());
+      final EntityType entityType = e.getDamager().getType();
+      if (entities != null && entities.contains(entityType)) {
+        e.setCancelled(true);
+        if (e.getDamager() instanceof Mob mob) {
+          mob.setTarget(null);
+        }
+      }
+    }
+
+  }
 }
+

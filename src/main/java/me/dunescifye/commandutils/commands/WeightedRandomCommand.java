@@ -12,6 +12,7 @@ import org.bukkit.command.ProxiedCommandSender;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 
 public class WeightedRandomCommand extends Command implements Configurable {
@@ -68,11 +69,17 @@ public class WeightedRandomCommand extends Command implements Configurable {
                 for (Integer number : map.keySet())
                     if (random <= number) {
                         if (sender instanceof OfflinePlayer)
-                            Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders((OfflinePlayer) sender, map.get(number).replace(args.getByArgumentOrDefault(placeholderSurrounderArg, "$"), "%")).split(args.getByArgumentOrDefault(commandSeparatorArg, commandSeparator)));
+                            Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders((OfflinePlayer) sender,
+                              map.get(number).replace(args.getByArgumentOrDefault(placeholderSurrounderArg, "$"),
+                                "%")).split(Pattern.quote(args.getByArgumentOrDefault(commandSeparatorArg,
+                              commandSeparator))));
                         else if (sender instanceof ProxiedCommandSender proxy)
-                            Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders((OfflinePlayer) proxy.getCallee(), map.get(number).replace(args.getByArgumentOrDefault(placeholderSurrounderArg, "$"), "%")).split(args.getByArgumentOrDefault(commandSeparatorArg, commandSeparator)));
+                            Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders((OfflinePlayer) proxy.getCallee()
+                              , map.get(number).replace(args.getByArgumentOrDefault(placeholderSurrounderArg, "$"),
+                                "%")).split(Pattern.quote(args.getByArgumentOrDefault(commandSeparatorArg,
+                              commandSeparator))));
                         else
-                            Utils.runConsoleCommands(map.get(number).replace(args.getByArgumentOrDefault(placeholderSurrounderArg, "$"), "%").split(args.getByArgumentOrDefault(commandSeparatorArg, commandSeparator)));
+                            Utils.runConsoleCommands(map.get(number).replace(args.getByArgumentOrDefault(placeholderSurrounderArg, "$"), "%").split(Pattern.quote(args.getByArgumentOrDefault(commandSeparatorArg, commandSeparator))));
                         return;
                     }
             })
@@ -100,11 +107,13 @@ public class WeightedRandomCommand extends Command implements Configurable {
                 for (Integer number : map.keySet())
                     if (random <= number) {
                         if (sender instanceof OfflinePlayer)
-                            Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders((OfflinePlayer) sender, map.get(number).replace("$", "%")).split(commandSeparator));
+                            Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders((OfflinePlayer) sender,
+                              map.get(number).replace("$", "%")).split(Pattern.quote(commandSeparator)));
                         else if (sender instanceof ProxiedCommandSender proxy)
-                            Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders((OfflinePlayer) proxy.getCallee(), map.get(number).replace("$", "%")).split(commandSeparator));
+                            Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders((OfflinePlayer) proxy.getCallee()
+                              , map.get(number).replace("$", "%")).split(Pattern.quote(commandSeparator)));
                         else
-                            Utils.runConsoleCommands(map.get(number).replace("$", "%").split(commandSeparator));
+                            Utils.runConsoleCommands(map.get(number).replace("$", "%").split(Pattern.quote(commandSeparator)));
                         return;
                     }
             })
