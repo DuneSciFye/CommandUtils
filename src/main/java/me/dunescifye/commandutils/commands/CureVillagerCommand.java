@@ -3,7 +3,6 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.ZombieVillager;
@@ -19,7 +18,7 @@ public class CureVillagerCommand extends Command implements Registerable {
 
         EntitySelectorArgument.ManyEntities villagersArg = new EntitySelectorArgument.ManyEntities("Villagers");
         IntegerArgument conversionTimeArg = new IntegerArgument("Conversion Time");
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
 
         /**
          * Cures a Zombie Villager

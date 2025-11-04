@@ -1,17 +1,13 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
-import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.Collection;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Logger;
 
 public class MobTargetCommand extends Command implements Registerable {
 

@@ -20,7 +20,6 @@ public class BlockCycleCommand extends Command implements Registerable {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
-        if (!this.getEnabled()) return;
 
         LiteralArgument oxidizeArg = new LiteralArgument("oxidize");
         StringArgument worldArg = new StringArgument("World");
@@ -55,26 +54,32 @@ public class BlockCycleCommand extends Command implements Registerable {
                 boolean opened = false;
                 boolean powered = false;
 
-                if (blockData instanceof Stairs stairs) {
-                    shape = stairs.getShape();
-                    waterlogged = stairs.isWaterlogged();
-                    facing = stairs.getFacing();
-                    half = stairs.getHalf();
-                } else if (blockData instanceof Slab slab) {
-                    type = slab.getType();
-                    waterlogged = slab.isWaterlogged();
-                } else if (blockData instanceof Door door) {
-                    Block relative = b.getRelative(BlockFace.DOWN);
-                    if (relative.getBlockData() instanceof Door relativeDoor) {
-                        b = relative;
-                        door = relativeDoor;
-                    }
-                    hinge = door.getHinge();
-                    facing = door.getFacing();
-                    half = door.getHalf();
-                    opened = door.isOpen();
-                    powered = door.isPowered();
+              switch (blockData) {
+                case Stairs stairs -> {
+                  shape = stairs.getShape();
+                  waterlogged = stairs.isWaterlogged();
+                  facing = stairs.getFacing();
+                  half = stairs.getHalf();
                 }
+                case Slab slab -> {
+                  type = slab.getType();
+                  waterlogged = slab.isWaterlogged();
+                }
+                case Door door -> {
+                  Block relative = b.getRelative(BlockFace.DOWN);
+                  if (relative.getBlockData() instanceof Door relativeDoor) {
+                    b = relative;
+                    door = relativeDoor;
+                  }
+                  hinge = door.getHinge();
+                  facing = door.getFacing();
+                  half = door.getHalf();
+                  opened = door.isOpen();
+                  powered = door.isPowered();
+                }
+                default -> {
+                }
+              }
 
                 switch (material) {
                     case CUT_COPPER_STAIRS -> b.setType(Material.EXPOSED_CUT_COPPER_STAIRS);
@@ -139,24 +144,30 @@ public class BlockCycleCommand extends Command implements Registerable {
 
                 BlockData newBlockData = b.getBlockData();
 
-                if (newBlockData instanceof Stairs newStairs) {
-                    newStairs.setFacing(facing);
-                    newStairs.setShape(shape);
-                    newStairs.setWaterlogged(waterlogged);
-                    newStairs.setHalf(half);
-                    b.setBlockData(newStairs);
-                } else if (newBlockData instanceof Slab newSlab) {
-                    newSlab.setType(type);
-                    newSlab.setWaterlogged(waterlogged);
-                    b.setBlockData(newSlab);
-                } else if (newBlockData instanceof Door door) {
-                    door.setHinge(hinge);
-                    door.setFacing(facing);
-                    door.setHalf(half);
-                    door.setOpen(opened);
-                    door.setPowered(powered);
-                    b.setBlockData(door);
+              switch (newBlockData) {
+                case Stairs newStairs -> {
+                  newStairs.setFacing(facing);
+                  newStairs.setShape(shape);
+                  newStairs.setWaterlogged(waterlogged);
+                  newStairs.setHalf(half);
+                  b.setBlockData(newStairs);
                 }
+                case Slab newSlab -> {
+                  newSlab.setType(type);
+                  newSlab.setWaterlogged(waterlogged);
+                  b.setBlockData(newSlab);
+                }
+                case Door door -> {
+                  door.setHinge(hinge);
+                  door.setFacing(facing);
+                  door.setHalf(half);
+                  door.setOpen(opened);
+                  door.setPowered(powered);
+                  b.setBlockData(door);
+                }
+                default -> {
+                }
+              }
 
             })
             .withPermission(this.getPermission())

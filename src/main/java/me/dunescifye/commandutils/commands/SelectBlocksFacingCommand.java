@@ -24,7 +24,7 @@ public class SelectBlocksFacingCommand extends Command implements Registerable {
     LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
     IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
     IntegerArgument depthArg = new IntegerArgument("Depth", 0);
-    PlayerArgument playerArg = new PlayerArgument("Player");
+    EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
     TextArgument commandSeparatorArg = new TextArgument("Command Separator");
     TextArgument placeholderSurrounderArg = new TextArgument("Placeholder Surrounder");
     BooleanArgument customPlaceholdersArg = new BooleanArgument("Custom Placeholders");

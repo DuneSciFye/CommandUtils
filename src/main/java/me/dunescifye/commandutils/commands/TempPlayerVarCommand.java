@@ -1,13 +1,16 @@
 package me.dunescifye.commandutils.commands;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.chat.SignedMessage;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class TempPlayerVarCommand extends Command implements Registerable {
     private static final HashMap<OfflinePlayer, HashMap<String, String>> playerVars = new HashMap<>(); //Player Var
@@ -17,10 +20,9 @@ public class TempPlayerVarCommand extends Command implements Registerable {
     public void register() {
 
         TextArgument varArg = new TextArgument("Variable Name");
-        GreedyStringArgument contentArg = new GreedyStringArgument("Content");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "set", "get", "clear", "remove", "setifempty", "append");
-        OfflinePlayerArgument playerArg = new OfflinePlayerArgument("Player");
-        AdventureChatArgument chatArg = new AdventureChatArgument("Content");
+        AsyncPlayerProfileArgument playerArg = new AsyncPlayerProfileArgument("Player");
+        ChatArgument chatArg = new ChatArgument("Content");
 
         /*
          * Sets a temporary player variable, won't persist across server restarts
@@ -32,33 +34,44 @@ public class TempPlayerVarCommand extends Command implements Registerable {
             .withArguments(functionArg, playerArg, varArg)
             .withOptionalArguments(chatArg)
             .executes((sender, args) -> {
-                OfflinePlayer p = args.getByArgument(playerArg);
-                String varName = args.getByArgument(varArg);
-                String content = LegacyComponentSerializer.legacyAmpersand().serialize(args.getByArgumentOrDefault(chatArg, Component.empty()));
-                HashMap<String, String> vars = playerVars.get(p);
-                if (vars == null) vars = new HashMap<>();
+                CompletableFuture<List<PlayerProfile>> profiles = args.getByArgument(playerArg);
+                final String varName = args.getByArgument(varArg);
+                final SignedMessage signedMessage = args.getByArgument(chatArg);
+                final String content = signedMessage == null ? "" : signedMessage.message();
 
-                switch (args.getByArgument(functionArg)) {
-                    case "set" -> vars.put(varName, content);
-                    case "add" -> {
-                        String current = vars.getOrDefault(varName, "0");
-                        if (!NumberUtils.isCreatable(content) || !NumberUtils.isCreatable(current)) return;
-                        if (current.contains(".") || content.contains(".")) {
-                            vars.put(varName, String.valueOf(Double.parseDouble(content) + Double.parseDouble(current)));
-                        } else {
-                            vars.put(varName, String.valueOf(Integer.parseInt(content) + Integer.parseInt(current)));
+                profiles.thenAccept(profileList -> {
+                    OfflinePlayer p = Bukkit.getOfflinePlayer(profileList.getFirst().getId());
+                    HashMap<String, String> vars = playerVars.get(p);
+                    if (vars == null) vars = new HashMap<>();
+
+                    switch (args.getByArgument(functionArg)) {
+                        case "set" -> vars.put(varName, content);
+                        case "add" -> {
+                            String current = vars.getOrDefault(varName, "0");
+                            if (!NumberUtils.isCreatable(content) || !NumberUtils.isCreatable(current)) return;
+                            if (current.contains(".") || content.contains(".")) {
+                                vars.put(varName, String.valueOf(Double.parseDouble(content) + Double.parseDouble(current)));
+                            } else {
+                                vars.put(varName, String.valueOf(Integer.parseInt(content) + Integer.parseInt(current)));
+                            }
                         }
-                    }
-                    case "clear", "remove" -> {
-                        for (String var : varName.split(",")) {
-                            vars.remove(var);
+                        case "clear", "remove" -> {
+                            for (String var : varName.split(",")) {
+                                vars.remove(var);
+                            }
                         }
+                        case "get" -> sender.sendMessage(getPlayerVar(p, varName));
+                        case "setifempty" -> vars.putIfAbsent(varName, content);
+                        case "append" -> vars.put(varName, vars.getOrDefault(varName, "") + content);
                     }
-                    case "get" -> sender.sendMessage(getPlayerVar(p, varName));
-                    case "setifempty" -> vars.putIfAbsent(varName, content);
-                    case "append" -> vars.put(varName, vars.getOrDefault(varName, "") + content);
-                }
-                playerVars.put(p, vars);
+                    playerVars.put(p, vars);
+                }).exceptionally(throwable -> {
+                    Throwable cause = throwable.getCause();
+                    Throwable rootCause = cause instanceof RuntimeException ? cause.getCause() : cause;
+
+                    sender.sendMessage(rootCause.getMessage());
+                    return null;
+                });
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())

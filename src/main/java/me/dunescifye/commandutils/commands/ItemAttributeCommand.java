@@ -22,7 +22,7 @@ public class ItemAttributeCommand extends Command implements Registerable {
 
         LiteralArgument addArg = new LiteralArgument("add");
         LiteralArgument removeArg = new LiteralArgument("remove");
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         Argument<String> slotArg = slotArgument("Slot");
         Argument<Attribute> attributeArg = attributeArgument("Attribute");
         DoubleArgument valueArg = new DoubleArgument("Value");

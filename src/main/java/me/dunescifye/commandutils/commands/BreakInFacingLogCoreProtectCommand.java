@@ -33,7 +33,7 @@ public class BreakInFacingLogCoreProtectCommand extends Command implements Regis
         StringArgument worldArg = new StringArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument depthArg = new IntegerArgument("Depth", 0);
         LiteralArgument whitelistArg = new LiteralArgument("whitelist");
         LiteralArgument forceDropArg = new LiteralArgument("forcedrop");

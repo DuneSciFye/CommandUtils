@@ -31,7 +31,7 @@ public class WhileCommand extends Command implements Configurable {
             LiteralArgument hasArg = new LiteralArgument("has");
             LiteralArgument listArg = new LiteralArgument("list");
             StringArgument commandIDArg = new StringArgument("Command ID");
-            PlayerArgument playerArg = new PlayerArgument("Player");
+            EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
             TextArgument compare1Arg = new TextArgument("Compare 1");
             TextArgument compareMethodArg = new TextArgument("Compare Method");
             TextArgument compare2Arg = new TextArgument("Compare 2");

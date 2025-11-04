@@ -15,7 +15,6 @@ import org.bukkit.inventory.meta.PotionMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 public class RemoveItemCommand extends Command implements Configurable {
@@ -23,7 +22,7 @@ public class RemoveItemCommand extends Command implements Configurable {
   @SuppressWarnings("ConstantConditions")
   public void register(YamlDocument config) {
 
-    PlayerArgument playerArg = new PlayerArgument("Player");
+    EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
     ItemStackArgument itemArg = new ItemStackArgument("Item");
     IntegerArgument maxAmountArg = new IntegerArgument("Max Amount");
     BooleanArgument strictArg = new BooleanArgument("Strict");

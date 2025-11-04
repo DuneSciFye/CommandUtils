@@ -6,7 +6,6 @@ import me.dunescifye.commandutils.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class ItemLoreCommand extends Command implements Registerable {
     @Override
     public void register() {
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "append", "set", "remove");
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         StringArgument slotArg = new StringArgument("Slot");
 
         IntegerArgument lineArg = new IntegerArgument("Line", 1);

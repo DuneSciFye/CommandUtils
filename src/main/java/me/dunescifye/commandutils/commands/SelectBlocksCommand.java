@@ -34,7 +34,7 @@ public class SelectBlocksCommand extends Command implements Registerable {
         Argument<World> worldArg = Utils.bukkitWorldArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         TextArgument commandSeparatorArg = new TextArgument("Command Separator");
         TextArgument placeholderSurrounderArg = new TextArgument("Placeholder Surrounder");
         BooleanArgument customPlaceholdersArg = new BooleanArgument("Custom Placeholders");

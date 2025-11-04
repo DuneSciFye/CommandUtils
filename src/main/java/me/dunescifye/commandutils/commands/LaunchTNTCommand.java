@@ -2,8 +2,8 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
+import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.LocationArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.Bukkit;
@@ -19,7 +19,7 @@ public class LaunchTNTCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         StringArgument worldArg = new StringArgument("World");
         LocationArgument locArg = new LocationArgument("Location");
         BooleanArgument breakBlocksArg = new BooleanArgument("Break Blocks");

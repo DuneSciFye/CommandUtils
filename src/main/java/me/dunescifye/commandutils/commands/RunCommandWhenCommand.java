@@ -77,7 +77,7 @@ public class RunCommandWhenCommand extends Command implements Registerable {
     new CommandTree("runcommandwhen")
       .then(new LiteralArgument("add")
         .then(new StringArgument("Command ID")
-          .then(new PlayerArgument("Player")
+          .then(new EntitySelectorArgument.OnePlayer("Player")
             .then(new TextArgument("Compare 1")
               .then(new TextArgument("Compare Method")
                 .replaceSuggestions(ArgumentSuggestions.strings("==", "!=", "contains", "!contains", "equals"))

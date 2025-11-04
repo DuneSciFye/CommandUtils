@@ -20,7 +20,7 @@ public class RemoveInRadius extends Command implements Registerable {
         StringArgument worldArg = new StringArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         LiteralArgument whitelistArg = new LiteralArgument("whitelist");
         ListTextArgument<String> commandWhitelistArg = new ListArgumentBuilder<String>("Command Defined Whitelist")
             .withList(Utils.getPredicatesList())

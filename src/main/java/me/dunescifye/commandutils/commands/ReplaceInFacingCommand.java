@@ -19,7 +19,7 @@ public class ReplaceInFacingCommand extends Command implements Registerable {
 
         StringArgument worldArg = new StringArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
         IntegerArgument depthArg = new IntegerArgument("Depth", 0);
         ListTextArgument<Material> blocksFromArg = new ListArgumentBuilder<Material>("Blocks To Replace From")

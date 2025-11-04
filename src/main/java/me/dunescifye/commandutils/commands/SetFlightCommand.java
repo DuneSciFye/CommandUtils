@@ -2,7 +2,7 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
+import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import org.bukkit.entity.Player;
 
 @SuppressWarnings("DataFlowIssue")
@@ -10,7 +10,7 @@ public class SetFlightCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         BooleanArgument flyingArg = new BooleanArgument("Flying");
 
         new CommandAPICommand("setflight")

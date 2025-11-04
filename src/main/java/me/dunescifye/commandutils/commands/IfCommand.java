@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-import static me.dunescifye.commandutils.utils.Utils.isNumeric;
-
 public class IfCommand extends Command implements Configurable {
     private static String elseIfKeyword, elseKeyword, commandSeparator, conditionSeparator;
 

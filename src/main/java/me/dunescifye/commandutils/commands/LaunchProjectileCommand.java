@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.executors.ExecutorType;
@@ -16,7 +15,6 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
 
-import static me.dunescifye.commandutils.utils.Utils.runConsoleCommands;
 import static me.dunescifye.commandutils.utils.Utils.timeArgument;
 
 public class LaunchProjectileCommand extends Command implements Registerable {

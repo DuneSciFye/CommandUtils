@@ -1,16 +1,16 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.FloatArgument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
 
 @SuppressWarnings("DataFlowIssue")
 public class FlightSpeedCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         FloatArgument flightSpeedArg = new FloatArgument("Flight Speed", 0, 1);
         LiteralArgument setArg = new LiteralArgument("set");
         LiteralArgument getArg = new LiteralArgument("get");

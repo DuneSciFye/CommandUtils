@@ -3,10 +3,8 @@ package me.dunescifye.commandutils.commands;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
-import dev.jorel.commandapi.arguments.StringArgument;
+import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import me.dunescifye.commandutils.CommandUtils;
-import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,7 +24,7 @@ public class DisableJumpCommand extends Command implements Registerable, Listene
 
     @Override
     public void register() {
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         Argument<Duration> durationArg = timeArgument("Duration");
 
         new CommandAPICommand("disablejump")

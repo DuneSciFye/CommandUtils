@@ -12,7 +12,7 @@ public class ItemDamageCommand extends Command implements Registerable {
   @Override
   public void register() {
 
-    PlayerArgument playerArg = new PlayerArgument("Player");
+    EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
     StringArgument slotArg = new StringArgument("Slot");
     MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "set", "remove");
     IntegerArgument amountArg = new IntegerArgument("Amount");

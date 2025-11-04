@@ -1,9 +1,9 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandTree;
+import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
 import me.clip.placeholderapi.PlaceholderAPI;
 
 public class ParsePlaceholderCommand extends Command implements Registerable {
@@ -12,7 +12,7 @@ public class ParsePlaceholderCommand extends Command implements Registerable {
     public void register() {
 
         new CommandTree("parseplaceholder")
-            .then(new PlayerArgument("Player")
+            .then(new EntitySelectorArgument.OnePlayer("Player")
                 .then(new GreedyStringArgument("Placeholder")
                     .executes((sender, args) -> {
                         String placeholder = args.getUnchecked("Placeholder");

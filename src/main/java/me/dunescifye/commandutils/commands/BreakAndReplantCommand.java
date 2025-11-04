@@ -3,12 +3,12 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.FUtils;
-import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
@@ -28,7 +28,7 @@ public class BreakAndReplantCommand extends Command implements Registerable {
 
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         StringArgument worldArg = new StringArgument("World");
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
         IntegerArgument xArg = new IntegerArgument("X");
         IntegerArgument yArg = new IntegerArgument("Y");
@@ -55,13 +55,13 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 Location location = args.getByArgument(locArg);
                 Block block = world.getBlockAt(location);
-                BlockData original = args.getByArgument(blockArg);
+                BlockState original = args.getByArgument(blockArg);
                 int radius = args.getByArgument(radiusArg);
                 Player player = args.getByArgument(playerArg);
                 ItemStack heldItem = player.getInventory().getItemInMainHand();
 
                 Collection<ItemStack> drops = new ArrayList<>();
-                block.setType(original.getMaterial());
+                block.setType(original.getType());
 
                 for (int x = -radius; x <= radius; x++) {
                     for (int z = -radius; z <= radius; z++) {
@@ -111,14 +111,14 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                 Location location = args.getByArgument(locArg);
                 Block block = location.getBlock();
                 World world = location.getWorld();
-                BlockData original = args.getByArgument(blockArg);
+                BlockState original = args.getByArgument(blockArg);
                 int radius = args.getByArgument(radiusArg);
                 Player player = args.getByArgument(playerArg);
                 ItemStack heldItem = player.getInventory().getItemInMainHand();
 
                 Collection<ItemStack> drops = new ArrayList<>();
 
-                block.setType(original.getMaterial());
+                block.setType(original.getType());
 
                 for (int x = -radius; x <= radius; x++){
                     for (int z = -radius; z <= radius; z++){
@@ -173,7 +173,7 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 Location location = args.getByArgument(locArg);
                 Block block = world.getBlockAt(location);
-                BlockData original = args.getByArgument(blockArg);
+                BlockState original = args.getByArgument(blockArg);
                 int xRadius = args.getByArgument(xArg);
                 int yRadius = args.getByArgument(yArg);
                 int zRadius = args.getByArgument(zArg);
@@ -182,7 +182,7 @@ public class BreakAndReplantCommand extends Command implements Registerable {
 
                 Collection<ItemStack> drops = new ArrayList<>();
 
-                block.setType(original.getMaterial());
+                block.setType(original.getType());
 
                 for (int x = -xRadius; x <= xRadius; x++) {
                     for (int y = -yRadius; y <= yRadius; y++) {
@@ -238,7 +238,7 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                 Location location = args.getByArgument(locArg);
                 Block block = location.getBlock();
                 World world = location.getWorld();
-                BlockData original = args.getByArgument(blockArg);
+                BlockState original = args.getByArgument(blockArg);
                 int xRadius = args.getByArgument(xArg);
                 int yRadius = args.getByArgument(yArg);
                 int zRadius = args.getByArgument(zArg);
@@ -247,7 +247,7 @@ public class BreakAndReplantCommand extends Command implements Registerable {
 
                 Collection<ItemStack> drops = new ArrayList<>();
 
-                block.setType(original.getMaterial());
+                block.setType(original.getType());
 
                 for (int x = -xRadius; x <= xRadius; x++) {
                     for (int y = -yRadius; y <= yRadius; y++) {
@@ -298,12 +298,12 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 Location location = args.getByArgument(locArg);
                 Block block = world.getBlockAt(location);
-                BlockData original = args.getByArgument(blockArg);
+                BlockState original = args.getByArgument(blockArg);
                 Player player = args.getByArgument(playerArg);
                 ItemStack heldItem = player.getInventory().getItemInMainHand();
 
 
-                block.setType(original.getMaterial());
+                block.setType(original.getType());
                 Collection<ItemStack> drops = new ArrayList<>();
 
                 BlockData blockData = block.getBlockData();
@@ -344,12 +344,12 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                 Location location = args.getByArgument(locArg);
                 Block block = location.getBlock();
                 World world = location.getWorld();
-                BlockData original = args.getByArgument(blockArg);
+                BlockState original = args.getByArgument(blockArg);
                 Player player = args.getByArgument(playerArg);
                 ItemStack heldItem = player.getInventory().getItemInMainHand();
 
 
-                block.setType(original.getMaterial());
+                block.setType(original.getType());
                 Collection<ItemStack> drops = new ArrayList<>();
 
                 BlockData blockData = block.getBlockData();

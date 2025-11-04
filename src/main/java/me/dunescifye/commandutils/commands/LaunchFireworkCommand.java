@@ -2,8 +2,8 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
+import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
 import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -22,7 +22,7 @@ public class LaunchFireworkCommand extends Command implements Registerable {
 
         this.addCommandAliases(new String[]{"spawnfirework", "summonfirework"});
 
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument ticksToDetonateArg = new IntegerArgument("Ticks To Detonate");
         IntegerArgument fireworkPowerArg = new IntegerArgument("Firework Power");
         IntegerArgument redColorArg = new IntegerArgument("Red RGB");

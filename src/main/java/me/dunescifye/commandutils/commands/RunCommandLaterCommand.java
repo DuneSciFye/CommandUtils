@@ -23,7 +23,7 @@ public class RunCommandLaterCommand extends Command implements Registerable {
 
         Server server = Bukkit.getServer();
         ConsoleCommandSender console = server.getConsoleSender();
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         LiteralArgument addArg = new LiteralArgument("add");
         StringArgument commandIDArg = new StringArgument("Command ID");
         StringArgument timeArg = new StringArgument("Time");

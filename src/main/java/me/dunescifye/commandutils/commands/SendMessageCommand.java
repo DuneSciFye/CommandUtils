@@ -7,8 +7,6 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
-
 public class SendMessageCommand extends Command implements Configurable {
     @SuppressWarnings("ConstantConditions")
     public void register(YamlDocument config) {
@@ -50,7 +48,7 @@ public class SendMessageCommand extends Command implements Configurable {
 
         EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         TextArgument textArg = new TextArgument("Message");
-        AdventureChatArgument messageArg = new AdventureChatArgument("Message");
+        ChatArgument messageArg = new ChatArgument("Message");
         BooleanArgument colorCodesArg = new BooleanArgument("Color Codes");
         BooleanArgument parsePlaceholdersArg = new BooleanArgument("Parse Placeholders");
         BooleanArgument useAmpersandArg = new BooleanArgument("Use Ampersand For Color Codes");
@@ -59,7 +57,7 @@ public class SendMessageCommand extends Command implements Configurable {
             .withArguments(playerArg, messageArg)
             .executes((sender, args) -> {
                 sendMessage(args.getByArgument(playerArg),
-                    LegacyComponentSerializer.legacyAmpersand().serialize(args.getByArgument(messageArg)),
+                    args.getByArgument(messageArg).message(),
                     parsePlaceholdersByDefault,
                     colorCodesByDefault,
                     ampersandByDefault);

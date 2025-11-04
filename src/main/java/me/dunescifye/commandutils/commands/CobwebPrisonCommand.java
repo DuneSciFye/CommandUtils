@@ -12,7 +12,7 @@ public class CobwebPrisonCommand extends Command implements Registerable {
     public void register() {
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         StringArgument worldArg = new StringArgument("World");
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument radiusArg = new IntegerArgument("Radius");
         IntegerArgument heightArg = new IntegerArgument("Height");
         IntegerArgument durationArg = new IntegerArgument("Duration");

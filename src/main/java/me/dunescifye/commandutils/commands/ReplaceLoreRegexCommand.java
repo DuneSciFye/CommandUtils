@@ -1,9 +1,9 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.MultiLiteralArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.TextArgument;
 import me.dunescifye.commandutils.utils.Utils;
 import net.kyori.adventure.text.Component;
@@ -20,7 +20,7 @@ public class ReplaceLoreRegexCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument slotArg = new IntegerArgument("Slot");
         MultiLiteralArgument textSlotArg = new MultiLiteralArgument("Slot", "main", "mainhand", "off", "offhand", "cursor");
         TextArgument fromArg = new TextArgument("Text To Find");

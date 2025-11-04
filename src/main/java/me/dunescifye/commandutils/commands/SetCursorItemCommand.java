@@ -1,9 +1,9 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.ItemStackArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -14,7 +14,7 @@ public class SetCursorItemCommand extends Command implements Registerable {
 
 
         new CommandAPICommand("setcursoritem")
-            .withArguments(new PlayerArgument("Player"))
+            .withArguments(new EntitySelectorArgument.OnePlayer("Player"))
             .withArguments(new ItemStackArgument("Item"))
             .withOptionalArguments(new IntegerArgument("Amount", 0, 64))
             .executes((sender, args) -> {

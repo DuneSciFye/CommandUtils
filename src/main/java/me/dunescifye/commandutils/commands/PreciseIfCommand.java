@@ -1,8 +1,8 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.TextArgument;
 import me.dunescifye.commandutils.utils.Utils;
 
@@ -11,7 +11,7 @@ public class PreciseIfCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         TextArgument commandSeparatorArg = new TextArgument("Command Separator");
         TextArgument placeholderSurrounderArg = new TextArgument("Placeholder Surrounder");
         GreedyStringArgument argumentsArg = new GreedyStringArgument("Arguments");

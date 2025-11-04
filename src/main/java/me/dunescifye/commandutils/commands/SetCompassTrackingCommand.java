@@ -15,7 +15,7 @@ public class SetCompassTrackingCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         EntitySelectorArgument.OneEntity targetArg = new EntitySelectorArgument.OneEntity("Target");
         IntegerArgument slotArg = new IntegerArgument("Slot");
         MultiLiteralArgument textSlotArg = new MultiLiteralArgument("Slot", "main", "mainhand", "off", "offhand", "cursor");

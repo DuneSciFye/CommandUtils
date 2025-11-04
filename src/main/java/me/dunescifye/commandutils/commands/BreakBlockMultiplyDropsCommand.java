@@ -25,7 +25,7 @@ public class BreakBlockMultiplyDropsCommand extends Command implements Registera
 
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         StringArgument worldArg = new StringArgument("World");
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument dropsMultiplierArg = new IntegerArgument("Drops Multiplier", 1);
 
         new CommandAPICommand("breakblockmultiplydrops")

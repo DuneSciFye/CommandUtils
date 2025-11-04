@@ -3,11 +3,9 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 

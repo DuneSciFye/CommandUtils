@@ -17,7 +17,7 @@ public class OverrideEffectCommand extends Command implements Configurable {
     @Override
     public void register(YamlDocument config) {
 
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "override", "retrieve", "remove");
         StringArgument idArg = new StringArgument("ID");
         PotionEffectArgument effectArg = new PotionEffectArgument("Effect");

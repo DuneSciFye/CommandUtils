@@ -24,7 +24,7 @@ public class BreakInFacingCommand extends Command implements Registerable {
         Argument<World> worldArg = Utils.bukkitWorldArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument depthArg = new IntegerArgument("Depth", 0);
         LiteralArgument whitelistArg = new LiteralArgument("whitelist");
         StringArgument whitelistedBlocksArgument = new StringArgument("Whitelisted Blocks");

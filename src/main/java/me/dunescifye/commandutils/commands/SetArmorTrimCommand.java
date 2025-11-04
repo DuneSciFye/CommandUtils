@@ -28,7 +28,7 @@ public class SetArmorTrimCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument slotArg = new IntegerArgument("Slot");
         StringArgument materialArg = new StringArgument("Material");
         StringArgument patternArg = new StringArgument("Pattern");

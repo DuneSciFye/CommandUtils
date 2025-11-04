@@ -71,7 +71,7 @@ public class BreakInVeinCommand extends Command implements Configurable {
 
         Argument<World> worldArg = Utils.bukkitWorldArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument maxBlocksArg = new IntegerArgument("Max Blocks");
         BooleanArgument checkClaimArg = new BooleanArgument("Check Claim");
         BooleanArgument triggerBlockBreakArg = new BooleanArgument("Trigger Block Break Event");

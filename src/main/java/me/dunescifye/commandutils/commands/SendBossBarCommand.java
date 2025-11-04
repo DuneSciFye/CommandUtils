@@ -22,7 +22,7 @@ public class SendBossBarCommand extends Command implements Registerable {
     public void register() {
 
         new CommandAPICommand("sendbossbar")
-            .withArguments(new PlayerArgument("Player"))
+            .withArguments(new EntitySelectorArgument.OnePlayer("Player"))
             .withArguments(new StringArgument("Bossbar ID"))
             .withArguments(new StringArgument("Bossbar Color"))
             .withArguments(new FloatArgument("Bossbar Progress", (float) 0.0, (float) 1.0))

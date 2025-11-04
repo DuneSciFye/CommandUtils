@@ -25,7 +25,7 @@ public class ReplaceInRadiusIfBlockRelative extends Command implements Registera
 
         StringArgument worldArg = new StringArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
         ListTextArgument<String> blocksFromArg = new ListArgumentBuilder<String>("Blocks To Replace From")
             .withList(Utils.getPredicatesList())
@@ -109,7 +109,7 @@ public class ReplaceInRadiusIfBlockRelative extends Command implements Registera
                 final Block origin = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
                 final int radius = args.getByArgument(radiusArg);
                 final List<List<Predicate<Block>>> blocksFrom = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
-                final BlockData blockTo = args.getByArgument(blockToArg);
+                final BlockState blockTo = args.getByArgument(blockToArg);
                 final List<BlockFace> blocksFaces = args.getUnchecked("Block Faces");
                 final List<List<Predicate<Block>>> blocksRelative = Utils.stringListToPredicate(args.getUnchecked("Blocks Relative"));
                 final ItemStack item = args.getByArgumentOrDefault(removeItemArg, null);
@@ -121,7 +121,7 @@ public class ReplaceInRadiusIfBlockRelative extends Command implements Registera
                             if (!Utils.testBlock(b.getRelative(blockFace), blocksRelative))
                                 continue block;
                         if (item != null && !inv.removeItemAnySlot(item).isEmpty()) return;
-                        b.setBlockData(blockTo);
+                        b.setBlockData(blockTo.getBlockData());
                     }
             })
             .withPermission(this.getPermission())

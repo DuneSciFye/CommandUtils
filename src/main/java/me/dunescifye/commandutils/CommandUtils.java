@@ -2,7 +2,7 @@ package me.dunescifye.commandutils;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
-import dev.jorel.commandapi.CommandAPIBukkitConfig;
+import dev.jorel.commandapi.CommandAPIPaperConfig;
 import dev.jorel.commandapi.network.CommandAPIProtocol;
 import me.dunescifye.commandutils.commands.*;
 import me.dunescifye.commandutils.files.Config;
@@ -34,7 +34,7 @@ public final class CommandUtils extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        CommandAPI.onLoad(new CommandAPIBukkitConfig(this).beLenientForMinorVersions(true));
+        CommandAPI.onLoad(new CommandAPIPaperConfig(this));
     }
 
 

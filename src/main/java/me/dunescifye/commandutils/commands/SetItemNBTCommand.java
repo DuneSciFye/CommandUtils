@@ -16,7 +16,7 @@ public class SetItemNBTCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         StringArgument slotArg = new StringArgument("Slot");
         TextArgument namespaceArg = new TextArgument("Namespace");
         TextArgument keyArg = new TextArgument("Key");

@@ -11,7 +11,7 @@ public class SetItemCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register(){
 
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument slotArg = new IntegerArgument("Slot", 0, 40);
         ItemStackArgument itemArg = new ItemStackArgument("Item");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "material", "custommodeldata", "attributemodifiers");

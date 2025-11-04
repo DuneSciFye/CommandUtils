@@ -16,7 +16,7 @@ public class RemoveNBTItemCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         StringArgument namespaceArg = new StringArgument("Namespace");
         StringArgument keyArg = new StringArgument("Key");
         StringArgument valueArg = new StringArgument("Value");

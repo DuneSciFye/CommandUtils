@@ -1,8 +1,8 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.LocationArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -17,8 +17,8 @@ public class GetPlayerHeadCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        PlayerArgument playerArg = new PlayerArgument("Player");
-        PlayerArgument targetArg = new PlayerArgument("Target");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
+      EntitySelectorArgument.OnePlayer targetArg = new EntitySelectorArgument.OnePlayer("Target");
         StringArgument worldArg = new StringArgument("World");
         LocationArgument locArg = new LocationArgument("Location");
 

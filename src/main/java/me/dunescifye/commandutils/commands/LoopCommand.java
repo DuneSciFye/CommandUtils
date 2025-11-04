@@ -48,7 +48,7 @@ public class LoopCommand extends Command implements Configurable {
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "remove", "cancel", "list");
         LiteralArgument runArg = new LiteralArgument("run");
         TextArgument endCommandsArg = new TextArgument("End Commands");
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
 
         new CommandAPICommand("loopcommand")
             .withArguments(functionArg, commandIDArg, loopAmountArg, delayArg, periodArg, commandsArg)

@@ -1,11 +1,8 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import org.bukkit.entity.Player;
-
-import java.util.Collection;
 
 public class FoodCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")

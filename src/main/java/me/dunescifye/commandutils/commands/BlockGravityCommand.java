@@ -18,8 +18,6 @@ public class BlockGravityCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        if (!this.getEnabled()) return;
-
         Argument<World> worldArg = bukkitWorldArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         BooleanArgument gravityArg = new BooleanArgument("Gravity Enabled");

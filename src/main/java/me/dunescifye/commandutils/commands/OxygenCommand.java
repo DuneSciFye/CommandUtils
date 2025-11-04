@@ -1,9 +1,9 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.MultiLiteralArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
 import org.bukkit.entity.Player;
 
 public class OxygenCommand extends Command implements Registerable {
@@ -12,7 +12,7 @@ public class OxygenCommand extends Command implements Registerable {
     @Override
     public void register() {
 
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "set", "add", "remove", "get");
         IntegerArgument amountArg = new IntegerArgument("Amount");
 

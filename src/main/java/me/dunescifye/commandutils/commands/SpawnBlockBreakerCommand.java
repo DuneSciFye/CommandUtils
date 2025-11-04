@@ -1,23 +1,18 @@
 package me.dunescifye.commandutils.commands;
 
-import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.files.Config;
 import me.dunescifye.commandutils.utils.FUtils;
 import me.dunescifye.commandutils.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
@@ -36,7 +31,7 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
         IntegerArgument maxTimeArgument = new IntegerArgument("Max Time", 0);
         IntegerArgument periodArgument = new IntegerArgument("Period", 0);
         StringArgument whitelistedBlocksArgument = new StringArgument("Whitelisted Blocks");
-        PlayerArgument playerArgument = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArgument = new EntitySelectorArgument.OnePlayer("Player");
         BooleanArgument checkClaimArgument = new BooleanArgument("Check Claim");
         BooleanArgument autoPickupArgument = new BooleanArgument("Auto Pickup");
         BooleanArgument generateBlockBreakEventArgument = new BooleanArgument("Generate BLock Break Event");

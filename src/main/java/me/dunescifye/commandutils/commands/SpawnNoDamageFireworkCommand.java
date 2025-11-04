@@ -21,8 +21,8 @@ public class SpawnNoDamageFireworkCommand extends Command implements Registerabl
         StringArgument worldArg = new StringArgument("World");
         LocationArgument locArg = new LocationArgument("Location");
         IntegerArgument ticksToDetonateArg = new IntegerArgument("Ticks To Detonate", 0);
-        PlayerArgument playerArg = new PlayerArgument("No Damage Player");
-        PlayerArgument launcherArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("No Damage Player");
+        EntitySelectorArgument.OnePlayer launcherArg = new EntitySelectorArgument.OnePlayer("Player");
 
         /*
          * Summons a Firework that does no damage

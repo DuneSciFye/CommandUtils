@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Utils;
@@ -10,16 +9,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.Arrays;
-
 public class AddItemNBTCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {
 
-        if (!this.getEnabled()) return;
-
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         Argument<String> slotArg = Utils.slotArgument("Slot");
         TextArgument namespaceArg = new TextArgument("Namespace");
         TextArgument keyArg = new TextArgument("Key");
@@ -39,11 +34,11 @@ public class AddItemNBTCommand extends Command implements Registerable {
             .withArguments(playerArg, slotArg, namespaceArg, keyArg)
             .withOptionalArguments(contentArg)
             .executes((sender, args) -> {
-                String slot = (String) args.get("Slot");
-                ItemStack item = Utils.getInvItem(args.getByArgument(playerArg), slot);
-                String namespace = args.getByArgument(namespaceArg);
-                String inputKey = args.getByArgument(keyArg);
-                String content = args.getByArgumentOrDefault(contentArg, "");
+                final String slot = (String) args.get("Slot");
+                final ItemStack item = Utils.getInvItem(args.getByArgument(playerArg), slot);
+                final String namespace = args.getByArgument(namespaceArg);
+                final String inputKey = args.getByArgument(keyArg);
+                final String content = args.getByArgumentOrDefault(contentArg, "");
 
                 if (item == null) return;
 

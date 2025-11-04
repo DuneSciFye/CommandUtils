@@ -2,8 +2,8 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
+import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
-import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.NamespacedKey;
@@ -21,7 +21,7 @@ import static me.dunescifye.commandutils.utils.Utils.timeArgument;
 public class ItemCooldown extends Command implements Registerable {
     @Override
     public void register() {
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         Argument<String> slotArg = slotArgument("Slot");
         LiteralArgument setCooldownGroupArg = new LiteralArgument("setcooldowngroup");
         StringArgument keyArg = new StringArgument("Key");

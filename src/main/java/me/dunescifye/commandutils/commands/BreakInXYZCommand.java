@@ -31,7 +31,7 @@ public class BreakInXYZCommand extends Command implements Registerable {
         StringArgument worldArg = new StringArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         IntegerArgument xArg = new IntegerArgument("X", 0);
-        PlayerArgument playerArg = new PlayerArgument("Player");
+      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument yArg = new IntegerArgument("Y", 0);
         IntegerArgument zArg = new IntegerArgument("Z", 0);
         LiteralArgument whitelistArg = new LiteralArgument("whitelist");

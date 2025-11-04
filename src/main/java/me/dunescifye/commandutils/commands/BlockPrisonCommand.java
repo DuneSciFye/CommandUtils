@@ -12,7 +12,7 @@ public class BlockPrisonCommand extends Command implements Registerable {
     public void register() {
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         StringArgument worldArg = new StringArgument("World");
-        PlayerArgument playerArg = new PlayerArgument("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument radiusArg = new IntegerArgument("Radius");
         IntegerArgument heightArg = new IntegerArgument("Height");
         IntegerArgument durationArg = new IntegerArgument("Duration");
@@ -49,7 +49,7 @@ public class BlockPrisonCommand extends Command implements Registerable {
                 int radius = args.getByArgument(radiusArg);
                 int height = args.getByArgument(heightArg);
                 int duration = args.getByArgumentOrDefault(durationArg, 100);
-                String blockName = args.getByArgument(blockArg).getMaterial().toString();
+                String blockName = args.getByArgument(blockArg).getType().toString();
 
                 Server server = Bukkit.getServer();
                 ConsoleCommandSender commandSender = Bukkit.getConsoleSender();
