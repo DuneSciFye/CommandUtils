@@ -893,6 +893,24 @@ public class StringPlaceholders extends PlaceholderExpansion {
                 return String.valueOf(potionEffect.getAmplifier());
 
             }
+            /*
+             * Returns the Duration of a potion effect.
+             * @author DuneSciFye
+             * @param Potion Effect
+             */
+            case "potioneffectduration" -> {
+                String[] params = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
+                if (p == null || params.length < 1) return null;
+
+                NamespacedKey key = NamespacedKey.fromString(params[0]);
+                if (key == null) return "";
+                PotionEffectType type = Registry.POTION_EFFECT_TYPE.get(key);
+                if (type == null) return "";
+                PotionEffect potionEffect = p.getPotionEffect(type);
+                if (potionEffect == null) return "";
+                return String.valueOf(potionEffect.getDuration());
+
+            }
             case "exists", "alive" -> {
                 String[] params = arguments.split(separator);
                 if (params.length < 1) return null;

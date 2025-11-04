@@ -63,7 +63,10 @@ public class MobTargetTeamCommand extends Command implements Registerable, Liste
       final Collection<EntityType> entities = teams.get(p.getUniqueId());
       final EntityType entityType = e.getEntityType();
 
-      if (entities != null && entities.contains(entityType)) e.setCancelled(true);
+      if (entities != null && entities.contains(entityType)) {
+        e.setTarget(null);
+        e.setCancelled(true);
+      }
     }
   }
 }
