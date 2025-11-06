@@ -6,7 +6,6 @@ import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.commandutils.utils.Utils;
-import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
@@ -44,7 +43,7 @@ public class CooldownCommandCommand extends Command implements Configurable {
     MultiLiteralArgument getCooldownArg = new MultiLiteralArgument("Function", "getcooldown", "getcd");
     Argument<Duration> timeArg = timeArgument("Time");
     TextArgument commandsArg = new TextArgument("Commands");
-    ChatArgument commands2Arg = new ChatArgument("Commands2");
+    GreedyStringArgument commands2Arg = new GreedyStringArgument("Commands2");
     TextArgument commandSeparatorArg = new TextArgument("Command Separator");
 
     new CommandAPICommand("cooldowncommand")
@@ -72,8 +71,8 @@ public class CooldownCommandCommand extends Command implements Configurable {
         Player p = args.getByArgument(playerArg);
         String id = args.getByArgument(idArg);
         Duration time = args.getUnchecked("Time");
-        SignedMessage message = args.getByArgument(commands2Arg);
-        String[] commands = message.message().split(",,");
+        String message = args.getByArgument(commands2Arg);
+        String[] commands = message.split(",,");
         HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p, k -> new HashMap<>());
 
         switch (args.getByArgument(run2Arg)) {
