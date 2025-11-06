@@ -744,11 +744,11 @@ public class StringPlaceholders extends PlaceholderExpansion {
              * @param Variable Name of Player Variable
              */
             case "playervariable", "playervar", "playertempvar", "playertempvariable", "pvar" -> {
-                return TempPlayerVarCommand.getPlayerVar(p, arguments);
+                return TempPlayerVarCommand.getPlayerVar(p.getName(), arguments);
             }
             case "pvariabledefault", "pvardefault" -> {
                 String[] varParts = arguments.split("_", 2);
-                String var = TempPlayerVarCommand.getPlayerVar(p, varParts[1]);
+                String var = TempPlayerVarCommand.getPlayerVar(p.getName(), varParts[1]);
                 return var.isEmpty() ? varParts[0] : var;
             }
             case "variabledefault", "vardefault" -> {
