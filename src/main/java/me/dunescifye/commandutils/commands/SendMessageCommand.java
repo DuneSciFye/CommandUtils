@@ -47,7 +47,7 @@ public class SendMessageCommand extends Command implements Configurable {
         }
 
         EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        TextArgument textArg = new TextArgument("Message");
+        GreedyStringArgument textArg = new GreedyStringArgument("Message");
         BooleanArgument colorCodesArg = new BooleanArgument("Color Codes");
         BooleanArgument parsePlaceholdersArg = new BooleanArgument("Parse Placeholders");
         BooleanArgument useAmpersandArg = new BooleanArgument("Use Ampersand For Color Codes");
