@@ -71,6 +71,9 @@ public class PlayerPlaceholders extends PlaceholderExpansion {
             case "isflying" -> {
                 return String.valueOf(p.isFlying());
             }
+            case "issprinting" -> {
+                return String.valueOf(p.isSprinting());
+            }
             case "vehicle" -> {
                 Entity v = p.getVehicle();
                 if (v == null) return "";
