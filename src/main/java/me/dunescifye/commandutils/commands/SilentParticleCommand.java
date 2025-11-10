@@ -24,12 +24,11 @@ public class SilentParticleCommand extends Command implements Registerable {
     DoubleArgument speedArg = new DoubleArgument("Speed");
     LocationArgument locArg = new LocationArgument("Location");
     BooleanArgument forceArg = new BooleanArgument("Force");
-    EntitySelectorArgument.ManyPlayers viewersArg = new EntitySelectorArgument.ManyPlayers("Viewers");
 
     new CommandAPICommand("silentparticle")
       .withArguments(particleArg, locArg)
       .withOptionalArguments(xOffsetArg.combineWith(yOffsetArg).combineWith(zOffsetArg))
-      .withOptionalArguments(speedArg, amountArg, forceArg, viewersArg)
+      .withOptionalArguments(speedArg, amountArg, forceArg)
       .executes((sender, args) -> {
         final ParticleData<?> particleData = args.getByArgument(particleArg);
         final Particle particle = particleData.particle();
@@ -41,17 +40,17 @@ public class SilentParticleCommand extends Command implements Registerable {
         final double yOffset = args.getByArgumentOrDefault(yOffsetArg, 0.0);
         final double zOffset = args.getByArgumentOrDefault(zOffsetArg, 0.0);
         final boolean force = args.getByArgumentOrDefault(forceArg, false);
+        /*
         OfflinePlayer source = null;
-        final Collection<Player> viewers = args.getByArgumentOrDefault(viewersArg, null);
-        final List<Player> viewerList = viewers == null ? null : new ArrayList<>(viewers);
 
         if (sender instanceof OfflinePlayer p) {
           source = p;
         } else if (sender instanceof ProxiedCommandSender proxy) {
           source = (OfflinePlayer) proxy.getCallee();
         }
+         */
 
-        world.spawnParticle(particle, viewerList, source.getPlayer(), loc.getX(), loc.getY(), loc.getZ(), amount, xOffset, yOffset, zOffset, speed, particleData.data(), force);
+        world.spawnParticle(particle, null, null, loc.getX(), loc.getY(), loc.getZ(), amount, xOffset, yOffset, zOffset, speed, particleData.data(), force);
       })
       .withPermission(this.getPermission())
       .withAliases(this.getCommandAliases())
