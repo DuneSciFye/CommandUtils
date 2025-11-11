@@ -167,7 +167,7 @@ public class PlayerPlaceholders extends PlaceholderExpansion {
             case "getblock" -> {
                 return p.getLocation().getBlock().getType().toString();
             }
-            default -> {
+          default -> {
                 return null;
             }
         }
