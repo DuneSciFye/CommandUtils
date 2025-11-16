@@ -582,7 +582,7 @@ public class Utils {
             return ingredients; // No recipe found
         }
 
-        Recipe recipe = recipes.getFirst(); // Take the first one
+        Recipe recipe = material == Material.WHITE_WOOL ? recipes.getLast() : recipes.getFirst();
 
         if (recipe.getResult().getAmount() != 1) return ingredients;
 

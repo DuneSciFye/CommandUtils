@@ -20,14 +20,14 @@ import static me.dunescifye.commandutils.utils.Utils.timeArgument;
 
 public class CooldownCommandCommand extends Command implements Configurable {
 
-  private static final HashMap<Player, HashMap<String, Instant>> cooldowns = new HashMap<>(); //Player, CommandID, Time
+  private static final HashMap<String, HashMap<String, Instant>> cooldowns = new HashMap<>(); // Unique Identifier, CommandID, Time
+  private static final HashMap<String, Instant> globalCooldowns = new HashMap<>(); // Unique
+  // Identifier, CommandID, Time
   private static String cooldownMessageHours, cooldownMessageMinutes, cooldownMessageSeconds, cooldownMessageMilliseconds;
 
   @SuppressWarnings("ConstantConditions")
   @Override
   public void register(YamlDocument config) {
-
-    if (!this.getEnabled()) return;
 
     //Set up cooldown message
     cooldownMessageHours = config.getOptionalString("Commands.CooldownCommand.CooldownMessages.Hours").orElse("&cOn Cooldown for %hours%h, %minutes%m, & %seconds%s.");
@@ -38,13 +38,14 @@ public class CooldownCommandCommand extends Command implements Configurable {
     EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
     StringArgument idArg = new StringArgument("ID");
     MultiLiteralArgument resetArg = new MultiLiteralArgument("Function", "reset", "clear");
-    MultiLiteralArgument runArg = new MultiLiteralArgument("Function", "run", "silent");
+    MultiLiteralArgument runArg = new MultiLiteralArgument("Function", "run", "silent", "global");
     MultiLiteralArgument run2Arg = new MultiLiteralArgument("Function2", "run2", "silent2");
     MultiLiteralArgument getCooldownArg = new MultiLiteralArgument("Function", "getcooldown", "getcd");
     Argument<Duration> timeArg = timeArgument("Time");
     TextArgument commandsArg = new TextArgument("Commands");
     GreedyStringArgument commands2Arg = new GreedyStringArgument("Commands2");
     TextArgument commandSeparatorArg = new TextArgument("Command Separator");
+    LiteralArgument globalArg = new LiteralArgument("global");
 
     new CommandAPICommand("cooldowncommand")
       .withArguments(playerArg, idArg, timeArg, commandsArg)
@@ -52,7 +53,7 @@ public class CooldownCommandCommand extends Command implements Configurable {
       .executes((sender, args) -> {
         Player p = args.getByArgument(playerArg);
         String id = args.getByArgument(idArg);
-        HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p, k -> new HashMap<>());
+        HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p.getUniqueId().toString(), k -> new HashMap<>());
 
         if (hasCooldown(playerCDs, id))
           p.sendActionBar(getCooldownMessage(p, getRemainingCooldown(playerCDs, id)));
@@ -73,7 +74,7 @@ public class CooldownCommandCommand extends Command implements Configurable {
         Duration time = args.getUnchecked("Time");
         String message = args.getByArgument(commands2Arg);
         String[] commands = message.split(",,");
-        HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p, k -> new HashMap<>());
+        HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p.getUniqueId().toString(), k -> new HashMap<>());
 
         switch (args.getByArgument(run2Arg)) {
           case "run2" -> {
@@ -113,7 +114,7 @@ public class CooldownCommandCommand extends Command implements Configurable {
         String id = args.getByArgument(idArg);
         Duration time = args.getUnchecked("Time");
         String[] commands = args.getByArgument(commandsArg).split(args.getByArgumentOrDefault(commandSeparatorArg, ",,"));
-        HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p, k -> new HashMap<>());
+        HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p.getUniqueId().toString(), k -> new HashMap<>());
 
         switch (args.getByArgument(runArg)) {
           case "run" -> {
@@ -129,6 +130,14 @@ public class CooldownCommandCommand extends Command implements Configurable {
             setCooldown(playerCDs, id, time);
             Utils.runConsoleCommands(commands);
           }
+          case "global" -> {
+            if (hasCooldown(globalCooldowns, id))
+              p.sendActionBar(getCooldownMessage(p, getRemainingCooldown(globalCooldowns, id)));
+            else {
+              setCooldown(globalCooldowns, id, time);
+              Utils.runConsoleCommands(commands);
+            }
+          }
         }
       })
       .withPermission(this.getPermission())
@@ -140,12 +149,12 @@ public class CooldownCommandCommand extends Command implements Configurable {
         .then(playerArg
           .executes((sender, args) -> {
             Player p = args.getByArgument(playerArg);
-            cooldowns.remove(p);
+            cooldowns.remove(p.getUniqueId().toString());
           })
           .then(idArg
             .executes((sender, args) -> {
               Player p = args.getByArgument(playerArg);
-              HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p, k -> new HashMap<>());
+              HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p.getUniqueId().toString(), k -> new HashMap<>());
               playerCDs.remove(args.getByArgument(idArg));
             })
           )
@@ -157,7 +166,7 @@ public class CooldownCommandCommand extends Command implements Configurable {
             .executes((sender, args) -> {
               Player p = args.getByArgument(playerArg);
               String id = args.getByArgument(idArg);
-              HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p, k -> new HashMap<>());
+              HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p.getUniqueId().toString(), k -> new HashMap<>());
 
               sender.sendMessage(getCooldownMessage(p, getRemainingCooldown(playerCDs, id)));
             })

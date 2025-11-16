@@ -1134,8 +1134,10 @@ public class StringPlaceholders extends PlaceholderExpansion {
             case "getingredients" -> {
                 String[] args = arguments.split(separator);
                 if (args.length < 2) return "Missing args.";
-                Material mat = Material.getMaterial(args[0].toUpperCase());
+                String stringMat = args[0].toUpperCase();
+                Material mat = Material.getMaterial(stringMat);
                 if (mat == null) return "Invalid Material";
+                if (stringMat.contains("_WOOL") && !stringMat.equals("WHITE_WOOL")) return "AIR";
                 List<ItemStack> ingredients = Utils.getIngredients(mat);
                 Integer number = Integer.parseInt(args[1]);
                 if (number == null) return "Invalid Number";
