@@ -67,9 +67,7 @@ public class RunCommandLaterCommand extends Command implements Registerable {
                             String[] commands = ((String) args.getUnchecked("Commands")).split(",,");
 
                             Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
-                                for (String command : commands) {
-                                    server.dispatchCommand(console, command);
-                                }
+                              Utils.runConsoleCommands(commands);
                             }, Utils.parseDuration(args.getByArgument(timeArg)).toMillis() / 50);
 
                         })

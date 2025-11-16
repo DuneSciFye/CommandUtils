@@ -598,4 +598,19 @@ public class Utils {
 
         return ingredients;
     }
+    public static ItemStack getFurnaceIngredients(Material material) {
+        // Get all recipes that produce this material
+        List<Recipe> recipes = Bukkit.getRecipesFor(new ItemStack(material));
+
+        if (recipes.isEmpty()) {
+            return ItemStack.of(Material.AIR); // No recipe found
+        }
+
+        Recipe recipe = recipes.getFirst(); // Take the first one
+
+        if (recipe instanceof FurnaceRecipe furnaceRecipe) {
+          return furnaceRecipe.getInput();
+        }
+        return ItemStack.of(Material.AIR);
+    }
 }

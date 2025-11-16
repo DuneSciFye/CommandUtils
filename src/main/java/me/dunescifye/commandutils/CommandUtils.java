@@ -166,6 +166,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("PreventMixInventory", new PreventMixInventoryCommand());
         commands.put("MobTargetTeam", new MobTargetTeamCommand());
         commands.put("SetProjectileCommands", new SetProjectileCommandsCommand());
+        commands.put("SetGliding", new SetGliding());
         if (versionAmount > 21.1) commands.put("ItemCooldown", new ItemCooldown());
         if (versionAmount > 21.1) commands.put("ItemAttribute", new ItemAttributeCommand());
         if (versionAmount > 21.1) commands.put("LifeSteal", new LifeStealCommand());

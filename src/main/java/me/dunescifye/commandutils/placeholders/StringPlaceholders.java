@@ -18,6 +18,7 @@ import me.libraryaddict.disguise.DisguiseAPI;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
@@ -588,7 +589,7 @@ public class StringPlaceholders extends PlaceholderExpansion {
 
                 return material.toString();
             }
-            case "worldenvironment" -> {
+            case "worldenvironment", "dimension" -> {
                 return p.getWorld().getEnvironment().toString();
             }
             case "if" -> {
@@ -981,8 +982,17 @@ public class StringPlaceholders extends PlaceholderExpansion {
                         case "health" -> {
                             if (e instanceof Damageable damageable) return String.valueOf(damageable.getHealth());
                         }
+                        case "armor" -> {
+                            if (e instanceof LivingEntity livingEntity) return String.valueOf(livingEntity.getAttribute(Attribute.ARMOR).getValue());
+                        }
                         case "data" -> {
                             return e.getAsString();
+                        }
+                        case "hasai" -> {
+                            if (e instanceof LivingEntity livingEntity) return String.valueOf(livingEntity.hasAI());
+                        }
+                        case "isinvulnerable" -> {
+                            if (e instanceof LivingEntity livingEntity) return String.valueOf(livingEntity.isInvulnerable());
                         }
                     }
                 } catch (IllegalArgumentException e) {
@@ -1131,6 +1141,14 @@ public class StringPlaceholders extends PlaceholderExpansion {
                 if (number == null) return "Invalid Number";
                 if (number >= ingredients.size()) return "AIR";
                 return ingredients.get(number).getType().toString();
+            }
+            // Material
+            case "getfurnaceingredients" -> {
+                String[] args = arguments.split(separator);
+                if (args.length < 1) return "Missing args.";
+                Material mat = Material.getMaterial(args[0].toUpperCase());
+                if (mat == null) return "Invalid Material";
+                return Utils.getFurnaceIngredients(mat).getType().toString();
             }
             case "randomuuid" -> {
                 return UUID.randomUUID().toString();

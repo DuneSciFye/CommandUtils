@@ -2,6 +2,7 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
@@ -25,8 +26,8 @@ public class SetMobTargetCommand extends Command implements Registerable {
                 if (!(target instanceof LivingEntity livingTarget))
                     return;
                 for (Entity entity : entities)
-                    if (entity instanceof Mob mob)
-                        mob.setTarget(livingTarget);
+                    if (entity instanceof Creature creature)
+                        creature.setTarget(livingTarget);
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
