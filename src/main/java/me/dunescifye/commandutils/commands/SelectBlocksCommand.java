@@ -101,13 +101,18 @@ public class SelectBlocksCommand extends Command implements Registerable {
         .register(this.getNamespace());
     }
 
+    // Gets triggered for each block
     public static void triggerActions(Block center, Block b, Player p, String[] functions, String placeholderSurrounder) {
         Collection<ItemStack> drops = new ArrayList<>();
-        for (String function: functions) {
+        boolean cancelled = false;
+        for (String function : functions) {
             function = function.trim();
             if (function.equals("BLOCK:CONDITION:FULLY_GROWN")) {
                 if (!(b.getBlockData() instanceof Ageable ageable && ageable.getAge() == ageable.getMaximumAge()))
                     break;
+            }
+            else if (function.equals("BLOCK:CONDITION:NOT_CANCELLED")) {
+                if (cancelled) break;
             }
             else if (function.equals("BLOCK:SILK_TOUCH")) {
               drops.add(new ItemStack(b.getType(), 1));
@@ -116,6 +121,7 @@ public class SelectBlocksCommand extends Command implements Registerable {
             else if (function.equals("BLOCK:TRIGGER_BLOCK_BREAK")) {
               BlockBreakEvent event = new BlockBreakEvent(b, p);
               Bukkit.getPluginManager().callEvent(event);
+              cancelled = event.isCancelled();
             }
             else if (function.equals("BLOCK:REMOVE")) {
               b.setType(Material.AIR);

@@ -5,7 +5,6 @@ import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Mob;
 
 import java.util.Collection;
 
