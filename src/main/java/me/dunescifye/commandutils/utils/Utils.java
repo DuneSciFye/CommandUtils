@@ -606,10 +606,12 @@ public class Utils {
             return ItemStack.of(Material.AIR); // No recipe found
         }
 
-        Recipe recipe = recipes.getFirst(); // Take the first one
-
-        if (recipe instanceof FurnaceRecipe furnaceRecipe) {
-          return furnaceRecipe.getInput();
+        for (Recipe recipe : recipes) {
+            if (recipe instanceof FurnaceRecipe furnaceRecipe) {
+                ItemStack input = furnaceRecipe.getInput();
+                if (input.getType().toString().contains("DEEPSLATE_")) continue;
+                return input;
+            }
         }
         return ItemStack.of(Material.AIR);
     }
