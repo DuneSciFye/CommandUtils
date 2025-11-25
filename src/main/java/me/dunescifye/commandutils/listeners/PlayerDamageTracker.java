@@ -9,13 +9,14 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class PlayerDamageTracker implements Listener {
 
-    private static final HashMap<Player, Double> lastRawDamageTaken = new HashMap<>();
-    private static final HashMap<Player, Double> lastFinalDamageTaken = new HashMap<>();
-    private static final HashMap<Player, Double> lastRawDamageDealt = new HashMap<>();
-    private static final HashMap<Player, Double> lastFinalDamageDealt = new HashMap<>();
+    private static final HashMap<UUID, Double> lastRawDamageTaken = new HashMap<>();
+    private static final HashMap<UUID, Double> lastFinalDamageTaken = new HashMap<>();
+    private static final HashMap<UUID, Double> lastRawDamageDealt = new HashMap<>();
+    private static final HashMap<UUID, Double> lastFinalDamageDealt = new HashMap<>();
 
     public void damageTrackerHandler(CommandUtils plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -24,38 +25,41 @@ public class PlayerDamageTracker implements Listener {
     @EventHandler
     public void onDamage(EntityDamageEvent e) {
         if (e.getEntity() instanceof Player p) {
-            lastRawDamageTaken.put(p, e.getDamage());
-            lastFinalDamageTaken.put(p, e.getFinalDamage());
+            UUID uuid = p.getUniqueId();
+            lastRawDamageTaken.put(uuid, e.getDamage());
+            lastFinalDamageTaken.put(uuid, e.getFinalDamage());
         }
         if (e.getDamageSource().getCausingEntity() instanceof Player p) {
-            lastRawDamageDealt.put(p, e.getDamage());
-            lastFinalDamageDealt.put(p, e.getFinalDamage());
+            UUID uuid = p.getUniqueId();
+            lastRawDamageDealt.put(uuid, e.getDamage());
+            lastFinalDamageDealt.put(uuid, e.getFinalDamage());
         }
     }
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
         Player p = e.getPlayer();
+        UUID uuid = p.getUniqueId();
         // Remove player from LastDamage HashMaps
-        if (lastRawDamageTaken.containsKey(p)) {
-            lastRawDamageTaken.remove(p);
-            lastFinalDamageTaken.remove(p);
+        if (lastRawDamageTaken.containsKey(uuid)) {
+            lastRawDamageTaken.remove(uuid);
+            lastFinalDamageTaken.remove(uuid);
         }
-        if (lastFinalDamageTaken.containsKey(p)) {
-            lastFinalDamageTaken.remove(p);
-            lastRawDamageDealt.remove(p);
+        if (lastFinalDamageTaken.containsKey(uuid)) {
+            lastFinalDamageTaken.remove(uuid);
+            lastRawDamageDealt.remove(uuid);
         }
     }
 
-    public static Double getLastRawDamageTaken(Player p) {
-        return lastRawDamageTaken.get(p);
+    public static Double getLastRawDamageTaken(UUID uuid) {
+        return lastRawDamageTaken.get(uuid);
     }
-    public static Double getLastFinalDamageTaken(Player p) {
-        return lastFinalDamageTaken.get(p);
+    public static Double getLastFinalDamageTaken(UUID uuid) {
+        return lastFinalDamageTaken.get(uuid);
     }
-    public static Double getLastRawDamageDealt(Player p) {
-        return lastRawDamageDealt.get(p);
+    public static Double getLastRawDamageDealt(UUID uuid) {
+        return lastRawDamageDealt.get(uuid);
     }
-    public static Double getLastFinalDamageDealt(Player p) {
-        return lastFinalDamageDealt.get(p);
+    public static Double getLastFinalDamageDealt(UUID uuid) {
+        return lastFinalDamageDealt.get(uuid);
     }
 }

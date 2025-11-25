@@ -20,100 +20,105 @@ import static me.dunescifye.commandutils.utils.Utils_21_4.equipmentSlotGroupArgu
 
 public class ItemAttributeCommand extends Command implements Registerable {
 
-    @SuppressWarnings({"ConstantConditions", "UnstableApiUsage"})
-    public void register() {
+  @SuppressWarnings({"ConstantConditions", "UnstableApiUsage"})
+  public void register() {
 
-        LiteralArgument addArg = new LiteralArgument("add");
-        LiteralArgument removeArg = new LiteralArgument("remove");
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        Argument<String> slotArg = slotArgument("Slot");
-        Argument<Attribute> attributeArg = attributeArgument("Attribute");
-        DoubleArgument valueArg = new DoubleArgument("Value");
-        Argument<AttributeModifier.Operation> operationArg = operationArgument("Operation");
-        Argument<EquipmentSlotGroup> equipSlotArg = equipmentSlotGroupArgument("Equipment Slot");
-        StringArgument idArg = new StringArgument("ID");
-        BooleanArgument addDefaultAttributesArg = new BooleanArgument("Add Default Attributes");
+    LiteralArgument addArg = new LiteralArgument("add");
+    LiteralArgument removeArg = new LiteralArgument("remove");
+    EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
+    Argument<String> slotArg = slotArgument("Slot");
+    Argument<Attribute> attributeArg = attributeArgument("Attribute");
+    DoubleArgument valueArg = new DoubleArgument("Value");
+    Argument<AttributeModifier.Operation> operationArg = operationArgument("Operation");
+    Argument<EquipmentSlotGroup> equipSlotArg = equipmentSlotGroupArgument("Equipment Slot");
+    StringArgument idArg = new StringArgument("ID");
+    BooleanArgument addDefaultAttributesArg = new BooleanArgument("Add Default Attributes");
 
-      TextArgument namespaceArg = new TextArgument("Namespace");
-      TextArgument keyArg = new TextArgument("Key");
-      GreedyStringArgument contentArg = new GreedyStringArgument("Content");
+    TextArgument namespaceArg = new TextArgument("Namespace");
+    TextArgument keyArg = new TextArgument("Key");
+    GreedyStringArgument contentArg = new GreedyStringArgument("Content");
 
-        new CommandAPICommand("itemattribute")
-            .withArguments(addArg, playerArg, slotArg, attributeArg, idArg, valueArg, operationArg, equipSlotArg)
-            .withOptionalArguments(addDefaultAttributesArg)
-          .withOptionalArguments(namespaceArg.combineWith(keyArg.combineWith(contentArg)))
-            .executes((sender, args) -> {
-                ItemStack item = Utils.getInvItem(
-                    args.getByArgument(playerArg),
-                    (String) args.get("Slot")
-                );
-                if (item == null || !item.hasItemMeta())
-                    return;
+    new CommandAPICommand("itemattribute")
+      .withArguments(addArg, playerArg, slotArg, attributeArg, idArg, valueArg, operationArg, equipSlotArg)
+      .withOptionalArguments(addDefaultAttributesArg)
+      .withOptionalArguments(namespaceArg.combineWith(keyArg.combineWith(contentArg)))
+      .executes((sender, args) -> {
+        ItemStack item = Utils.getInvItem(
+          args.getByArgument(playerArg),
+          (String) args.get("Slot")
+        );
+        if (item == null || !item.hasItemMeta())
+          return;
 
-                ItemMeta meta = item.getItemMeta();
-
-
-              // Checking a specific namespace
-              final String namespace = args.getByArgument(namespaceArg);
-              final String inputKey = args.getByArgument(keyArg);
-              final String content = args.getByArgument(contentArg);
-
-              if (content != null) {
-                final NamespacedKey key = new NamespacedKey(namespace, inputKey);
-                if (Utils.isNumeric(content) && meta.getPersistentDataContainer().get(key, PersistentDataType.DOUBLE) != Double.parseDouble(content))
-                  return;
-                else if (!Objects.equals(meta.getPersistentDataContainer().get(key, PersistentDataType.STRING), content))
-                  return;
-              }
-
-              item.setItemMeta(meta);
-
-                double amount = args.getByArgument(valueArg);
-                Attribute attribute = (Attribute) args.get("Attribute");
-                AttributeModifier.Operation operation = (AttributeModifier.Operation) args.get("Operation");
-                EquipmentSlotGroup equipmentSlot = (EquipmentSlotGroup) args.get("Equipment Slot");
-                NamespacedKey key = NamespacedKey.fromString(args.getByArgument(idArg).toLowerCase());
-                AttributeModifier modifier = new AttributeModifier(key, amount, operation, equipmentSlot);
+        ItemMeta meta = item.getItemMeta();
 
 
-                Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
-                if (meta.hasAttributeModifiers()) attributes.putAll(meta.getAttributeModifiers());
-                if (attributes.containsEntry(attribute, modifier)) return;
-                if (args.getByArgumentOrDefault(addDefaultAttributesArg, false)) {
-                    Multimap<Attribute, AttributeModifier> defaultAttributes = item.getType().getDefaultAttributeModifiers();
-                    if (defaultAttributes != null)
-                        attributes.putAll(defaultAttributes);
-                }
-                attributes.put(attribute, modifier);
-                meta.setAttributeModifiers(attributes);
-                item.setItemMeta(meta);
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
+        // Checking a specific namespace
+        final String namespace = args.getByArgument(namespaceArg);
+        final String inputKey = args.getByArgument(keyArg);
+        final String content = args.getByArgument(contentArg);
 
-        new CommandAPICommand("itemattribute")
-            .withArguments(removeArg, playerArg, slotArg, attributeArg, idArg)
-            .executes((sender, args) -> {
-                ItemStack item = Utils.getInvItem(args.getByArgument(playerArg), (String) args.get("Slot"));
-                if (item == null || !item.hasItemMeta()) return;
+        if (content != null) {
+          final NamespacedKey key = new NamespacedKey(namespace, inputKey);
+          if (Utils.isNumeric(content)) { // Double Key
+            Double storedContent = meta.getPersistentDataContainer().get(key, PersistentDataType.DOUBLE);
+            if (storedContent == null || storedContent != Double.parseDouble(content)) {
+              return;
+            }
+          }
+          else { // String Key
+            String storedContent = meta.getPersistentDataContainer().get(key, PersistentDataType.STRING);
+            if (storedContent == null || !storedContent.equals(content)) {
+              return;
+            }
+          }
+        }
 
-                ItemMeta meta = item.getItemMeta();
+        double amount = args.getByArgument(valueArg);
+        Attribute attribute = (Attribute) args.get("Attribute");
+        AttributeModifier.Operation operation = (AttributeModifier.Operation) args.get("Operation");
+        EquipmentSlotGroup equipmentSlot = (EquipmentSlotGroup) args.get("Equipment Slot");
+        NamespacedKey key = NamespacedKey.fromString(args.getByArgument(idArg).toLowerCase());
+        AttributeModifier modifier = new AttributeModifier(key, amount, operation, equipmentSlot);
 
-                double amount = 1;
-                Attribute attribute = (Attribute) args.get("Attribute");
-                AttributeModifier.Operation operation = AttributeModifier.Operation.ADD_NUMBER;
-                NamespacedKey key = NamespacedKey.fromString(args.getByArgument(idArg).toLowerCase());
-                AttributeModifier modifier = new AttributeModifier(key, amount, operation);
+        Multimap<Attribute, AttributeModifier> attributes = HashMultimap.create();
+        if (meta.hasAttributeModifiers()) attributes.putAll(meta.getAttributeModifiers());
+        if (attributes.containsEntry(attribute, modifier)) return;
+        if (args.getByArgumentOrDefault(addDefaultAttributesArg, false)) {
+          Multimap<Attribute, AttributeModifier> defaultAttributes = item.getType().getDefaultAttributeModifiers();
+          if (defaultAttributes != null)
+            attributes.putAll(defaultAttributes);
+        }
+        attributes.put(attribute, modifier);
+        meta.setAttributeModifiers(attributes);
+        item.setItemMeta(meta);
+      })
+      .withPermission(this.getPermission())
+      .withAliases(this.getCommandAliases())
+      .register(this.getNamespace());
 
-                meta.removeAttributeModifier(attribute, modifier);
-                item.setItemMeta(meta);
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
+    new CommandAPICommand("itemattribute")
+      .withArguments(removeArg, playerArg, slotArg, attributeArg, idArg)
+      .executes((sender, args) -> {
+        ItemStack item = Utils.getInvItem(args.getByArgument(playerArg), (String) args.get("Slot"));
+        if (item == null || !item.hasItemMeta()) return;
+
+        ItemMeta meta = item.getItemMeta();
+
+        double amount = 1;
+        Attribute attribute = (Attribute) args.get("Attribute");
+        AttributeModifier.Operation operation = AttributeModifier.Operation.ADD_NUMBER;
+        NamespacedKey key = NamespacedKey.fromString(args.getByArgument(idArg).toLowerCase());
+        AttributeModifier modifier = new AttributeModifier(key, amount, operation);
+
+        meta.removeAttributeModifier(attribute, modifier);
+        item.setItemMeta(meta);
+      })
+      .withPermission(this.getPermission())
+      .withAliases(this.getCommandAliases())
+      .register(this.getNamespace());
 
 
-    }
+  }
 
 }

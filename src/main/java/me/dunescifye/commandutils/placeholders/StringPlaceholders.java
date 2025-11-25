@@ -1012,16 +1012,16 @@ public class StringPlaceholders extends PlaceholderExpansion {
                 }
             }
             case "lastrawdamage", "lastrawdamagetaken" -> {
-                return String.valueOf(PlayerDamageTracker.getLastRawDamageTaken(p));
+                return String.valueOf(PlayerDamageTracker.getLastRawDamageTaken(p.getUniqueId()));
             }
             case "lastfinaldamage", "lastfinaldamagetaken" -> {
-                return String.valueOf(PlayerDamageTracker.getLastFinalDamageTaken(p));
+                return String.valueOf(PlayerDamageTracker.getLastFinalDamageTaken(p.getUniqueId()));
             }
             case "lastrawdamagedealt" -> {
-                return String.valueOf(PlayerDamageTracker.getLastRawDamageDealt(p));
+                return String.valueOf(PlayerDamageTracker.getLastRawDamageDealt(p.getUniqueId()));
             }
             case "lastfinaldamagedealt" -> {
-                return String.valueOf(PlayerDamageTracker.getLastFinalDamageDealt(p));
+                return String.valueOf(PlayerDamageTracker.getLastFinalDamageDealt(p.getUniqueId()));
             }
             case "lastbowforce", "bowforce", "recentbowforce" -> {
                 return String.valueOf(BowForceTracker.getBowForce(p));
