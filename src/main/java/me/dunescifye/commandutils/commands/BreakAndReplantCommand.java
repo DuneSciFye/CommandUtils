@@ -55,7 +55,7 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 Location location = args.getByArgument(locArg);
                 Block block = world.getBlockAt(location);
-                BlockData original = args.getByArgument(blockArg);
+                BlockData original = args.getByArgument(blockArg).getBlockData();
                 int radius = args.getByArgument(radiusArg);
                 Player player = args.getByArgument(playerArg);
                 ItemStack heldItem = player.getInventory().getItemInMainHand();
@@ -111,7 +111,7 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                 Location location = args.getByArgument(locArg);
                 Block block = location.getBlock();
                 World world = location.getWorld();
-                BlockData original = args.getByArgument(blockArg);
+                BlockData original = args.getByArgument(blockArg).getBlockData();
                 int radius = args.getByArgument(radiusArg);
                 Player player = args.getByArgument(playerArg);
                 ItemStack heldItem = player.getInventory().getItemInMainHand();
@@ -173,7 +173,7 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 Location location = args.getByArgument(locArg);
                 Block block = world.getBlockAt(location);
-                BlockData original = args.getByArgument(blockArg);
+                BlockData original = args.getByArgument(blockArg).getBlockData();
                 int xRadius = args.getByArgument(xArg);
                 int yRadius = args.getByArgument(yArg);
                 int zRadius = args.getByArgument(zArg);
@@ -238,7 +238,7 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                 Location location = args.getByArgument(locArg);
                 Block block = location.getBlock();
                 World world = location.getWorld();
-                BlockData original = args.getByArgument(blockArg);
+                BlockData original = args.getByArgument(blockArg).getBlockData();
                 int xRadius = args.getByArgument(xArg);
                 int yRadius = args.getByArgument(yArg);
                 int zRadius = args.getByArgument(zArg);
@@ -298,7 +298,7 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 Location location = args.getByArgument(locArg);
                 Block block = world.getBlockAt(location);
-                BlockData original = args.getByArgument(blockArg);
+                BlockData original = args.getByArgument(blockArg).getBlockData();
                 Player player = args.getByArgument(playerArg);
                 ItemStack heldItem = player.getInventory().getItemInMainHand();
 
@@ -344,7 +344,7 @@ public class BreakAndReplantCommand extends Command implements Registerable {
                 Location location = args.getByArgument(locArg);
                 Block block = location.getBlock();
                 World world = location.getWorld();
-                BlockData original = args.getByArgument(blockArg);
+                BlockData original = args.getByArgument(blockArg).getBlockData();
                 Player player = args.getByArgument(playerArg);
                 ItemStack heldItem = player.getInventory().getItemInMainHand();
 

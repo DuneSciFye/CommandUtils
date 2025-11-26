@@ -109,7 +109,7 @@ public class ReplaceInRadiusIfBlockRelative extends Command implements Registera
                 final Block origin = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
                 final int radius = args.getByArgument(radiusArg);
                 final List<List<Predicate<Block>>> blocksFrom = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
-                final BlockData blockTo = args.getByArgument(blockToArg);
+                final BlockData blockTo = args.getByArgument(blockToArg).getBlockData();
                 final List<BlockFace> blocksFaces = args.getUnchecked("Block Faces");
                 final List<List<Predicate<Block>>> blocksRelative = Utils.stringListToPredicate(args.getUnchecked("Blocks Relative"));
                 final ItemStack item = args.getByArgumentOrDefault(removeItemArg, null);
