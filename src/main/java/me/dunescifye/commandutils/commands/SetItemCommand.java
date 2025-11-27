@@ -14,7 +14,7 @@ public class SetItemCommand extends Command implements Registerable {
       EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument slotArg = new IntegerArgument("Slot", 0, 40);
         ItemStackArgument itemArg = new ItemStackArgument("Item");
-        MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "material", "custommodeldata", "attributemodifiers");
+        MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "material", "custommodeldata", "attributemodifiers", "equippable");
 
         new CommandAPICommand("setitem")
             .withArguments(playerArg)
@@ -37,6 +37,11 @@ public class SetItemCommand extends Command implements Registerable {
                     }
                     case "attributemodifiers" -> {
                         if (argMeta.hasAttributeModifiers()) invMeta.setAttributeModifiers(argMeta.getAttributeModifiers());
+                    }
+                    case "equippable" -> {
+                      if (argMeta.hasEquippable()) {
+                        invMeta.setEquippable(argMeta.getEquippable());
+                      }
                     }
                     case null, default -> {
                         invItem = invItem.withType(argItem.getType());

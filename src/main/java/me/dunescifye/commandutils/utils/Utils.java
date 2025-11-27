@@ -610,7 +610,7 @@ public class Utils {
             if (recipe instanceof FurnaceRecipe furnaceRecipe) {
                 ItemStack input = furnaceRecipe.getInput();
                 String mat = input.getType().toString();
-                if (mat.contains("DEEPSLATE_") || mat.contains("EMERALD_ORE") || mat.contains("DIAMOND_ORE") || mat.contains("ANCIENT_DEBRIS")) continue;
+                if (mat.contains("DEEPSLATE_") || mat.contains("EMERALD_ORE") || mat.contains("DIAMOND_ORE") || mat.contains("ANCIENT_DEBRIS") || mat.equals("GOLD_ORE") || mat.equals("IRON_ORE")) continue;
                 return input;
             }
         }
