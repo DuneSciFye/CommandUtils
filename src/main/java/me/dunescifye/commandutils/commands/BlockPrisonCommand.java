@@ -49,7 +49,7 @@ public class BlockPrisonCommand extends Command implements Registerable {
                 int radius = args.getByArgument(radiusArg);
                 int height = args.getByArgument(heightArg);
                 int duration = args.getByArgumentOrDefault(durationArg, 100);
-                String blockName = args.getByArgument(blockArg).getMaterial().toString();
+                String blockName = args.getByArgument(blockArg).getType().toString();
 
                 Server server = Bukkit.getServer();
                 ConsoleCommandSender commandSender = Bukkit.getConsoleSender();

@@ -702,7 +702,8 @@ public class StringPlaceholders extends PlaceholderExpansion {
                     }
                 } else {
                     try {
-                        loc1 = new Location(world, Integer.parseInt(arg1[0]), Integer.parseInt(arg1[1]), Integer.parseInt(arg1[2]));
+                        loc1 = new Location(world, Double.parseDouble(arg1[0]), Double.parseDouble(arg1[1]),
+                          Double.parseDouble(arg1[2]));
                     } catch (NumberFormatException e) {
                         return "Invalid Number for Coordinates provided";
                     }
@@ -719,7 +720,8 @@ public class StringPlaceholders extends PlaceholderExpansion {
                     }
                 } else {
                     try {
-                        loc2 = new Location(world, Integer.parseInt(arg2[0]), Integer.parseInt(arg2[1]), Integer.parseInt(arg2[2]));
+                        loc2 = new Location(world, Double.parseDouble(arg2[0]), Double.parseDouble(arg2[1]),
+                          Double.parseDouble(arg2[2]));
                     } catch (NumberFormatException e) {
                         return "Invalid Number for Coordinates provided";
                     }
