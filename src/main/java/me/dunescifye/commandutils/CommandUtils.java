@@ -169,6 +169,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("SetProjectileCommands", new SetProjectileCommandsCommand());
         commands.put("SetGliding", new SetGliding());
         commands.put("Mount", new MountCommand());
+        commands.put("UnsetItemNBT", new UnsetItemNBTCommand());
         if (versionAmount > 21.1) commands.put("ItemCooldown", new ItemCooldown());
         if (versionAmount > 21.1) commands.put("ItemAttribute", new ItemAttributeCommand());
         if (versionAmount > 21.1) commands.put("LifeSteal", new LifeStealCommand());
