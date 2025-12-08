@@ -245,6 +245,7 @@ public final class CommandUtils extends JavaPlugin {
         new ExperienceTracker().experienceHandler(this);
         new CustomMobDrops().registerEvents(this);
         new DisableSpectatorTeleporting().registerEvent(this);
+        Bukkit.getPluginManager().registerEvents(new PlayerKillerTracker(), this);
     }
     public static CommandUtils getInstance(){
         return plugin;

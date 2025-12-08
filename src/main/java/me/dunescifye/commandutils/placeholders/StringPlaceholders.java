@@ -12,6 +12,7 @@ import me.dunescifye.commandutils.files.Config;
 import me.dunescifye.commandutils.listeners.BowForceTracker;
 import me.dunescifye.commandutils.listeners.ExperienceTracker;
 import me.dunescifye.commandutils.listeners.PlayerDamageTracker;
+import me.dunescifye.commandutils.listeners.PlayerKillerTracker;
 import me.dunescifye.commandutils.utils.FUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import me.libraryaddict.disguise.DisguiseAPI;
@@ -1162,7 +1163,16 @@ public class StringPlaceholders extends PlaceholderExpansion {
                 String[] args = arguments.split(separator);
                 if (args.length < 1) return "Missing args.";
                 List<Entity> entities = Bukkit.getServer().selectEntities(p, args[0]);
+                if (entities.isEmpty()) return "";
                 return entities.getFirst().getUniqueId().toString();
+            }
+            case "getkillers" -> {
+                return PlayerKillerTracker.getKillers().toString();
+            }
+            case "getrandomkiller" -> {
+                ArrayList<UUID> killers = PlayerKillerTracker.getKillers();
+                if (killers.isEmpty()) return "No Killers";
+                return Bukkit.getPlayer(killers.get(ThreadLocalRandom.current().nextInt(killers.size()))).getName();
             }
             default -> {
                 return "Unknown function";
