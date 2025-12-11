@@ -35,6 +35,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Download LibsDisguises (not available on Maven)
+        run: |
+          mkdir -p libs
+          curl -L -o libs/LibsDisguises.jar "https://ci.md-5.net/job/LibsDisguises/lastSuccessfulBuild/artifact/target/LibsDisguises.jar" || echo "Warning: Could not download LibsDisguises"
+
       - name: Build with Gradle
         run: ./gradlew shadowJar
 
