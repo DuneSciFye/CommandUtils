@@ -26,20 +26,25 @@ repositories {
         url = 'https://maven.playpro.com'
     }
     maven {
+        name = "jeff-media"
         url = "https://hub.jeff-media.com/nexus/repository/jeff-media-public/"
+        content {
+            includeGroup "com.jeff-media"
+        }
     }
     maven { url = "https://s01.oss.sonatype.org/content/repositories/snapshots" }
-    maven { // Factions
+    maven {
+        name = "jitpack"
         url = "https://jitpack.io/"
+        content {
+            includeGroupByRegex "com\\.github\\..*"
+        }
     }
     maven {
         url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
     }
     maven {
         url = "https://dependency.download/releases"
-    }
-    maven {
-        url = "https://repo.md-5.net/content/groups/public/" // LibsDisguises
     }
     maven {
         url = "https://maven.enginehub.org/repo/" // WorldGuard
