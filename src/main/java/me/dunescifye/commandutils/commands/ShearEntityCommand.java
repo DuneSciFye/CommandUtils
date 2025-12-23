@@ -21,32 +21,32 @@ public class ShearEntityCommand extends Command implements Registerable
         EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
 
         new CommandAPICommand("shearentity")
-            .withArguments(entitiesArg)
-            .executes((sender, args) -> {
-                Collection<Entity> entities = args.getByArgument(entitiesArg);
-                Player player = ArgumentUtils.getPlayer(sender);
+          .withArguments(entitiesArg)
+          .executes((sender, args) -> {
+              Collection<Entity> entities = args.getByArgument(entitiesArg);
+              Player player = ArgumentUtils.getPlayer(sender);
 
-                for (Entity entity : entities) {
-                    if (entity instanceof Shearable shearable) {
-                        shearable.shear();
-                        if (player != null) {
-                            PlayerShearEntityEvent event = new PlayerShearEntityEvent(player, entity);
-                            Bukkit.getPluginManager().callEvent(event);
-                        }
-                    }
-                }
-            }, ExecutorType.PLAYER, ExecutorType.PROXY)
-            .executes((sender, args) -> {
-                Collection<Entity> entities = args.getByArgument(entitiesArg);
+              for (Entity entity : entities) {
+                  if (entity instanceof Shearable shearable && shearable.readyToBeSheared()) {
+                      shearable.shear();
+                      if (player != null) {
+                          PlayerShearEntityEvent event = new PlayerShearEntityEvent(player, entity);
+                          Bukkit.getPluginManager().callEvent(event);
+                      }
+                  }
+              }
+          }, ExecutorType.PLAYER, ExecutorType.PROXY)
+          .executes((sender, args) -> {
+              Collection<Entity> entities = args.getByArgument(entitiesArg);
 
-                for (Entity entity : entities) {
-                    if (entity instanceof Shearable shearable) {
-                        shearable.shear();
-                    }
-                }
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
+              for (Entity entity : entities) {
+                  if (entity instanceof Shearable shearable && shearable.readyToBeSheared()) {
+                      shearable.shear();
+                  }
+              }
+          })
+          .withPermission(this.getPermission())
+          .withAliases(this.getCommandAliases())
+          .register(this.getNamespace());
     }
 }
