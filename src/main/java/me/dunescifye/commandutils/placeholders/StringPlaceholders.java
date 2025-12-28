@@ -16,6 +16,8 @@ import me.dunescifye.commandutils.listeners.PlayerKillerTracker;
 import me.dunescifye.commandutils.utils.FUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import me.libraryaddict.disguise.DisguiseAPI;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.*;
@@ -413,6 +415,13 @@ public class StringPlaceholders extends PlaceholderExpansion {
                     case "flightduration" -> {
                         if (!(itemMeta instanceof FireworkMeta fireworkMeta)) return "";
                         return String.valueOf(fireworkMeta.getPower());
+                    }
+                    case "lore" -> {
+                        ArrayList<String> lore = new ArrayList<>();
+                        for (Component component : itemMeta.lore()) {
+                            lore.add(LegacyComponentSerializer.legacyAmpersand().serialize(component));
+                        }
+                        return String.join("\n", lore);
                     }
                     default -> {
                         return "Invalid infotype";
