@@ -171,6 +171,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("Mount", new MountCommand());
         commands.put("UnsetItemNBT", new UnsetItemNBTCommand());
         commands.put("ShearEntity", new ShearEntityCommand());
+        commands.put("RemoveInFacing", new RemoveInFacingCommand());
         if (versionAmount > 21.1) commands.put("ItemCooldown", new ItemCooldown());
         if (versionAmount > 21.1) commands.put("ItemAttribute", new ItemAttributeCommand());
         if (versionAmount > 21.1) commands.put("LifeSteal", new LifeStealCommand());
