@@ -1178,8 +1178,19 @@ public class StringPlaceholders extends PlaceholderExpansion {
             case "getkillers" -> {
                 return PlayerKillerTracker.getKillers().toString();
             }
+            case "getkillersnoself" -> {
+                ArrayList<UUID> killers = PlayerKillerTracker.getKillers();
+                killers.remove(p.getUniqueId());
+                return killers.toString();
+            }
             case "getrandomkiller" -> {
                 ArrayList<UUID> killers = PlayerKillerTracker.getKillers();
+                if (killers.isEmpty()) return "No Killers";
+                return Bukkit.getPlayer(killers.get(ThreadLocalRandom.current().nextInt(killers.size()))).getName();
+            }
+            case "getrandomkillernoself" -> {
+                ArrayList<UUID> killers = PlayerKillerTracker.getKillers();
+                killers.remove(p.getUniqueId());
                 if (killers.isEmpty()) return "No Killers";
                 return Bukkit.getPlayer(killers.get(ThreadLocalRandom.current().nextInt(killers.size()))).getName();
             }
