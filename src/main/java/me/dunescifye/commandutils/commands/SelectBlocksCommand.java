@@ -17,10 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Predicate;
 
 import static me.dunescifye.commandutils.utils.ArgumentUtils.commandWhitelistArgument;
@@ -146,6 +143,12 @@ public class SelectBlocksCommand extends Command implements Registerable {
             else if (function.equals("BLOCK:WAX")) {
                 Material waxedMat = Material.matchMaterial("WAXED_" + b.getType());
                 if (waxedMat != null) b.setType(waxedMat);
+            }
+            else if (function.equals("BLOCK:VEIN_MINE")) {
+                BreakInVeinCommand.getVeinOres(b, b, new HashSet<>(), drops, List.of(List.of(block -> block.getType().equals(b.getType())), List.of()), 80, p, p.getInventory().getItemInMainHand(), false, true, true);
+            }
+            else if (function.equals("ITEM:DUPLICATE")) {
+                drops.addAll(drops);
             }
             else if (function.equals("ITEM:SMELT")) {
                 Collection<ItemStack> smeltedDrops = new ArrayList<>();

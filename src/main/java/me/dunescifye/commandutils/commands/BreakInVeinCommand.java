@@ -131,7 +131,7 @@ public class BreakInVeinCommand extends Command implements Configurable {
                 boolean breakOriginalBlock = args.getByArgumentOrDefault(breakOriginalBlockArg, true);
                 player.setMetadata("ignoreBlockBreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
 
-                getVeinOres(block, block, drops, predicates, maxSize, player, item, triggerBlockBreak, checkClaim, breakOriginalBlock);
+                getVeinOres(block, block, new HashSet<>(), drops, predicates, maxSize, player, item, triggerBlockBreak, checkClaim, breakOriginalBlock);
 
                 if (args.getByArgumentOrDefault(autoPickupArg, false)) drops = player.getInventory().addItem(drops.toArray(new ItemStack[0])).values();
 
@@ -158,9 +158,16 @@ public class BreakInVeinCommand extends Command implements Configurable {
         }
     }
 
-    private void getVeinOres(Block center, final Block original, Collection<ItemStack> drops, List<List<Predicate<Block>>> predicates, int maxSize, final Player p, final ItemStack item, final boolean triggerBlockBreakEvent, final boolean checkClaim, final boolean breakOriginalBlock) {
+    public static void getVeinOres(Block center, final Block original, Set<Block> visited, Collection<ItemStack> drops, List<List<Predicate<Block>>> predicates, int maxSize, final Player p, final ItemStack item, final boolean triggerBlockBreakEvent, final boolean checkClaim, final boolean breakOriginalBlock) {
+        System.out.println("a");
+        System.out.println(center);
+        if (!visited.add(center)) return;
+        System.out.println("b");
         for (Block b : getBlocksInRadius(center, 1)) {
+            System.out.println(b);
             if ((checkClaim && !FUtils.isInClaimOrWilderness(p, b.getLocation())) || drops.size() >= maxSize) return;
+            if (!visited.add(b)) continue;
+            System.out.println("c");
             if (testBlock(b, predicates)) {
                 if (item == null) drops.addAll(b.getDrops());
                 else drops.addAll(b.getDrops(item));
@@ -172,7 +179,7 @@ public class BreakInVeinCommand extends Command implements Configurable {
                 }
                 if (breakOriginalBlock || !b.equals(original)) b.setType(Material.AIR);
 
-                this.getVeinOres(b, original, drops, predicates, maxSize, p, item, triggerBlockBreakEvent, checkClaim, breakOriginalBlock);
+                getVeinOres(b, original, visited, drops, predicates, maxSize, p, item, triggerBlockBreakEvent, checkClaim, breakOriginalBlock);
             }
         }
     }

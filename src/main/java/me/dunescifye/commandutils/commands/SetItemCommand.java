@@ -2,8 +2,10 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
+import org.bukkit.FireworkEffect;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class SetItemCommand extends Command implements Registerable {
@@ -11,10 +13,10 @@ public class SetItemCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register(){
 
-      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument slotArg = new IntegerArgument("Slot", 0, 40);
         ItemStackArgument itemArg = new ItemStackArgument("Item");
-        MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "material", "custommodeldata", "attributemodifiers", "equippable");
+        MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "material", "custommodeldata", "attributemodifiers", "equippable", "fireworkcolor");
 
         new CommandAPICommand("setitem")
             .withArguments(playerArg)
@@ -39,9 +41,25 @@ public class SetItemCommand extends Command implements Registerable {
                         if (argMeta.hasAttributeModifiers()) invMeta.setAttributeModifiers(argMeta.getAttributeModifiers());
                     }
                     case "equippable" -> {
-                      if (argMeta.hasEquippable()) {
-                        invMeta.setEquippable(argMeta.getEquippable());
-                      }
+                        if (argMeta.hasEquippable()) {
+                            invMeta.setEquippable(argMeta.getEquippable());
+                        }
+                    }
+                    case "fireworkcolor" -> {
+                        if (argMeta instanceof FireworkMeta fireworkMeta && invMeta instanceof FireworkMeta fireworkMeta2) {
+                            FireworkEffect fwEffect = fireworkMeta.getEffects().getFirst();
+                            FireworkEffect fwEffect2 = fireworkMeta2.getEffects().getFirst();
+                            int power = fireworkMeta2.getPower();
+                            fireworkMeta2.clearEffects();
+                            fireworkMeta2.addEffect(FireworkEffect.builder()
+                                .flicker(fwEffect2.hasFlicker())
+                                .trail(fwEffect2.hasTrail())
+                                .with(fwEffect2.getType())
+                                .withColor(fwEffect.getColors())
+                                .withFade(fwEffect.getFadeColors())
+                                .build());
+                            fireworkMeta2.setPower(power);
+                        }
                     }
                     case null, default -> {
                         invItem = invItem.withType(argItem.getType());
