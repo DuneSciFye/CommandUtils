@@ -159,15 +159,10 @@ public class BreakInVeinCommand extends Command implements Configurable {
     }
 
     public static void getVeinOres(Block center, final Block original, Set<Block> visited, Collection<ItemStack> drops, List<List<Predicate<Block>>> predicates, int maxSize, final Player p, final ItemStack item, final boolean triggerBlockBreakEvent, final boolean checkClaim, final boolean breakOriginalBlock) {
-        System.out.println("a");
-        System.out.println(center);
         if (!visited.add(center)) return;
-        System.out.println("b");
         for (Block b : getBlocksInRadius(center, 1)) {
-            System.out.println(b);
             if ((checkClaim && !FUtils.isInClaimOrWilderness(p, b.getLocation())) || drops.size() >= maxSize) return;
             if (!visited.add(b)) continue;
-            System.out.println("c");
             if (testBlock(b, predicates)) {
                 if (item == null) drops.addAll(b.getDrops());
                 else drops.addAll(b.getDrops(item));
