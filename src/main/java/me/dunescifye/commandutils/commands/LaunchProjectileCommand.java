@@ -32,7 +32,7 @@ public class LaunchProjectileCommand extends Command implements Registerable {
         TextArgument commandSeparatorArg = new TextArgument("Command Separator");
         GreedyStringArgument commandsArg = new GreedyStringArgument("Commands");
 
-        final String[] projectiles = {"WIND_CHARGE", "DRAGONFIREBALL", "ARROW", "SNOWBALL"};
+        final String[] projectiles = {"WIND_CHARGE", "DRAGONFIREBALL", "ARROW", "SNOWBALL", "FIREWORK_ROCKET"};
 
         new CommandAPICommand("launchprojectile")
           .withArguments(projArg
@@ -197,6 +197,7 @@ public class LaunchProjectileCommand extends Command implements Registerable {
             case "DRAGONFIREBALL" -> p.launchProjectile(DragonFireball.class);
             case "WIND_CHARGE", "WINDCHARGE" -> p.launchProjectile(WindCharge.class);
             case "SNOWBALL" -> p.launchProjectile(Snowball.class);
+            case "FIREWORK_ROCKET" -> p.launchProjectile(Firework.class);
             default -> null;
         };
     }

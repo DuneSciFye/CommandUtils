@@ -25,7 +25,6 @@ public class MixInventoryCommand extends Command implements Registerable {
 
         if (PreventMixInventoryCommand.tasks.containsKey(uuid)) {
           String[] commands = PreventMixInventoryCommand.commands.get(uuid);
-          System.out.println(commands);
           if (commands != null) Utils.runConsoleCommands(commands);
           return;
         }

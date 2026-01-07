@@ -38,7 +38,6 @@ public class PreventMixInventoryCommand extends Command implements Registerable 
          final UUID uuid = p.getUniqueId();
 
          final String commandsInput = args.getByArgument(commandsArg);
-         System.out.println(commandsInput);
          if (commandsInput != null) {
            final String commandSeparator = args.getByArgument(commandSeparatorArg);
            final String[] commandsList = commandsInput.split(commandSeparator);

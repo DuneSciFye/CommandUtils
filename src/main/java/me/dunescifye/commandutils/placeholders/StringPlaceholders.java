@@ -258,7 +258,7 @@ public class StringPlaceholders extends PlaceholderExpansion {
             case "changewood" -> {
                 String[] argsChangeWood = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
                 if (argsChangeWood.length < 2) {
-                    System.out.println("Missing arguments.");
+                    return "Missing arguments.";
                 }
 
                 String inputChangeWood = argsChangeWood[0];

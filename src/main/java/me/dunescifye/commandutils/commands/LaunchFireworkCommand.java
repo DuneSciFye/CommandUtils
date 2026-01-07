@@ -4,6 +4,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
+import dev.jorel.commandapi.executors.ExecutorType;
 import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -33,23 +34,23 @@ public class LaunchFireworkCommand extends Command implements Registerable {
 
         //Single Color
         new CommandAPICommand("launchfirework")
-            .withArguments(playerArg)
-            .withArguments(ticksToDetonateArg)
-            .withArguments(noDamageArg)
-            .withArguments(rgbArg)
-            .withOptionalArguments(fireworkPowerArg)
-            .executes((sender, args) -> {
-                launchFirework(
-                    args.getByArgument(playerArg),
-                    Color.fromRGB(args.getByArgument(rgbArg)),
-                    args.getByArgumentOrDefault(fireworkPowerArg, 1),
-                    args.getByArgument(ticksToDetonateArg),
-                    args.getByArgument(noDamageArg)
-                );
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
+          .withArguments(playerArg)
+          .withArguments(ticksToDetonateArg)
+          .withArguments(noDamageArg)
+          .withArguments(rgbArg)
+          .withOptionalArguments(fireworkPowerArg)
+          .executes((sender, args) -> {
+              launchFirework(
+                args.getByArgument(playerArg),
+                Color.fromRGB(args.getByArgument(rgbArg)),
+                args.getByArgumentOrDefault(fireworkPowerArg, 1),
+                args.getByArgument(ticksToDetonateArg),
+                args.getByArgument(noDamageArg)
+              );
+          })
+          .withPermission(this.getPermission())
+          .withAliases(this.getCommandAliases())
+          .register(this.getNamespace());
 
         //RGB Options
         new CommandAPICommand("launchfirework")
@@ -80,7 +81,7 @@ public class LaunchFireworkCommand extends Command implements Registerable {
     private void launchFirework(Player p, Color color, int power, int ticksToDetonate, boolean noDamage) {
         Location loc = p.getEyeLocation();
 
-        Firework fw = p.getWorld().spawn(loc, Firework.class);
+        Firework fw = p.launchProjectile(Firework.class);
         FireworkMeta fwm = fw.getFireworkMeta();
         fwm.addEffect(FireworkEffect.builder().withColor(color).build());
         fwm.setPower(power);
