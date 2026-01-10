@@ -35,8 +35,8 @@ public class SetVillagerTradeCommand extends Command implements Registerable {
               for (MerchantRecipe recipe : villager.getRecipes()) {
                 MerchantRecipe newRecipe = new MerchantRecipe(
                   recipe.getResult(),
-                  function.equals("uses") ? amount : 0,
-                  function.equals("max_uses") ? amount : Integer.MAX_VALUE,
+                  function.equals("uses") ? amount : recipe.getUses(),
+                  function.equals("max_uses") ? amount : recipe.getMaxUses(),
                   recipe.hasExperienceReward(),
                   recipe.getVillagerExperience(),
                   recipe.getPriceMultiplier()
