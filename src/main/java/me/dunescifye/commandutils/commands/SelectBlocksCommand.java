@@ -149,7 +149,8 @@ public class SelectBlocksCommand extends Command implements Registerable {
                 BreakInVeinCommand.getVeinOresBasic(b, drops, List.of(List.of(block -> block.getType().equals(mat)), List.of()), 160);
             }
             else if (function.equals("ITEM:DUPLICATE")) {
-                drops.addAll(drops);
+                ArrayList<ItemStack> original = new ArrayList<>(drops);
+                drops.addAll(original);
             }
             else if (function.equals("ITEM:SMELT")) {
                 Collection<ItemStack> smeltedDrops = new ArrayList<>();
@@ -187,6 +188,7 @@ public class SelectBlocksCommand extends Command implements Registerable {
                     function = function.replace("%block_x%", String.valueOf(b.getX()));
                     function = function.replace("%block_y%", String.valueOf(b.getY()));
                     function = function.replace("%block_z%", String.valueOf(b.getZ()));
+                    function = function.replace("%crop%", Utils.blockToCrop(b.getType().toString()));
                     function = PlaceholderAPI.setBracketPlaceholders(p, function);
                     runConsoleCommands(function);
                 }

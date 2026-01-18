@@ -616,4 +616,64 @@ public class Utils {
         }
         return ItemStack.of(Material.AIR);
     }
+
+    public static String blockToCrop(String block) {
+        switch (block.toUpperCase()) {
+            case "MELON_STEM" -> {
+                return "melon";
+            }
+            case "PUMPKIN_STEM" -> {
+                return "pumpkin";
+            }
+            case "WHEAT" -> {
+                return "wheat";
+            }
+            case "POTATOES" -> {
+                return "potato";
+            }
+            case "BEETROOTS" -> {
+                return "beetroot";
+            }
+            case "CARROT" -> {
+                return "carrot";
+            }
+            case "TORCHFLOWER_SEEDS" -> {
+                return "torchflower";
+            }
+            case "NETHER_WART" -> {
+                return "nether_wart";
+            }
+            default -> {
+                return block;
+            }
+        }
+    }
+    public static String cropToBlock(String crop) {
+        switch (crop.toUpperCase()) {
+            case "MELON_SEEDS" -> {
+                return "melon_stem";
+            }
+            case "PUMPKIN_SEEDS" -> {
+                return "pumpkin_stem";
+            }
+            case "WHEAT_SEEDS" -> {
+                return "wheat";
+            }
+            case "POTATO" -> {
+                return "potatoes";
+            }
+            case "BEETROOT_SEEDS" -> {
+                return "beetroots";
+            }
+            case "CARROT" -> {
+                return "carrots";
+            }
+            case "TORCHFLOWER_SEEDS" -> {
+                return "torchflower_crop";
+            }
+            default -> {
+                return crop;
+            }
+        }
+    }
 }

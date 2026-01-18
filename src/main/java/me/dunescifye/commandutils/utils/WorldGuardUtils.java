@@ -8,7 +8,6 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class WorldGuardUtils {
 

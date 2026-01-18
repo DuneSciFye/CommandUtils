@@ -29,8 +29,7 @@ public class SetVillagerTradeCommand extends Command implements Registerable {
         for (Entity entity : entities) {
           if (entity instanceof Villager villager) {
             if (villager.getProfession() != Villager.Profession.NONE &&
-              villager.getProfession() != Villager.Profession.NITWIT &&
-              villager.getMemory(MemoryKey.JOB_SITE) != null) {
+              villager.getProfession() != Villager.Profession.NITWIT) {
               List<MerchantRecipe> newRecipes = new ArrayList<>();
               for (MerchantRecipe recipe : villager.getRecipes()) {
                 MerchantRecipe newRecipe = new MerchantRecipe(
