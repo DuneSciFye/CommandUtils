@@ -93,21 +93,26 @@ public class StringPlaceholders extends PlaceholderExpansion {
 
         Player p = player.getPlayer();
 
-        String output = function(function, arguments, separator, p);
-        if (output != null && output.equals("Unknown function")) {
-            String[] temp = arguments.split("_", 2);
-            if (temp.length < 2) return "Unknown function";
-            arguments = temp[1];
-            separator = function;
-            output = function(temp[0], arguments, separator, p);
-        }
-        if (arguments != null) {
-            if (arguments.endsWith(separator + "lower")) output = output.toLowerCase();
-            else if (arguments.endsWith(separator + "upper")) output = output.toUpperCase();
-        }
+        try {
+            String output = function(function, arguments, separator, p);
+            if (output != null && output.equals("Unknown function")) {
+                String[] temp = arguments.split("_", 2);
+                if (temp.length < 2) return "Unknown function";
+                arguments = temp[1];
+                separator = function;
+                output = function(temp[0], arguments, separator, p);
+            }
+            if (arguments != null) {
+                if (arguments.endsWith(separator + "lower")) output = output.toLowerCase();
+                else if (arguments.endsWith(separator + "upper")) output = output.toUpperCase();
+            }
 
-        return output;
-        //return super.onRequest(player, args);
+            return output;
+            //return super.onRequest(player, args);
+        }
+        catch (Exception e) {
+            return "Unknown function";
+        }
     }
 
     @SuppressWarnings("ConstantConditions")
