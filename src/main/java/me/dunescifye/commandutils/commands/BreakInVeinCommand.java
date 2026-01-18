@@ -145,7 +145,7 @@ public class BreakInVeinCommand extends Command implements Configurable {
 
     }
 
-    private void getVeinOresBasic(Block center, Collection<ItemStack> drops, List<List<Predicate<Block>>> predicates, int maxSize) {
+    public static void getVeinOresBasic(Block center, Collection<ItemStack> drops, List<List<Predicate<Block>>> predicates, int maxSize) {
         for (Block b : getBlocksInRadius(center, 1)) {
             if (drops.size() >= maxSize) return;
             if (testBlock(b, predicates)) {
@@ -153,7 +153,7 @@ public class BreakInVeinCommand extends Command implements Configurable {
 
                 b.setType(Material.AIR);
 
-                this.getVeinOresBasic(b, drops, predicates, maxSize);
+                getVeinOresBasic(b, drops, predicates, maxSize);
             }
         }
     }

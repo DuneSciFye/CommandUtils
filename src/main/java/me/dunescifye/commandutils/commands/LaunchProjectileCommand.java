@@ -13,6 +13,7 @@ import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.text.DecimalFormat;
 import java.time.Duration;
 
 import static me.dunescifye.commandutils.utils.Utils.timeArgument;
@@ -111,14 +112,17 @@ public class LaunchProjectileCommand extends Command implements Registerable {
                           }
 
                           // Run Commands
-                          if (commands != null)
+                          if (commands != null) {
+                              DecimalFormat df = new DecimalFormat("0.#####");
+
                               Utils.runConsoleCommands(commands
-                                .replace("{projectile_uuid}", String.valueOf(proj.getUniqueId()))
-                                .replace("{projectile_x}", String.valueOf(proj.getX()))
-                                .replace("{projectile_y}", String.valueOf(proj.getY()))
-                                .replace("{projectile_z}", String.valueOf(proj.getZ()))
-                                .split(commandSeparator)
+                                  .replace("{projectile_uuid}", String.valueOf(proj.getUniqueId()))
+                                  .replace("{projectile_x}", df.format(proj.getX()))
+                                  .replace("{projectile_y}", df.format(proj.getY()))
+                                  .replace("{projectile_z}", df.format(proj.getZ()))
+                                  .split(commandSeparator)
                               );
+                          }
                       }
                   }.runTaskTimer(CommandUtils.getInstance(), delay, period);
               }
@@ -160,11 +164,12 @@ public class LaunchProjectileCommand extends Command implements Registerable {
                   @Override
                   public void run() {
                       if (proj.isDead() || proj.isOnGround()) {
+                          DecimalFormat df = new DecimalFormat("0.#####");
                           Utils.runConsoleCommands(commands
                             .replace("{projectile_uuid}", String.valueOf(proj.getUniqueId()))
-                            .replace("{projectile_x}", String.valueOf(proj.getX()))
-                            .replace("{projectile_y}", String.valueOf(proj.getY()))
-                            .replace("{projectile_z}", String.valueOf(proj.getZ()))
+                              .replace("{projectile_x}", df.format(proj.getX()))
+                              .replace("{projectile_y}", df.format(proj.getY()))
+                              .replace("{projectile_z}", df.format(proj.getZ()))
                             .split(commandSeparator)
                           );
                           this.cancel();
