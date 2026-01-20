@@ -146,7 +146,8 @@ public class SelectBlocksCommand extends Command implements Registerable {
             }
             else if (function.equals("BLOCK:VEIN_MINE")) {
                 Material mat = b.getType();
-                BreakInVeinCommand.getVeinOresBasic(b, drops, List.of(List.of(block -> block.getType().equals(mat)), List.of()), 160);
+                BreakInVeinCommand.getVeinOresBasic(b, drops, List.of(List.of(block -> block.getType().equals(mat)),
+                  List.of()), 160, new HashSet<>());
             }
             else if (function.equals("ITEM:DUPLICATE")) {
                 ArrayList<ItemStack> original = new ArrayList<>(drops);

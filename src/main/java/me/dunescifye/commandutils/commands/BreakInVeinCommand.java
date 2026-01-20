@@ -97,7 +97,7 @@ public class BreakInVeinCommand extends Command implements Configurable {
                 List<List<Predicate<Block>>> predicates = args.getOrDefaultUnchecked("Command Defined Whitelist", predicate);
                 int maxSize = args.getByArgumentOrDefault(maxBlocksArg, defaultMaxBlocks);
 
-                getVeinOresBasic(block, drops, predicates, maxSize);
+                getVeinOresBasic(block, drops, predicates, maxSize, new HashSet<>());
                 dropAllItemStacks(world, block.getLocation(), drops);
             })
             .withPermission(this.getPermission())
@@ -145,17 +145,19 @@ public class BreakInVeinCommand extends Command implements Configurable {
 
     }
 
-    public static void getVeinOresBasic(Block center, Collection<ItemStack> drops, List<List<Predicate<Block>>> predicates, int maxSize) {
-        for (Block b : getBlocksInRadius(center, 1)) {
-            if (drops.size() >= maxSize) return;
-            if (testBlock(b, predicates)) {
-                drops.addAll(b.getDrops());
+    public static void getVeinOresBasic(Block center, Collection<ItemStack> drops,
+                                        List<List<Predicate<Block>>> predicates, int maxSize, Set<Block> visited) {
+      if (!visited.add(center)) return;
 
-                b.setType(Material.AIR);
+      for (Block b : getBlocksInRadius(center, 1)) {
+        if (drops.size() >= maxSize) return;
 
-                getVeinOresBasic(b, drops, predicates, maxSize);
-            }
+        if (!visited.contains(b) && testBlock(b, predicates)) {
+          drops.addAll(b.getDrops());
+          b.setType(Material.AIR);
+          getVeinOresBasic(b, drops, predicates, maxSize, visited);
         }
+      }
     }
 
     public static void getVeinOres(Block center, final Block original, Collection<ItemStack> drops, List<List<Predicate<Block>>> predicates, int maxSize, final Player p, final ItemStack item, final boolean triggerBlockBreakEvent, final boolean checkClaim, final boolean breakOriginalBlock) {
