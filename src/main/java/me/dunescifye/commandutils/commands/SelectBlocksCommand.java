@@ -190,7 +190,7 @@ public class SelectBlocksCommand extends Command implements Registerable {
                     function = function.replace("%block_y%", String.valueOf(b.getY()));
                     function = function.replace("%block_z%", String.valueOf(b.getZ()));
                     function = function.replace("%crop%", Utils.blockToCrop(b.getType().toString()));
-                    function = PlaceholderAPI.setBracketPlaceholders(p, function);
+                    function = PlaceholderAPI.setPlaceholders(p, function);
                     runConsoleCommands(function);
                 }
             }

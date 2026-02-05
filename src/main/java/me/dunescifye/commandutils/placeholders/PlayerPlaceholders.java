@@ -11,9 +11,17 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BiomeSearchResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static me.dunescifye.commandutils.utils.Utils.getInvItem;
 
 public class PlayerPlaceholders extends PlaceholderExpansion {
     @Override
@@ -169,6 +177,30 @@ public class PlayerPlaceholders extends PlaceholderExpansion {
             }
             case "xplevel" -> {
                 return String.valueOf(p.getLevel());
+            }
+            case "hasnbtitem" -> {
+                if (args == null || args.length < 3) return "Missing arguments";
+
+                ArrayList<ItemStack> items = new ArrayList<>(Arrays.asList(p.getInventory().getContents()));
+                items.addFirst(p.getItemOnCursor());
+
+                NamespacedKey key = new NamespacedKey(args[0], args[1]);
+                String value = args[2];
+
+                for (ItemStack item : items) {
+                    if (item == null || !item.hasItemMeta()) continue;
+
+                    PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
+                    if (!pdc.has(key)) continue;
+
+                    if (pdc.has(key, PersistentDataType.STRING) && value.equals(pdc.get(key, PersistentDataType.STRING))
+                        || pdc.has(key, PersistentDataType.DOUBLE) && value.equals(String.valueOf(pdc.get(key, PersistentDataType.DOUBLE)))
+                        || pdc.has(key, PersistentDataType.INTEGER) && value.equals(String.valueOf(pdc.get(key, PersistentDataType.INTEGER)))
+                    ) {
+                        return "true";
+                    }
+                }
+                return "false";
             }
           default -> {
                 return null;
