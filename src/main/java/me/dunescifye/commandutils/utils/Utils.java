@@ -570,8 +570,6 @@ public class Utils {
         return true;
     }
 
-
-
     public static List<ItemStack> getIngredients(Material material) {
         List<ItemStack> ingredients = new ArrayList<>();
 
@@ -582,18 +580,31 @@ public class Utils {
             return ingredients; // No recipe found
         }
 
+        // For white wool get the string recipe
         Recipe recipe = material == Material.WHITE_WOOL ? recipes.getLast() : recipes.getFirst();
 
-        if (recipe.getResult().getAmount() != 1) return ingredients;
-
         if (recipe instanceof ShapedRecipe shaped) {
-            for (ItemStack item : shaped.getIngredientMap().values()) {
-                if (item != null) {
-                    ingredients.add(item);
+            // Use newer RecipeChoice method
+            shaped.getChoiceMap().values().forEach(choice -> {
+                if (choice instanceof RecipeChoice.ExactChoice exact) {
+                    ingredients.addAll(exact.getChoices());
+                } else if (choice instanceof RecipeChoice.MaterialChoice mat) {
+                    mat.getChoices().forEach(m -> ingredients.add(new ItemStack(m)));
                 }
-            }
+            });
         } else if (recipe instanceof ShapelessRecipe shapeless) {
             ingredients.addAll(shapeless.getIngredientList());
+        }
+        // Prevent materials from cyclic duping by checking if the recipe that produces this material produces more
+        // than one of this material. Ignores edge case materials where it produces more than one material but
+        // requires the same amount, so 1 to 1. Ex: purpur block, polished granite, etc
+        // Gold Ingot -> Gold Block -> Gold Ingot -> ...
+        if (!ingredients.isEmpty()) {
+            // Get amount of result of recipe.
+            int recipeAmt = recipe.getResult().getAmount();
+            // Get amount of first ingredient of recipe.
+            int innerAmt = new ArrayList<>(mergeSimilarItemStacks(ingredients)).getFirst().getAmount();
+            if (recipeAmt != 1 && recipeAmt != innerAmt) return new ArrayList<>();
         }
 
         return ingredients;

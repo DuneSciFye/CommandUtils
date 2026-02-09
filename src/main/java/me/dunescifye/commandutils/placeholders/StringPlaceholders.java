@@ -111,6 +111,7 @@ public class StringPlaceholders extends PlaceholderExpansion {
             //return super.onRequest(player, args);
         }
         catch (Exception e) {
+            System.out.println(e);
             return "Unknown function";
         }
     }
