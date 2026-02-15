@@ -645,7 +645,7 @@ public class Utils {
             case "BEETROOTS" -> {
                 return "beetroot";
             }
-            case "CARROT" -> {
+            case "CARROTS" -> {
                 return "carrot";
             }
             case "TORCHFLOWER_SEEDS" -> {
