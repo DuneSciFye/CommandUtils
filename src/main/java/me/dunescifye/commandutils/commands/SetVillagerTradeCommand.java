@@ -16,15 +16,15 @@ public class SetVillagerTradeCommand extends Command implements Registerable {
   public void register() {
 
     EntitySelectorArgument.ManyEntities villagersArg = new EntitySelectorArgument.ManyEntities("Villagers");
-    MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "uses", "max_uses");
-    IntegerArgument contentArg = new IntegerArgument("Amount", 0);
+    MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "uses", "max_uses", "price_multiplier");
+    FloatArgument contentArg = new FloatArgument("Amount", 0);
 
     new CommandAPICommand("setvillagertrade")
       .withArguments(villagersArg, functionArg, contentArg)
       .executes((sender, args) -> {
         Collection<Entity> entities = args.getByArgument(villagersArg);
         String function = args.getByArgument(functionArg);
-        Integer amount = args.getByArgument(contentArg);
+        Float amount = args.getByArgument(contentArg);
 
         for (Entity entity : entities) {
           if (entity instanceof Villager villager) {
@@ -34,11 +34,11 @@ public class SetVillagerTradeCommand extends Command implements Registerable {
               for (MerchantRecipe recipe : villager.getRecipes()) {
                 MerchantRecipe newRecipe = new MerchantRecipe(
                   recipe.getResult(),
-                  function.equals("uses") ? amount : recipe.getUses(),
-                  function.equals("max_uses") ? amount : recipe.getMaxUses(),
+                  function.equals("uses") ? amount.intValue() : recipe.getUses(),
+                  function.equals("max_uses") ? amount.intValue() : recipe.getMaxUses(),
                   recipe.hasExperienceReward(),
                   recipe.getVillagerExperience(),
-                  recipe.getPriceMultiplier()
+                  function.equals("price_multiplier") ? amount : recipe.getPriceMultiplier()
                 );
                 newRecipe.setIngredients(recipe.getIngredients());
                 newRecipes.add(newRecipe);
