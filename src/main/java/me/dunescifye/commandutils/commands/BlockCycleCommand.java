@@ -13,6 +13,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.MultipleFacing;
 import org.bukkit.block.data.Orientable;
 import org.bukkit.block.data.Rotatable;
@@ -110,6 +111,12 @@ public class BlockCycleCommand extends Command implements Registerable {
                 case MultipleFacing multipleFacing -> {
                   faces = multipleFacing.getFaces();
                   if (multipleFacing instanceof Waterlogged w) {
+                    waterlogged = w.isWaterlogged();
+                  }
+                }
+                case Directional directional -> {
+                  facing = directional.getFacing();
+                  if (directional instanceof Waterlogged w) {
                     waterlogged = w.isWaterlogged();
                   }
                 }
@@ -240,6 +247,15 @@ public class BlockCycleCommand extends Command implements Registerable {
                     case WAXED_EXPOSED_COPPER_GOLEM_STATUE -> b.setType(Material.WAXED_WEATHERED_COPPER_GOLEM_STATUE);
                     case WAXED_WEATHERED_COPPER_GOLEM_STATUE -> b.setType(Material.WAXED_OXIDIZED_COPPER_GOLEM_STATUE);
                     case WAXED_OXIDIZED_COPPER_GOLEM_STATUE -> b.setType(Material.WAXED_COPPER_GOLEM_STATUE);
+                    // Lightning Rod
+                    case LIGHTNING_ROD -> b.setType(Material.EXPOSED_LIGHTNING_ROD);
+                    case EXPOSED_LIGHTNING_ROD -> b.setType(Material.WEATHERED_LIGHTNING_ROD);
+                    case WEATHERED_LIGHTNING_ROD -> b.setType(Material.OXIDIZED_LIGHTNING_ROD);
+                    case OXIDIZED_LIGHTNING_ROD -> b.setType(Material.LIGHTNING_ROD);
+                    case WAXED_LIGHTNING_ROD -> b.setType(Material.WAXED_EXPOSED_LIGHTNING_ROD);
+                    case WAXED_EXPOSED_LIGHTNING_ROD -> b.setType(Material.WAXED_WEATHERED_LIGHTNING_ROD);
+                    case WAXED_WEATHERED_LIGHTNING_ROD -> b.setType(Material.WAXED_OXIDIZED_LIGHTNING_ROD);
+                    case WAXED_OXIDIZED_LIGHTNING_ROD -> b.setType(Material.WAXED_LIGHTNING_ROD);
                 }
 
                 BlockData newBlockData = b.getBlockData();
@@ -293,6 +309,13 @@ public class BlockCycleCommand extends Command implements Registerable {
                     w.setWaterlogged(waterlogged);
                   }
                   b.setBlockData(newMultipleFacing);
+                }
+                case Directional newDirectional -> {
+                  newDirectional.setFacing(facing);
+                  if (newDirectional instanceof Waterlogged w) {
+                    w.setWaterlogged(waterlogged);
+                  }
+                  b.setBlockData(newDirectional);
                 }
                 case Rotatable newRotatable -> {
                   newRotatable.setRotation(rotation);
@@ -382,6 +405,12 @@ public class BlockCycleCommand extends Command implements Registerable {
                             waterlogged = w.isWaterlogged();
                         }
                     }
+                    case Directional directional -> {
+                        facing = directional.getFacing();
+                        if (directional instanceof Waterlogged w) {
+                            waterlogged = w.isWaterlogged();
+                        }
+                    }
                     case Rotatable rotatable -> {
                         rotation = rotatable.getRotation();
                     }
@@ -444,6 +473,13 @@ public class BlockCycleCommand extends Command implements Registerable {
                             w.setWaterlogged(waterlogged);
                         }
                         b.setBlockData(newMultipleFacing);
+                    }
+                    case Directional newDirectional -> {
+                        newDirectional.setFacing(facing);
+                        if (newDirectional instanceof Waterlogged w) {
+                            w.setWaterlogged(waterlogged);
+                        }
+                        b.setBlockData(newDirectional);
                     }
                     case Rotatable newRotatable -> {
                         newRotatable.setRotation(rotation);
