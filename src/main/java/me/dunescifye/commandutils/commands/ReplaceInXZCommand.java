@@ -36,7 +36,7 @@ public class ReplaceInXZCommand extends Command implements Registerable {
     Argument<Duration> timeArg = timeArgument("Time");
 
 
-    new CommandAPICommand("replaceinxyz")
+    new CommandAPICommand("replaceinxz")
       .withArguments(worldArg, locArg, playerArg, xArg, zArg, commandWhitelistArg, materialsArg)
       .withOptionalArguments(applyPhysicsArg, timeArg)
       .executes((sender, args) -> {
@@ -48,7 +48,7 @@ public class ReplaceInXZCommand extends Command implements Registerable {
         Duration duration = args.getOrDefaultUnchecked("Time", Duration.ofSeconds(-1));
 
         for (Block b : getBlocksInFacingXZ(origin, args.getByArgument(xArg), args.getByArgument(zArg), p)) {
-          if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
+          if (testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
             if (duration.isPositive()) {
               Material oldMat = b.getType();
               Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {

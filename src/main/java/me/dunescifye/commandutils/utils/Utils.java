@@ -452,11 +452,10 @@ public class Utils {
             }
         }
 
-        int y = origin.getY();
         // Loop through calculated ranges to collect blocks
         for (int x = xStart; x <= xEnd; x++) {
             for (int z = zStart; z <= zEnd; z++) {
-                blocks.add(origin.getRelative(x, y, z));
+                blocks.add(origin.getRelative(x, 0, z));
             }
         }
 
