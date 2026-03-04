@@ -1200,6 +1200,15 @@ public class StringPlaceholders extends PlaceholderExpansion {
                 if (killers.isEmpty()) return "No Killers";
                 return Bukkit.getPlayer(killers.get(ThreadLocalRandom.current().nextInt(killers.size()))).getName();
             }
+            case "format" -> {
+                String[] words = arguments.split("_");
+                ArrayList<String> newWords = new ArrayList<>();
+                for (String word : words) {
+                    word = word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+                    newWords.add(word);
+                }
+                return String.join(" ",  newWords);
+            }
             default -> {
                 return "Unknown function";
             }

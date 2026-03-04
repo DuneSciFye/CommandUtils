@@ -173,6 +173,9 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("ShearEntity", new ShearEntityCommand());
         commands.put("RemoveInFacing", new RemoveInFacingCommand());
         commands.put("SetVillagerTrade", new SetVillagerTradeCommand());
+        commands.put("RemoveCustomDataItem", new RemoveCustomDataItemCommand());
+        commands.put("ReplaceInXYZ", new ReplaceInXYZCommand());
+        commands.put("ReplaceInXZ", new ReplaceInXZCommand());
         if (versionAmount > 21.1) commands.put("ItemCooldown", new ItemCooldown());
         if (versionAmount > 21.1) commands.put("ItemAttribute", new ItemAttributeCommand());
         if (versionAmount > 21.1) commands.put("LifeSteal", new LifeStealCommand());
