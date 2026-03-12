@@ -18,7 +18,8 @@ public class FUtils {
         if (CommandUtils.griefPreventionEnabled) {
             final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
             if (claim == null) return false;
-            return claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
+            return claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build)
+                || ClaimPermission.Build.isGrantedBy(claim.getPermission("public"));
         } else if (CommandUtils.factionsUUIDEnabled) {
             return playerCanBuildDestroyBlock(player, location, "destroy", true);
         }
@@ -36,7 +37,8 @@ public class FUtils {
     public static boolean isInClaimOrWilderness(final Player player, final Location location) {
         if (CommandUtils.griefPreventionEnabled) {
             final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
-            return claim == null || claim.getOwnerID() == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build);
+            return claim == null || claim.getOwnerID() == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build)
+                || ClaimPermission.Build.isGrantedBy(claim.getPermission("public"));
         } else if (CommandUtils.factionsUUIDEnabled) {
             return playerCanBuildDestroyBlock(player, location, "destroy", true);
         }
