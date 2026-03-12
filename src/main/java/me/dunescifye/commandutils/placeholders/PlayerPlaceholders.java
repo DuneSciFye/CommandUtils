@@ -21,8 +21,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static me.dunescifye.commandutils.utils.Utils.getInvItem;
-
 public class PlayerPlaceholders extends PlaceholderExpansion {
     @Override
     public @NotNull String getIdentifier() {
@@ -177,6 +175,13 @@ public class PlayerPlaceholders extends PlaceholderExpansion {
             }
             case "xplevel" -> {
                 return String.valueOf(p.getLevel());
+            }
+            case "relational" -> {
+                if (args == null || args.length < 2) return "Missing arguments";
+                Player player2 = Bukkit.getPlayer(args[0]);
+                if (player2 == null) return "Invalid player";
+                String placeholder = args[1];
+                return PlaceholderAPI.setRelationalPlaceholders(p, player2, "%" + placeholder + "%");
             }
             case "hasnbtitem" -> {
                 if (args == null || args.length < 3) return "Missing arguments";
