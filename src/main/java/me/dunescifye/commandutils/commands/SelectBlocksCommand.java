@@ -12,6 +12,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.Bisected;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -113,6 +114,10 @@ public class SelectBlocksCommand extends Command implements Registerable {
             }
             else if (function.equals("BLOCK:SILK_TOUCH")) {
               drops.add(new ItemStack(b.getType(), 1));
+              if (b.getBlockData() instanceof Bisected bisected && bisected.getHalf() == Bisected.Half.TOP) {
+                Block relative = b.getRelative(BlockFace.DOWN);
+                if (relative.getType() == b.getType()) relative.setType(Material.AIR);
+              }
               b.setType(Material.AIR);
             }
             else if (function.equals("BLOCK:TRIGGER_BLOCK_BREAK")) {

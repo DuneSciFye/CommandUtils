@@ -642,6 +642,7 @@ public class Utils {
             // Get amount of first ingredient of recipe.
             int innerAmt = new ArrayList<>(mergeSimilarItemStacks(ingredients)).getFirst().getAmount();
             if (recipeAmt != 1 && recipeAmt != innerAmt) return new ArrayList<>();
+            if (recipeAmt != 1) return new ArrayList<>(List.of(ingredients.getFirst()));
         }
 
         return ingredients;
