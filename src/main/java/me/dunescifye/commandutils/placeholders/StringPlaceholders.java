@@ -108,7 +108,6 @@ public class StringPlaceholders extends PlaceholderExpansion {
             }
 
             return output;
-            //return super.onRequest(player, args);
         }
         catch (Exception e) {
             System.out.println(e);

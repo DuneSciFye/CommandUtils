@@ -6,6 +6,8 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -207,7 +209,11 @@ public class PlayerPlaceholders extends PlaceholderExpansion {
                 }
                 return "false";
             }
-          default -> {
+            case "vanillascale" -> {
+                AttributeInstance attr = p.getAttribute(Attribute.SCALE);
+                return attr.getValue() == attr.getBaseValue() ? "true" : "false";
+            }
+            default -> {
                 return null;
             }
         }
