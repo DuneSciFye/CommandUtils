@@ -380,6 +380,11 @@ public class StringPlaceholders extends PlaceholderExpansion {
                     case "isvanilla" -> {
                         return String.valueOf(itemStack.isSimilar(new ItemStack(itemStack.getType(), 1)));
                     }
+                    case "hascustomeffects" -> { // Checks if a potion has custom potion effects
+                        if (itemMeta instanceof PotionMeta pm) {
+                            return pm.hasCustomEffects() ? "true" : "false";
+                        }
+                    }
                     case "enchantlevel", "enchantlvl", "enchantmentlvl", "enchantmentlevel" -> {
                         if (inventoryInfoArgs.length < 3) return "";
                         String enchantName = inventoryInfoArgs[2];
