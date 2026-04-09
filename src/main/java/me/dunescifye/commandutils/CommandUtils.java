@@ -176,6 +176,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("RemoveCustomDataItem", new RemoveCustomDataItemCommand());
         commands.put("ReplaceInXYZ", new ReplaceInXYZCommand());
         commands.put("ReplaceInXZ", new ReplaceInXZCommand());
+        commands.put("SwapPositions", new SwapPositionsCommand());
         if (versionAmount > 21.1) commands.put("ItemCooldown", new ItemCooldown());
         if (versionAmount > 21.1) commands.put("ItemAttribute", new ItemAttributeCommand());
         if (versionAmount > 21.1) commands.put("LifeSteal", new LifeStealCommand());

@@ -1213,6 +1213,10 @@ public class StringPlaceholders extends PlaceholderExpansion {
                 }
                 return String.join(" ",  newWords);
             }
+            case "uuidfromname" -> {
+                String[] args = arguments.split("_");
+                return Bukkit.getPlayer(args[0]).getUniqueId().toString();
+            }
             default -> {
                 return "Unknown function";
             }

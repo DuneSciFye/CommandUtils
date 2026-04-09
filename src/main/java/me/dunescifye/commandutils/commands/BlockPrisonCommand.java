@@ -16,7 +16,8 @@ public class BlockPrisonCommand extends Command implements Registerable {
         IntegerArgument radiusArg = new IntegerArgument("Radius");
         IntegerArgument heightArg = new IntegerArgument("Height");
         IntegerArgument durationArg = new IntegerArgument("Duration");
-        BlockStateArgument blockArg = new BlockStateArgument("Block");
+      BlockStateArgument blockArg = new BlockStateArgument("Block");
+      BooleanArgument floorArg = new BooleanArgument("Floor");
 
         /*
          * Spawns a temporary block prison using SCore
@@ -37,7 +38,7 @@ public class BlockPrisonCommand extends Command implements Registerable {
             .withArguments(blockArg)
             .withArguments(radiusArg)
             .withArguments(heightArg)
-            .withOptionalArguments(durationArg)
+            .withOptionalArguments(durationArg, floorArg)
             .executes((sender, args) -> {
                 World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 Block block = world.getBlockAt(args.getByArgument(locArg));
@@ -50,6 +51,7 @@ public class BlockPrisonCommand extends Command implements Registerable {
                 int height = args.getByArgument(heightArg);
                 int duration = args.getByArgumentOrDefault(durationArg, 100);
                 String blockName = args.getByArgument(blockArg).getType().toString();
+                boolean floor = args.getByArgumentOrDefault(floorArg, false);
 
                 Server server = Bukkit.getServer();
                 ConsoleCommandSender commandSender = Bukkit.getConsoleSender();
@@ -77,14 +79,24 @@ public class BlockPrisonCommand extends Command implements Registerable {
                         }
                     }
                 }
-                for (int x = startX - radius; x <= startX + radius; x++) {
-                    for (int z = startZ - radius; z <= startZ + radius; z++) {
-                        Block b = world.getBlockAt(x, startY + height, z);
-                        if (b.getType() == Material.AIR) {
-                            server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + x + " " + (startY + height) + " " + z + " " + blockName + " " + duration + " true");
-                        }
-                    }
+              for (int x = startX - radius; x <= startX + radius; x++) {
+                for (int z = startZ - radius; z <= startZ + radius; z++) {
+                  Block b = world.getBlockAt(x, startY + height, z);
+                  if (b.getType() == Material.AIR) {
+                    server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + x + " " + (startY + height) + " " + z + " " + blockName + " " + duration + " true");
+                  }
                 }
+              }
+              if (floor) {
+                for (int x = startX - radius; x <= startX + radius; x++) {
+                  for (int z = startZ - radius; z <= startZ + radius; z++) {
+                    Block b = world.getBlockAt(x, startY - 1, z);
+                    if (b.getType() == Material.AIR) {
+                      server.dispatchCommand(commandSender, "score run-player-command player:" + p + " SETTEMPBLOCKPOS " + x + " " + (startY - 1) + " " + z + " " + blockName + " " + duration + " true");
+                    }
+                  }
+                }
+              }
             })
             .withPermission(this.getPermission())
             .withAliases(this.getCommandAliases())
