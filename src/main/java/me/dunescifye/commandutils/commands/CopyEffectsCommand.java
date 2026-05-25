@@ -36,7 +36,7 @@ public class CopyEffectsCommand extends Command implements Registerable {
 
     new CommandAPICommand("copyeffects")
       .withArguments(entitiesArg, potionsArg)
-      .withOptionalArguments(amplifierArg, durationArg, removeEffectArg, ignoreInfiniteArg)
+      .withOptionalArguments(amplifierArg, durationArg, removeEffectArg, ignoreInfiniteArg, maxEffectsNumber)
       .executes((sender, args) -> {
         final Player p = ArgumentUtils.getPlayer(sender);
 
