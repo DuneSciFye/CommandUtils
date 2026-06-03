@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.CommandUtils;
 import net.kyori.adventure.bossbar.BossBar;
@@ -13,7 +12,9 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SendBossBarCommand extends Command implements Registerable {
+import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
+
+public class SendBossBarCommand extends Command {
 
     private static final Map<String, BossBar> bossBars = new HashMap<>();
     private static final Map<String, BukkitTask> bossBarTasks = new HashMap<>();
@@ -21,25 +22,25 @@ public class SendBossBarCommand extends Command implements Registerable {
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        new CommandAPICommand("sendbossbar")
-            .withArguments(new EntitySelectorArgument.OnePlayer("Player"))
-            .withArguments(new StringArgument("Bossbar ID"))
-            .withArguments(new StringArgument("Bossbar Color"))
-            .withArguments(new FloatArgument("Bossbar Progress", (float) 0.0, (float) 1.0))
-            .withArguments(new IntegerArgument("Ticks To Show", 0))
-            .withArguments(new GreedyStringArgument("Bossbar Content"))
+        createCommand()
+            .withArguments(
+                playerArg(),
+                new StringArgument("Bossbar ID"),
+                new StringArgument("Bossbar Color"),
+                new FloatArgument("Bossbar Progress", (float) 0.0, (float) 1.0),
+                new IntegerArgument("Ticks To Show", 0),
+                new GreedyStringArgument("Bossbar Content")
+            )
             .executes((sender, args) -> {
-                Player p = args.getUnchecked("Player");
+                Player player = args.getUnchecked("Player");
                 String bossbarID = args.getUnchecked("Bossbar ID");
                 String bossbarColor = args.getUnchecked("Bossbar Color");
                 float bossbarProgress = args.getUnchecked("Bossbar Progress");
                 int ticks = (Integer) args.get("Ticks To Show");
                 String bossbarContent = args.getUnchecked("Bossbar Content");
 
-                showBossBar(p, bossbarID, bossbarProgress, bossbarColor, ticks, LegacyComponentSerializer.legacyAmpersand().deserialize(bossbarContent));
+                showBossBar(player, bossbarID, bossbarProgress, bossbarColor, ticks, LegacyComponentSerializer.legacyAmpersand().deserialize(bossbarContent));
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 

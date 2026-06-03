@@ -9,15 +9,14 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
 
-public class OverrideEffectCommand extends Command implements Configurable {
+public class OverrideEffectCommand extends Command {
 
     private static final HashMap<String, PotionEffect> potionEffects = new HashMap<>();
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void register(YamlDocument config) {
-
-      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
+    public void register() {
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "override", "retrieve", "remove");
         StringArgument idArg = new StringArgument("ID");
         PotionEffectArgument effectArg = new PotionEffectArgument("Effect");

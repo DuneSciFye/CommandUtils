@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings({"unchecked", "DataFlowIssue"})
-public class RunCommandFor extends Command implements Registerable {
+public class RunCommandFor extends Command {
     @Override
     public void register() {
 

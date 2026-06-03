@@ -14,7 +14,7 @@ import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 
 import java.util.*;
 
-public class MobTargetTeamCommand extends Command implements Registerable, Listener {
+public class MobTargetTeamCommand extends Command implements Listener {
 
   private static final HashMap<UUID, Collection<EntityType>> teams = new HashMap<>();
 

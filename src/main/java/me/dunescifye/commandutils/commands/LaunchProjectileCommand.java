@@ -16,9 +16,10 @@ import org.bukkit.scheduler.BukkitTask;
 import java.text.DecimalFormat;
 import java.time.Duration;
 
-import static me.dunescifye.commandutils.utils.Utils.timeArgument;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.timeArgument;
 
-public class LaunchProjectileCommand extends Command implements Registerable {
+public class LaunchProjectileCommand extends Command {
+
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
@@ -35,7 +36,7 @@ public class LaunchProjectileCommand extends Command implements Registerable {
 
         final String[] projectiles = {"WIND_CHARGE", "DRAGONFIREBALL", "ARROW", "SNOWBALL", "FIREWORK_ROCKET"};
 
-        new CommandAPICommand("launchprojectile")
+        createCommand()
           .withArguments(projArg
             .replaceSuggestions(ArgumentSuggestions.strings(projectiles))
           )
@@ -77,13 +78,11 @@ public class LaunchProjectileCommand extends Command implements Registerable {
               }.runTaskLater(CommandUtils.getInstance(), maxAlive);
 
           }, ExecutorType.PLAYER, ExecutorType.PROXY)
-          .withPermission(this.getPermission())
-          .withAliases(this.getCommandAliases())
           .register(this.getNamespace());
 
 
         // Projectile with commands to be run
-        new CommandAPICommand("launchprojectile")
+        createCommand()
           .withArguments(projArg
             .replaceSuggestions(ArgumentSuggestions.strings(projectiles))
           )
@@ -138,12 +137,10 @@ public class LaunchProjectileCommand extends Command implements Registerable {
               }.runTaskLater(CommandUtils.getInstance(), maxAlive);
 
           }, ExecutorType.PLAYER, ExecutorType.PROXY)
-          .withPermission(this.getPermission())
-          .withAliases(this.getCommandAliases())
           .register(this.getNamespace());
 
         // Projectile with commands to be run when it hits
-        new CommandAPICommand("launchprojectile")
+        createCommand()
           .withArguments(projArg
             .replaceSuggestions(ArgumentSuggestions.strings(projectiles))
           )
@@ -191,8 +188,6 @@ public class LaunchProjectileCommand extends Command implements Registerable {
               }.runTaskLater(CommandUtils.getInstance(), maxAlive);
 
           }, ExecutorType.PLAYER, ExecutorType.PROXY)
-          .withPermission(this.getPermission())
-          .withAliases(this.getCommandAliases())
           .register(this.getNamespace());
     }
 

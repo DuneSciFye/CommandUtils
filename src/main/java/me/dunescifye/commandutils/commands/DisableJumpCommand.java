@@ -1,7 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import me.dunescifye.commandutils.CommandUtils;
@@ -15,19 +14,19 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static me.dunescifye.commandutils.utils.Utils.timeArgument;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.timeArgument;
 
 @SuppressWarnings("ConstantConditions")
-public class DisableJumpCommand extends Command implements Registerable, Listener {
+public class DisableJumpCommand extends Command implements Listener {
 
     private final HashMap<UUID, BukkitTask> tasks = new HashMap<>();
 
     @Override
     public void register() {
-      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         Argument<Duration> durationArg = timeArgument("Duration");
 
-        new CommandAPICommand("disablejump")
+        createCommand()
             .withArguments(playerArg, durationArg)
             .executes((sender, args) -> {
                 Player p = args.getByArgument(playerArg);
@@ -44,8 +43,6 @@ public class DisableJumpCommand extends Command implements Registerable, Listene
                 tasks.put(uuid, task);
 
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

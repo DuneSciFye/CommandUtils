@@ -1,12 +1,11 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.HashMap;
 
-public class TempPlayerVarCommand extends Command implements Registerable {
+public class TempPlayerVarCommand extends Command {
     private static final HashMap<String, HashMap<String, String>> playerVars = new HashMap<>(); //Player Var
 
     @SuppressWarnings("ConstantConditions")
@@ -18,13 +17,8 @@ public class TempPlayerVarCommand extends Command implements Registerable {
         StringArgument playerArg = new StringArgument("Player");
         GreedyStringArgument chatArg = new GreedyStringArgument("Content");
 
-        /*
-         * Sets a temporary player variable, won't persist across server restarts
-         * @author DuneSciFye
-         * @since 2.1.5
-         * @param
-         */
-        new CommandAPICommand("tempplayervar")
+        // Sets a temporary player variable, won't persist across server restarts
+        createCommand()
             .withArguments(functionArg, playerArg, varArg)
             .withOptionalArguments(chatArg)
             .executes((sender, args) -> {
@@ -57,8 +51,6 @@ public class TempPlayerVarCommand extends Command implements Registerable {
                 }
                 playerVars.put(playerName, vars);
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 

@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.DoubleArgument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.MultiLiteralArgument;
@@ -11,7 +10,8 @@ import org.bukkit.entity.LivingEntity;
 import java.util.Collection;
 
 @SuppressWarnings({"DataFlowIssue", "unchecked"})
-public class HealthCommand extends Command implements Registerable {
+public class HealthCommand extends Command {
+
     @Override
     public void register() {
 
@@ -19,15 +19,8 @@ public class HealthCommand extends Command implements Registerable {
         EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
         DoubleArgument amountArg = new DoubleArgument("Amount");
 
-        /*
-         * Modifies Entities healths
-         * @author DuneSciFye
-         * @since 2.6.0
-         * @param Function to do
-         * @param Entities to Target
-         * @param Amount to Edit
-         */
-        new CommandAPICommand("health")
+        // Modifies Entities healths
+        createCommand()
             .withArguments(functionArg, entitiesArg, amountArg)
             .executes((sender, args) -> {
                 Collection<Entity> entities = args.getByArgument(entitiesArg);
@@ -47,8 +40,6 @@ public class HealthCommand extends Command implements Registerable {
                     }
                 }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

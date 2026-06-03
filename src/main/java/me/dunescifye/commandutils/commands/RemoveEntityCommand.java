@@ -8,7 +8,8 @@ import org.bukkit.entity.Mob;
 
 import java.util.Collection;
 
-public class RemoveEntityCommand extends Command implements Registerable {
+public class RemoveEntityCommand extends Command {
+
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {

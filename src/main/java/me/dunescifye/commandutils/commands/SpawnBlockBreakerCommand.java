@@ -18,94 +18,74 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class SpawnBlockBreakerCommand extends Command implements Registerable {
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
+
+public class SpawnBlockBreakerCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        LocationArgument locationArgument = new LocationArgument("Location");
-        FloatArgument yawArgument = new FloatArgument("Yaw");
-        FloatArgument pitchArgument = new FloatArgument("Pitch");
         ItemStackArgument itemStackArgument = new ItemStackArgument("Item");
         DoubleArgument vectorMultiplierArgument = new DoubleArgument("Vector Multiplier");
-        IntegerArgument radiusArgument = new IntegerArgument("Radius", 0);
         IntegerArgument maxTimeArgument = new IntegerArgument("Max Time", 0);
-        IntegerArgument periodArgument = new IntegerArgument("Period", 0);
-        StringArgument whitelistedBlocksArgument = new StringArgument("Whitelisted Blocks");
-      EntitySelectorArgument.OnePlayer playerArgument = new EntitySelectorArgument.OnePlayer("Player");
         BooleanArgument checkClaimArgument = new BooleanArgument("Check Claim");
         BooleanArgument autoPickupArgument = new BooleanArgument("Auto Pickup");
         BooleanArgument generateBlockBreakEventArgument = new BooleanArgument("Generate BLock Break Event");
 
         new CommandTree("spawnblockbreaker")
-            .then((locationArgument)
-                //Location
+            .then((locArg())
+                // Location
                 .executes((sender, args) -> {
-                    spawnSnowball(args.getByArgument(locationArgument), 0, 0, 1, new ItemStack(Material.SNOWBALL), 1, 100, 1);
+                    spawnBlockBreaker((Location) args.get("Location"), 0, 0, 1, new ItemStack(Material.SNOWBALL), 1, 100, 1, null, null);
                 })
-                //Location, Yaw, Pitch
-                .then((yawArgument)
-                    .then((pitchArgument)
+                // Location, Yaw, Pitch
+                .then((yawArg())
+                    .then((pitchArg())
                         .executes((sender, args) -> {
-                            spawnSnowball(args.getByArgument(locationArgument), args.getByArgument(yawArgument), args.getByArgument(pitchArgument), 1, new ItemStack(Material.SNOWBALL), 1, 100, 1);
+                            spawnBlockBreaker((Location) args.get("Location"), (float) args.get("Yaw"), (float) args.get("Pitch"), 1, new ItemStack(Material.SNOWBALL), 1, 100, 1, null, null);
                         })
-                        //Location, Yaw, Pitch, Item
+                        // Location, Yaw, Pitch, Item
                         .then((itemStackArgument)
                             .executes((sender, args) -> {
-                                spawnSnowball(args.getByArgument(locationArgument), args.getByArgument(yawArgument), args.getByArgument(pitchArgument), 1, args.getByArgument(itemStackArgument), 1, 100, 1);
+                                spawnBlockBreaker((Location) args.get("Location"), (float) args.get("Yaw"), (float) args.get("Pitch"), 1, args.getByArgument(itemStackArgument), 1, 100, 1, null, null);
                             })
-                            //Player, Item, Vector Multiplier
+                            // Player, Item, Vector Multiplier
                             .then((vectorMultiplierArgument)
                                 .executes((sender, args) -> {
-                                    spawnSnowball(args.getByArgument(locationArgument), args.getByArgument(yawArgument), args.getByArgument(pitchArgument), args.getByArgument(vectorMultiplierArgument), args.getByArgument(itemStackArgument), 1, 100, 1);
+                                    spawnBlockBreaker((Location) args.get("Location"), (float) args.get("Yaw"), (float) args.get("Pitch"), args.getByArgument(vectorMultiplierArgument), args.getByArgument(itemStackArgument), 1, 100, 1, null, null);
                                 })
-                                //Player, Item, Vector Multiplier, Radius, Period, Max Time
-                                .then((radiusArgument)
-                                    .then((periodArgument)
+                                // Player, Item, Vector Multiplier, Radius, Period, Max Time
+                                .then((radiusArg())
+                                    .then((periodArg())
                                         .then((maxTimeArgument)
                                             .executes((sender, args) -> {
-                                                spawnSnowball(args.getByArgument(locationArgument), args.getByArgument(yawArgument), args.getByArgument(pitchArgument), args.getByArgument(vectorMultiplierArgument), args.getByArgument(itemStackArgument), args.getByArgument(radiusArgument), args.getByArgument(maxTimeArgument), args.getByArgument(periodArgument));
+                                                spawnBlockBreaker(
+                                                    (Location) args.get("Location"),
+                                                    (float) args.get("Yaw"),
+                                                    (float) args.get("Pitch"),
+                                                    args.getByArgument(vectorMultiplierArgument),
+                                                    args.getByArgument(itemStackArgument),
+                                                    (int) args.get("Radius"),
+                                                    args.getByArgument(maxTimeArgument),
+                                                    (int) args.get("Period"),
+                                                    null,
+                                                    null
+                                                );
                                             })
-                                            //Player, Item, Vector Multiplier, Radius, Period, Max Time, Whitelisted Blocks
-                                            .then(whitelistedBlocksArgument
-                                                .replaceSuggestions(ArgumentSuggestions.strings(Config.getPredicates()))
+                                            // Player, Item, Vector Multiplier, Radius, Period, Max Time, Whitelisted Blocks
+                                            .then(configPredicateArg()
                                                 .executes((sender, args) -> {
-                                                    Location loc = args.getByArgument(locationArgument);
-                                                    loc.setPitch(args.getByArgument(pitchArgument));
-                                                    loc.setYaw(args.getByArgument(yawArgument));
-                                                    Snowball snowball = loc.getWorld().spawn(loc, Snowball.class);
-                                                    snowball.setVelocity(loc.getDirection().multiply(args.getByArgument(vectorMultiplierArgument)));
-                                                    snowball.setItem(args.getByArgument(itemStackArgument));
-
-                                                    int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
-
-                                                    List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
-
-                                                    new BukkitRunnable() {
-                                                        int count = 0;
-
-                                                        @Override
-                                                        public void run() {
-                                                            if (count > maxTime || snowball.isDead()) {
-                                                                cancel();
-                                                                return;
-                                                            }
-
-                                                            Block origin = snowball.getLocation().getBlock();
-
-                                                            for (int x = -radius; x <= radius; x++) {
-                                                                for (int y = -radius; y <= radius; y++) {
-                                                                    for (int z = -radius; z <= radius; z++) {
-                                                                        Block relative = origin.getRelative(x, y, z);
-                                                                        if (!Utils.testBlock(relative, predicates)) continue;
-                                                                        relative.breakNaturally();
-                                                                    }
-                                                                }
-                                                            }
-
-                                                            count += period;
-                                                        }
-                                                    }.runTaskTimer(CommandUtils.getInstance(), 0, period);
-
+                                                    spawnBlockBreaker(
+                                                        (Location) args.get("Location"),
+                                                        (float) args.get("Yaw"),
+                                                        (float) args.get("Pitch"),
+                                                        args.getByArgument(vectorMultiplierArgument),
+                                                        args.getByArgument(itemStackArgument),
+                                                        (int) args.get("Radius"),
+                                                        args.getByArgument(maxTimeArgument),
+                                                        (int) args.get("Period"),
+                                                        Config.getPredicate((String) args.get("Whitelisted Blocks")),
+                                                        null
+                                                    );
                                                 })
                                             )
                                         )
@@ -116,119 +96,76 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
                     )
                 )
             )
-            .then(playerArgument
-                //Player
+            .then(playerArg()
+                // Player
                 .executes((sender, args) -> {
-                    Player p = args.getByArgument(playerArgument);
-                    spawnSnowball(p.getLocation(), p.getYaw(), p.getPitch(), 1, new ItemStack(Material.SNOWBALL), 1, 80, 1);
+                    Player player = (Player) args.get("Player");
+                    spawnBlockBreaker(player.getLocation(), player.getYaw(), player.getPitch(), 1, new ItemStack(Material.SNOWBALL), 1, 80, 1, null, null);
                 })
                 .then(itemStackArgument
-                    //Player, Item
+                    // Player, Item
                     .executes((sender, args) -> {
-                        Player p = args.getByArgument(playerArgument);
-                        spawnSnowball(p.getLocation(), p.getYaw(), p.getPitch(), 1, args.getByArgument(itemStackArgument), 1, 80, 1);
+                        Player player = (Player) args.get("Player");
+                        spawnBlockBreaker(player.getLocation(), player.getYaw(), player.getPitch(), 1, args.getByArgument(itemStackArgument), 1, 80, 1, null, null);
                     })
                     .then(vectorMultiplierArgument
-                        //Player, Item, Vector Multiplier
+                        // Player, Item, Vector Multiplier
                         .executes((sender, args) -> {
-                            Player p = args.getByArgument(playerArgument);
-                            spawnSnowball(p.getLocation(), p.getYaw(), p.getPitch(), args.getByArgument(vectorMultiplierArgument), args.getByArgument(itemStackArgument), 1, 80, 1);
+                            Player player = (Player) args.get("Player");
+                            spawnBlockBreaker(player.getLocation(), player.getYaw(), player.getPitch(), args.getByArgument(vectorMultiplierArgument), args.getByArgument(itemStackArgument), 1, 80, 1, null, null);
                         })
-                        .then(radiusArgument
-                            .then(periodArgument
+                        .then(radiusArg()
+                            .then(periodArg()
                                 .then(maxTimeArgument
-                                    //Player, Item, Vector Multiplier, Radius, Period, Max Time
+                                    // Player, Item, Vector Multiplier, Radius, Period, Max Time
                                     .executes((sender, args) -> {
-                                        Player p = args.getByArgument(playerArgument);
-                                        spawnSnowball(p.getLocation(), p.getYaw(), p.getPitch(), args.getByArgument(vectorMultiplierArgument), args.getByArgument(itemStackArgument), args.getByArgument(radiusArgument), args.getByArgument(maxTimeArgument), args.getByArgument(periodArgument));
+                                        Player player = (Player) args.get("Player");
+                                        spawnBlockBreaker(player.getLocation(), player.getYaw(), player.getPitch(), args.getByArgument(vectorMultiplierArgument), args.getByArgument(itemStackArgument), (int) args.get("Radius"), args.getByArgument(maxTimeArgument), (int) args.get("Period"), null, null);
                                     })
-                                    .then(whitelistedBlocksArgument
-                                        //Player, Item, Vector Multiplier, Radius, Period, Max Time, Whitelisted Blocks
+                                    .then(configPredicateArg()
+                                        // Player, Item, Vector Multiplier, Radius, Period, Max Time, Whitelisted Blocks
                                         .executes((sender, args) -> {
-                                            Player p = args.getByArgument(playerArgument);
-                                            Location loc = p.getLocation();
-                                            Snowball snowball = p.getWorld().spawn(loc, Snowball.class);
-                                            snowball.setVelocity(loc.getDirection().multiply(args.getByArgument(vectorMultiplierArgument)));
-                                            snowball.setItem(args.getByArgument(itemStackArgument));
-
-                                            int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
-                                            List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
-
-                                            new BukkitRunnable() {
-                                                int count = 0;
-
-                                                @Override
-                                                public void run() {
-                                                    if (count > maxTime || snowball.isDead()) {
-                                                        cancel();
-                                                        return;
-                                                    }
-
-                                                    Block origin = snowball.getLocation().getBlock();
-
-                                                    for (int x = -radius; x <= radius; x++) {
-                                                        for (int y = -radius; y <= radius; y++) {
-                                                            for (int z = -radius; z <= radius; z++) {
-                                                                Block relative = origin.getRelative(x, y, z);
-                                                                if (!Utils.testBlock(relative, predicates)) continue;
-                                                                relative.breakNaturally();
-                                                            }
-                                                        }
-                                                    }
-
-                                                    count += period;
-                                                }
-                                            }.runTaskTimer(CommandUtils.getInstance(), 0, period);
-
+                                            Player player = (Player) args.get("Player");
+                                            spawnBlockBreaker(
+                                                player.getLocation(),
+                                                player.getYaw(),
+                                                player.getPitch(),
+                                                args.getByArgument(vectorMultiplierArgument),
+                                                args.getByArgument(itemStackArgument),
+                                                (int) args.get("Radius"),
+                                                args.getByArgument(maxTimeArgument),
+                                                (int) args.get("Period"),
+                                                Config.getPredicate((String) args.get("Whitelisted Blocks")),
+                                                null
+                                            );
                                         })
                                         .then(checkClaimArgument
-                                            //Player, Item, Vector Multiplier, Radius, Period, Max Time, Whitelisted Blocks, Check Claim
+                                            // Player, Item, Vector Multiplier, Radius, Period, Max Time, Whitelisted Blocks, Check Claim
                                             .executes((sender, args) -> {
-                                                Player p = args.getByArgument(playerArgument);
-                                                Location loc = p.getLocation();
-                                                Snowball snowball = p.getWorld().spawn(loc, Snowball.class);
-                                                snowball.setVelocity(loc.getDirection().multiply(args.getByArgument(vectorMultiplierArgument)));
-                                                snowball.setItem(args.getByArgument(itemStackArgument));
-
-                                                int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
-                                                List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
-
-                                                new BukkitRunnable() {
-                                                    int count = 0;
-
-                                                    @Override
-                                                    public void run() {
-                                                        if (count > maxTime || snowball.isDead()) {
-                                                            cancel();
-                                                            return;
-                                                        }
-
-                                                        Block origin = snowball.getLocation().getBlock();
-
-                                                        for (int x = -radius; x <= radius; x++) {
-                                                            for (int y = -radius; y <= radius; y++) {
-                                                                for (int z = -radius; z <= radius; z++) {
-                                                                    Block relative = origin.getRelative(x, y, z);
-                                                                    if (!Utils.testBlock(relative, predicates) || !FUtils.isInClaimOrWilderness(p, relative.getLocation())) continue;
-                                                                    relative.breakNaturally();
-                                                                }
-                                                            }
-                                                        }
-
-                                                        count += period;
-                                                    }
-                                                }.runTaskTimer(CommandUtils.getInstance(), 0, period);
+                                                Player player = (Player) args.get("Player");
+                                                spawnBlockBreaker(
+                                                    player.getLocation(),
+                                                    player.getYaw(),
+                                                    player.getPitch(),
+                                                    args.getByArgument(vectorMultiplierArgument),
+                                                    args.getByArgument(itemStackArgument),
+                                                    (int) args.get("Radius"),
+                                                    args.getByArgument(maxTimeArgument),
+                                                    (int) args.get("Period"),
+                                                    Config.getPredicate((String) args.get("Whitelisted Blocks")),
+                                                    player
+                                                );
                                             })
                                             .then(generateBlockBreakEventArgument
                                                 .executes((sender, args) -> {
-                                                    Player p = args.getByArgument(playerArgument);
-                                                    Location loc = p.getLocation();
-                                                    Snowball snowball = p.getWorld().spawn(loc, Snowball.class);
+                                                    Player player = (Player) args.get("Player");
+                                                    Location loc = player.getLocation();
+                                                    Snowball snowball = player.getWorld().spawn(loc, Snowball.class);
                                                     snowball.setVelocity(loc.getDirection().multiply(args.getByArgument(vectorMultiplierArgument)));
                                                     snowball.setItem(args.getByArgument(itemStackArgument));
 
-                                                    int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
-                                                    List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
+                                                    int radius = (int) args.get("Radius"), period = (int) args.get("Period"), maxTime = args.getByArgument(maxTimeArgument);
+                                                    List<List<Predicate<Block>>> predicates = Config.getPredicate((String) args.get("Whitelisted Blocks"));
 
                                                     new BukkitRunnable() {
                                                         int count = 0;
@@ -242,7 +179,7 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
 
                                                             Block origin = snowball.getLocation().getBlock();
                                                             //Set meta data so LunarItems doesn't do radius mining
-                                                            p.setMetadata("ignoreBlockBreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
+                                                            player.setMetadata("ignoreBlockBreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
                                                             for (int x = -radius; x <= radius; x++) {
                                                                 for (int y = -radius; y <= radius; y++) {
                                                                     for (int z = -radius; z <= radius; z++) {
@@ -252,7 +189,7 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
                                                                     }
                                                                 }
                                                             }
-                                                            p.removeMetadata("ignoreBlockBreak", CommandUtils.getInstance());
+                                                            player.removeMetadata("ignoreBlockBreak", CommandUtils.getInstance());
 
                                                             count += period;
                                                         }
@@ -260,15 +197,15 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
                                                 })
                                                 .then(autoPickupArgument
                                                     .executes((sender, args) -> {
-                                                        Player p = args.getByArgument(playerArgument);
-                                                        Location loc = p.getLocation();
-                                                        Snowball snowball = p.getWorld().spawn(loc, Snowball.class);
+                                                        Player player = (Player) args.get("Player");
+                                                        Location loc = player.getLocation();
+                                                        Snowball snowball = player.getWorld().spawn(loc, Snowball.class);
                                                         snowball.setVelocity(loc.getDirection().multiply(args.getByArgument(vectorMultiplierArgument)));
                                                         snowball.setItem(args.getByArgument(itemStackArgument));
 
-                                                        int radius = args.getByArgument(radiusArgument), period = args.getByArgument(periodArgument), maxTime = args.getByArgument(maxTimeArgument);
+                                                        int radius = (int) args.get("Radius"), period = (int) args.get("Period"), maxTime = args.getByArgument(maxTimeArgument);
 
-                                                        List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
+                                                        List<List<Predicate<Block>>> predicates = Config.getPredicate((String) args.get("Whitelisted Blocks"));
 
                                                         new BukkitRunnable() {
                                                             int count = 0;
@@ -282,24 +219,12 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
 
                                                                 Block origin = snowball.getLocation().getBlock();
 
-                                                                for (int x = -radius; x <= radius; x++) {
-                                                                    for (int y = -radius; y <= radius; y++) {
-                                                                        for (int z = -radius; z <= radius; z++) {
-                                                                            Block relative = origin.getRelative(x, y, z);
-                                                                            if (!Utils.testBlock(relative, predicates)) continue;
-                                                                            p.setMetadata("ignoreBlockBreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
-                                                                            /*
-                                                                            PersistentDataContainer pdc = new CustomBlockData(relative, CommandUtils.getInstance());
-                                                                            pdc.set(CommandUtils.autoPickupKey, PersistentDataType.BOOLEAN, true);
-                                                                            BlockBreakEvent blockBreakEvent = new BlockBreakEvent(relative, p);
-                                                                            Bukkit.getServer().getPluginManager().callEvent(blockBreakEvent);
-
-                                                                             */
-                                                                            p.breakBlock(relative);
-                                                                            p.removeMetadata("ignoreBlockBreak", CommandUtils.getInstance());
-                                                                        }
-                                                                    }
+                                                                player.setMetadata("ignoreBlockBreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
+                                                                for (Block relative : Utils.getBlocksInRadius(origin, radius)) {
+                                                                    if (!Utils.testBlock(relative, predicates)) continue;
+                                                                    player.breakBlock(relative);
                                                                 }
+                                                                player.removeMetadata("ignoreBlockBreak", CommandUtils.getInstance());
 
                                                                 count += period;
                                                             }
@@ -321,7 +246,18 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
 
     }
 
-    private static void spawnSnowball(Location loc, float yaw, float pitch, double vectorMultiplier, ItemStack item, int radius, int maxTime, int period) {
+    private static void spawnBlockBreaker(
+        Location loc,
+        float yaw,
+        float pitch,
+        double vectorMultiplier,
+        ItemStack item,
+        int radius,
+        int maxTime,
+        int period,
+        List<List<Predicate<Block>>> predicates,
+        Player player // Null if you don't want to check claims
+    ) {
         Snowball snowball = loc.getWorld().spawn(loc, Snowball.class);
         loc.setYaw(yaw);
         loc.setPitch(pitch);
@@ -338,8 +274,10 @@ public class SpawnBlockBreakerCommand extends Command implements Registerable {
                     return;
                 }
 
-                for (Block b : Utils.getBlocksInRadius(snowball.getLocation().getBlock(), radius))
-                    b.breakNaturally();
+                for (Block relative : Utils.getBlocksInRadius(snowball.getLocation().getBlock(), radius)) {
+                    if (!Utils.testBlock(relative, predicates) || !FUtils.isInClaimOrWilderness(player, relative.getLocation())) continue;
+                    relative.breakNaturally();
+                }
 
                 count += period;
             }

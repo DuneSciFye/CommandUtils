@@ -1,28 +1,25 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
-import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import org.bukkit.entity.Player;
 
+import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
+
 @SuppressWarnings("DataFlowIssue")
-public class SetFlightCommand extends Command implements Registerable {
+public class SetFlightCommand extends Command {
     @Override
     public void register() {
 
-      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         BooleanArgument flyingArg = new BooleanArgument("Flying");
 
-        new CommandAPICommand("setflight")
-            .withArguments(playerArg, flyingArg)
+        createCommand()
+            .withArguments(playerArg(), flyingArg)
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
+                Player p = args.getUnchecked("Player");
                 Boolean flying = args.getByArgument(flyingArg);
                 p.setAllowFlight(flying);
                 p.setFlying(flying);
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

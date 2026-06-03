@@ -1,47 +1,39 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Utils;
-import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Waterlogged;
 
-public class WaterlogCommand extends Command implements Registerable {
+import java.util.Set;
+
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
+
+public class WaterlogCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
-        StringArgument worldArg = new StringArgument("World");
         BooleanArgument waterlogArg = new BooleanArgument("Waterlogged State");
-        IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
 
-        /*
-         * Waterlogs Blocks
-         * @author DuneSciFye
-         * @since 1.0.0
-         * @param World of the Locations
-         * @param Coordinates of Center Block
-         * @param If Blocks will be Waterlogged
-         * @param How many Blocks to go out
-         */
-        new CommandAPICommand("waterlogblock")
-            .withArguments(worldArg)
-            .withArguments(locArg)
-            .withOptionalArguments(waterlogArg)
-            .withOptionalArguments(radiusArg)
+        // Waterlogs Blocks
+        createCommand()
+            .withArguments(worldArg(), blockLocArg())
+            .withOptionalArguments(waterlogArg, radiusArg())
             .executes((sender, args) -> {
                 boolean waterlog = args.getByArgumentOrDefault(waterlogArg, true);
 
-                for (Block b : Utils.getBlocksInRadius(Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg)), args.getByArgumentOrDefault(radiusArg, 0)))
-                    if (b.getBlockData() instanceof Waterlogged waterlogged) {
-                        waterlogged.setWaterlogged(waterlog);
-                        b.setBlockData(waterlogged);
-                    }
+                Set<Block> blocks = Utils.getBlocksInRadius(((World) args.get("World")).getBlockAt((Location) args.get(
+                    "Location")), (int) args.getOrDefault("Radius", 0));
+
+                for (Block block : blocks) {
+                    if (!(block.getBlockData() instanceof Waterlogged waterlogged)) continue;
+                    waterlogged.setWaterlogged(waterlog);
+                    block.setBlockData(waterlogged);
+                }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

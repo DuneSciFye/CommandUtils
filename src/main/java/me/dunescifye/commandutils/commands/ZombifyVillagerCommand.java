@@ -1,39 +1,28 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Villager;
 
 import java.util.Collection;
 
-public class ZombifyVillagerCommand extends Command implements Registerable {
+import static me.dunescifye.commandutils.utils.ArgumentUtils.entitiesArg;
+
+public class ZombifyVillagerCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {
 
-        EntitySelectorArgument.ManyEntities villagersArg = new EntitySelectorArgument.ManyEntities("Villagers");
-
-        /*
-         * Turns a Villagers into a Zombie Villagers
-         * @author DuneSciFye
-         * @since 1.0.5
-         * @param Villagers to Target
-         */
-        new CommandAPICommand("zombifyvillager")
-            .withArguments(villagersArg)
+        // Turns a Villagers into a Zombie Villagers
+        createCommand()
+            .withArguments(entitiesArg())
             .executes((sender, args) -> {
-                Collection<Entity> villagers = args.getUnchecked("Villagers");
+                Collection<Entity> villagers = (Collection<Entity>) args.get("Entities");
 
-                for (Entity entity : villagers) {
-                    if (entity instanceof Villager villager) {
+                for (Entity entity : villagers)
+                    if (entity instanceof Villager villager)
                         villager.zombify();
-                    }
-                }
 
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

@@ -1,14 +1,7 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.LiteralArgument;
-import dev.jorel.commandapi.arguments.LocationArgument;
-import dev.jorel.commandapi.arguments.LocationType;
-import dev.jorel.commandapi.arguments.StringArgument;
-import org.bukkit.Axis;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import dev.jorel.commandapi.arguments.*;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
@@ -26,31 +19,22 @@ import org.bukkit.block.data.type.TrapDoor;
 
 import java.util.Set;
 
-public class BlockCycleCommand extends Command implements Registerable {
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
+
+public class BlockCycleCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
         LiteralArgument oxidizeArg = new LiteralArgument("oxidize");
-        StringArgument worldArg = new StringArgument("World");
-        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
         LiteralArgument waxArg = new LiteralArgument("wax");
 
-        /*
-         * Switches Oxidization States of Copper
-         * @author DuneSciFye
-         * @since 1.0.0
-         * @param oxidize Identifier for this subcommand
-         * @param World of the Block
-         * @param Location of the Block
-         */
-        new CommandAPICommand("blockcycle")
-            .withArguments(oxidizeArg)
-            .withArguments(worldArg)
-            .withArguments(locArg)
+        // Switches Oxidization States of Copper
+        createCommand()
+            .withArguments(oxidizeArg, worldArg(), blockLocArg())
             .executes((sender, args) -> {
-                Location loc = args.getByArgument(locArg);
-                loc.setWorld(Bukkit.getWorld(args.getByArgument(worldArg)));
+                Location loc = (Location) args.get("Location");
+                loc.setWorld((World) args.get("World"));
                 Block b = loc.getBlock();
                 Material material = b.getType();
                 BlockData blockData = b.getBlockData();
@@ -326,24 +310,13 @@ public class BlockCycleCommand extends Command implements Registerable {
               }
 
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /**
-         * Toggles Wax of Copper
-         * @author DuneSciFye
-         * @since 1.0.0
-         * @param wax Identifier for this subcommand
-         * @param World World of the Block
-         * @param Location Location of the Block
-         */
-        new CommandAPICommand("blockcycle")
-            .withArguments(waxArg)
-            .withArguments(worldArg)
-            .withArguments(locArg)
+        // Toggles Wax of Copper
+        createCommand()
+            .withArguments(waxArg, worldArg(), blockLocArg())
             .executes((sender, args) -> {
-                Block b = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
+                Block b = ((World) args.get("World")).getBlockAt((Location) args.get("Location"));
                 BlockData blockData = b.getBlockData();
 
                 Stairs.Shape shape = null;
@@ -488,9 +461,6 @@ public class BlockCycleCommand extends Command implements Registerable {
                     default -> {}
                 }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
-
     }
 }

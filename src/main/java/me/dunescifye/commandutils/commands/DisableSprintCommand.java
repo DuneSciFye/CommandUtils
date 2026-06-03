@@ -1,9 +1,9 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.utils.ArgumentUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,20 +15,18 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static me.dunescifye.commandutils.utils.Utils.timeArgument;
-
 @SuppressWarnings("DataFlowIssue")
-public class DisableSprintCommand extends Command implements Registerable, Listener {
+public class DisableSprintCommand extends Command implements Listener {
 
     private final HashMap<UUID, BukkitTask> tasks = new HashMap<>();
 
     @Override
     public void register() {
 
-      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        Argument<Duration> durationArg = timeArgument("Duration");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
+        Argument<Duration> durationArg = ArgumentUtils.timeArgument("Duration");
 
-        new CommandAPICommand("disablesprint")
+        createCommand()
             .withArguments(playerArg, durationArg)
             .executes((sender, args) -> {
                 Player p = args.getByArgument(playerArg);
@@ -48,8 +46,6 @@ public class DisableSprintCommand extends Command implements Registerable, Liste
                 tasks.put(uuid, task);
 
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 

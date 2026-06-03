@@ -16,7 +16,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class LaunchFireworkCommand extends Command implements Registerable {
+public class LaunchFireworkCommand extends Command {
+
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
@@ -32,8 +33,8 @@ public class LaunchFireworkCommand extends Command implements Registerable {
         IntegerArgument rgbArg = new IntegerArgument("RGB");
         BooleanArgument noDamageArg = new BooleanArgument("No Damage");
 
-        //Single Color
-        new CommandAPICommand("launchfirework")
+        // Single Color
+        createCommand()
           .withArguments(playerArg)
           .withArguments(ticksToDetonateArg)
           .withArguments(noDamageArg)
@@ -48,12 +49,10 @@ public class LaunchFireworkCommand extends Command implements Registerable {
                 args.getByArgument(noDamageArg)
               );
           })
-          .withPermission(this.getPermission())
-          .withAliases(this.getCommandAliases())
           .register(this.getNamespace());
 
-        //RGB Options
-        new CommandAPICommand("launchfirework")
+        // RGB Options
+        createCommand()
             .withArguments(playerArg)
             .withOptionalArguments(ticksToDetonateArg)
             .withOptionalArguments(noDamageArg)
@@ -72,8 +71,6 @@ public class LaunchFireworkCommand extends Command implements Registerable {
                     args.getByArgumentOrDefault(noDamageArg, false)
                 );
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

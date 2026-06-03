@@ -1,45 +1,33 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
 
-public class SaturationCommand extends Command implements Registerable {
+public class SaturationCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "remove", "set", "get");
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         FloatArgument amountArg = new FloatArgument("Amount");
 
-        /*
-         * Modifies a Player's Saturation Level
-         * @author DuneSciFye
-         * @since 1.0.3
-         * @param Function to do
-         * @param Players to Target
-         * @param Amount to Edit
-         */
-        new CommandAPICommand("saturation")
-            .withArguments(functionArg)
-            .withArguments(playerArg)
+        // Modifies a Player's Saturation Level
+        createCommand()
+            .withArguments(functionArg, playerArg())
             .withArguments(amountArg)
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
+                Player player = args.getUnchecked("Player");
                 float amount = args.getByArgument(amountArg);
 
-                int foodLevel = p.getFoodLevel();
+                int foodLevel = player.getFoodLevel();
                 switch (args.getByArgument(functionArg)) {
-                    case "add" -> p.setSaturation(foodLevel + amount);
-                    case "remove" -> p.setSaturation(foodLevel - amount);
-                    case "set" -> p.setSaturation(amount);
-                    case "get" -> sender.sendMessage(String.valueOf(p.getSaturation()));
+                    case "add" -> player.setSaturation(foodLevel + amount);
+                    case "remove" -> player.setSaturation(foodLevel - amount);
+                    case "set" -> player.setSaturation(amount);
+                    case "get" -> sender.sendMessage(String.valueOf(player.getSaturation()));
                 }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

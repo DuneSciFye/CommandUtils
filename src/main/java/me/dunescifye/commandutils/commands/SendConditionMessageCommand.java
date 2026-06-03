@@ -2,7 +2,7 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandTree;
 
-public class SendConditionMessageCommand extends Command implements Registerable {
+public class SendConditionMessageCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     @Override

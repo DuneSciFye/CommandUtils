@@ -18,57 +18,58 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-public class PlaceBlockFromSlotCommand extends Command implements Registerable {
-  @Override
-  public void register() {
+public class PlaceBlockFromSlotCommand extends Command {
 
-    Argument<World> worldArg = Utils.bukkitWorldArgument("World");
-    LocationArgument locArg = new LocationArgument("Block Location", LocationType.BLOCK_POSITION);
-    StringArgument slotArg = new StringArgument("Slot");
-    BooleanArgument consumeArg = new BooleanArgument("Consume from Inventory");
-    BooleanArgument triggerEventArg = new  BooleanArgument("Trigger Block Place Event");
+    @Override
+    public void register() {
 
-    new CommandAPICommand("placeblockfromslot")
-      .withArguments(worldArg, locArg, slotArg.replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots())))
-      .withOptionalArguments(consumeArg, triggerEventArg)
-      .executes((sender, args) -> {
-        final Player player = sender instanceof ProxiedCommandSender proxy ? (Player) proxy.getCallee() : (Player) sender;
-        final World world = args.getUnchecked("World");
-        final Location loc = args.getByArgument(locArg);
-        loc.setWorld(world);
-        final String slot = args.getByArgument(slotArg);
-        final Boolean consume = args.getByArgumentOrDefault(consumeArg, true);
-        final Boolean triggerEvent = args.getByArgumentOrDefault(triggerEventArg, true);
+        Argument<World> worldArg = ArgumentUtils.bukkitWorldArgument("World");
+        LocationArgument locArg = new LocationArgument("Block Location", LocationType.BLOCK_POSITION);
+        StringArgument slotArg = new StringArgument("Slot");
+        BooleanArgument consumeArg = new BooleanArgument("Consume from Inventory");
+        BooleanArgument triggerEventArg = new  BooleanArgument("Trigger Block Place Event");
 
-        ItemStack item = Utils.getInvItem(player, slot);
-        Block block = loc.getBlock();
+        new CommandAPICommand("placeblockfromslot")
+            .withArguments(worldArg, locArg, slotArg.replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots())))
+            .withOptionalArguments(consumeArg, triggerEventArg)
+            .executes((sender, args) -> {
+                final Player player = sender instanceof ProxiedCommandSender proxy ? (Player) proxy.getCallee() : (Player) sender;
+                final World world = args.getUnchecked("World");
+                final Location loc = args.getByArgument(locArg);
+                loc.setWorld(world);
+                final String slot = args.getByArgument(slotArg);
+                final Boolean consume = args.getByArgumentOrDefault(consumeArg, true);
+                final Boolean triggerEvent = args.getByArgumentOrDefault(triggerEventArg, true);
 
-        if (item == null || item.getType() == Material.AIR || !block.getType().isAir()) return;
+                ItemStack item = Utils.getInvItem(player, slot);
+                Block block = loc.getBlock();
 
-        final Material mat = item.getType();
-        if (!mat.isBlock()) return;
+                if (item == null || item.getType() == Material.AIR || !block.getType().isAir()) return;
 
-        if (triggerEvent) {
-          Block placedAgainst = block.getRelative(player.getFacing().getOppositeFace());
-          BlockState replacedState = block.getState();
+                final Material mat = item.getType();
+                if (!mat.isBlock()) return;
 
-          //noinspection UnstableApiUsage
-          BlockPlaceEvent event = new BlockPlaceEvent(block, replacedState, placedAgainst, item, player, true, EquipmentSlot.HAND);
-          Bukkit.getPluginManager().callEvent(event);
-          if (event.isCancelled()) return;
-        }
+                if (triggerEvent) {
+                    Block placedAgainst = block.getRelative(player.getFacing().getOppositeFace());
+                    BlockState replacedState = block.getState();
 
-        BlockData newBlock = Bukkit.createBlockData(mat);
-        block.setBlockData(newBlock, true);
+                    //noinspection UnstableApiUsage
+                    BlockPlaceEvent event = new BlockPlaceEvent(block, replacedState, placedAgainst, item, player, true, EquipmentSlot.HAND);
+                    Bukkit.getPluginManager().callEvent(event);
+                    if (event.isCancelled()) return;
+                }
 
-        if (consume) {
-          item.setAmount(item.getAmount() - 1);
-        }
+                BlockData newBlock = Bukkit.createBlockData(mat);
+                block.setBlockData(newBlock, true);
 
-      }, ExecutorType.PROXY, ExecutorType.PLAYER)
-      .withAliases(this.getCommandAliases())
-      .withPermission(this.getPermission())
-      .register(this.getNamespace());
+                if (consume) {
+                    item.setAmount(item.getAmount() - 1);
+                }
 
-  }
+            }, ExecutorType.PROXY, ExecutorType.PLAYER)
+            .withAliases(this.getCommandAliases())
+            .withPermission(this.getPermission())
+            .register(this.getNamespace());
+
+    }
 }

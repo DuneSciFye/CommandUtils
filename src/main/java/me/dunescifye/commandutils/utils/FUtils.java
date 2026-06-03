@@ -35,8 +35,11 @@ public class FUtils {
     }
 
     public static boolean isInClaimOrWilderness(final Player player, final Location location) {
+        if (player == null || location == null) return true;
+
         // Check if in no WG regions
         if (!WorldGuardUtils.getRegions(location).isEmpty()) return false;
+
         if (CommandUtils.griefPreventionEnabled) {
             final Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, true, null);
             return claim == null || claim.getOwnerID() == null || claim.getOwnerID().equals(player.getUniqueId()) || claim.hasExplicitPermission(player, ClaimPermission.Build)

@@ -20,62 +20,63 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 @SuppressWarnings("DataFlowIssue")
-public class PlaceBlockFromInvCommand extends Command implements Registerable {
-  @Override
-  public void register() {
+public class PlaceBlockFromInvCommand extends Command {
 
-    Argument<World> worldArg = Utils.bukkitWorldArgument("World");
-    LocationArgument locArg = new LocationArgument("Block Location", LocationType.BLOCK_POSITION);
-    BooleanArgument consumeArg = new BooleanArgument("Consume from Inventory");
-    BooleanArgument triggerEventArg = new  BooleanArgument("Trigger Block Place Event");
-    Argument<Material> materialArg = ArgumentUtils.materialArgument("Material");
+    @Override
+    public void register() {
 
-    new CommandAPICommand("placeblockfrominv")
-      .withArguments(worldArg, locArg, materialArg)
-      .withOptionalArguments(consumeArg, triggerEventArg)
-      .executes((sender, args) -> {
-        final Player player = sender instanceof ProxiedCommandSender proxy ? (Player) proxy.getCallee() : (Player) sender;
-        final World world = args.getUnchecked("World");
-        final Location loc = args.getByArgument(locArg);
-        loc.setWorld(world);
-        final Boolean consume = args.getByArgumentOrDefault(consumeArg, true);
-        final Boolean triggerEvent = args.getByArgumentOrDefault(triggerEventArg, true);
-        final Material mat = args.getUnchecked("Material");
+        Argument<World> worldArg = ArgumentUtils.bukkitWorldArgument("World");
+        LocationArgument locArg = new LocationArgument("Block Location", LocationType.BLOCK_POSITION);
+        BooleanArgument consumeArg = new BooleanArgument("Consume from Inventory");
+        BooleanArgument triggerEventArg = new  BooleanArgument("Trigger Block Place Event");
+        Argument<Material> materialArg = ArgumentUtils.materialArgument("Material");
 
-        Block block = loc.getBlock();
+        new CommandAPICommand("placeblockfrominv")
+            .withArguments(worldArg, locArg, materialArg)
+            .withOptionalArguments(consumeArg, triggerEventArg)
+            .executes((sender, args) -> {
+                final Player player = sender instanceof ProxiedCommandSender proxy ? (Player) proxy.getCallee() : (Player) sender;
+                final World world = args.getUnchecked("World");
+                final Location loc = args.getByArgument(locArg);
+                loc.setWorld(world);
+                final Boolean consume = args.getByArgumentOrDefault(consumeArg, true);
+                final Boolean triggerEvent = args.getByArgumentOrDefault(triggerEventArg, true);
+                final Material mat = args.getUnchecked("Material");
 
-        if (!mat.isBlock() || !block.getType().isAir()) return;
+                Block block = loc.getBlock();
 
-        ItemStack item = new ItemStack(mat);
+                if (!mat.isBlock() || !block.getType().isAir()) return;
 
-        checkInv: if (consume) {
-          PlayerInventory inv = player.getInventory();
-          for (ItemStack itemStack : inv.getContents()) {
-            if (itemStack == null || itemStack.hasItemMeta() || itemStack.getType() != mat) continue;
-            item = itemStack;
-            break checkInv;
-          }
-          return; // Return if player doesn't have item stack
-        }
+                ItemStack item = new ItemStack(mat);
 
-        if (triggerEvent) {
-          Block placedAgainst = block.getRelative(player.getFacing().getOppositeFace());
-          BlockState replacedState = block.getState();
+                checkInv: if (consume) {
+                    PlayerInventory inv = player.getInventory();
+                    for (ItemStack itemStack : inv.getContents()) {
+                        if (itemStack == null || itemStack.hasItemMeta() || itemStack.getType() != mat) continue;
+                        item = itemStack;
+                        break checkInv;
+                    }
+                    return; // Return if player doesn't have item stack
+                }
 
-          //noinspection UnstableApiUsage
-          BlockPlaceEvent event = new BlockPlaceEvent(block, replacedState, placedAgainst, item, player, true, EquipmentSlot.HAND);
-          Bukkit.getPluginManager().callEvent(event);
-          if (event.isCancelled()) return;
-        }
+                if (triggerEvent) {
+                    Block placedAgainst = block.getRelative(player.getFacing().getOppositeFace());
+                    BlockState replacedState = block.getState();
 
-        if (consume) item.setAmount(item.getAmount() - 1);
+                    //noinspection UnstableApiUsage
+                    BlockPlaceEvent event = new BlockPlaceEvent(block, replacedState, placedAgainst, item, player, true, EquipmentSlot.HAND);
+                    Bukkit.getPluginManager().callEvent(event);
+                    if (event.isCancelled()) return;
+                }
 
-        BlockData newBlock = Bukkit.createBlockData(mat);
-        block.setBlockData(newBlock, true);
+                if (consume) item.setAmount(item.getAmount() - 1);
 
-      }, ExecutorType.PROXY, ExecutorType.PLAYER)
-      .withAliases(this.getCommandAliases())
-      .withPermission(this.getPermission())
-      .register(this.getNamespace());
-  }
+                BlockData newBlock = Bukkit.createBlockData(mat);
+                block.setBlockData(newBlock, true);
+
+            }, ExecutorType.PROXY, ExecutorType.PLAYER)
+            .withAliases(this.getCommandAliases())
+            .withPermission(this.getPermission())
+            .register(this.getNamespace());
+    }
 }

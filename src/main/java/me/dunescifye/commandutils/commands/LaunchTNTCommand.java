@@ -14,26 +14,19 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
-public class LaunchTNTCommand extends Command implements Registerable {
+public class LaunchTNTCommand extends Command {
+
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {
 
-      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         StringArgument worldArg = new StringArgument("World");
         LocationArgument locArg = new LocationArgument("Location");
         BooleanArgument breakBlocksArg = new BooleanArgument("Break Blocks");
 
-        /**
-         * Launches TNT in the direction a player is facing
-         * @author DuneSciFye
-         * @since 1.0.0
-         * @param world The world of the block
-         * @param loc The coordinates of the block
-         * @param gravity If the block should have gravity or not
-         * @param radius How many surrounding blocks should it also affect
-         */
-        new CommandAPICommand("launchtnt")
+        // Launches TNT in the direction a player is facing
+        createCommand()
             .withArguments(playerArg)
             .withOptionalArguments(breakBlocksArg)
             .executes((sender, args) -> {
@@ -44,19 +37,10 @@ public class LaunchTNTCommand extends Command implements Registerable {
                     tnt.setMetadata("ignoreblockbreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
                 }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /**
-         * Spawns a tnt at a location
-         * @author DuneSciFye
-         * @since 1.0.0
-         * @param World The world of the block
-         * @param Location The coordinates of the block
-         * @param Boolean If the tnt should break blocks or not. Default true
-         */
-        new CommandAPICommand("launchtnt")
+        // Spawns a tnt at a location
+        createCommand()
             .withArguments(worldArg)
             .withArguments(locArg)
             .withOptionalArguments(breakBlocksArg)
@@ -69,8 +53,6 @@ public class LaunchTNTCommand extends Command implements Registerable {
                     tnt.setMetadata("ignoreblockbreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
                 }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

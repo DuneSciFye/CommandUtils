@@ -1,44 +1,33 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class UnsetItemNBTCommand extends Command implements Registerable {
-  @Override
-  public void register() {
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-    EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-    StringArgument slotArg = new StringArgument("Slot");
-    TextArgument namespaceArg = new TextArgument("Namespace");
-    TextArgument keyArg = new TextArgument("Key");
+public class UnsetItemNBTCommand extends Command {
+    @Override
+    public void register() {
 
-    new CommandAPICommand("unsetitemnbt")
-      .withArguments(playerArg, slotArg
-        .replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots())),
-        namespaceArg,
-        keyArg)
-      .executes((sender, args) -> {
-        ItemStack item = Utils.getInvItem(args.getByArgument(playerArg), args.getByArgument(slotArg));
-        String namespace = args.getByArgument(namespaceArg);
-        String inputKey = args.getByArgument(keyArg);
+        createCommand()
+            .withArguments(playerArg(), slotArg(), namespaceArg(), keyArg())
+            .executes((sender, args) -> {
+                ItemStack item = Utils.getInvItem((Player) args.get("Player"), (String) args.get("Slot"));
 
-        if (item == null)
-          return;
+                if (item == null) return;
 
-        NamespacedKey key = new NamespacedKey(namespace, inputKey);
-        ItemMeta meta = item.getItemMeta();
+                NamespacedKey key = new NamespacedKey((String) args.get("Namespace"), (String) args.get("Key"));
+                ItemMeta meta = item.getItemMeta();
 
-        meta.getPersistentDataContainer().remove(key);
-        item.setItemMeta(meta);
+                meta.getPersistentDataContainer().remove(key);
+                item.setItemMeta(meta);
 
-      })
-      .withPermission(this.getPermission())
-      .withAliases(this.getCommandAliases())
-      .register(this.getNamespace());
+            })
+            .register(this.getNamespace());
 
-  }
+    }
 }

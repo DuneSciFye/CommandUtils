@@ -11,7 +11,8 @@ import org.bukkit.block.Block;
 
 import static org.bukkit.Material.AIR;
 
-public class RemoveInRadius extends Command implements Registerable {
+public class RemoveInRadius extends Command {
+
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {

@@ -7,8 +7,6 @@ import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.placeholders.BlockPlaceholders;
 import me.dunescifye.commandutils.placeholders.StringPlaceholders;
 import me.dunescifye.commandutils.commands.Command;
-import me.dunescifye.commandutils.commands.Configurable;
-import me.dunescifye.commandutils.commands.Registerable;
 import me.dunescifye.commandutils.placeholders.PlayerPlaceholders;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
@@ -77,13 +75,16 @@ public class Config {
             }
 
             // Register Commands
-            for (Command command : commands.values()) {
+            Command.setConfig(config);
+
+            for (Map.Entry<String, Command> entry : commands.entrySet()) {
+                Command command = entry.getValue();
                 if (!command.getEnabled()) continue;
-                if (command instanceof Registerable registerable) {
-                    registerable.register();
-                } else if (command instanceof Configurable configurableCommand) {
-                    configurableCommand.register(config);
-                }
+
+                command.setCommandName(entry.getKey());
+
+                command.register();
+
                 if (command instanceof Listener listener) {
                     Bukkit.getPluginManager().registerEvents(listener, plugin);
                 }

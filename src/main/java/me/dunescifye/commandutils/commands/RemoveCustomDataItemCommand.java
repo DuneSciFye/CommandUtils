@@ -14,9 +14,9 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class RemoveCustomDataItemCommand extends Command implements Registerable {
+public class RemoveCustomDataItemCommand extends Command {
 
-  @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings("ConstantConditions")
   @Override
   public void register() {
 

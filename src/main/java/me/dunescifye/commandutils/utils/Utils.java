@@ -95,8 +95,8 @@ public class Utils {
         return finalItems;
     }
 
-    public static void dropAllItemStacks(World world, Location location, Collection<ItemStack> itemStacks) {
-        for (ItemStack item : mergeSimilarItemStacks(itemStacks)) world.dropItemNaturally(location, item);
+    public static void dropAllItemStacks(Location loc, Collection<ItemStack> itemStacks) {
+        for (ItemStack item : mergeSimilarItemStacks(itemStacks)) loc.getWorld().dropItemNaturally(loc, item);
     }
 
     public static boolean isNumeric(String str) {
@@ -190,6 +190,31 @@ public class Utils {
                 }
                 case "cursor" -> {
                     return player.getItemOnCursor();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * From custom input slot, return the minecraft numbered inventory slot
+     * @param player The player to check
+     * @param slot Custom input slot string
+     * @return The numbered slot
+     */
+    public static Integer getNumberedSlot(Player player, String slot) {
+        PlayerInventory inv = player.getInventory();
+        if (isInteger(slot)) {
+            int numberedSlot = Integer.parseInt(slot);
+            return numberedSlot == -1 ? inv.getHeldItemSlot() : numberedSlot;
+        } else {
+            switch (slot) {
+                case "main", "mainhand" -> {
+                    return inv.getHeldItemSlot();
+                }
+                case "offhand", "off" -> {
+                    return 40;
                 }
             }
         }
@@ -295,7 +320,7 @@ public class Utils {
     }
 
     public static boolean testBlock(Block b, List<List<Predicate<Block>>> predicates) {
-        if (predicates == null) return true; //Used for fully empty lists
+        if (predicates == null) return true; // Used for fully empty lists
         List<Predicate<Block>> whitelistPredicates = predicates.get(0);
         List<Predicate<Block>> blacklistPredicates = predicates.get(1);
 
@@ -505,56 +530,6 @@ public class Utils {
         }
 
         return totalDuration;
-    }
-
-    public static Argument<World> bukkitWorldArgument(String nodeName) {
-        return new CustomArgument<>(new StringArgument(nodeName), info -> {
-            World world = Bukkit.getWorld(info.input());
-
-            if (world == null) {
-                throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Unknown world ").appendArgInput());
-            } else {
-                return world;
-            }
-        }).replaceSuggestions(ArgumentSuggestions.strings(info ->
-            Bukkit.getWorlds().stream().map(World::getName).toArray(String[]::new))
-        );
-    }
-
-    public static Argument<Attribute> attributeArgument(String nodeName) {
-
-        return new CustomArgument<>(new StringArgument(nodeName), info -> {
-            try {
-                return Registry.ATTRIBUTE.get(NamespacedKey.fromString(info.input().toLowerCase()));
-            } catch (IllegalArgumentException e) {
-                throw CustomArgument.CustomArgumentException.fromMessageBuilder(new CustomArgument.MessageBuilder("Unknown Attribute ").appendArgInput());
-            }
-
-        }).replaceSuggestions(ArgumentSuggestions.strings(
-            Registry.ATTRIBUTE.stream().map(Attribute::toString).toArray(String[]::new)
-
-        ));
-    }
-
-    public static Argument<AttributeModifier.Operation> operationArgument(String nodeName) {
-
-        return new CustomArgument<>(new StringArgument(nodeName), info -> AttributeModifier.Operation.valueOf(info.input().toUpperCase()))
-            .replaceSuggestions(ArgumentSuggestions.strings(
-                Arrays.stream(AttributeModifier.Operation.values()).map(AttributeModifier.Operation::toString).toArray(String[]::new))
-            );
-    }
-
-    public static Argument<Duration> timeArgument(String nodeName) {
-
-        return new CustomArgument<>(new StringArgument(nodeName), info -> Utils.parseDuration(info.input()));
-    }
-
-
-
-    public static Argument<String> slotArgument(String nodeName) {
-        return new CustomArgument<>(new StringArgument(nodeName), info ->
-            info.input().toLowerCase()
-        ).replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots()));
     }
 
 

@@ -2,8 +2,10 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
+import dev.jorel.commandapi.executors.CommandArguments;
 import me.dunescifye.commandutils.files.Config;
-import me.dunescifye.commandutils.utils.FUtils;
+import me.dunescifye.commandutils.utils.ArgumentUtils;
+import me.dunescifye.commandutils.utils.BlockUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -13,302 +15,151 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static me.dunescifye.commandutils.utils.Utils.dropAllItemStacks;
-import static org.bukkit.Material.AIR;
+@SuppressWarnings("ConstantConditions")
+public class BreakInRadiusCommand extends Command {
 
-public class BreakInRadiusCommand extends Command implements Registerable {
+    public void register() {
+        StringArgument whitelistedBlocksArgument = new StringArgument("Whitelisted Blocks");
+        Argument<World> worldArg = ArgumentUtils.bukkitWorldArgument("World");
+        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
+        IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
+        ItemStackArgument dropArg = new ItemStackArgument("Drop");
+        LiteralArgument whitelistArg = new LiteralArgument("whitelist");
+        LiteralArgument forcedropArg = new LiteralArgument("forcedrop");
 
-  @SuppressWarnings("ConstantConditions")
-  public void register() {
+        // Breaks all Blocks in Radius
+        createCommand()
+            .withArguments(
+                worldArg,
+                locArg,
+                playerArg,
+                radiusArg
+            )
+            .executes((sender, args) -> {
+                breakInRadius(args, null, false, null);
+            })
+            .register(this.getNamespace());
 
-    if (!this.getEnabled()) return;
+        // Breaks Blocks in Radius, Command Defined Predicates
+        createCommand()
+            .withArguments(
+                worldArg,
+                locArg,
+                playerArg,
+                radiusArg,
+                whitelistArg,
+                new ListArgumentBuilder<String>("Whitelisted Blocks")
+                    .withList(Utils.getPredicatesList())
+                    .withStringMapper()
+                    .buildText()
+            )
+            .executes((sender, args) -> {
+                breakInRadius(args, Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks")), false, null);
+            })
+            .register(this.getNamespace());
 
-    StringArgument whitelistedBlocksArgument = new StringArgument("Whitelisted Blocks");
-    Argument<World> worldArg = Utils.bukkitWorldArgument("World");
-    LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
-    IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
-    EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-    ItemStackArgument dropArg = new ItemStackArgument("Drop");
-    LiteralArgument whitelistArg = new LiteralArgument("whitelist");
-    LiteralArgument forcedropArg = new LiteralArgument("forcedrop");
+        // Breaks Blocks in Radius Command Defined Predicates, Custom Drop
+        createCommand()
+            .withArguments(
+                worldArg,
+                locArg,
+                playerArg,
+                radiusArg,
+                whitelistArg,
+                new ListArgumentBuilder<String>("Whitelisted Blocks")
+                    .withList(Utils.getPredicatesList())
+                    .withStringMapper()
+                    .buildText(),
+                dropArg
+            )
+            .executes((sender, args) -> {
+                breakInRadius(args, Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks")), false, args.getByArgument(dropArg));
+            })
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
 
-    /*
-     * Breaks Blocks in Radius
-     * @author DuneSciFye
-     * @since 1.0.0
-     * @param World World of the Blocks
-     * @param Location Location of the Center Block
-     * @param Player Player who is Breaking the Blocks
-     * @param Radius Radius to Break Blocks In
-     */
-    new CommandAPICommand("breakinradius")
-      .withArguments(worldArg)
-      .withArguments(locArg)
-      .withArguments(playerArg)
-      .withArguments(radiusArg)
-      .executes((sender, args) -> {
-        World world = (World) args.get("World");
-        Location location = args.getByArgument(locArg);
-        location.setWorld(world);
-        Player player = args.getByArgument(playerArg);
-        ItemStack heldItem = player.getInventory().getItemInMainHand();
-        Collection<ItemStack> drops = new ArrayList<>();
+        // Breaks Blocks in Radius Command Defined Predicates, Force Drop
+        new CommandAPICommand("breakinradius")
+            .withArguments(
+                worldArg,
+                locArg,
+                playerArg,
+                radiusArg,
+                whitelistArg,
+                new ListArgumentBuilder<String>("Whitelisted Blocks")
+                    .withList(Utils.getPredicatesList())
+                    .withStringMapper()
+                    .buildText(),
+                forcedropArg
+            )
+            .executes((sender, args) -> {
+                breakInRadius(args, Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks")), true, null);
+            })
+            .register(this.getNamespace());
 
-        for (Block b : Utils.getBlocksInRadius(location.getBlock(), args.getByArgument(radiusArg))) {
-          if (!FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
+        // Breaks Blocks in Radius, Config Defined Predicates
+        createCommand()
+            .withArguments(
+                worldArg,
+                locArg,
+                playerArg,
+                radiusArg,
+                whitelistedBlocksArgument
+                    .replaceSuggestions(ArgumentSuggestions.strings(Config.getPredicates()))
+            )
+            .executes((sender, args) -> {
+                breakInRadius(args, Config.getPredicate(args.getByArgument(whitelistedBlocksArgument)), false, null);
+            })
+            .register(this.getNamespace());
 
-          drops.addAll(b.getDrops(heldItem));
-          b.setType(AIR);
-        }
+        // Breaks Blocks in Radius, Config Defined Predicates, Custom Item Drops
+        createCommand()
+            .withArguments(
+                worldArg,
+                locArg,
+                playerArg,
+                radiusArg,
+                whitelistedBlocksArgument
+                    .replaceSuggestions(ArgumentSuggestions.strings(Config.getPredicates())),
+                dropArg
+            )
+            .executes((sender, args) -> {
+                breakInRadius(args, Config.getPredicate(args.getByArgument(whitelistedBlocksArgument)), false, args.getByArgument(dropArg));
+            })
+            .register(this.getNamespace());
 
-        dropAllItemStacks(world, location, drops);
-      })
-      .withPermission(this.getPermission())
-      .withAliases(this.getCommandAliases())
-      .register(this.getNamespace());
-
-    /*
-     * Breaks Blocks in Radius, Command Defined Predicates
-     * @author DuneSciFye
-     * @since 1.0.0
-     * @param World World of the Blocks
-     * @param Location Location of the Center Block
-     * @param Player Player who is Breaking the Blocks
-     * @param Radius Radius to Break Blocks In
-     * @param whitelist Literal Arg
-     * @param Predicates List of Predicates
-     */
-    new CommandAPICommand("breakinradius")
-      .withArguments(worldArg)
-      .withArguments(locArg)
-      .withArguments(playerArg)
-      .withArguments(radiusArg)
-      .withArguments(whitelistArg)
-      .withArguments(new ListArgumentBuilder<String>("Whitelisted Blocks")
-        .withList(Utils.getPredicatesList())
-        .withStringMapper()
-        .buildText())
-      .executes((sender, args) -> {
-        List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
-
-        World world = (World) args.get("World");
-        Location location = args.getByArgument(locArg);
-        location.setWorld(world);
-
-        breakInRadius(predicates, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg));
-      })
-      .withPermission(this.getPermission())
-      .withAliases(this.getCommandAliases())
-      .register(this.getNamespace());
-    /*
-     * Breaks Blocks in Radius Command Defined Predicates, Custom Drop
-     * @author DuneSciFye
-     * @since 1.0.0
-     * @param World World of the Blocks
-     * @param Location Location of the Center Block
-     * @param Player Player who is Breaking the Blocks
-     * @param Radius Radius to Break Blocks In
-     * @param whitelist Literal Arg
-     * @param Predicates List of Predicates
-     * @param ItemStack Item To Drop
-     */
-    new CommandAPICommand("breakinradius")
-      .withArguments(worldArg)
-      .withArguments(locArg)
-      .withArguments(playerArg)
-      .withArguments(radiusArg)
-      .withArguments(whitelistArg)
-      .withArguments(new ListArgumentBuilder<String>("Whitelisted Blocks")
-        .withList(Utils.getPredicatesList())
-        .withStringMapper()
-        .buildText())
-      .withArguments(dropArg)
-      .executes((sender, args) -> {
-        List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
-
-        World world = (World) args.get("World");
-
-        Location location = args.getByArgument(locArg);
-        location.setWorld(world);
-
-        breakInRadius(predicates, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg), args.getByArgument(dropArg));
-      })
-      .withPermission(this.getPermission())
-      .withAliases(this.getCommandAliases())
-      .register(this.getNamespace());
-
-    /*
-     * Breaks Blocks in Radius Command Defined Predicates, Force Drop
-     * @author DuneSciFye
-     * @since 1.0.0
-     * @param World World of the Blocks
-     * @param Location Location of the Center Block
-     * @param Player Player who is Breaking the Blocks
-     * @param Radius Radius to Break Blocks In
-     * @param whitelist Literal Arg
-     * @param Predicates List of Predicates
-     * @param forcedrop Literal Arg
-     */
-    new CommandAPICommand("breakinradius")
-      .withArguments(worldArg)
-      .withArguments(locArg)
-      .withArguments(playerArg)
-      .withArguments(radiusArg)
-      .withArguments(whitelistArg)
-      .withArguments(new ListArgumentBuilder<String>("Whitelisted Blocks")
-        .withList(Utils.getPredicatesList())
-        .withStringMapper()
-        .buildText())
-      .withArguments(forcedropArg)
-      .executes((sender, args) -> {
-        List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
-
-        World world = (World) args.get("World");
-
-        Location location = args.getByArgument(locArg);
-        location.setWorld(world);
-
-        breakInRadiusForceDrop(predicates, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg));
-      })
-      .withPermission(this.getPermission())
-      .withAliases(this.getCommandAliases())
-      .register(this.getNamespace());
-
-    /*
-     * Breaks Blocks in Radius, Config Defined Predicates
-     * @author DuneSciFye
-     * @since 1.0.0
-     * @param World of the Blocks
-     * @param Location of the Center Block
-     * @param Player who is Breaking the Blocks
-     * @param Radius to Break Blocks In
-     * @param Predicate Config Defined Predicate
-     */
-    new CommandAPICommand("breakinradius")
-      .withArguments(worldArg)
-      .withArguments(locArg)
-      .withArguments(playerArg)
-      .withArguments(radiusArg)
-      .withArguments(whitelistedBlocksArgument
-        .replaceSuggestions(ArgumentSuggestions.strings(Config.getPredicates()))
-      )
-      .executes((sender, args) -> {
-        List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
-
-        World world = (World) args.get("World");
-        Location location = args.getByArgument(locArg);
-        location.setWorld(world);
-
-        breakInRadius(predicates, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg));
-      })
-      .withPermission(this.getPermission())
-      .withAliases(this.getCommandAliases())
-      .register(this.getNamespace());
-    /*
-     * Breaks Blocks in Radius, Config Defined Predicates, Custom Item Drops
-     * @author DuneSciFye
-     * @since 1.0.0
-     * @param World of the Blocks
-     * @param Location of the Center Block
-     * @param Player who is Breaking the Blocks
-     * @param Radius to Break Blocks In
-     * @param Predicate Config Defined Predicate
-     * @param ItemStack Item to Drop
-     */
-    new CommandAPICommand("breakinradius")
-      .withArguments(worldArg)
-      .withArguments(locArg)
-      .withArguments(playerArg)
-      .withArguments(radiusArg)
-      .withArguments(whitelistedBlocksArgument
-        .replaceSuggestions(ArgumentSuggestions.strings(Config.getPredicates()))
-      )
-      .withArguments(dropArg)
-      .executes((sender, args) -> {
-        List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
-
-        World world = (World) args.get("World");
-
-        Location location = args.getByArgument(locArg);
-        location.setWorld(world);
-
-        breakInRadius(predicates, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg), args.getByArgument(dropArg));
-      })
-      .withPermission(this.getPermission())
-      .withAliases(this.getCommandAliases())
-      .register(this.getNamespace());
-
-    /*
-     * Breaks Blocks in Radius, Config Defined Predicates, Force Drop
-     * @author DuneSciFye
-     * @since 1.0.0
-     * @param World World of the Blocks
-     * @param Location Location of the Center Block
-     * @param Player Player who is Breaking the Blocks
-     * @param Radius Radius to Break Blocks In
-     * @param Predicate Config Defined Predicate
-     * @param forcedrop Literal Arg
-     */
-    new CommandAPICommand("breakinradius")
-      .withArguments(worldArg)
-      .withArguments(locArg)
-      .withArguments(playerArg)
-      .withArguments(radiusArg)
-      .withArguments(whitelistedBlocksArgument
-        .replaceSuggestions(ArgumentSuggestions.strings(Config.getPredicates()))
-      )
-      .withArguments(forcedropArg)
-      .executes((sender, args) -> {
-        List<List<Predicate<Block>>> predicates = Config.getPredicate(args.getByArgument(whitelistedBlocksArgument));
-
-        World world = (World) args.get("World");
-
-        Location location = args.getByArgument(locArg);
-        location.setWorld(world);
-
-        breakInRadiusForceDrop(predicates, world, location, args.getByArgument(playerArg), args.getByArgument(radiusArg));
-      })
-      .withPermission(this.getPermission())
-      .withAliases(this.getCommandAliases())
-      .register(this.getNamespace());
-  }
-
-  private void breakInRadius(List<List<Predicate<Block>>> predicates, World world, Location location, Player player, int radius) {
-    ItemStack heldItem = player.getInventory().getItemInMainHand();
-    Collection<ItemStack> drops = new ArrayList<>();
-
-    for (Block b : Utils.getBlocksInRadius(location.getBlock(), radius)) {
-      if (!Utils.testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
-
-      drops.addAll(b.getDrops(heldItem));
-      b.setType(AIR);
+        // Breaks Blocks in Radius, Config Defined Predicates, Force Drop
+        createCommand()
+            .withArguments(
+                worldArg,
+                locArg,
+                playerArg,
+                radiusArg,
+                whitelistedBlocksArgument
+                    .replaceSuggestions(ArgumentSuggestions.strings(Config.getPredicates())),
+                forcedropArg
+            )
+            .executes((sender, args) -> {
+                breakInRadius(args, Config.getPredicate(args.getByArgument(whitelistedBlocksArgument)), true, null);
+            })
+            .register(this.getNamespace());
     }
 
-    dropAllItemStacks(world, location, drops);
-  }
-  private void breakInRadius(List<List<Predicate<Block>>> predicates, World world, Location location, Player player, int radius, ItemStack drop) {
+    private void breakInRadius(
+        CommandArguments args,
+        List<List<Predicate<Block>>> predicates,
+        boolean forceDrop,
+        ItemStack drop
+    ) {
+        Location loc = (Location) args.get("Location");
+        loc.setWorld((World) args.get("World"));
+        Player player = (Player) args.get("Player");
 
-    for (Block b : Utils.getBlocksInRadius(location.getBlock(), radius)) {
-      if (!Utils.testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
+        BlockUtils.BlockProvider provider = (origin, p) -> Utils.getBlocksInRadius(origin, (int) args.get("Radius"));
 
-      drop.setAmount(drop.getAmount() + 1);
-      b.setType(AIR);
+        if (drop == null) BlockUtils.breakBlocks(predicates, loc, player, forceDrop, provider);
+        else BlockUtils.breakBlocks(predicates, loc, player, drop, provider);
     }
-
-    drop.setAmount(drop.getAmount() - 1);
-    Utils.dropAllItemStacks(world, location, List.of(drop));
-  }
-
-  private void breakInRadiusForceDrop(List<List<Predicate<Block>>> predicates, World world, Location location, Player player, int radius) {
-    Collection<ItemStack> drops = new ArrayList<>();
-
-    for (Block b : Utils.getBlocksInRadius(location.getBlock(), radius)) {
-      if (!Utils.testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
-
-      drops.add(new ItemStack(b.getType()));
-      b.setType(AIR);
-    }
-
-    Utils.dropAllItemStacks(world, location, drops);
-  }
 }

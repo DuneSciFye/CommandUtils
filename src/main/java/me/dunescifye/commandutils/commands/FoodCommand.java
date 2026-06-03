@@ -1,10 +1,10 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import org.bukkit.entity.Player;
 
-public class FoodCommand extends Command implements Registerable {
+public class FoodCommand extends Command {
+
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
@@ -13,19 +13,9 @@ public class FoodCommand extends Command implements Registerable {
         IntegerArgument amountArg = new IntegerArgument("Amount");
         BooleanArgument allowOverflowArg = new BooleanArgument("Allow Overflow");
 
-        /*
-         * Modifies a Player's Food Level
-         * @author DuneSciFye
-         * @since 1.0.3
-         * @param Function to do
-         * @param Players to Target
-         * @param Amount to Edit
-         * @param If Over/Under Max/Min Values are Allowed
-         */
-        new CommandAPICommand("food")
-            .withArguments(functionArg)
-            .withArguments(playerArg)
-            .withArguments(amountArg)
+        // Modifies a Player's Food Level
+        createCommand()
+            .withArguments(functionArg, playerArg, amountArg)
             .withOptionalArguments(allowOverflowArg)
             .executes((sender, args) -> {
                 Player p = args.getByArgument(playerArg);
@@ -60,8 +50,6 @@ public class FoodCommand extends Command implements Registerable {
                     }
                 }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

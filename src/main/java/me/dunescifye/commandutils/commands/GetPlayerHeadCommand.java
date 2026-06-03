@@ -1,10 +1,8 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.LocationArgument;
-import dev.jorel.commandapi.arguments.StringArgument;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -12,76 +10,62 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-public class GetPlayerHeadCommand extends Command implements Registerable {
+import static me.dunescifye.commandutils.utils.ArgumentUtils.bukkitWorldArgument;
+
+public class GetPlayerHeadCommand extends Command {
+
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {
 
-      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-      EntitySelectorArgument.OnePlayer targetArg = new EntitySelectorArgument.OnePlayer("Target");
-        StringArgument worldArg = new StringArgument("World");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
+        EntitySelectorArgument.OnePlayer targetArg = new EntitySelectorArgument.OnePlayer("Target");
+        Argument<World> worldArg = bukkitWorldArgument("World");
         LocationArgument locArg = new LocationArgument("Location");
 
-        /*
-         * Gets a Player's Skull and Gives it to Another Player
-         * @author DuneSciFye
-         * @since 1.0.3
-         * @param Player to get the Skull of
-         * @param Player to give Skull to
-         */
-        new CommandAPICommand("getplayerhead")
+        // Gets a Player's Skull and Gives it to Another Player
+        createCommand()
             .withArguments(playerArg)
             .withOptionalArguments(targetArg)
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
+                Player player = args.getByArgument(playerArg);
                 ItemStack head = new ItemStack(Material.PLAYER_HEAD);
                 SkullMeta headMeta = (SkullMeta) head.getItemMeta();
-                headMeta.setOwningPlayer(p);
+                headMeta.setOwningPlayer(player);
                 head.setItemMeta(headMeta);
                 Player target = args.getByArgument(targetArg);
 
                 target.getInventory().addItem(head);
             })
-            .executesPlayer((player, args) -> {
-                Player p = args.getByArgument(playerArg);
+            .executesPlayer((sender, args) -> {
+                Player player = args.getByArgument(playerArg);
                 ItemStack head = new ItemStack(Material.PLAYER_HEAD);
                 SkullMeta headMeta = (SkullMeta) head.getItemMeta();
-                headMeta.setOwningPlayer(p);
+                headMeta.setOwningPlayer(player);
                 head.setItemMeta(headMeta);
-                Player target = args.getByArgumentOrDefault(targetArg, player);
+                Player target = args.getByArgumentOrDefault(targetArg, sender);
 
                 target.getInventory().addItem(head);
             })
             .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /*
-         * Gets a Player's Skull and Drops it
-         * @author DuneSciFye
-         * @since 1.0.3
-         * @param Player to get the Skull of
-         * @param World to Spawn Skull in
-         * @param Location to Spawn Skull at
-         */
-        new CommandAPICommand("getplayerhead")
-            .withArguments(playerArg)
-            .withArguments(worldArg)
-            .withArguments(locArg)
+        // Gets a Player's Skull and Drops it
+        createCommand()
+            .withArguments(playerArg, worldArg, locArg)
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
-                World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                Player player = args.getByArgument(playerArg);
+                World world = (World) args.get("World");
                 Location loc = args.getByArgument(locArg);
+                loc.setWorld(world);
 
                 ItemStack head = new ItemStack(Material.PLAYER_HEAD);
                 SkullMeta headMeta = (SkullMeta) head.getItemMeta();
-                headMeta.setOwningPlayer(p);
+                headMeta.setOwningPlayer(player);
                 head.setItemMeta(headMeta);
 
                 world.dropItemNaturally(loc, head);
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

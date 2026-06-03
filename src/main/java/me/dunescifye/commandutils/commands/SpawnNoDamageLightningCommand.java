@@ -1,34 +1,27 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.LocationArgument;
-import dev.jorel.commandapi.arguments.StringArgument;
 import me.dunescifye.commandutils.CommandUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.metadata.FixedMetadataValue;
 
-public class SpawnNoDamageLightningCommand extends Command implements Registerable {
-  @Override
-  public void register() {
+import static me.dunescifye.commandutils.utils.ArgumentUtils.locArg;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.worldArg;
 
-    StringArgument worldArg = new StringArgument("World");
-    LocationArgument locArg = new LocationArgument("Location");
+public class SpawnNoDamageLightningCommand extends Command {
+    @Override
+    public void register() {
 
-    new CommandAPICommand("spawnnodamagelightning")
-      .withArguments(worldArg)
-      .withArguments(locArg)
-      .executes((sender, args) -> {
-        World world = Bukkit.getWorld(args.getByArgument(worldArg));
-        Location loc = args.getByArgument(locArg);
-        Entity lightning = world.spawnEntity(loc, EntityType.LIGHTNING_BOLT);
-        lightning.setMetadata("nodamage", new FixedMetadataValue(CommandUtils.getInstance(), true));
-      })
-      .withPermission(this.getPermission())
-      .withAliases(this.getCommandAliases())
-      .register(this.getNamespace());
-  }
+        createCommand()
+            .withArguments(worldArg(), locArg())
+            .executes((sender, args) -> {
+                World world = (World) args.get("World");
+                Location loc = (Location) args.get("Location");
+                Entity lightning = world.spawnEntity(loc, EntityType.LIGHTNING_BOLT);
+                lightning.setMetadata("nodamage", new FixedMetadataValue(CommandUtils.getInstance(), true));
+            })
+            .register(this.getNamespace());
+    }
 }

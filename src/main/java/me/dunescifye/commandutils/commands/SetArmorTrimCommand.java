@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -13,7 +12,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SetArmorTrimCommand extends Command implements Registerable {
+import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.slotArg;
+
+public class SetArmorTrimCommand extends Command {
     private static List<String> getMaterials() {
         return Arrays.stream(Registry.TRIM_MATERIAL.stream().toArray())
             .map(Object::toString)
@@ -34,59 +36,39 @@ public class SetArmorTrimCommand extends Command implements Registerable {
         StringArgument patternArg = new StringArgument("Pattern");
         LiteralArgument noneArg = new LiteralArgument("none");
 
-        /**
-         * Sets an Entities AI
-         * @author DuneSciFye
-         * @since 1.0.5
-         * @param Player Player to get Inventory from
-         * @param Slot Slot to get Item from
-         * @param Material Material of Trim
-         * @param Pattern Pattern of Trim
-         */
-        new CommandAPICommand("setarmortrim")
-            .withArguments(playerArg)
-            .withArguments(slotArg)
-            .withArguments(materialArg
-                .replaceSuggestions(ArgumentSuggestions.strings(getMaterials()))
-            )
-            .withArguments(patternArg
-                .replaceSuggestions(ArgumentSuggestions.strings(getPatterns()))
+        // Sets an armor trim in a slot
+        createCommand()
+            .withArguments(
+                playerArg(),
+                slotArg(),
+                materialArg
+                    .replaceSuggestions(ArgumentSuggestions.strings(getMaterials())),
+                patternArg
+                    .replaceSuggestions(ArgumentSuggestions.strings(getPatterns()))
             )
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
+                Player player = args.getByArgument(playerArg);
 
-                ItemStack item = p.getInventory().getItem(args.getByArgument(slotArg));
+                ItemStack item = player.getInventory().getItem(args.getByArgument(slotArg));
                 if (item.getItemMeta() instanceof ArmorMeta armorMeta) {
                     armorMeta.setTrim(new ArmorTrim(Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(args.getByArgument(materialArg))), Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(args.getByArgument(patternArg)))));
                     item.setItemMeta(armorMeta);
                 }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
-        /**
-         * Sets an Entities AI
-         * @author DuneSciFye
-         * @since 1.0.5
-         * @param Player Player to get Inventory from
-         * @param Slot Slot to get Item from
-         * @param None Literal none
-         */
-        new CommandAPICommand("setarmortrim")
-            .withArguments(playerArg)
-            .withArguments(slotArg)
-            .withArguments(noneArg)
-            .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
 
-                ItemStack item = p.getInventory().getItem(args.getByArgument(slotArg));
+        // Unsets armor trim
+        createCommand()
+            .withArguments(playerArg, slotArg, noneArg)
+            .executes((sender, args) -> {
+                Player player = args.getByArgument(playerArg);
+
+                ItemStack item = player.getInventory().getItem(args.getByArgument(slotArg));
                 if (item.getItemMeta() instanceof ArmorMeta armorMeta) {
                     armorMeta.setTrim(null);
                     item.setItemMeta(armorMeta);
                 }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
 

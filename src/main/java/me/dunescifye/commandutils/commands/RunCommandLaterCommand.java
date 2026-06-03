@@ -15,7 +15,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RunCommandLaterCommand extends Command implements Registerable {
+public class RunCommandLaterCommand extends Command {
 
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
     @SuppressWarnings("ConstantConditions")

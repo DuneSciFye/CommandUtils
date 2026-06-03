@@ -1,9 +1,7 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -14,46 +12,45 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class BreakBlockMultiplyDropsCommand extends Command implements Registerable {
+import static me.dunescifye.commandutils.utils.ArgumentUtils.bukkitWorldArgument;
+
+public class BreakBlockMultiplyDropsCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {
 
-        if (!this.getEnabled()) return;
-
-
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
-        StringArgument worldArg = new StringArgument("World");
+        Argument<World> worldArg = bukkitWorldArgument("World");
         EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        IntegerArgument dropsMultiplierArg = new IntegerArgument("Drops Multiplier", 1);
+        IntegerArgument dropsMultiplierArg = new IntegerArgument("Drops Multiplier", 0);
 
-        new CommandAPICommand("breakblockmultiplydrops")
-            .withArguments(worldArg)
-            .withArguments(locArg)
-            .withArguments(playerArg)
-            .withArguments(dropsMultiplierArg)
+        createCommand()
+            .withArguments(
+              worldArg,
+              locArg,
+              playerArg,
+              dropsMultiplierArg
+            )
             .executes((sender, args) -> {
-                World world = Bukkit.getWorld(args.getByArgument(worldArg));
                 Location loc = args.getByArgument(locArg);
-                Block b = world.getBlockAt(loc);
+                loc.setWorld((World) args.get("World"));
+                Block b = loc.getBlock();
                 Player p = args.getByArgument(playerArg);
+                int mult = args.getByArgument(dropsMultiplierArg);
 
                 Collection<ItemStack> drops = b.getDrops(p.getInventory().getItemInMainHand());
-                Collection<ItemStack> multipliedDrops = new ArrayList<>();
+                Collection<ItemStack> multipliedDrops = new ArrayList<>(drops.size() * mult);
 
-                for (int i = 0; i < args.getByArgument(dropsMultiplierArg); i++) {
-                    multipliedDrops.addAll(drops);
-                }
+                // Clone each drop
+                for (int i = 0; i < mult; i++)
+                    for (ItemStack drop : drops)
+                        multipliedDrops.add(drop.clone());
 
                 b.setType(Material.AIR);
 
-                Utils.dropAllItemStacks(world, loc, multipliedDrops);
+                Utils.dropAllItemStacks(loc, multipliedDrops);
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
-
-
     }
 }

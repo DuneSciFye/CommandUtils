@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.entity.Entity;
@@ -9,13 +8,13 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
 
-public class SmeltItemCommand extends Command implements Registerable {
+public class SmeltItemCommand extends Command {
     @Override
     public void register() {
 
         EntitySelectorArgument.ManyEntities itemsArg = new EntitySelectorArgument.ManyEntities("Items");
 
-        new CommandAPICommand("smeltitem")
+        createCommand()
             .withArguments(itemsArg)
             .executes((sender, args) -> {
                 Collection<Entity> entities = args.getByArgument(itemsArg);
@@ -26,8 +25,6 @@ public class SmeltItemCommand extends Command implements Registerable {
                     }
                 }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 }

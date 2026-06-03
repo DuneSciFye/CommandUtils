@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
@@ -15,32 +14,31 @@ import java.util.Map;
 import static me.dunescifye.commandutils.utils.Overflow.addOverflow;
 
 @SuppressWarnings("DataFlowIssue")
-public class GiveCommand extends Command implements Registerable {
+public class GiveCommand extends Command {
+
     @Override
     public void register() {
 
-      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         ItemStackArgument itemArg = new ItemStackArgument("Item");
         IntegerArgument amountArg = new IntegerArgument("Amount");
         BooleanArgument dropExcessArg = new BooleanArgument("Drop Excess");
 
-        new CommandAPICommand("give")
+        createCommand()
             .withArguments(playerArg, itemArg)
             .withOptionalArguments(amountArg, dropExcessArg)
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
+                Player player = args.getByArgument(playerArg);
                 ItemStack itemStack = args.getByArgument(itemArg);
                 int amount = args.getByArgumentOrDefault(amountArg, 1);
                 itemStack.setAmount(amount);
 
-                Map<Integer, ItemStack> excess = p.getInventory().addItem(itemStack);
-                if (!excess.isEmpty() && args.getByArgumentOrDefault(dropExcessArg, true)) {
-                    Utils.dropAllItemStacks(p.getWorld(), p.getLocation(), excess.values());
-                }
-                else if (CommandUtils.leafAPIEnabled) addOverflow(p, excess);
+                // Logic for items that didn't fit
+                Map<Integer, ItemStack> excess = player.getInventory().addItem(itemStack);
+                if (!excess.isEmpty() && args.getByArgumentOrDefault(dropExcessArg, true))
+                    Utils.dropAllItemStacks(player.getLocation(), excess.values());
+                else if (CommandUtils.leafAPIEnabled) addOverflow(player, excess);
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

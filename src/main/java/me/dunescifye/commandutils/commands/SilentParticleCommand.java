@@ -1,60 +1,41 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.wrappers.ParticleData;
 import org.bukkit.*;
-import org.bukkit.command.ProxiedCommandSender;
-import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-public class SilentParticleCommand extends Command implements Registerable {
+public class SilentParticleCommand extends Command {
 
-  @SuppressWarnings("ConstantConditions")
-  public void register(){
+    @SuppressWarnings("ConstantConditions")
+    public void register(){
 
-    ParticleArgument particleArg = new ParticleArgument("Particle");
-    DoubleArgument xOffsetArg = new DoubleArgument("X Offset");
-    DoubleArgument yOffsetArg = new DoubleArgument("Y Offset");
-    DoubleArgument zOffsetArg = new DoubleArgument("Z Offset");
-    IntegerArgument amountArg = new IntegerArgument("Amount");
-    DoubleArgument speedArg = new DoubleArgument("Speed");
-    LocationArgument locArg = new LocationArgument("Location");
-    BooleanArgument forceArg = new BooleanArgument("Force");
+        DoubleArgument xOffsetArg = new DoubleArgument("X Offset");
+        DoubleArgument yOffsetArg = new DoubleArgument("Y Offset");
+        DoubleArgument zOffsetArg = new DoubleArgument("Z Offset");
+        DoubleArgument speedArg = new DoubleArgument("Speed");
+        BooleanArgument forceArg = new BooleanArgument("Force");
 
-    new CommandAPICommand("silentparticle")
-      .withArguments(particleArg, locArg)
-      .withOptionalArguments(xOffsetArg.combineWith(yOffsetArg).combineWith(zOffsetArg))
-      .withOptionalArguments(speedArg, amountArg, forceArg)
-      .executes((sender, args) -> {
-        final ParticleData<?> particleData = args.getByArgument(particleArg);
-        final Particle particle = particleData.particle();
-        final Location loc = args.getByArgument(locArg);
-        final World world = loc.getWorld();
-        final int amount = args.getByArgumentOrDefault(amountArg, 1);
-        final double speed = args.getByArgumentOrDefault(speedArg, 1.0);
-        final double xOffset = args.getByArgumentOrDefault(xOffsetArg, 0.0);
-        final double yOffset = args.getByArgumentOrDefault(yOffsetArg, 0.0);
-        final double zOffset = args.getByArgumentOrDefault(zOffsetArg, 0.0);
-        final boolean force = args.getByArgumentOrDefault(forceArg, false);
-        /*
-        OfflinePlayer source = null;
+        createCommand()
+            .withArguments(particleArg(), locArg())
+            .withOptionalArguments(xOffsetArg.combineWith(yOffsetArg).combineWith(zOffsetArg))
+            .withOptionalArguments(speedArg, amountArg(), forceArg)
+            .executes((sender, args) -> {
+                ParticleData<?> particleData = args.getUnchecked("Particle");
+                Particle particle = particleData.particle();
+                Location loc = (Location) args.get("Location");
+                World world = loc.getWorld();
+                int amount = args.getOrDefaultUnchecked("Amount", 1);
+                double speed = args.getByArgumentOrDefault(speedArg, 1.0);
+                double xOffset = args.getByArgumentOrDefault(xOffsetArg, 0.0);
+                double yOffset = args.getByArgumentOrDefault(yOffsetArg, 0.0);
+                double zOffset = args.getByArgumentOrDefault(zOffsetArg, 0.0);
+                boolean force = args.getByArgumentOrDefault(forceArg, false);
 
-        if (sender instanceof OfflinePlayer p) {
-          source = p;
-        } else if (sender instanceof ProxiedCommandSender proxy) {
-          source = (OfflinePlayer) proxy.getCallee();
-        }
-         */
-
-        world.spawnParticle(particle, null, null, loc.getX(), loc.getY(), loc.getZ(), amount, xOffset, yOffset, zOffset, speed, particleData.data(), force);
-      })
-      .withPermission(this.getPermission())
-      .withAliases(this.getCommandAliases())
-      .register(this.getNamespace());
-  }
+                world.spawnParticle(particle, null, null, loc.getX(), loc.getY(), loc.getZ(), amount, xOffset, yOffset, zOffset, speed, particleData.data(), force);
+            })
+            .register(this.getNamespace());
+    }
 
 }

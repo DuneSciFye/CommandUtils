@@ -17,170 +17,168 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class RunCommandWhenCommand extends Command implements Registerable {
+public class RunCommandWhenCommand extends Command {
 
-  private static final Map<String, BukkitTask> tasks = new HashMap<>();
-  @SuppressWarnings("ConstantConditions")
-  public void register() {
+    private static final Map<String, BukkitTask> tasks = new HashMap<>();
+    @SuppressWarnings("ConstantConditions")
+    public void register() {
 
-    LiteralArgument addArg = new LiteralArgument("add");
-    LiteralArgument removeArg = new LiteralArgument("remove");
-    StringArgument commandIDArg = new StringArgument("Command ID");
-    TextArgument conditionArg = new TextArgument("Condition");
-    StringArgument delayArg = new StringArgument("Initial Delay");
-    StringArgument periodArg = new StringArgument("Period");
-    TextArgument placeholderSurrounderArg = new TextArgument("Placeholder Surrounder");
-    TextArgument commandSeparatorArg = new TextArgument("Command Separator");
-    GreedyStringArgument commandsArg = new GreedyStringArgument("Commands");
+        LiteralArgument addArg = new LiteralArgument("add");
+        LiteralArgument removeArg = new LiteralArgument("remove");
+        StringArgument commandIDArg = new StringArgument("Command ID");
+        TextArgument conditionArg = new TextArgument("Condition");
+        StringArgument delayArg = new StringArgument("Initial Delay");
+        StringArgument periodArg = new StringArgument("Period");
+        TextArgument placeholderSurrounderArg = new TextArgument("Placeholder Surrounder");
+        TextArgument commandSeparatorArg = new TextArgument("Command Separator");
+        GreedyStringArgument commandsArg = new GreedyStringArgument("Commands");
 
-    new CommandAPICommand("runcommandwhen")
-      .withArguments(addArg, commandIDArg, conditionArg, delayArg, periodArg, placeholderSurrounderArg,
-        commandSeparatorArg, commandsArg)
-      .executes((sender, args) -> {
-        Player p = sender instanceof ProxiedCommandSender proxy ? (Player) proxy.getCallee() :
-          sender instanceof OfflinePlayer ? (Player) sender : null;
-        String commandID = args.getByArgument(commandIDArg);
-        String delay = args.getByArgument(delayArg);
-        String period = args.getByArgument(periodArg);
-        String placeholderSurrounder = args.getByArgument(placeholderSurrounderArg);
-        String commandSeparator = args.getByArgument(commandSeparatorArg);
-        String condition = args.getByArgument(conditionArg).replace(placeholderSurrounder, "%");
-        String[] commands = args.getByArgument(commandsArg).replace(placeholderSurrounder, "%").split(commandSeparator);
+        createCommand()
+            .withArguments(addArg, commandIDArg, conditionArg, delayArg, periodArg, placeholderSurrounderArg,
+                commandSeparatorArg, commandsArg)
+            .executes((sender, args) -> {
+                Player p = sender instanceof ProxiedCommandSender proxy ? (Player) proxy.getCallee() :
+                    sender instanceof OfflinePlayer ? (Player) sender : null;
+                String commandID = args.getByArgument(commandIDArg);
+                String delay = args.getByArgument(delayArg);
+                String period = args.getByArgument(periodArg);
+                String placeholderSurrounder = args.getByArgument(placeholderSurrounderArg);
+                String commandSeparator = args.getByArgument(commandSeparatorArg);
+                String condition = args.getByArgument(conditionArg).replace(placeholderSurrounder, "%");
+                String[] commands = args.getByArgument(commandsArg).replace(placeholderSurrounder, "%").split(commandSeparator);
 
-        //Cancel task with same ID
-        BukkitTask oldTask = tasks.remove(commandID);
-        if (oldTask != null) {
-          oldTask.cancel();
-        }
+                //Cancel task with same ID
+                BukkitTask oldTask = tasks.remove(commandID);
+                if (oldTask != null) {
+                    oldTask.cancel();
+                }
 
-        BukkitTask task = new BukkitRunnable() {
-          @Override
-          public void run() {
-            if (!p.isOnline()) {
-              this.cancel();
-              return;
-            }
-            if (Utils.checkCondition(PlaceholderAPI.setPlaceholders(p, condition))) {
-              this.cancel();
-              Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders(p, Arrays.asList(commands)));
-            }
-          }
-        }.runTaskTimer(CommandUtils.getInstance(), Utils.parseDuration(delay).toMillis() / 50,
-          Utils.parseDuration(period).toMillis() / 50);
+                BukkitTask task = new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (!p.isOnline()) {
+                            this.cancel();
+                            return;
+                        }
+                        if (Utils.checkCondition(PlaceholderAPI.setPlaceholders(p, condition))) {
+                            this.cancel();
+                            Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders(p, Arrays.asList(commands)));
+                        }
+                    }
+                }.runTaskTimer(CommandUtils.getInstance(), Utils.parseDuration(delay).toMillis() / 50,
+                    Utils.parseDuration(period).toMillis() / 50);
 
-        tasks.put(commandID, task);
-      })
-      .withPermission(this.getPermission())
-      .withAliases(this.getCommandAliases())
-      .register(this.getNamespace());
+                tasks.put(commandID, task);
+            })
+            .register(this.getNamespace());
 
-    new CommandTree("runcommandwhen")
-      .then(new LiteralArgument("add")
-        .then(new StringArgument("Command ID")
-          .then(new EntitySelectorArgument.OnePlayer("Player")
-            .then(new TextArgument("Compare 1")
-              .then(new TextArgument("Compare Method")
-                .replaceSuggestions(ArgumentSuggestions.strings("==", "!=", "contains", "!contains", "equals"))
-                .then(new TextArgument("Compare 2")
-                  .then(new IntegerArgument("Initial Delay")
-                    .then(new IntegerArgument("Interval")
-                      .then(new GreedyStringArgument("Commands")
-                        .executes((sender, args) -> {
-                          Player p = args.getUnchecked("Player");
-                          String compare1 = args.getByClass("Compare 1", String.class).replace("$", "%");
-                          String compare2 = args.getByClass("Compare 2", String.class).replace("$", "%");
-                          String compareMethod = args.getUnchecked("Compare Method");
-                          String commandID = args.getUnchecked("Command ID");
-                          int delay = args.getUnchecked("Initial Delay");
-                          int interval = args.getUnchecked("Interval");
-                          String[] commands = ((String) args.getUnchecked("Commands")).replace("$", "%").split("\\|");
+        new CommandTree("runcommandwhen")
+            .then(new LiteralArgument("add")
+                .then(new StringArgument("Command ID")
+                    .then(new EntitySelectorArgument.OnePlayer("Player")
+                        .then(new TextArgument("Compare 1")
+                            .then(new TextArgument("Compare Method")
+                                .replaceSuggestions(ArgumentSuggestions.strings("==", "!=", "contains", "!contains", "equals"))
+                                .then(new TextArgument("Compare 2")
+                                    .then(new IntegerArgument("Initial Delay")
+                                        .then(new IntegerArgument("Interval")
+                                            .then(new GreedyStringArgument("Commands")
+                                                .executes((sender, args) -> {
+                                                    Player p = args.getUnchecked("Player");
+                                                    String compare1 = args.getByClass("Compare 1", String.class).replace("$", "%");
+                                                    String compare2 = args.getByClass("Compare 2", String.class).replace("$", "%");
+                                                    String compareMethod = args.getUnchecked("Compare Method");
+                                                    String commandID = args.getUnchecked("Command ID");
+                                                    int delay = args.getUnchecked("Initial Delay");
+                                                    int interval = args.getUnchecked("Interval");
+                                                    String[] commands = ((String) args.getUnchecked("Commands")).replace("$", "%").split("\\|");
 
-                          BukkitTask task = null;
+                                                    BukkitTask task = null;
 
-                          //Cancel task with same ID
-                          BukkitTask oldTask = tasks.remove(commandID);
-                          if (oldTask != null) {
-                            oldTask.cancel();
-                          }
+                                                    //Cancel task with same ID
+                                                    BukkitTask oldTask = tasks.remove(commandID);
+                                                    if (oldTask != null) {
+                                                        oldTask.cancel();
+                                                    }
 
-                          switch (compareMethod) {
-                            case "==", "equals", "=" -> task = new BukkitRunnable() {
-                              @Override
-                              public void run() {
-                                if (!p.isOnline()) {
-                                  this.cancel();
-                                  return;
-                                }
-                                if (Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2))) {
-                                  this.cancel();
-                                  Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders(p, Arrays.asList(commands)));
-                                }
-                              }
-                            }.runTaskTimer(CommandUtils.getInstance(), delay, interval);
-                            case "!=" -> task = new BukkitRunnable() {
-                              @Override
-                              public void run() {
-                                if (!p.isOnline()) {
-                                  this.cancel();
-                                  return;
-                                }
-                                if (!Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2))) {
-                                  this.cancel();
-                                  Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders(p, Arrays.asList(commands)));
-                                }
-                              }
-                            }.runTaskTimer(CommandUtils.getInstance(), delay, interval);
-                            case "contains" -> task = new BukkitRunnable() {
-                              @Override
-                              public void run() {
-                                if (!p.isOnline()) {
-                                  this.cancel();
-                                  return;
-                                }
-                                if (PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2))) {
-                                  this.cancel();
-                                  Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders(p, Arrays.asList(commands)));
-                                }
-                              }
-                            }.runTaskTimer(CommandUtils.getInstance(), delay, interval);
-                            case "!contains" -> task = new BukkitRunnable() {
-                              @Override
-                              public void run() {
-                                if (!p.isOnline()) {
-                                  this.cancel();
-                                  return;
-                                }
-                                if (!PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2))) {
-                                  this.cancel();
-                                  Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders(p, Arrays.asList(commands)));
-                                }
-                              }
-                            }.runTaskTimer(CommandUtils.getInstance(), delay, interval);
-                          }
-                          tasks.put(commandID, task);
-                        })
-                      )
+                                                    switch (compareMethod) {
+                                                        case "==", "equals", "=" -> task = new BukkitRunnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                if (!p.isOnline()) {
+                                                                    this.cancel();
+                                                                    return;
+                                                                }
+                                                                if (Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                                                    this.cancel();
+                                                                    Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders(p, Arrays.asList(commands)));
+                                                                }
+                                                            }
+                                                        }.runTaskTimer(CommandUtils.getInstance(), delay, interval);
+                                                        case "!=" -> task = new BukkitRunnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                if (!p.isOnline()) {
+                                                                    this.cancel();
+                                                                    return;
+                                                                }
+                                                                if (!Objects.equals(PlaceholderAPI.setPlaceholders(p, compare1), PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                                                    this.cancel();
+                                                                    Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders(p, Arrays.asList(commands)));
+                                                                }
+                                                            }
+                                                        }.runTaskTimer(CommandUtils.getInstance(), delay, interval);
+                                                        case "contains" -> task = new BukkitRunnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                if (!p.isOnline()) {
+                                                                    this.cancel();
+                                                                    return;
+                                                                }
+                                                                if (PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                                                    this.cancel();
+                                                                    Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders(p, Arrays.asList(commands)));
+                                                                }
+                                                            }
+                                                        }.runTaskTimer(CommandUtils.getInstance(), delay, interval);
+                                                        case "!contains" -> task = new BukkitRunnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                if (!p.isOnline()) {
+                                                                    this.cancel();
+                                                                    return;
+                                                                }
+                                                                if (!PlaceholderAPI.setPlaceholders(p, compare1).contains(PlaceholderAPI.setPlaceholders(p, compare2))) {
+                                                                    this.cancel();
+                                                                    Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders(p, Arrays.asList(commands)));
+                                                                }
+                                                            }
+                                                        }.runTaskTimer(CommandUtils.getInstance(), delay, interval);
+                                                    }
+                                                    tasks.put(commandID, task);
+                                                })
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
                     )
-                  )
                 )
-              )
             )
-          )
-        )
-      )
-      .then(removeArg
-        .then(new StringArgument("Command ID")
-          .executes((sender, args) -> {
-            String commandID = args.getUnchecked("Command ID");
-            BukkitTask oldTask = tasks.remove(commandID);
-            if (oldTask != null) {
-              oldTask.cancel();
-            }
-          })
-        )
-      )
-      .withPermission(this.getPermission())
-      .withAliases(this.getCommandAliases())
-      .register(this.getNamespace());
-  }
+            .then(removeArg
+                .then(new StringArgument("Command ID")
+                    .executes((sender, args) -> {
+                        String commandID = args.getUnchecked("Command ID");
+                        BukkitTask oldTask = tasks.remove(commandID);
+                        if (oldTask != null) {
+                            oldTask.cancel();
+                        }
+                    })
+                )
+            )
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+    }
 }

@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-public class RayTraceParticleCommand extends Command implements Registerable {
+public class RayTraceParticleCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

@@ -2,7 +2,6 @@ package me.dunescifye.commandutils;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import dev.jorel.commandapi.CommandAPI;
-import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import dev.jorel.commandapi.CommandAPIPaperConfig;
 import dev.jorel.commandapi.network.CommandAPIProtocol;
 import me.dunescifye.commandutils.commands.*;
@@ -180,8 +179,6 @@ public final class CommandUtils extends JavaPlugin {
         if (versionAmount > 21.1) commands.put("ItemCooldown", new ItemCooldown());
         if (versionAmount > 21.1) commands.put("ItemAttribute", new ItemAttributeCommand());
         if (versionAmount > 21.1) commands.put("LifeSteal", new LifeStealCommand());
-
-        commands.put("CobwebPrison", new CobwebPrisonCommand());
 
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
             logger.info("Detected GriefPrevention, enabling support for it.");

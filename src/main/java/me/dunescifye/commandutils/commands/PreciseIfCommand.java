@@ -6,7 +6,7 @@ import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import dev.jorel.commandapi.arguments.TextArgument;
 import me.dunescifye.commandutils.utils.Utils;
 
-public class PreciseIfCommand extends Command implements Registerable {
+public class PreciseIfCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {

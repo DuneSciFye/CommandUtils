@@ -1,35 +1,34 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.AttackRange;
+import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.FireworkEffect;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class SetItemCommand extends Command implements Registerable {
+import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.slotArg;
+
+public class SetItemCommand extends Command {
 
     @SuppressWarnings({"ConstantConditions", "UnstableApiUsage"})
     public void register(){
 
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        IntegerArgument slotArg = new IntegerArgument("Slot", 0, 40);
         ItemStackArgument itemArg = new ItemStackArgument("Item");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "material", "custommodeldata", "attributemodifiers", "equippable", "fireworkcolor", "max_reach");
 
-        new CommandAPICommand("setitem")
-            .withArguments(playerArg)
-            .withArguments(slotArg)
-            .withArguments(itemArg)
+        createCommand()
+            .withArguments(playerArg(), slotArg(), itemArg)
             .withOptionalArguments(functionArg)
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
-                int slot = args.getByArgument(slotArg);
+                Player player = args.getUnchecked("Player");
+                String slot = args.getUnchecked("Slot");
+                ItemStack invItem = Utils.getInvItem(player, slot);
                 ItemStack argItem = args.getByArgument(itemArg);
-                ItemStack invItem = p.getInventory().getItem(slot);
                 ItemMeta argMeta = argItem.getItemMeta();
                 ItemMeta invMeta = invItem.getItemMeta();
 
@@ -64,22 +63,22 @@ public class SetItemCommand extends Command implements Registerable {
                         }
                     }
                     case "max_reach" -> {
-                      AttackRange argAttackRange = argItem.getData(DataComponentTypes.ATTACK_RANGE);
-                      AttackRange invAttackRange = invItem.getDataOrDefault(DataComponentTypes.ATTACK_RANGE, argAttackRange);
+                        AttackRange argAttackRange = argItem.getData(DataComponentTypes.ATTACK_RANGE);
+                        AttackRange invAttackRange = invItem.getDataOrDefault(DataComponentTypes.ATTACK_RANGE, argAttackRange);
 
 
-                      if (argAttackRange != null) {
-                        invItem.setData(DataComponentTypes.ATTACK_RANGE, AttackRange.attackRange()
-                            .minReach(invAttackRange.minReach())
-                            .maxReach(argAttackRange.maxReach())
-                            .minCreativeReach(invAttackRange.minCreativeReach())
-                            .maxCreativeReach(invAttackRange.maxCreativeReach())
-                            .mobFactor(invAttackRange.mobFactor())
-                            .hitboxMargin(invAttackRange.hitboxMargin())
-                          .build()
-                        );
-                      }
-                      invMeta = invItem.getItemMeta(); // Update invMeta as setData will be overriden by invItem.setItemMeta(invMeta);
+                        if (argAttackRange != null) {
+                            invItem.setData(DataComponentTypes.ATTACK_RANGE, AttackRange.attackRange()
+                                .minReach(invAttackRange.minReach())
+                                .maxReach(argAttackRange.maxReach())
+                                .minCreativeReach(invAttackRange.minCreativeReach())
+                                .maxCreativeReach(invAttackRange.maxCreativeReach())
+                                .mobFactor(invAttackRange.mobFactor())
+                                .hitboxMargin(invAttackRange.hitboxMargin())
+                                .build()
+                            );
+                        }
+                        invMeta = invItem.getItemMeta(); // Update invMeta as setData will be overriden by invItem.setItemMeta(invMeta);
                     }
                     case null, default -> {
                         invItem = invItem.withType(argItem.getType());
@@ -89,10 +88,8 @@ public class SetItemCommand extends Command implements Registerable {
                     }
                 }
                 invItem.setItemMeta(invMeta);
-                p.getInventory().setItem(slot, invItem);
+                player.getInventory().setItem(Utils.getNumberedSlot(player, slot), invItem);
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 }

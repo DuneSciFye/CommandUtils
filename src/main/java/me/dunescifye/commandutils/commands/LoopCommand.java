@@ -5,6 +5,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.utils.ArgumentUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -16,9 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import static me.dunescifye.commandutils.utils.Utils.timeArgument;
-
-public class LoopCommand extends Command implements Configurable {
+public class LoopCommand extends Command {
 
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
 
@@ -41,8 +40,8 @@ public class LoopCommand extends Command implements Configurable {
         }
 
         IntegerArgument loopAmountArg = new IntegerArgument("Loop Amount");
-        Argument<Duration> delayArg = timeArgument("Delay");
-        Argument<Duration> periodArg = timeArgument("Period");
+        Argument<Duration> delayArg = ArgumentUtils.timeArgument("Delay");
+        Argument<Duration> periodArg = ArgumentUtils.timeArgument("Period");
         TextArgument commandsArg = new TextArgument("Commands");
         StringArgument commandIDArg = new StringArgument("Command ID");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "remove", "cancel", "list");
@@ -50,7 +49,7 @@ public class LoopCommand extends Command implements Configurable {
         TextArgument endCommandsArg = new TextArgument("End Commands");
         EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
 
-        new CommandAPICommand("loopcommand")
+        createCommand()
             .withArguments(functionArg, commandIDArg, loopAmountArg, delayArg, periodArg, commandsArg)
             .withOptionalArguments(endCommandsArg, playerArg)
             .executes((sender, args) -> {
@@ -81,11 +80,9 @@ public class LoopCommand extends Command implements Configurable {
 
                 }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        new CommandAPICommand("loopcommand")
+        createCommand()
             .withArguments(runArg, loopAmountArg, delayArg, periodArg, commandsArg)
             .withOptionalArguments(endCommandsArg, playerArg)
             .executes((sender, args) -> {
@@ -93,8 +90,6 @@ public class LoopCommand extends Command implements Configurable {
                 int period = (int) (((Duration) args.getUnchecked("Period")).toMillis() / 50);
                 runCommands(args.getByArgument(loopAmountArg), args.getByArgument(commandsArg).replace("$", "%").split(commandSeparator), delay, period, null, args.getByArgument(endCommandsArg), args.getByArgument(playerArg));
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 

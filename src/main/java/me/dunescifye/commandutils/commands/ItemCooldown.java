@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
@@ -16,23 +15,21 @@ import org.bukkit.inventory.meta.components.UseCooldownComponent;
 
 import java.time.Duration;
 
-import static me.dunescifye.commandutils.utils.Utils.slotArgument;
-import static me.dunescifye.commandutils.utils.Utils.timeArgument;
-
 @SuppressWarnings({"DataFlowIssue", "UnstableApiUsage"})
-public class ItemCooldown extends Command implements Registerable {
+public class ItemCooldown extends Command {
+
     @Override
     public void register() {
-      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        Argument<String> slotArg = slotArgument("Slot");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
+        Argument<String> slotArg = ArgumentUtils.slotArgument("Slot");
         LiteralArgument setCooldownGroupArg = new LiteralArgument("setcooldowngroup");
         StringArgument keyArg = new StringArgument("Key");
         LiteralArgument setCooldownArg = new LiteralArgument("setcooldown");
-        Argument<Duration> durationArg = timeArgument("Duration");
+        Argument<Duration> durationArg = ArgumentUtils.timeArgument("Duration");
         LiteralArgument setMaterialCooldownArg = new LiteralArgument("setmaterialcooldown");
-      Argument<Material> materialArg = ArgumentUtils.materialArgument("Material");
+        Argument<Material> materialArg = ArgumentUtils.materialArgument("Material");
 
-        new CommandAPICommand("itemcooldown")
+        createCommand()
             .withArguments(setCooldownGroupArg, playerArg, slotArg, keyArg)
             .withOptionalArguments(durationArg)
             .executes((sender, args) -> {
@@ -49,40 +46,34 @@ public class ItemCooldown extends Command implements Registerable {
                 meta.setUseCooldown(useCooldown);
                 item.setItemMeta(meta);
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-      new CommandAPICommand("itemcooldown")
-        .withArguments(setCooldownArg, playerArg, slotArg, durationArg)
-        .executes((sender, args) -> {
-          Player p = args.getByArgument(playerArg);
-          String slot = (String) args.get("Slot");
-          ItemStack item = Utils.getInvItem(p, slot);
-          Duration duration = (Duration) args.get("Duration");
+        createCommand()
+            .withArguments(setCooldownArg, playerArg, slotArg, durationArg)
+            .executes((sender, args) -> {
+                Player p = args.getByArgument(playerArg);
+                String slot = (String) args.get("Slot");
+                ItemStack item = Utils.getInvItem(p, slot);
+                Duration duration = (Duration) args.get("Duration");
 
-          p.setCooldown(item, (int) (duration.toMillis() / 50));
-        })
-        .withPermission(this.getPermission())
-        .withAliases(this.getCommandAliases())
-        .register(this.getNamespace());
+                p.setCooldown(item, (int) (duration.toMillis() / 50));
+            })
+            .register(this.getNamespace());
 
-      new CommandAPICommand("itemcooldown")
-        .withArguments(setMaterialCooldownArg, playerArg, materialArg, durationArg)
-        .executes((sender, args) -> {
-          Player p = args.getByArgument(playerArg);
-          Duration duration = (Duration) args.get("Duration");
-          final Material mat = args.getUnchecked("Material");
+        createCommand()
+            .withArguments(setMaterialCooldownArg, playerArg, materialArg, durationArg)
+            .executes((sender, args) -> {
+                Player p = args.getByArgument(playerArg);
+                Duration duration = (Duration) args.get("Duration");
+                final Material mat = args.getUnchecked("Material");
 
-          for (ItemStack itemStack : p.getInventory().getContents()) {
-            if (itemStack != null && itemStack.getType() == mat) {
-              p.setCooldown(itemStack, (int) (duration.toMillis() / 50));
-            }
-          }
-        })
-        .withPermission(this.getPermission())
-        .withAliases(this.getCommandAliases())
-        .register(this.getNamespace());
+                for (ItemStack itemStack : p.getInventory().getContents()) {
+                    if (itemStack != null && itemStack.getType() == mat) {
+                        p.setCooldown(itemStack, (int) (duration.toMillis() / 50));
+                    }
+                }
+            })
+            .register(this.getNamespace());
 
 
     }

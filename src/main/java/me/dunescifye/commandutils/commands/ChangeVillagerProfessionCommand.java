@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
-public class ChangeVillagerProfessionCommand extends Command implements Registerable {
+public class ChangeVillagerProfessionCommand extends Command {
 
     private static List<String> getAllVillagerProfession() {
         return Arrays.stream(Registry.VILLAGER_PROFESSION.stream().toArray())
@@ -25,22 +25,16 @@ public class ChangeVillagerProfessionCommand extends Command implements Register
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
-        if (!this.getEnabled()) return;
 
         EntitySelectorArgument.ManyEntities villagersArg = new EntitySelectorArgument.ManyEntities("Villagers");
         StringArgument professionArg = new StringArgument("Profession");
 
-        /*
-         * Changes a Villager's Profession
-         * @author DuneSciFye
-         * @since 1.0.3
-         * @param Villagers to Target
-         * @param Profession to Change to
-         */
-        new CommandAPICommand("changevillagerprofession")
-            .withArguments(villagersArg)
-            .withArguments(professionArg
-                .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllVillagerProfession().toArray(new String[0])))
+        // Changes a Villager's Profession
+        createCommand()
+            .withArguments(
+                villagersArg,
+                professionArg
+                    .replaceSuggestions(ArgumentSuggestions.strings(info -> getAllVillagerProfession().toArray(new String[0])))
             )
             .executes((sender, args) -> {
                 Collection<Entity> entities = args.getByArgument(villagersArg);
@@ -53,8 +47,6 @@ public class ChangeVillagerProfessionCommand extends Command implements Register
                         if (villager.getVillagerExperience() == 0) villager.setVillagerExperience(1);
                     }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 

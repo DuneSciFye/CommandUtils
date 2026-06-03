@@ -8,7 +8,8 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 
-public class ModifyVelocityCommand extends Command implements Registerable {
+public class ModifyVelocityCommand extends Command {
+
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {

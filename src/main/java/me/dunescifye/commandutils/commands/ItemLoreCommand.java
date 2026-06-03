@@ -11,7 +11,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemLoreCommand extends Command implements Registerable {
+public class ItemLoreCommand extends Command {
+
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {
@@ -22,14 +23,15 @@ public class ItemLoreCommand extends Command implements Registerable {
         IntegerArgument lineArg = new IntegerArgument("Line", 1);
         GreedyStringArgument contentArg = new GreedyStringArgument("Content");
 
-        new CommandAPICommand("itemlore")
-            .withArguments(functionArg)
-            .withArguments(playerArg)
-            .withArguments(slotArg
-                .replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots()))
+        createCommand()
+            .withArguments(
+                functionArg,
+                playerArg,
+                slotArg
+                    .replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots())),
+                lineArg,
+                contentArg
             )
-            .withArguments(lineArg)
-            .withOptionalArguments(contentArg)
             .executes((sender, args) -> {
                 ItemStack item = Utils.getInvItem(args.getByArgument(playerArg), args.getByArgument(slotArg));
                 int line = args.getByArgument(lineArg) - 1;
@@ -44,8 +46,6 @@ public class ItemLoreCommand extends Command implements Registerable {
                 }
                 item.lore(lore);
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 }

@@ -10,39 +10,17 @@ import org.bukkit.command.ConsoleCommandSender;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ChanceRandomRunCommand extends Command implements Configurable {
+public class ChanceRandomRunCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
-    public void register(YamlDocument config) {
-        if (!this.getEnabled()) return;
+    public void register() {
 
-        String argumentSeparator, commandSeparator;
-
-        if (config.getOptionalString("Commands.ChanceRandomRun.ArgumentSeparator").isEmpty()) {
-            argumentSeparator = ",,";
-            config.set("Commands.ChanceRandomRun.ArgumentSeparator", ",,");
-        } else {
-            if (config.isString("Commands.ChanceRandomRun.ArgumentSeparator")) {
-                argumentSeparator = config.getString("Commands.ChanceRandomRun.ArgumentSeparator");
-            } else {
-                argumentSeparator = ",,";
-            }
-        }
-
-        if (config.getOptionalString("Commands.ChanceRandomRun.CommandSeparator").isEmpty()) {
-            commandSeparator = "\\|";
-            config.set("Commands.ChanceRandomRun.CommandSeparator", "\\|");
-        } else {
-            if (config.isString("Commands.ChanceRandomRun.CommandSeparator")) {
-                commandSeparator = config.getString("Commands.ChanceRandomRun.CommandSeparator");
-            } else {
-                commandSeparator = "\\|";
-            }
-        }
+        String argumentSeparator = ",,";
+        String commandSeparator = "\\|";
 
         GreedyStringArgument argumentsArg = new GreedyStringArgument("Arguments");
 
-        new CommandAPICommand("chancerandomrun")
+        createCommand()
             .withArguments(argumentsArg)
             .executes((sender, args) -> {
                 String input = args.getByArgument(argumentsArg);
@@ -63,8 +41,6 @@ public class ChanceRandomRunCommand extends Command implements Configurable {
                 }
 
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

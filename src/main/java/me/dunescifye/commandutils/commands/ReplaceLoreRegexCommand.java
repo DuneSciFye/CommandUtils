@@ -14,7 +14,7 @@ import org.intellij.lang.annotations.RegExp;
 
 import java.util.List;
 
-public class ReplaceLoreRegexCommand extends Command implements Registerable {
+public class ReplaceLoreRegexCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     @Override

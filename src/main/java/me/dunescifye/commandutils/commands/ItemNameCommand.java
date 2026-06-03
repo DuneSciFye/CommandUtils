@@ -14,7 +14,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class ItemNameCommand extends Command implements Registerable {
+public class ItemNameCommand extends Command {
+
   @SuppressWarnings("DataFlowIssue")
   @Override
   public void register() {
@@ -24,7 +25,7 @@ public class ItemNameCommand extends Command implements Registerable {
     StringArgument slotArg = new StringArgument("Slot");
     GreedyStringArgument nameArg = new GreedyStringArgument("Name");
 
-    new CommandAPICommand("itemname")
+    createCommand()
       .withArguments(setArg,
         slotArg
           .replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots())),
@@ -43,9 +44,7 @@ public class ItemNameCommand extends Command implements Registerable {
         meta.customName(name);
         item.setItemMeta(meta);
       })
-      .withPermission(this.getPermission())
-      .withAliases(this.getCommandAliases())
-      .register();
+      .register(this.getNamespace());
 
     new CommandAPICommand("itemname")
       .withArguments(resetArg,
@@ -62,9 +61,7 @@ public class ItemNameCommand extends Command implements Registerable {
         meta.customName(null);
         item.setItemMeta(meta);
       })
-      .withPermission(this.getPermission())
-      .withAliases(this.getCommandAliases())
-      .register();
+      .register(this.getNamespace());
 
   }
 }

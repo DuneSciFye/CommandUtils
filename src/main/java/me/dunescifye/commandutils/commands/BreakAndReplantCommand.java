@@ -1,33 +1,28 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.FUtils;
-import org.bukkit.Bukkit;
+import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Ageable;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static me.dunescifye.commandutils.utils.Utils.*;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.bukkitWorldArgument;
 
-public class BreakAndReplantCommand extends Command implements Registerable {
+public class BreakAndReplantCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
-    public void register(){
-
-        if (!this.getEnabled()) return;
+    public void register() {
 
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
-        StringArgument worldArg = new StringArgument("World");
+        Argument<World> worldArg = bukkitWorldArgument("World");
         EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
         IntegerArgument xArg = new IntegerArgument("X");
@@ -35,344 +30,161 @@ public class BreakAndReplantCommand extends Command implements Registerable {
         IntegerArgument zArg = new IntegerArgument("Z");
         BlockStateArgument blockArg = new BlockStateArgument("Original Block");
 
-        /*
-         * Bonemeals Blocks in a Radius with GriefPrevention
-         * @author DuneSciFye
-         * @since 1.0.0
-         * @param World of the Blocks
-         * @param Location of the Center Block
-         * @param Player who is Breaking the Blocks
-         * @param Radius to Break Blocks In
-         * @param Block Type to Break
-         */
-        new CommandAPICommand("breakandreplant")
-            .withArguments(worldArg)
-            .withArguments(locArg)
-            .withArguments(playerArg)
-            .withArguments(radiusArg)
-            .withArguments(blockArg)
+        // Radius and World version
+        createCommand()
+            .withArguments(
+                worldArg,
+                locArg,
+                playerArg,
+                radiusArg,
+                blockArg
+            )
             .executes((sender, args) -> {
-                World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                Location location = args.getByArgument(locArg);
-                Block block = world.getBlockAt(location);
-                BlockData original = args.getByArgument(blockArg).getBlockData();
-                int radius = args.getByArgument(radiusArg);
-                Player player = args.getByArgument(playerArg);
-                ItemStack heldItem = player.getInventory().getItemInMainHand();
+                int r = args.getByArgument(radiusArg);
+                Location loc = args.getByArgument(locArg);
+                loc.setWorld((World) args.get("World"));
 
-                Collection<ItemStack> drops = new ArrayList<>();
-                block.setType(original.getMaterial());
-
-                for (int x = -radius; x <= radius; x++) {
-                    for (int z = -radius; z <= radius; z++) {
-                        Block b = block.getRelative(x, 0, z);
-                        //Testing claim
-                        Location relativeLocation = b.getLocation();
-                        if (FUtils.isInClaimOrWilderness(player, relativeLocation)) {
-                            BlockData blockData = b.getBlockData();
-                            if (blockData instanceof Ageable ageable) {
-                                Collection<ItemStack> blockDrops = b.getDrops(heldItem);
-                                for (ItemStack drop : blockDrops) {
-                                    if (drop.getType().equals(ageable.getPlacementMaterial()))
-                                        drop.setAmount(drop.getAmount() - 1);
-                                }
-                                drops.addAll(blockDrops);
-                                ageable.setAge(0);
-                                b.setBlockData(ageable);
-                            }
-                        }
-                    }
-                }
-
-                for (ItemStack item : mergeSimilarItemStacks(drops)) {
-                    world.dropItemNaturally(location, item);
-                }
+                breakAndReplant(
+                    loc,
+                    args.getByArgument(playerArg),
+                    r,
+                    0,
+                    r,
+                    args.getByArgument(blockArg)
+                );
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /**
-         * Bonemeals Blocks in a Radius with GriefPrevention
-         * @author DuneSciFye
-         * @since 1.0.0
-         * @param Location Location of the Center Block
-         * @param Player Player who is Breaking the Blocks
-         * @param Radius Radius to Break Blocks In
-         * @param Block Block Type to Break
-         */
-        new CommandAPICommand("breakandreplant")
-            .withArguments(worldArg)
-            .withArguments(locArg)
-            .withArguments(playerArg)
-            .withArguments(radiusArg)
-            .withArguments(blockArg)
+        // X Y Z and World Version
+        createCommand()
+            .withArguments(
+                worldArg,
+                locArg,
+                playerArg,
+                xArg,
+                yArg,
+                zArg,
+                blockArg
+            )
             .executes((sender, args) -> {
-                Location location = args.getByArgument(locArg);
-                Block block = location.getBlock();
-                World world = location.getWorld();
-                BlockData original = args.getByArgument(blockArg).getBlockData();
-                int radius = args.getByArgument(radiusArg);
-                Player player = args.getByArgument(playerArg);
-                ItemStack heldItem = player.getInventory().getItemInMainHand();
+                Location loc = args.getByArgument(locArg);
+                loc.setWorld((World) args.get("World"));
 
-                Collection<ItemStack> drops = new ArrayList<>();
-
-                block.setType(original.getMaterial());
-
-                for (int x = -radius; x <= radius; x++){
-                    for (int z = -radius; z <= radius; z++){
-                        Block b = block.getRelative(x, 0, z);
-                        //Testing claim
-                        Location relativeLocation = b.getLocation();
-                        if (FUtils.isInsideClaim(player, relativeLocation) || FUtils.isWilderness(relativeLocation)) {
-                            BlockData blockData = b.getBlockData();
-                            if (blockData instanceof Ageable ageable) {
-                                Collection<ItemStack> blockDrops = b.getDrops(heldItem);
-                                for (ItemStack drop : blockDrops) {
-                                    if (drop.getType().equals(ageable.getPlacementMaterial()))
-                                        drop.setAmount(drop.getAmount() - 1);
-                                }
-                                drops.addAll(blockDrops);
-                                ageable.setAge(0);
-                                b.setBlockData(ageable);
-                            }
-                        }
-                    }
-                }
-
-                for (ItemStack item : mergeSimilarItemStacks(drops)){
-                    world.dropItemNaturally(location, item);
-                }
+                breakAndReplant(
+                    loc,
+                    args.getByArgument(playerArg),
+                    args.getByArgument(xArg),
+                    args.getByArgument(yArg),
+                    args.getByArgument(zArg),
+                    args.getByArgument(blockArg)
+                );
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /**
-         * Bonemeals Blocks in a Radius with GriefPrevention
-         * @author DuneSciFye
-         * @since 1.0.0
-         * @param World World of the Blocks
-         * @param Location Location of the Center Block
-         * @param Player Player who is Breaking the Blocks
-         * @param X Direction in X to Break in
-         * @param Y Direction in Y to Break in
-         * @param Z Direction in Z to Break in
-         * @param Block Block Type to Break
-         */
-        new CommandAPICommand("breakandreplant")
-            .withArguments(worldArg)
-            .withArguments(locArg)
-            .withArguments(playerArg)
-            .withArguments(xArg)
-            .withArguments(yArg)
-            .withArguments(zArg)
-            .withArguments(blockArg)
+        // X Y Z and no World Version
+        createCommand()
+            .withArguments(
+                locArg,
+                playerArg,
+                xArg,
+                yArg,
+                zArg,
+                blockArg
+            )
             .executes((sender, args) -> {
-                World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                Location location = args.getByArgument(locArg);
-                Block block = world.getBlockAt(location);
-                BlockData original = args.getByArgument(blockArg).getBlockData();
-                int xRadius = args.getByArgument(xArg);
-                int yRadius = args.getByArgument(yArg);
-                int zRadius = args.getByArgument(zArg);
-                Player player = args.getByArgument(playerArg);
-                ItemStack heldItem = player.getInventory().getItemInMainHand();
+                Location loc = args.getByArgument(locArg);
+                loc.setWorld((World) args.get("World"));
 
-                Collection<ItemStack> drops = new ArrayList<>();
-
-                block.setType(original.getMaterial());
-
-                for (int x = -xRadius; x <= xRadius; x++) {
-                    for (int y = -yRadius; y <= yRadius; y++) {
-                        for (int z = -zRadius; z <= zRadius; z++) {
-                            Block b = block.getRelative(x, y, z);
-                            //Testing claim
-                            Location relativeLocation = b.getLocation();
-                            if (FUtils.isInsideClaim(player, relativeLocation) || FUtils.isWilderness(relativeLocation)) {
-                                BlockData blockData = b.getBlockData();
-                                if (blockData instanceof Ageable ageable) {
-                                    Collection<ItemStack> blockDrops = b.getDrops(heldItem);
-                                    for (ItemStack drop : blockDrops) {
-                                        if (drop.getType().equals(ageable.getPlacementMaterial()))
-                                            drop.setAmount(drop.getAmount() - 1);
-                                    }
-                                    drops.addAll(blockDrops);
-                                    ageable.setAge(0);
-                                    b.setBlockData(ageable);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                for (ItemStack item : mergeSimilarItemStacks(drops)){
-                    world.dropItemNaturally(location, item);
-                }
+                breakAndReplant(
+                    loc,
+                    args.getByArgument(playerArg),
+                    args.getByArgument(xArg),
+                    args.getByArgument(yArg),
+                    args.getByArgument(zArg),
+                    args.getByArgument(blockArg)
+                );
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /**
-         * Bonemeals Blocks in a Radius with GriefPrevention
-         * @author DuneSciFye
-         * @since 1.0.0
-         * @param Location Location of the Center Block
-         * @param Player Player who is Breaking the Blocks
-         * @param X Direction in X to Break in
-         * @param Y Direction in Y to Break in
-         * @param Z Direction in Z to Break in
-         * @param Block Block Type to Break
-         */
-        new CommandAPICommand("breakandreplant")
-            .withArguments(worldArg)
-            .withArguments(locArg)
-            .withArguments(playerArg)
-            .withArguments(xArg)
-            .withArguments(yArg)
-            .withArguments(zArg)
-            .withArguments(blockArg)
+        // World and No Radius Version
+        createCommand()
+            .withArguments(
+                worldArg,
+                locArg,
+                playerArg,
+                blockArg
+            )
             .executes((sender, args) -> {
-                Location location = args.getByArgument(locArg);
-                Block block = location.getBlock();
-                World world = location.getWorld();
-                BlockData original = args.getByArgument(blockArg).getBlockData();
-                int xRadius = args.getByArgument(xArg);
-                int yRadius = args.getByArgument(yArg);
-                int zRadius = args.getByArgument(zArg);
-                Player player = args.getByArgument(playerArg);
-                ItemStack heldItem = player.getInventory().getItemInMainHand();
+                Location loc = args.getByArgument(locArg);
+                loc.setWorld((World) args.get("World"));
 
-                Collection<ItemStack> drops = new ArrayList<>();
-
-                block.setType(original.getMaterial());
-
-                for (int x = -xRadius; x <= xRadius; x++) {
-                    for (int y = -yRadius; y <= yRadius; y++) {
-                        for (int z = -zRadius; z <= zRadius; z++) {
-                            Block b = block.getRelative(x, y, z);
-                            //Testing claim
-                            Location relativeLocation = b.getLocation();
-                            if (FUtils.isInsideClaim(player, relativeLocation) || FUtils.isWilderness(relativeLocation)) {
-                                BlockData blockData = b.getBlockData();
-                                if (blockData instanceof Ageable ageable) {
-                                    Collection<ItemStack> blockDrops = b.getDrops(heldItem);
-                                    for (ItemStack drop : blockDrops) {
-                                        if (drop.getType().equals(ageable.getPlacementMaterial()))
-                                            drop.setAmount(drop.getAmount() - 1);
-                                    }
-                                    drops.addAll(blockDrops);
-                                    ageable.setAge(0);
-                                    b.setBlockData(ageable);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                for (ItemStack item : mergeSimilarItemStacks(drops)){
-                    world.dropItemNaturally(location, item);
-                }
+                breakAndReplant(
+                    loc,
+                    args.getByArgument(playerArg),
+                    0,
+                    0,
+                    0,
+                    args.getByArgument(blockArg)
+                );
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /**
-         * Bonemeals Singular Block
-         * @author DuneSciFye
-         * @since 1.0.0
-         * @param World World of the Block
-         * @param Location Location of the Block
-         * @param Player Player who is Breaking the Block
-         * @param Block Block Type to Break
-         */
-        new CommandAPICommand("breakandreplant")
-            .withArguments(worldArg)
+        // No Radius and No World Version
+        createCommand()
             .withArguments(locArg)
             .withArguments(playerArg)
             .withArguments(blockArg)
             .executes((sender, args) -> {
-                World world = Bukkit.getWorld(args.getByArgument(worldArg));
-                Location location = args.getByArgument(locArg);
-                Block block = world.getBlockAt(location);
-                BlockData original = args.getByArgument(blockArg).getBlockData();
-                Player player = args.getByArgument(playerArg);
-                ItemStack heldItem = player.getInventory().getItemInMainHand();
+                Location loc = args.getByArgument(locArg);
+                loc.setWorld((World) args.get("World"));
 
-
-                block.setType(original.getMaterial());
-                Collection<ItemStack> drops = new ArrayList<>();
-
-                BlockData blockData = block.getBlockData();
-                if (blockData instanceof Ageable) {
-                    if (block.getType() != Material.SUGAR_CANE) {
-                        Collection<ItemStack> blockDrops = block.getDrops(heldItem);
-                        for (ItemStack drop : blockDrops) {
-                            if (drop.getType().equals(blockData.getPlacementMaterial()))
-                                drop.setAmount(drop.getAmount() - 1);
-                        }
-                        drops.addAll(blockDrops);
-                        ((Ageable) blockData).setAge(0);
-                        block.setBlockData(blockData);
-                    }
-                    for (ItemStack item : drops){
-                        world.dropItemNaturally(location, item);
-                    }
-                }
-
+                breakAndReplant(
+                    loc,
+                    args.getByArgument(playerArg),
+                    0,
+                    0,
+                    0,
+                    args.getByArgument(blockArg)
+                );
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /**
-         * Bonemeals Singular Block
-         * @author DuneSciFye
-         * @since 1.0.0
-         * @param Location Location of the Block
-         * @param Player Player who is Breaking the Block
-         * @param Block Block Type to Break
-         */
-        new CommandAPICommand("breakandreplant")
-            .withArguments(locArg)
-            .withArguments(playerArg)
-            .withArguments(blockArg)
-            .executes((sender, args) -> {
-                Location location = args.getByArgument(locArg);
-                Block block = location.getBlock();
-                World world = location.getWorld();
-                BlockData original = args.getByArgument(blockArg).getBlockData();
-                Player player = args.getByArgument(playerArg);
-                ItemStack heldItem = player.getInventory().getItemInMainHand();
+    }
 
 
-                block.setType(original.getMaterial());
-                Collection<ItemStack> drops = new ArrayList<>();
+    private void breakAndReplant(Location loc, Player p, int xRad, int yRad, int zRad, BlockState bs) {
+        Block center = loc.getBlock();
+        center.setType(bs.getBlockData().getMaterial());
 
-                BlockData blockData = block.getBlockData();
-                if (blockData instanceof Ageable) {
-                    if (block.getType() != Material.SUGAR_CANE) {
-                        Collection<ItemStack> blockDrops = block.getDrops(heldItem);
-                        for (ItemStack drop : blockDrops) {
-                            if (drop.getType().equals(blockData.getPlacementMaterial()))
-                                drop.setAmount(drop.getAmount() - 1);
-                        }
-                        drops.addAll(blockDrops);
-                        ((Ageable) blockData).setAge(0);
-                        block.setBlockData(blockData);
-                    }
-                    for (ItemStack item : drops){
-                        world.dropItemNaturally(location, item);
-                    }
+        ItemStack heldItem = p.getInventory().getItemInMainHand();
+        Collection<ItemStack> drops = new ArrayList<>();
+
+        for (int x = -xRad; x <= xRad; x++) {
+            for (int y = -yRad; y <= yRad; y++) {
+                for (int z = -zRad; z <= zRad; z++) {
+                    Block rel = center.getRelative(x, y, z);
+
+                    // Testing claim
+                    if (!FUtils.isInClaimOrWilderness(p, rel.getLocation())) continue;
+
+                    if (!(rel.getBlockData() instanceof Ageable ageable)) continue;
+
+                    Collection<ItemStack> blockDrops = rel.getDrops(heldItem);
+
+                    // Reduce drops to account for replanting
+                    for (ItemStack drop : blockDrops)
+                        if (drop.getType().equals(ageable.getPlacementMaterial()))
+                            drop.setAmount(drop.getAmount() - 1);
+
+                    drops.addAll(blockDrops);
+
+                    // Just reset age instead of breaking and replanting
+                    ageable.setAge(0);
+                    rel.setBlockData(ageable);
                 }
+            }
+        }
 
-            })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
-            .register(this.getNamespace());
-
+        Utils.dropAllItemStacks(loc, drops);
     }
 }

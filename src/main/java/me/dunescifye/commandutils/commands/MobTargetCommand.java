@@ -9,9 +9,9 @@ import org.bukkit.entity.LivingEntity;
 import java.util.Collection;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class MobTargetCommand extends Command implements Registerable {
+public class MobTargetCommand extends Command {
 
-  @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings("ConstantConditions")
   @Override
   public void register() {
 

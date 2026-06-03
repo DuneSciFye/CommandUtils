@@ -4,20 +4,19 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.LocationArgument;
-import dev.jorel.commandapi.arguments.StringArgument;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.Laser;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 
-public class SpawnGuardianBeamCommand extends Command implements Registerable {
+import static me.dunescifye.commandutils.utils.ArgumentUtils.worldArg;
+
+public class SpawnGuardianBeamCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {
 
-        StringArgument worldArg = new StringArgument("World");
         LocationArgument loc1Arg = new LocationArgument("First Location");
         LocationArgument loc2Arg = new LocationArgument("Second Location");
         EntitySelectorArgument.OneEntity entity1Arg = new EntitySelectorArgument.OneEntity("First Entity");
@@ -25,26 +24,13 @@ public class SpawnGuardianBeamCommand extends Command implements Registerable {
         IntegerArgument durationArg = new IntegerArgument("Duration");
         IntegerArgument distanceArg = new IntegerArgument("Distance");
 
-        /*
-         * Summons a Guardian Beam between two Locations
-         * @author DuneSciFye
-         * @since 1.0.5
-         * @param World of the Locations
-         * @param Coordinates of First Location
-         * @param Coordinates of Second Location
-         * @param How Long Laser Stays for
-         * @param How Long Laser is
-         */
+        // Summons a Guardian Beam between two Locations
         new CommandAPICommand("spawnguardianbeam")
-            .withArguments(worldArg)
-            .withArguments(loc1Arg)
-            .withArguments(loc2Arg)
-            .withArguments(durationArg)
-            .withArguments(distanceArg)
+            .withArguments(worldArg(), loc1Arg, loc2Arg, durationArg, distanceArg)
             .executes((sender, args) -> {
                 Location location1 = args.getByArgument(loc1Arg);
                 Location location2 = args.getByArgument(loc2Arg);
-                World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                World world = (World) args.get("World");
                 location1.setWorld(world);
                 location2.setWorld(world);
                 try {
@@ -60,24 +46,11 @@ public class SpawnGuardianBeamCommand extends Command implements Registerable {
                 }
 
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /*
-         * Summons a Guardian Beam between two Entities
-         * @author DuneSciFye
-         * @since 1.0.5
-         * @param Entity1 First Entity
-         * @param Entity2 Second Entity
-         * @param Duration How Long Laser Stays for
-         * @param Distance How Long Laser is
-         */
-        new CommandAPICommand("spawnguardianbeam")
-            .withArguments(entity1Arg)
-            .withArguments(entity2Arg)
-            .withArguments(durationArg)
-            .withArguments(distanceArg)
+        // Summons a Guardian Beam between two Entities
+        createCommand()
+            .withArguments(entity1Arg, entity2Arg, durationArg, distanceArg)
             .executes((sender, args) -> {
                 try {
                     Laser laser = new Laser.GuardianLaser(
@@ -92,30 +65,15 @@ public class SpawnGuardianBeamCommand extends Command implements Registerable {
                 }
 
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /*
-         * Summons a Guardian Beam between an Entity and a Location
-         * @author DuneSciFye
-         * @since 1.0.5
-         * @param World of the Locations
-         * @param Location
-         * @param Entity
-         * @param Duration How Long Laser Stays for
-         * @param Distance How Long Laser is
-         */
-        new CommandAPICommand("spawnguardianbeam")
-            .withArguments(worldArg)
-            .withArguments(loc1Arg)
-            .withArguments(entity1Arg)
-            .withArguments(durationArg)
-            .withArguments(distanceArg)
+        // Summons a Guardian Beam between an Entity and a Location
+        createCommand()
+            .withArguments(worldArg(), loc1Arg, entity1Arg, durationArg, distanceArg)
             .executes((sender, args) -> {
                 try {
                     Location location = args.getByArgument(loc1Arg);
-                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                    World world = (World) args.get("World");
                     location.setWorld(world);
                     Entity entity = args.getByArgument(entity1Arg);
 
@@ -131,29 +89,14 @@ public class SpawnGuardianBeamCommand extends Command implements Registerable {
                 }
 
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
-        /*
-         * Summons a Guardian Beam between a Location and an Entity
-         * @author DuneSciFye
-         * @since 1.0.5
-         * @param Entity
-         * @param World of the Locations
-         * @param Location
-         * @param Duration How Long Laser Stays for
-         * @param Distance How Long Laser is
-         */
-        new CommandAPICommand("spawnguardianbeam")
-            .withArguments(entity1Arg)
-            .withArguments(worldArg)
-            .withArguments(loc1Arg)
-            .withArguments(durationArg)
-            .withArguments(distanceArg)
+        // Summons a Guardian Beam between a Location and an Entity
+        createCommand()
+            .withArguments(entity1Arg, worldArg(), loc1Arg, durationArg, distanceArg)
             .executes((sender, args) -> {
                 try {
                     Location location = args.getByArgument(loc1Arg);
-                    World world = Bukkit.getWorld(args.getByArgument(worldArg));
+                    World world = (World) args.get("World");
                     location.setWorld(world);
                     Entity entity = args.getByArgument(entity1Arg);
 
@@ -169,8 +112,6 @@ public class SpawnGuardianBeamCommand extends Command implements Registerable {
                 }
 
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

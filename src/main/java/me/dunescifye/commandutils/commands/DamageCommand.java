@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.DoubleArgument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import org.bukkit.damage.DamageSource;
@@ -12,14 +11,15 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import java.util.Collection;
 
 @SuppressWarnings({"unchecked", "DataFlowIssue"})
-public class DamageCommand extends Command implements Registerable {
+public class DamageCommand extends Command {
+
     @Override
     public void register() {
 
         EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
         DoubleArgument damageArg = new DoubleArgument("Damage");
 
-        new CommandAPICommand("damage")
+        createCommand()
             .withArguments(entitiesArg, damageArg)
             .executes((sender, args) -> {
                 Collection<Entity> entities = args.getByArgument(entitiesArg);
@@ -37,8 +37,6 @@ public class DamageCommand extends Command implements Registerable {
                 }
 
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 }

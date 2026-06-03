@@ -12,31 +12,31 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 
 import java.util.Collection;
 
-public class LifeStealCommand extends Command implements Registerable {
-  @Override
-  public void register() {
+public class LifeStealCommand extends Command {
 
-    EntitySelectorArgument.ManyEntities targetArg = new EntitySelectorArgument.ManyEntities("Target");
-    DoubleArgument amountArg = new DoubleArgument("Amount", 0);
 
-    new CommandAPICommand("lifesteal")
-      .withArguments(targetArg)
-      .withArguments(amountArg)
-      .executes((sender, args) -> {
-        Player player = sender instanceof ProxiedCommandSender proxy ? (Player) proxy.getCallee() : (Player) sender;
-        Collection<Entity> entities = args.getByArgument(targetArg);
-        Double amount = args.getByArgument(amountArg);
+    @Override
+    public void register() {
 
-        for (Entity entity : entities) {
-          if (entity instanceof LivingEntity livingEntity) {
-            livingEntity.damage(amount, player);
-            double finalDamage = livingEntity.getLastDamage();
-            player.heal(finalDamage, EntityRegainHealthEvent.RegainReason.CUSTOM);
-          }
-        }
-      }, ExecutorType.PROXY, ExecutorType.PLAYER)
-      .withPermission(this.getPermission())
-      .withAliases(this.getCommandAliases())
-      .register(this.getNamespace());
-  }
+        EntitySelectorArgument.ManyEntities targetArg = new EntitySelectorArgument.ManyEntities("Target");
+        DoubleArgument amountArg = new DoubleArgument("Amount", 0);
+
+        createCommand()
+            .withArguments(targetArg)
+            .withArguments(amountArg)
+            .executes((sender, args) -> {
+                Player player = sender instanceof ProxiedCommandSender proxy ? (Player) proxy.getCallee() : (Player) sender;
+                Collection<Entity> entities = args.getByArgument(targetArg);
+                Double amount = args.getByArgument(amountArg);
+
+                for (Entity entity : entities) {
+                    if (entity instanceof LivingEntity livingEntity) {
+                        livingEntity.damage(amount, player);
+                        double finalDamage = livingEntity.getLastDamage();
+                        player.heal(finalDamage, EntityRegainHealthEvent.RegainReason.CUSTOM);
+                    }
+                }
+            }, ExecutorType.PROXY, ExecutorType.PLAYER)
+            .register(this.getNamespace());
+    }
 }

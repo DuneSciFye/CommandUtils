@@ -11,12 +11,13 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class RemoveNBTItemCommand extends Command implements Registerable {
+public class RemoveNBTItemCommand extends Command {
+
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {
 
-      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         StringArgument namespaceArg = new StringArgument("Namespace");
         StringArgument keyArg = new StringArgument("Key");
         StringArgument valueArg = new StringArgument("Value");
@@ -56,9 +57,9 @@ public class RemoveNBTItemCommand extends Command implements Registerable {
                     if (invItem == null || !invItem.hasItemMeta()) continue;
                     PersistentDataContainer pdc = invItem.getItemMeta().getPersistentDataContainer();
                     if ((!pdc.has(key, PersistentDataType.STRING) || !invItem.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING).equals(value))
-                    && (!pdc.has(key, PersistentDataType.DOUBLE) || !(invItem.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.DOUBLE) == Double.parseDouble(value)))
-                      && (!pdc.has(key, PersistentDataType.INTEGER) || !(invItem.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.INTEGER) == Integer.parseInt(value))))
-                      continue;
+                        && (!pdc.has(key, PersistentDataType.DOUBLE) || !(invItem.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.DOUBLE) == Double.parseDouble(value)))
+                        && (!pdc.has(key, PersistentDataType.INTEGER) || !(invItem.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.INTEGER) == Integer.parseInt(value))))
+                        continue;
                     if (amountFound + invItem.getAmount() > maxamount) {
                         invItem.setAmount(invItem.getAmount() - maxamount + amountFound);
                         break;

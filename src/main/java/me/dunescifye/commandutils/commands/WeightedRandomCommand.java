@@ -1,21 +1,17 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.dejvokep.boostedyaml.YamlDocument;
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.ProxiedCommandSender;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 
-public class WeightedRandomCommand extends Command implements Registerable {
+public class WeightedRandomCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
@@ -27,21 +23,13 @@ public class WeightedRandomCommand extends Command implements Registerable {
         TextArgument commandSeparatorArg = new TextArgument("Command Separator");
         TextArgument placeholderSurrounderArg = new TextArgument("Placeholder Surrounder");
 
-        Map<String, LinkedHashMap<Integer, String>> cache = new HashMap<>();
+        final Map<String, LinkedHashMap<Integer, String>> cache = new HashMap<>();
 
-        /*
-         * Runs a random command from a list of weighted commands, stores in cache
-         * @author DuneSciFye
-         * @since 2.5.0
-         * @param Keyword 'cache'
-         * @param ID of the Cache
-         * @param Keyword to separate multiple commands
-         * @param Keyword to parse Placeholders with instead of %
-         * @param Arguments in specific format
-         */
-        new CommandAPICommand("weightedrandom")
+        // Runs a random command from a list of weighted commands, stores in cache
+        createCommand()
             .withArguments(cacheArg, idArg, commandSeparatorArg, placeholderSurrounderArg, argumentsArg)
             .executes((sender, args) -> {
+                // Setup/get map
                 LinkedHashMap<Integer, String> map = cache.get(args.getByArgument(idArg));
                 if (map == null) {
                     map = parseArguments(args.getByArgument(argumentsArg));
@@ -49,39 +37,32 @@ public class WeightedRandomCommand extends Command implements Registerable {
                 }
 
                 final String commandSeparator = Pattern.quote(args.getByArgumentOrDefault(commandSeparatorArg,
-                  "|"));
+                    "|"));
 
                 int totalWeight = map.lastEntry().getKey();
                 if (totalWeight == 0) return;
+
                 int random = ThreadLocalRandom.current().nextInt(1, totalWeight + 1);
 
                 for (Integer number : map.keySet())
                     if (random <= number) {
                         if (sender instanceof OfflinePlayer)
                             Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders((OfflinePlayer) sender,
-                              map.get(number).replace(args.getByArgumentOrDefault(placeholderSurrounderArg, "$"),
-                                "%")).split(commandSeparator));
+                                map.get(number).replace(args.getByArgumentOrDefault(placeholderSurrounderArg, "$"),
+                                    "%")).split(commandSeparator));
                         else if (sender instanceof ProxiedCommandSender proxy)
                             Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders((OfflinePlayer) proxy.getCallee()
-                              , map.get(number).replace(args.getByArgumentOrDefault(placeholderSurrounderArg, "$"),
-                                "%")).split(commandSeparator));
+                                , map.get(number).replace(args.getByArgumentOrDefault(placeholderSurrounderArg, "$"),
+                                    "%")).split(commandSeparator));
                         else
                             Utils.runConsoleCommands(map.get(number).replace(args.getByArgumentOrDefault(placeholderSurrounderArg, "$"), "%").split(commandSeparator));
                         return;
                     }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /*
-         * Runs a random command from a list of weighted commands
-         * @author DuneSciFye
-         * @since 2.5.0
-         * @param Keyword 'run'
-         * @param Arguments in specific format
-         */
-        new CommandAPICommand("weightedrandom")
+        // Runs a random command from a list of weighted commands
+        createCommand()
             .withArguments(runArg, argumentsArg)
             .executes((sender, args) -> {
                 LinkedHashMap<Integer, String> map = parseArguments(args.getByArgument(argumentsArg));
@@ -95,33 +76,23 @@ public class WeightedRandomCommand extends Command implements Registerable {
                     if (random <= number) {
                         if (sender instanceof OfflinePlayer)
                             Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders((OfflinePlayer) sender,
-                              map.get(number).replace("$", "%")).split(Pattern.quote("|")));
+                                map.get(number).replace("$", "%")).split(Pattern.quote("|")));
                         else if (sender instanceof ProxiedCommandSender proxy)
                             Utils.runConsoleCommands(PlaceholderAPI.setPlaceholders((OfflinePlayer) proxy.getCallee()
-                              , map.get(number).replace("$", "%")).split(Pattern.quote("|")));
+                                , map.get(number).replace("$", "%")).split(Pattern.quote("|")));
                         else
                             Utils.runConsoleCommands(map.get(number).replace("$", "%").split(Pattern.quote("|")));
                         return;
                     }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /*
-         * Removes a cached setup
-         * @author DuneSciFye
-         * @since 2.5.0
-         * @param Keyword 'removecache'
-         * @param ID of the Cache
-         */
-        new CommandAPICommand("weightedrandom")
+        // Removes a cached setup
+        createCommand()
             .withArguments(removeCacheArg, idArg.replaceSuggestions(ArgumentSuggestions.strings(cache.keySet())))
             .executes((sender, args) -> {
                 cache.remove(args.getByArgument(idArg));
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

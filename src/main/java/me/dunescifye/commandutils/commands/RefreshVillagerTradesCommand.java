@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class RefreshVillagerTradesCommand extends Command implements Registerable {
+public class RefreshVillagerTradesCommand extends Command {
+
     @Override
     public void register() {
 

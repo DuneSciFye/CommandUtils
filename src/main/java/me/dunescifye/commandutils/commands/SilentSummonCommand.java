@@ -1,29 +1,26 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntityTypeArgument;
-import dev.jorel.commandapi.arguments.LocationArgument;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
-public class SilentSummonCommand extends Command implements Registerable {
-  @Override
-  public void register() {
+import static me.dunescifye.commandutils.utils.ArgumentUtils.locArg;
 
-    EntityTypeArgument entityTypeArg = new EntityTypeArgument("Entity Type");
-    LocationArgument locArg = new LocationArgument("Location");
+public class SilentSummonCommand extends Command {
 
+    @Override
+    public void register() {
 
-    new CommandAPICommand("silentsummon")
-      .withArguments(entityTypeArg, locArg)
-      .executes((sender, args) -> {
-        Location loc = args.getByArgument(locArg);
-        EntityType entityType = args.getUnchecked("Entity Type");
+        EntityTypeArgument entityTypeArg = new EntityTypeArgument("Entity Type");
 
-        loc.getWorld().spawnEntity(loc, entityType);
-      })
-      .withPermission(this.getPermission())
-      .withAliases(this.getCommandAliases())
-      .register(this.getNamespace());
-  }
+        createCommand()
+            .withArguments(entityTypeArg, locArg())
+            .executes((sender, args) -> {
+                Location loc = (Location) args.get("Location");
+                EntityType entityType = (EntityType) args.get("Entity Type");
+
+                loc.getWorld().spawnEntity(loc, entityType);
+            })
+            .register(this.getNamespace());
+    }
 }

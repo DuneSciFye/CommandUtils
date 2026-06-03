@@ -1,12 +1,11 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.HashMap;
 
-public class TempVarCommand extends Command implements Registerable {
+public class TempVarCommand extends Command {
 
     private static final HashMap<String, String> vars = new HashMap<>(); //Server Vars
 
@@ -18,15 +17,9 @@ public class TempVarCommand extends Command implements Registerable {
         GreedyStringArgument contentArg = new GreedyStringArgument("Content");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "set", "get", "clear", "remove", "setifempty");
 
-        /*
-         * Sets a temporary variable, won't persist across server restarts
-         * @author DuneSciFye
-         * @since 1.0.6
-         * @param
-         */
-        new CommandAPICommand("tempvar")
-            .withArguments(functionArg)
-            .withArguments(varArg)
+        // Sets a temporary variable, won't persist across server restarts
+        createCommand()
+            .withArguments(functionArg, varArg)
             .withOptionalArguments(contentArg)
             .executes((sender, args) -> {
                 String varName = args.getByArgument(varArg);
@@ -62,8 +55,6 @@ public class TempVarCommand extends Command implements Registerable {
                         vars.putIfAbsent(varName, content);
                 }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 

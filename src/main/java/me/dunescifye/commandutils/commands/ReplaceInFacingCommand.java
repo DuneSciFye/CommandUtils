@@ -12,7 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static me.dunescifye.commandutils.utils.Utils.getBlocksInFacing;
 
 
-public class ReplaceInFacingCommand extends Command implements Registerable {
+public class ReplaceInFacingCommand extends Command {
 
     @SuppressWarnings({"ConstantConditions", "unchecked"})
     public void register() {

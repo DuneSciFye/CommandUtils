@@ -12,7 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReplaceLoreCommand extends Command implements Registerable {
+public class ReplaceLoreCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     @Override

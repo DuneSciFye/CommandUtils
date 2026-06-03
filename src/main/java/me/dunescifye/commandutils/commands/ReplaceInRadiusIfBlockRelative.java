@@ -18,14 +18,14 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
-public class ReplaceInRadiusIfBlockRelative extends Command implements Registerable {
+public class ReplaceInRadiusIfBlockRelative extends Command {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {
 
         StringArgument worldArg = new StringArgument("World");
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
-      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
         ListTextArgument<String> blocksFromArg = new ListArgumentBuilder<String>("Blocks To Replace From")
             .withList(Utils.getPredicatesList())

@@ -1,38 +1,30 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Utils;
-import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-public class BoneMealBlockCommand extends Command implements Registerable {
+import static me.dunescifye.commandutils.utils.ArgumentUtils.bukkitWorldArgument;
+
+public class BoneMealBlockCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
-    public void register(){
+    public void register() {
 
         LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
-        StringArgument worldArg = new StringArgument("World");
+        Argument<World> worldArg = bukkitWorldArgument("World");
         IntegerArgument amountArg = new IntegerArgument("Amount");
         IntegerArgument radiusArg = new IntegerArgument("Radius");
         BooleanArgument affectTargetBlockArg = new BooleanArgument("Affect Target Block");
 
-        /*
-         * Bonemeals Blocks in a Radius
-         * @author DuneSciFye
-         * @since 1.0.0
-         * @param World of the Blocks
-         * @param Location of the Center Block
-         * @param Number of Times to Bonemeal
-         * @param Radius to Bonemeal in
-         * @param If the Center Block is Bonemealed
-         */
-        new CommandAPICommand("bonemealblock")
+        // Bonemeals Blocks in a Radius
+        createCommand()
             .withArguments(worldArg, locArg)
             .withOptionalArguments(amountArg, radiusArg, affectTargetBlockArg)
             .executes((sender, args) -> {
-                Block block = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
+                Block block = ((World) args.get("World")).getBlockAt(args.getByArgument(locArg));
                 int amount = args.getByArgumentOrDefault(amountArg, 1);
                 int radius = args.getByArgumentOrDefault(radiusArg, 0);
                 boolean affectTargetBlock = args.getByArgumentOrDefault(affectTargetBlockArg, true);
@@ -40,13 +32,10 @@ public class BoneMealBlockCommand extends Command implements Registerable {
                 for (Block b : Utils.getBlocksInRadius(block, radius)) {
                     if (!affectTargetBlock && b.equals(block)) continue;
 
-                    for (int i = 0; i < amount; i++) {
+                    for (int i = 0; i < amount; i++)
                         b.applyBoneMeal(BlockFace.UP);
-                    }
                 }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

@@ -716,7 +716,6 @@ public class StringPlaceholders extends PlaceholderExpansion {
                         if (entity == null)
                             return "null";
                         loc1 = entity.getLocation();
-                        loc1.setWorld(world);
                     } catch (IllegalArgumentException e) {
                         return "Invalid Entity";
                     }
@@ -734,7 +733,6 @@ public class StringPlaceholders extends PlaceholderExpansion {
                         if (entity == null)
                             return "null";
                         loc2 = entity.getLocation();
-                        loc2.setWorld(world);
                     } catch (IllegalArgumentException e) {
                         return "Invalid Entity";
                     }
@@ -747,25 +745,19 @@ public class StringPlaceholders extends PlaceholderExpansion {
                     }
                 }
 
+                if (!loc1.getWorld().equals(loc2.getWorld())) {
+                    return "Different worlds";
+                }
+
                 double distance = loc1.distance(loc2);
                 return String.valueOf(distance);
 
             }
-            /*
-             * Get value of temporary variable
-             * @author DuneSciFye
-             * @since 2.0.0
-             * @param Variable Name of Variable
-             */
+            // Get value of temporary variable
             case "variable", "var", "tempvar", "tempvariable" -> {
                 return TempVarCommand.getVar(arguments);
             }
-            /*
-             * Get value of temporary player variable
-             * @author DuneSciFye
-             * @since 2.1.5
-             * @param Variable Name of Player Variable
-             */
+            // Get value of temporary player variable
             case "playervariable", "playervar", "playertempvar", "playertempvariable", "pvar" -> {
                 return TempPlayerVarCommand.getPlayerVar(p.getName(), arguments);
             }
@@ -779,14 +771,7 @@ public class StringPlaceholders extends PlaceholderExpansion {
                 String var = TempVarCommand.getVar(varParts[1]);
                 return var.isEmpty() ? varParts[0] : var;
             }
-            /*
-             * Get block relative to player eyesight
-             * @author DuneSciFye
-             * @since 2.0.1
-             * @param Double Distance to go
-             * @param Function Data to get, allowed: coordinates, coord, coords, mat, material
-             * @param StopAtBlock Optional; Should it give first block encountered
-             */
+            // Get block relative to player eyesight
             case "raytrace" -> {
                 String[] args = arguments.split(separator);
                 if (p == null || args.length < 2 || !NumberUtils.isCreatable(args[0])) return null;
@@ -872,13 +857,7 @@ public class StringPlaceholders extends PlaceholderExpansion {
                     }
                 }
             }
-            /*
-             * Returns a random potion effect from input list that player does not already have
-             * @author DuneSciFye
-             * @since 2.1.1
-             * @param Effects List of potion effects to check for separated by space
-             * @param Level Minimum level of potion effect to check for
-             */
+            // Returns a random potion effect from input list that player does not already have
             case "randomnewpotioneffect" -> {
                 String[] params = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
                 if (p == null || params.length < 1) return null;
@@ -897,12 +876,7 @@ public class StringPlaceholders extends PlaceholderExpansion {
                 }
                 return "";
             }
-            /*
-             * Returns the level of a potion effect. 0 based.
-             * @author DuneSciFye
-             * @since 2.1.1
-             * @param Potion Effect
-             */
+            // Returns the level of a potion effect. 0 based.
             case "potioneffectlevel" -> {
                 String[] params = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
                 if (p == null || params.length < 1) return null;
@@ -916,11 +890,7 @@ public class StringPlaceholders extends PlaceholderExpansion {
                 return String.valueOf(potionEffect.getAmplifier());
 
             }
-            /*
-             * Returns the Duration of a potion effect.
-             * @author DuneSciFye
-             * @param Potion Effect
-             */
+            // Returns the Duration of a potion effect.
             case "potioneffectduration" -> {
                 String[] params = StringUtils.splitByWholeSeparatorPreserveAllTokens(arguments, separator);
                 if (p == null || params.length < 1) return null;

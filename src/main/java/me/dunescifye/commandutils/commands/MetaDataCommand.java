@@ -11,62 +11,63 @@ import org.bukkit.metadata.MetadataValue;
 
 import java.util.List;
 
-public class MetaDataCommand extends Command implements Registerable {
-  @Override
-  public void register() {
+public class MetaDataCommand extends Command {
 
-    LiteralArgument setArg = new LiteralArgument("set");
-    LiteralArgument removeArg = new LiteralArgument("remove");
-    LiteralArgument listArg = new LiteralArgument("list");
-    EntitySelectorArgument.OneEntity entityArg = new EntitySelectorArgument.OneEntity("Entity");
-    StringArgument keyArg = new StringArgument("Key");
-    StringArgument valueArg = new  StringArgument("Value");
+    @Override
+    public void register() {
 
-    new CommandTree("metadata")
-      .then(setArg
-        .then(entityArg
-          .then(keyArg
-            .then(valueArg
-              .executes((sender, args) -> {
-                Entity e = args.getByArgument(entityArg);
-                String key = args.getByArgument(keyArg);
-                String value = args.getByArgument(valueArg);
+        LiteralArgument setArg = new LiteralArgument("set");
+        LiteralArgument removeArg = new LiteralArgument("remove");
+        LiteralArgument listArg = new LiteralArgument("list");
+        EntitySelectorArgument.OneEntity entityArg = new EntitySelectorArgument.OneEntity("Entity");
+        StringArgument keyArg = new StringArgument("Key");
+        StringArgument valueArg = new  StringArgument("Value");
 
-                e.setMetadata(key, new FixedMetadataValue(CommandUtils.getInstance(), value));
-              })
+        new CommandTree("metadata")
+            .then(setArg
+                .then(entityArg
+                    .then(keyArg
+                        .then(valueArg
+                            .executes((sender, args) -> {
+                                Entity e = args.getByArgument(entityArg);
+                                String key = args.getByArgument(keyArg);
+                                String value = args.getByArgument(valueArg);
+
+                                e.setMetadata(key, new FixedMetadataValue(CommandUtils.getInstance(), value));
+                            })
+                        )
+                    )
+                )
             )
-          )
-        )
-      )
-      .then(removeArg
-        .then(entityArg
-          .then(keyArg
-            .executes((sender, args) -> {
-              Entity e = args.getByArgument(entityArg);
-              String key = args.getByArgument(keyArg);
+            .then(removeArg
+                .then(entityArg
+                    .then(keyArg
+                        .executes((sender, args) -> {
+                            Entity e = args.getByArgument(entityArg);
+                            String key = args.getByArgument(keyArg);
 
-              e.removeMetadata(key, CommandUtils.getInstance());
-            })
-          )
-        )
-      )
-      .then(listArg
-        .then(entityArg
-          .then(keyArg
-            .executes((sender, args) -> {
-              Entity e = args.getByArgument(entityArg);
-              String key = args.getByArgument(keyArg);
+                            e.removeMetadata(key, CommandUtils.getInstance());
+                        })
+                    )
+                )
+            )
+            .then(listArg
+                .then(entityArg
+                    .then(keyArg
+                        .executes((sender, args) -> {
+                            Entity e = args.getByArgument(entityArg);
+                            String key = args.getByArgument(keyArg);
 
-              List<MetadataValue> values = e.getMetadata(key);
-              List<String> stringValues = values.stream().map(MetadataValue::asString).toList();
+                            List<MetadataValue> values = e.getMetadata(key);
+                            List<String> stringValues = values.stream().map(MetadataValue::asString).toList();
 
-              sender.sendMessage(String.join(", ", stringValues));
-            })
-          )
-        )
-      )
-      .withPermission(this.getPermission())
-      .withAliases(this.getCommandAliases())
-      .register(this.getNamespace());
-  }
+                            sender.sendMessage(String.join(", ", stringValues));
+                        })
+                    )
+                )
+            )
+            .withPermission(this.getPermission())
+            .withAliases(this.getCommandAliases())
+            .register(this.getNamespace());
+    }
 }

@@ -16,16 +16,16 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class PreventMixInventoryCommand extends Command implements Registerable {
+public class PreventMixInventoryCommand extends Command {
 
 
   public static final HashMap<UUID, BukkitTask> tasks = new HashMap<>();
   public static final HashMap<UUID, String[]> commands = new HashMap<>();
 
-  @Override
+    @Override
   public void register() {
 
-    Argument<Duration> durationArg = Utils.timeArgument("Duration");
+    Argument<Duration> durationArg = ArgumentUtils.timeArgument("Duration");
     TextArgument commandSeparatorArg = new TextArgument("Command Separator");
     GreedyStringArgument commandsArg = new GreedyStringArgument("Commands");
 

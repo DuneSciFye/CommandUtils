@@ -4,25 +4,24 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import org.bukkit.entity.Entity;
 
-public class MountCommand extends Command implements Registerable {
+public class MountCommand extends Command {
 
+    @Override
+    public void register() {
 
-  @Override
-  public void register() {
+        EntitySelectorArgument.OneEntity riderArg = new  EntitySelectorArgument.OneEntity("Rider");
+        EntitySelectorArgument.OneEntity mountedArg = new  EntitySelectorArgument.OneEntity("Mounted");
 
-    EntitySelectorArgument.OneEntity riderArg = new  EntitySelectorArgument.OneEntity("Rider");
-    EntitySelectorArgument.OneEntity mountedArg = new  EntitySelectorArgument.OneEntity("Mounted");
+        new CommandAPICommand("mount")
+            .withArguments(riderArg, mountedArg)
+            .executes((sender, args) -> {
+                Entity rider = args.getByArgument(riderArg);
+                Entity mounted = args.getByArgument(mountedArg);
 
-    new CommandAPICommand("mount")
-      .withArguments(riderArg, mountedArg)
-      .executes((sender, args) -> {
-        Entity rider = args.getByArgument(riderArg);
-        Entity mounted = args.getByArgument(mountedArg);
-
-        mounted.addPassenger(rider);
-      })
-      .withAliases(this.getCommandAliases())
-      .withPermission(this.getPermission())
-      .register(this.getNamespace());
-  }
+                mounted.addPassenger(rider);
+            })
+            .withAliases(this.getCommandAliases())
+            .withPermission(this.getPermission())
+            .register(this.getNamespace());
+    }
 }

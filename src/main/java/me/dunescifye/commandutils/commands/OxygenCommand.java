@@ -6,13 +6,13 @@ import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.MultiLiteralArgument;
 import org.bukkit.entity.Player;
 
-public class OxygenCommand extends Command implements Registerable {
+public class OxygenCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {
 
-      EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
+        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "set", "add", "remove", "get");
         IntegerArgument amountArg = new IntegerArgument("Amount");
 

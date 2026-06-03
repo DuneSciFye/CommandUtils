@@ -9,7 +9,7 @@ import org.bukkit.util.Vector;
 
 import java.util.Collection;
 
-public class PushEntityCommand extends Command implements Registerable {
+public class PushEntityCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {

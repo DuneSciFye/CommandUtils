@@ -1,7 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.commandutils.CommandUtils;
@@ -13,11 +12,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public class IfCommand extends Command implements Configurable {
+public class IfCommand extends Command  {
     private static String elseIfKeyword, elseKeyword, commandSeparator, conditionSeparator;
 
     @SuppressWarnings("ConstantConditions")
-    public void register (YamlDocument config) {
+    public void register() {
+        YamlDocument config = this.getConfig();
 
         Logger logger = CommandUtils.getInstance().getLogger();
 
@@ -58,75 +58,16 @@ public class IfCommand extends Command implements Configurable {
 
         GreedyStringArgument argumentsArg = new GreedyStringArgument("Arguments");
 
-        new CommandAPICommand("if")
+        createCommand()
             .withArguments(argumentsArg)
             .executes((sender, args) -> {
                 Utils.runConsoleCommands(parseIf(args.getByArgument(argumentsArg)).split(commandSeparator));
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }
 
     public static String parseIf(String arguments) {
-        ArrayList<String> inputSplit = new ArrayList<>(List.of(arguments.split(" " + elseIfKeyword + " ")));
-        String[] elseSplit = inputSplit.removeLast().split(" " + elseKeyword + " ", 2);
-        inputSplit.add(elseSplit[0]);
-        String elseCmd = null;
-        if (elseSplit.length > 1) {
-            elseCmd = elseSplit[1];
-        }
-
-        //If and Else If's
-        elseif: for (String elseif : inputSplit) {
-            String[] argSplit = elseif.split(conditionSeparator, 3);
-            if (argSplit.length == 1) argSplit = argSplit[0].split("'", 3);
-            if (argSplit.length == 1) argSplit = (" " + argSplit[0]).split(" ", 3);
-            if (argSplit.length != 3) continue;
-
-            for (String conditions : argSplit[1].split("&&| and ")) {
-                try {
-                    if (conditions.contains("!=")) {
-                        String[] condition = conditions.split("!=", 2);
-                        if (Objects.equals(condition[0].trim(), condition[1].trim())) continue elseif;
-                    } else if (conditions.contains(">=")) {
-                        String[] condition = conditions.split(">=", 2);
-                        if (!(Double.parseDouble(condition[0].trim()) >= Double.parseDouble(condition[1].trim()))) continue elseif;
-                    } else if (conditions.contains("<=")) {
-                        String[] condition = conditions.split("<=", 2);
-                        if (!(Double.parseDouble(condition[0]) <= Double.parseDouble(condition[1]))) continue elseif;
-                    } else if (conditions.contains(">")) {
-                        String[] condition = conditions.split(">", 2);
-                        if (!(Double.parseDouble(condition[0]) > Double.parseDouble(condition[1]))) continue elseif;
-                    } else if (conditions.contains("<")) {
-                        String[] condition = conditions.split("<", 2);
-                        if (!(Double.parseDouble(condition[0]) < Double.parseDouble(condition[1]))) continue elseif;
-                    } else if (conditions.contains("==")) {
-                        String[] condition = conditions.split("==", 2);
-                        if (!Objects.equals(condition[0], condition[1])) continue elseif;
-                    } else if (conditions.contains("=")) {
-                        String[] condition = conditions.split("=", 2);
-                        if (!Objects.equals(condition[0], condition[1])) continue elseif;
-                    } else if (conditions.contains(" !contains ")) {
-                        String[] condition = conditions.split(" !contains ", 2);
-                        if (condition[0].contains(condition[1])) continue elseif;
-                    } else if (conditions.contains(" contains ")) {
-                        String[] condition = conditions.split(" contains ", 2);
-                        if (!condition[0].contains(condition[1])) continue elseif;
-                    }
-                } catch (IllegalArgumentException ignored) {
-                    continue elseif;
-                }
-            }
-            return argSplit[2].trim();
-        }
-
-        //Else
-        return elseCmd == null ? "" : elseCmd;
-    }
-    public static String parseIf(String arguments, Player p, String placeholderSurrounder) {
-        arguments = PlaceholderAPI.setPlaceholders(p, arguments.replace(placeholderSurrounder, "%"));
         ArrayList<String> inputSplit = new ArrayList<>(List.of(arguments.split(" " + elseIfKeyword + " ")));
         String[] elseSplit = inputSplit.removeLast().split(" " + elseKeyword + " ", 2);
         inputSplit.add(elseSplit[0]);
@@ -172,14 +113,17 @@ public class IfCommand extends Command implements Configurable {
                         String[] condition = conditions.split(" contains ", 2);
                         if (!condition[0].trim().contains(condition[1].trim())) continue elseif;
                     }
-                } catch (IllegalArgumentException | NullPointerException e) {
+                } catch (IllegalArgumentException | NullPointerException ignored) {
                     continue elseif;
                 }
             }
-            return argSplit[2];
+            return argSplit[2].trim();
         }
 
         //Else
         return elseCmd == null ? "" : elseCmd;
+    }
+    public static String parseIf(String arguments, Player p, String placeholderSurrounder) {
+        return parseIf(PlaceholderAPI.setPlaceholders(p, arguments.replace(placeholderSurrounder, "%")));
     }
 }
