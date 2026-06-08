@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static me.dunescifye.commandutils.files.Config.getPrefix;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
 
 public class CooldownCommandCommand extends Command {
 
@@ -33,7 +34,6 @@ public class CooldownCommandCommand extends Command {
         cooldownMessageSeconds = this.getConfig().getOptionalString("Commands.CooldownCommand.CooldownMessages.Seconds").orElse("&cOn Cooldown for %seconds%s.");
         cooldownMessageMilliseconds = this.getConfig().getOptionalString("Commands.CooldownCommand.CooldownMessages.Milliseconds").orElse("&cOn Cooldown for 0.%milliseconds%s.");
 
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         StringArgument idArg = new StringArgument("ID");
         MultiLiteralArgument resetArg = new MultiLiteralArgument("Function", "reset", "clear");
         MultiLiteralArgument runArg = new MultiLiteralArgument("Function", "run", "silent", "global");
@@ -46,15 +46,15 @@ public class CooldownCommandCommand extends Command {
         LiteralArgument globalArg = new LiteralArgument("global");
 
         createCommand()
-            .withArguments(playerArg, idArg, timeArg, commandsArg)
+            .withArguments(playerArg(), idArg, timeArg, commandsArg)
             .withOptionalArguments(commandSeparatorArg)
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
+                Player player = args.getUnchecked("Player");
                 String id = args.getByArgument(idArg);
-                HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p.getUniqueId().toString(), k -> new HashMap<>());
+                HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(player.getUniqueId().toString(), k -> new HashMap<>());
 
                 if (hasCooldown(playerCDs, id))
-                    p.sendActionBar(getCooldownMessage(p, getRemainingCooldown(playerCDs, id)));
+                    player.sendActionBar(getCooldownMessage(player, getRemainingCooldown(playerCDs, id)));
                 else {
                     setCooldown(playerCDs, id, args.getUnchecked("Time"));
                     Utils.runConsoleCommands(args.getByArgument(commandsArg).split(args.getByArgumentOrDefault(commandSeparatorArg, ",,")));
@@ -63,19 +63,19 @@ public class CooldownCommandCommand extends Command {
             .register(this.getNamespace());
 
         createCommand()
-            .withArguments(run2Arg, playerArg, idArg, timeArg, commands2Arg)
+            .withArguments(run2Arg, playerArg(), idArg, timeArg, commands2Arg)
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
+                Player player = args.getUnchecked("Player");
                 String id = args.getByArgument(idArg);
                 Duration time = args.getUnchecked("Time");
                 String message = args.getByArgument(commands2Arg);
                 String[] commands = message.split(",,");
-                HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p.getUniqueId().toString(), k -> new HashMap<>());
+                HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(player.getUniqueId().toString(), k -> new HashMap<>());
 
                 switch (args.getByArgument(run2Arg)) {
                     case "run2" -> {
                         if (hasCooldown(playerCDs, id))
-                            p.sendActionBar(getCooldownMessage(p, getRemainingCooldown(playerCDs, id)));
+                            player.sendActionBar(getCooldownMessage(player, getRemainingCooldown(playerCDs, id)));
                         else {
                             setCooldown(playerCDs, id, time);
                             Utils.runConsoleCommands(commands);
@@ -90,30 +90,21 @@ public class CooldownCommandCommand extends Command {
             })
             .register(this.getNamespace());
 
-        /*
-         * Runs a Cooldown Command with various functions
-         * @author DuneSciFye
-         * @since 2.2.2
-         * @param Function to run
-         * @param Player to target
-         * @param ID of the command
-         * @param Ticks of the cooldown
-         * @param Commands to be run
-         */
+        // Runs a Cooldown Command with various functions
         createCommand()
-            .withArguments(runArg, playerArg, idArg, timeArg, commandsArg)
+            .withArguments(runArg, playerArg(), idArg, timeArg, commandsArg)
             .withOptionalArguments(commandSeparatorArg)
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
+                Player player = args.getUnchecked("Player");
                 String id = args.getByArgument(idArg);
                 Duration time = args.getUnchecked("Time");
                 String[] commands = args.getByArgument(commandsArg).split(args.getByArgumentOrDefault(commandSeparatorArg, ",,"));
-                HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p.getUniqueId().toString(), k -> new HashMap<>());
+                HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(player.getUniqueId().toString(), k -> new HashMap<>());
 
                 switch (args.getByArgument(runArg)) {
                     case "run" -> {
                         if (hasCooldown(playerCDs, id))
-                            p.sendActionBar(getCooldownMessage(p, getRemainingCooldown(playerCDs, id)));
+                            player.sendActionBar(getCooldownMessage(player, getRemainingCooldown(playerCDs, id)));
                         else {
                             setCooldown(playerCDs, id, time);
                             Utils.runConsoleCommands(commands);
@@ -126,7 +117,7 @@ public class CooldownCommandCommand extends Command {
                     }
                     case "global" -> {
                         if (hasCooldown(globalCooldowns, id))
-                            p.sendActionBar(getCooldownMessage(p, getRemainingCooldown(globalCooldowns, id)));
+                            player.sendActionBar(getCooldownMessage(player, getRemainingCooldown(globalCooldowns, id)));
                         else {
                             setCooldown(globalCooldowns, id, time);
                             Utils.runConsoleCommands(commands);
@@ -138,29 +129,29 @@ public class CooldownCommandCommand extends Command {
 
         new CommandTree("cooldowncommand")
             .then(resetArg
-                .then(playerArg
+                .then(playerArg()
                     .executes((sender, args) -> {
-                        Player p = args.getByArgument(playerArg);
-                        cooldowns.remove(p.getUniqueId().toString());
+                        Player player = args.getUnchecked("Player");
+                        cooldowns.remove(player.getUniqueId().toString());
                     })
                     .then(idArg
                         .executes((sender, args) -> {
-                            Player p = args.getByArgument(playerArg);
-                            HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p.getUniqueId().toString(), k -> new HashMap<>());
+                            Player player = args.getUnchecked("Player");
+                            HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(player.getUniqueId().toString(), k -> new HashMap<>());
                             playerCDs.remove(args.getByArgument(idArg));
                         })
                     )
                 )
             )
             .then(getCooldownArg
-                .then(playerArg
+                .then(playerArg()
                     .then(idArg
                         .executes((sender, args) -> {
-                            Player p = args.getByArgument(playerArg);
+                            Player player = args.getUnchecked("Player");
                             String id = args.getByArgument(idArg);
-                            HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(p.getUniqueId().toString(), k -> new HashMap<>());
+                            HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(player.getUniqueId().toString(), k -> new HashMap<>());
 
-                            sender.sendMessage(getCooldownMessage(p, getRemainingCooldown(playerCDs, id)));
+                            sender.sendMessage(getCooldownMessage(player, getRemainingCooldown(playerCDs, id)));
                         })
                     )
                 )

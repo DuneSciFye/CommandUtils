@@ -1,7 +1,6 @@
 package me.dunescifye.commandutils.listeners;
 
 import me.dunescifye.commandutils.CommandUtils;
-import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;

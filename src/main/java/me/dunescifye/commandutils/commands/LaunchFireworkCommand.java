@@ -1,10 +1,8 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
-import dev.jorel.commandapi.executors.ExecutorType;
 import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -16,6 +14,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
+
 public class LaunchFireworkCommand extends Command {
 
 
@@ -24,7 +24,6 @@ public class LaunchFireworkCommand extends Command {
 
         this.addCommandAliases(new String[]{"spawnfirework", "summonfirework"});
 
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument ticksToDetonateArg = new IntegerArgument("Ticks To Detonate");
         IntegerArgument fireworkPowerArg = new IntegerArgument("Firework Power");
         IntegerArgument redColorArg = new IntegerArgument("Red RGB");
@@ -35,14 +34,11 @@ public class LaunchFireworkCommand extends Command {
 
         // Single Color
         createCommand()
-          .withArguments(playerArg)
-          .withArguments(ticksToDetonateArg)
-          .withArguments(noDamageArg)
-          .withArguments(rgbArg)
+          .withArguments(playerArg(), ticksToDetonateArg, noDamageArg, rgbArg)
           .withOptionalArguments(fireworkPowerArg)
           .executes((sender, args) -> {
               launchFirework(
-                args.getByArgument(playerArg),
+                args.getUnchecked("Player"),
                 Color.fromRGB(args.getByArgument(rgbArg)),
                 args.getByArgumentOrDefault(fireworkPowerArg, 1),
                 args.getByArgument(ticksToDetonateArg),
@@ -53,14 +49,13 @@ public class LaunchFireworkCommand extends Command {
 
         // RGB Options
         createCommand()
-            .withArguments(playerArg)
-            .withOptionalArguments(ticksToDetonateArg)
-            .withOptionalArguments(noDamageArg)
+            .withArguments(playerArg())
+            .withOptionalArguments(ticksToDetonateArg, noDamageArg)
             .withOptionalArguments(redColorArg.combineWith(greenColorArg).combineWith(blueColorArg))
             .withOptionalArguments(fireworkPowerArg)
             .executes((sender, args) -> {
                 launchFirework(
-                    args.getByArgument(playerArg),
+                    args.getUnchecked("Player"),
                     Color.fromRGB(
                         args.getByArgumentOrDefault(redColorArg, ThreadLocalRandom.current().nextInt(0, 256)),
                         args.getByArgumentOrDefault(greenColorArg, ThreadLocalRandom.current().nextInt(0, 256)),

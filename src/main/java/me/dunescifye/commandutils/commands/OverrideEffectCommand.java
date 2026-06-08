@@ -1,13 +1,14 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.dejvokep.boostedyaml.YamlDocument;
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
+
+import static me.dunescifye.commandutils.utils.ArgumentUtils.durationArg;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
 
 public class OverrideEffectCommand extends Command {
 
@@ -16,31 +17,23 @@ public class OverrideEffectCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "override", "retrieve", "remove");
         StringArgument idArg = new StringArgument("ID");
         PotionEffectArgument effectArg = new PotionEffectArgument("Effect");
-        IntegerArgument durationArg = new IntegerArgument("Duration", 0);
         LiteralArgument infiniteArg = new LiteralArgument("infinite");
         IntegerArgument amplifierArg = new IntegerArgument("Level", 0);
         BooleanArgument hideParticlesArg = new BooleanArgument("Hide Particles");
         BooleanArgument ambientArg = new BooleanArgument("Ambient");
         BooleanArgument iconArg = new BooleanArgument("Show Icon");
 
-        new CommandAPICommand("overrideeffect")
-            .withArguments(functionArg)
-            .withArguments(idArg)
-            .withArguments(playerArg)
-            .withArguments(effectArg)
-            .withOptionalArguments(durationArg)
-            .withOptionalArguments(amplifierArg)
-            .withOptionalArguments(hideParticlesArg)
-            .withOptionalArguments(ambientArg)
+        createCommand()
+            .withArguments(functionArg, idArg, playerArg(), effectArg)
+            .withOptionalArguments(durationArg(), amplifierArg, hideParticlesArg, ambientArg)
             .executes((sender, args) -> {
-                Player player = args.getByArgument(playerArg);
+                Player player = args.getUnchecked("Player");
                 String id = args.getByArgument(idArg);
                 PotionEffectType effectType = args.getByArgument(effectArg);
-                int duration = args.getByArgumentOrDefault(durationArg, 30);
+                int duration = args.getOrDefaultUnchecked("Duration", 30);
                 int amplifier = args.getByArgumentOrDefault(amplifierArg, 0);
                 boolean hideParticles = args.getByArgumentOrDefault(hideParticlesArg, false);
                 boolean ambient = args.getByArgumentOrDefault(ambientArg, false);
@@ -68,21 +61,13 @@ public class OverrideEffectCommand extends Command {
                         potionEffects.remove(id);
                 }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        new CommandAPICommand("overrideeffect")
-            .withArguments(functionArg)
-            .withArguments(idArg)
-            .withArguments(playerArg)
-            .withArguments(effectArg)
-            .withOptionalArguments(infiniteArg)
-            .withOptionalArguments(amplifierArg)
-            .withOptionalArguments(hideParticlesArg)
-            .withOptionalArguments(ambientArg)
+        createCommand()
+            .withArguments(functionArg, idArg, playerArg(), effectArg)
+            .withOptionalArguments(infiniteArg, amplifierArg, hideParticlesArg, ambientArg)
             .executes((sender, args) -> {
-                Player player = args.getByArgument(playerArg);
+                Player player = args.getUnchecked("Player");
                 String id = args.getByArgument(idArg);
                 PotionEffectType effectType = args.getByArgument(effectArg);
                 int amplifier = args.getByArgumentOrDefault(amplifierArg, 0);
@@ -112,8 +97,6 @@ public class OverrideEffectCommand extends Command {
                         potionEffects.remove(id);
                 }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 }

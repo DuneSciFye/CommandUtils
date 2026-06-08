@@ -17,7 +17,7 @@ import static me.dunescifye.commandutils.utils.Utils_21_4.equipmentSlotGroupArgu
 
 public class ItemAttributeCommand extends Command {
 
-    @SuppressWarnings({"ConstantConditions", "UnstableApiUsage"})
+    @SuppressWarnings("ConstantConditions")
     public void register() {
 
         LiteralArgument addArg = new LiteralArgument("add");

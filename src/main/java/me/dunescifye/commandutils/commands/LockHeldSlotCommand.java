@@ -1,7 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.executors.ExecutorType;
 import me.dunescifye.commandutils.CommandUtils;
@@ -17,6 +15,8 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.UUID;
 
+import static me.dunescifye.commandutils.utils.ArgumentUtils.durationArg;
+
 public class LockHeldSlotCommand extends Command implements Listener {
 
     private final HashMap<UUID, BukkitTask> tasks = new HashMap<>();
@@ -24,19 +24,18 @@ public class LockHeldSlotCommand extends Command implements Listener {
     @Override
     public void register() {
 
-        Argument<Duration> durationArg = ArgumentUtils.timeArgument("Duration");
         IntegerArgument slotArg = new IntegerArgument("Slot", 0, 8);
 
         createCommand()
-            .withArguments(durationArg)
+            .withArguments(durationArg())
             .withOptionalArguments(slotArg)
             .executes((sender, args) -> {
-                Player p = ArgumentUtils.getPlayer(sender);
+                Player player = ArgumentUtils.getPlayer(sender);
                 Duration duration = args.getUnchecked("Duration");
-                UUID uuid = p.getUniqueId();
+                UUID uuid = player.getUniqueId();
 
                 final Integer slot = args.getUnchecked("Slot");
-                if (slot != null) p.getInventory().setHeldItemSlot(slot);
+                if (slot != null) player.getInventory().setHeldItemSlot(slot);
 
                 BukkitTask task = new BukkitRunnable() {
                     @Override
@@ -52,7 +51,7 @@ public class LockHeldSlotCommand extends Command implements Listener {
     }
 
     @EventHandler
-    public void onPlayerJump(PlayerItemHeldEvent e) {
+    public void onPlayerSwitch(PlayerItemHeldEvent e) {
         if (tasks.containsKey(e.getPlayer().getUniqueId())) e.setCancelled(true);
     }
 }

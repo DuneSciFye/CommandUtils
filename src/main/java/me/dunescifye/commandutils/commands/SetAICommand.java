@@ -17,7 +17,7 @@ public class SetAICommand extends Command {
         BooleanArgument hasAIArg = new BooleanArgument("Has AI");
 
         // Sets an Entities AI
-        new CommandAPICommand("setai")
+        createCommand()
             .withArguments(entitiesArg(), hasAIArg)
             .executes((sender, args) -> {
                 Collection<Entity> entities = args.getUnchecked("Entities");

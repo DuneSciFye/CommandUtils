@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.executors.ExecutorType;
 import dev.jorel.commandapi.wrappers.ParticleData;
@@ -43,14 +42,14 @@ public class LaunchProjectileCommand extends Command {
           .withOptionalArguments(maxAliveArg)
           .withOptionalArguments(particleArg.combineWith(periodArg))
           .executes((sender, args) -> {
-              final Player p = ArgumentUtils.getPlayer(sender);
-              final String type = args.getByArgument(projArg);
-              final ParticleData<?> particleData = args.getByArgument(particleArg);
+              Player player = ArgumentUtils.getPlayer(sender);
+              String type = args.getByArgument(projArg);
+              ParticleData<?> particleData = args.getByArgument(particleArg);
 
-              final Projectile proj = summonProjectile(type, p);
+              Projectile proj = summonProjectile(type, player);
 
               if (proj != null && particleData != null) {
-                  final Particle particle = particleData.particle();
+                  Particle particle = particleData.particle();
                   // Needs to be node name or immutable map error
                   long period = ((Duration) args.get("Period")).toMillis() / 50;
                   final World world = proj.getWorld();

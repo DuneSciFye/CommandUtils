@@ -15,7 +15,7 @@ public class ExperienceTracker implements Listener {
 
 
     private static final HashMap<Player, ExperienceOrb.SpawnReason> spawnReasons = new HashMap<>();
-    private static HashMap<Player, BukkitTask> tasks = new HashMap<>();
+    private static final HashMap<Player, BukkitTask> tasks = new HashMap<>();
 
     public void experienceHandler(CommandUtils plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);

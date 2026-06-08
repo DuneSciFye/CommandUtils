@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.ArgumentUtils;
@@ -16,8 +15,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.commandWhitelistArgument;
-import static me.dunescifye.commandutils.utils.ArgumentUtils.materialsArgument;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 import static me.dunescifye.commandutils.utils.Utils.getBlocksInFacingXYZ;
 
 public class ReplaceInXYZCommand extends Command {
@@ -32,16 +30,15 @@ public class ReplaceInXYZCommand extends Command {
         IntegerArgument yArg = new IntegerArgument("Y", 0);
         IntegerArgument zArg = new IntegerArgument("Z", 0);
         BooleanArgument applyPhysicsArg = new BooleanArgument("Apply Physics");
-        Argument<List<List<Predicate<Block>>>> commandWhitelistArg = commandWhitelistArgument("Blocks To Replace From");
         Argument<List<Material>> materialsArg = materialsArgument("Blocks To Replace To");
         Argument<Duration> timeArg = ArgumentUtils.timeArgument("Time");
 
 
-        new CommandAPICommand("replaceinxyz")
-            .withArguments(worldArg, locArg, playerArg, xArg, yArg, zArg, commandWhitelistArg, materialsArg)
+        createCommand()
+            .withArguments(worldArg, locArg, playerArg, xArg, yArg, zArg, whitelistedBlocksArg(), materialsArg)
             .withOptionalArguments(applyPhysicsArg, timeArg)
             .executes((sender, args) -> {
-                List<List<Predicate<Block>>> predicates = args.getUnchecked("Blocks To Replace From");
+                List<List<Predicate<Block>>> predicates = args.getUnchecked("Whitelisted Blocks");
                 Block origin = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
                 Player p = args.getByArgument(playerArg);
                 List<Material> blocksTo = args.getUnchecked("Blocks To Replace To");
@@ -60,8 +57,6 @@ public class ReplaceInXYZCommand extends Command {
                     }
                 }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 }

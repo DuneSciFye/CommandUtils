@@ -2,7 +2,6 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.executors.CommandArguments;
-import me.dunescifye.commandutils.files.Config;
 import me.dunescifye.commandutils.utils.BlockUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.*;
@@ -13,33 +12,19 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static me.dunescifye.commandutils.files.Config.getPredicate;
-import static me.dunescifye.commandutils.utils.ArgumentUtils.bukkitWorldArgument;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 @SuppressWarnings("ConstantConditions")
 public class BreakInFacingCommand extends Command {
 
     public void register() {
 
-        Argument<World> worldArg = bukkitWorldArgument("World");
-        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
-        IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        IntegerArgument depthArg = new IntegerArgument("Depth", 0);
-        LiteralArgument whitelistArg = new LiteralArgument("whitelist");
-        StringArgument whitelistedBlocksArgument = new StringArgument("Whitelisted Blocks");
         LiteralArgument forceDropArg = new LiteralArgument("forcedrop");
         ItemStackArgument dropArg = new ItemStackArgument("Drop");
 
         // Breaks all blocks
         createCommand()
-            .withArguments(
-                worldArg,
-                locArg,
-                playerArg,
-                radiusArg,
-                depthArg
-            )
+            .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), depthArg())
             .executes((sender, args) -> {
                 breakInFacing(args, null, false, null);
             })
@@ -47,113 +32,29 @@ public class BreakInFacingCommand extends Command {
 
         // Breaks with Command defined whitelist
         createCommand()
-            .withArguments(
-                worldArg,
-                locArg,
-                playerArg,
-                radiusArg,
-                depthArg,
-                whitelistArg,
-                new ListArgumentBuilder<String>("Whitelisted Blocks")
-                    .withList(Utils.getPredicatesList())
-                    .withStringMapper()
-                    .buildText()
-            )
+            .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), depthArg(), whitelistedBlocksArg())
             .executes((sender, args) -> {
-                breakInFacing(args, Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks")), false, null);
+                breakInFacing(args, args.getUnchecked("Whitelisted Blocks"), false, null);
             })
             .register(this.getNamespace());
 
         // Breaks with Command defined whitelist and custom item drop
         createCommand()
-            .withArguments(
-                worldArg,
-                locArg,
-                playerArg,
-                radiusArg,
-                depthArg,
-                whitelistArg,
-                new ListArgumentBuilder<String>("Whitelisted Blocks")
-                    .withList(Utils.getPredicatesList())
-                    .withStringMapper()
-                    .buildText(),
-                dropArg
-            )
+            .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), depthArg(), whitelistedBlocksArg(), dropArg)
             .executes((sender, args) -> {
-                breakInFacing(args, Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks")), false,
+                breakInFacing(args, args.getUnchecked("Whitelisted Blocks"), false,
                     args.getByArgument(dropArg));
             })
             .register(this.getNamespace());
 
         // Breaks with Command defined whitelist and force drop
         createCommand()
-            .withArguments(
-                worldArg,
-                locArg,
-                playerArg,
-                radiusArg,
-                depthArg,
-                whitelistArg,
-                new ListArgumentBuilder<String>("Whitelisted Blocks")
-                    .withList(Utils.getPredicatesList())
-                    .withStringMapper()
-                    .buildText(),
-                forceDropArg
-            )
+            .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), depthArg(), whitelistedBlocksArg(), forceDropArg)
             .executes((sender, args) -> {
                 breakInFacing(args, Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks")), true, null);
             })
             .register(this.getNamespace());
 
-        // Breaks with Predicate defined whitelist
-        createCommand()
-            .withArguments(
-                worldArg,
-                locArg,
-                playerArg,
-                radiusArg,
-                depthArg,
-                whitelistedBlocksArgument
-                    .replaceSuggestions(ArgumentSuggestions.strings(Config.getPredicates()))
-            )
-            .executes((sender, args) -> {
-                breakInFacing(args, getPredicate(args.getByArgument(whitelistedBlocksArgument)), false, null);
-            })
-            .register(this.getNamespace());
-
-        // Breaks with Predicate defined whitelist and custom item drop
-        createCommand()
-            .withArguments(
-                worldArg,
-                locArg,
-                playerArg,
-                radiusArg,
-                depthArg,
-                whitelistedBlocksArgument
-                    .replaceSuggestions(ArgumentSuggestions.strings(Config.getPredicates())),
-                dropArg
-            )
-            .executes((sender, args) -> {
-                breakInFacing(args, getPredicate(args.getByArgument(whitelistedBlocksArgument)), false, args.getByArgument(dropArg));
-            })
-            .register(this.getNamespace());
-
-        // Breaks with Predicate defined whitelist and force drop
-        createCommand()
-            .withArguments(
-                worldArg,
-                locArg,
-                playerArg,
-                radiusArg,
-                depthArg,
-                whitelistedBlocksArgument
-                    .replaceSuggestions(ArgumentSuggestions.strings(Config.getPredicates())),
-                forceDropArg
-            )
-            .executes((sender, args) -> {
-                breakInFacing(args, getPredicate(args.getByArgument(whitelistedBlocksArgument)), true, null);
-            })
-            .register(this.getNamespace());
     }
     private void breakInFacing(
         CommandArguments args,
@@ -161,9 +62,9 @@ public class BreakInFacingCommand extends Command {
         boolean forceDrop,
         ItemStack drop
     ) {
-        Location loc = (Location) args.get("Location");
-        loc.setWorld((World) args.get("World"));
-        Player player = (Player) args.get("Player");
+        Location loc = args.getUnchecked("Location");
+        loc.setWorld(args.getUnchecked("World"));
+        Player player = args.getUnchecked("Player");
 
         BlockUtils.BlockProvider provider = (origin, p) -> Utils.getBlocksInFacing(origin, (int) args.get("Radius"),
             (int) args.get("Depth"), p);

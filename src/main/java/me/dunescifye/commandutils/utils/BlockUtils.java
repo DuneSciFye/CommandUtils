@@ -112,7 +112,8 @@ public class BlockUtils {
     }
 
     // Gets triggered for each block
-    private void triggerActions(Block center, Block b, Player p, String[] functions, String placeholderSurrounder) {
+    private static void triggerActions(Block center, Block b, Player p, String[] functions,
+                                     String placeholderSurrounder) {
         Collection<ItemStack> drops = new ArrayList<>();
         boolean cancelled = false;
         for (String function : functions) {
@@ -207,9 +208,15 @@ public class BlockUtils {
                     function = function.replace("%block_y%", String.valueOf(b.getY()));
                     function = function.replace("%block_z%", String.valueOf(b.getZ()));
                     function = function.replace("%block%", b.getType().toString());
-                    function = function.replace("%item%", drops.stream().findFirst().get().getType().toString());
-                    function = function.replace("%item_lower%",
-                        drops.stream().findFirst().get().getType().toString().toLowerCase());
+                    if (function.contains("%item%") || function.contains("%item_lower%")) {
+                        ItemStack drop = drops.stream()
+                            .findFirst()
+                            .orElseThrow(() -> new IllegalStateException(
+                                "%item% placeholder used but no drops exist"));
+                        function = function.replace("%item%", drop.getType().toString());
+                        function = function.replace("%item_lower%",
+                            drop.getType().toString().toLowerCase());
+                    }
                     function = function.replace("%crop%", Utils.blockToCrop(b.getType().toString()));
                     function = PlaceholderAPI.setPlaceholders(p, function);
                     runConsoleCommands(function);

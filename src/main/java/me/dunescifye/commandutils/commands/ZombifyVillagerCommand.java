@@ -16,7 +16,7 @@ public class ZombifyVillagerCommand extends Command {
         createCommand()
             .withArguments(entitiesArg())
             .executes((sender, args) -> {
-                Collection<Entity> villagers = (Collection<Entity>) args.get("Entities");
+                Collection<Entity> villagers = args.getUnchecked("Entities");
 
                 for (Entity entity : villagers)
                     if (entity instanceof Villager villager)

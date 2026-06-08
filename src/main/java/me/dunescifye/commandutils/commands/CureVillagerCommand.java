@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import org.bukkit.entity.Entity;
@@ -8,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.ZombieVillager;
 
 import java.util.Collection;
+
+import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
 
 public class CureVillagerCommand extends Command {
 
@@ -17,16 +18,15 @@ public class CureVillagerCommand extends Command {
 
         EntitySelectorArgument.ManyEntities villagersArg = new EntitySelectorArgument.ManyEntities("Villagers");
         IntegerArgument conversionTimeArg = new IntegerArgument("Conversion Time");
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
 
         // Cures a Zombie Villager
         createCommand()
             .withArguments(villagersArg)
-            .withOptionalArguments(conversionTimeArg, playerArg)
+            .withOptionalArguments(conversionTimeArg, playerArg())
             .executes((sender, args) -> {
                 Collection<Entity> entities = args.getByArgument(villagersArg);
                 int conversionTime = args.getByArgumentOrDefault(conversionTimeArg, 0);
-                Player player = args.getByArgument(playerArg);
+                Player player = args.getUnchecked("Player");
 
                 for (Entity entity : entities) {
                     if (!(entity instanceof ZombieVillager zombieVillager)) continue;

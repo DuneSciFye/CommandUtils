@@ -433,6 +433,14 @@ public class StringPlaceholders extends PlaceholderExpansion {
                         }
                         return String.join("\n", lore);
                     }
+                    case "skullowner", "skullownername" -> {
+                        if (!(itemMeta instanceof SkullMeta skullMeta)) return "";
+                        return skullMeta.getOwningPlayer().getName();
+                    }
+                    case "skullowneruuid" -> {
+                        if (!(itemMeta instanceof SkullMeta skullMeta)) return "";
+                        return skullMeta.getOwningPlayer().getUniqueId().toString();
+                    }
                     default -> {
                         return "Invalid infotype";
                     }

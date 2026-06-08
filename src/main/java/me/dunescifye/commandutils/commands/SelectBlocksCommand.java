@@ -19,19 +19,12 @@ public class SelectBlocksCommand extends Command {
         GreedyStringArgument functionsArg = new GreedyStringArgument("Functions");
 
         createCommand()
-            .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), configPredicateArg(),
+            .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), whitelistedBlocksArg(),
                 commandSeparatorArg, placeholderSurrounderArg, customPlaceholdersArg, functionsArg)
             .executes((sender, args) -> {
-                BlockUtils.selectBlocks(args, (origin, player) -> Utils.getBlocksInRadius(origin, (int) args.get("Radius")));
+                BlockUtils.selectBlocks(args, (origin, player) -> Utils.getBlocksInRadius(origin, args.getUnchecked("Radius")));
             })
             .register(this.getNamespace());
 
-        createCommand()
-            .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), commandWhitelistArg(),
-                commandSeparatorArg, placeholderSurrounderArg, customPlaceholdersArg, functionsArg)
-            .executes((sender, args) -> {
-                BlockUtils.selectBlocks(args, (origin, player) -> Utils.getBlocksInRadius(origin, (int) args.get("Radius")));
-            })
-            .register(this.getNamespace());
     }
 }

@@ -32,8 +32,8 @@ public class ItemNameCommand extends Command {
         nameArg
       )
       .executes((sender, args) -> {
-        Player p = ArgumentUtils.getPlayer(sender);
-        ItemStack item = Utils.getInvItem(p, args.getByArgument(slotArg));
+        Player player = ArgumentUtils.getPlayer(sender);
+        ItemStack item = Utils.getInvItem(player, args.getByArgument(slotArg));
         String input = args.getByArgument(nameArg);
 
         ItemMeta meta = item.getItemMeta();
@@ -52,8 +52,8 @@ public class ItemNameCommand extends Command {
           .replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots()))
       )
       .executes((sender, args) -> {
-        Player p = ArgumentUtils.getPlayer(sender);
-        ItemStack item = Utils.getInvItem(p, args.getByArgument(slotArg));
+        Player player = ArgumentUtils.getPlayer(sender);
+        ItemStack item = Utils.getInvItem(player, args.getByArgument(slotArg));
 
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;

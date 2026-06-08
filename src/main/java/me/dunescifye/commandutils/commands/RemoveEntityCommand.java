@@ -1,12 +1,11 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.EntitySelectorArgument;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Mob;
 
 import java.util.Collection;
+
+import static me.dunescifye.commandutils.utils.ArgumentUtils.entitiesArg;
 
 public class RemoveEntityCommand extends Command {
 
@@ -14,23 +13,14 @@ public class RemoveEntityCommand extends Command {
     @Override
     public void register() {
 
-        EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
-
-        /*
-         * Removes an Entity without Death Animation or Drops
-         * @author DuneSciFye
-         * @since 2.1.2
-         * @param Entities to Remove
-         */
+        // Removes an Entity without Death Animation or Drops
         new CommandAPICommand("removeentity")
-            .withArguments(entitiesArg)
+            .withArguments(entitiesArg())
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getByArgument(entitiesArg);
+                Collection<Entity> entities = args.getUnchecked("Entities");
 
                 for (Entity entity : entities) entity.remove();
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 }

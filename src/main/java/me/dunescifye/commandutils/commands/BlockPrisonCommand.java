@@ -1,7 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.arguments.*;
-import me.dunescifye.commandutils.utils.ArgumentUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -18,18 +17,8 @@ public class BlockPrisonCommand extends Command {
 
         // Spawns a temporary block prison using SCore/ExecutableItems
         createCommand()
-            .withArguments(
-                ArgumentUtils.worldArg(),
-                blockLocArg(),
-                playerArg(),
-                blockStateArg(),
-                radiusArg(),
-                heightArg()
-            )
-            .withOptionalArguments(
-                durationArg(),
-                floorArg
-            )
+            .withArguments(worldArg(), blockLocArg(), playerArg(), blockStateArg(), radiusArg(), heightArg())
+            .withOptionalArguments(durationArg(), floorArg)
             .executes((sender, args) -> {
                 World world = (World) args.get("World");
                 Block block = world.getBlockAt((Location) args.get("Location"));

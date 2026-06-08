@@ -1,7 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.FUtils;
@@ -19,8 +18,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.bukkitWorldArgument;
-import static me.dunescifye.commandutils.utils.ArgumentUtils.commandWhitelistArgument;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 import static me.dunescifye.commandutils.utils.Utils.*;
 
 public class BreakInVeinCommand extends Command {
@@ -70,27 +68,18 @@ public class BreakInVeinCommand extends Command {
             config.set("Commands.BreakInVein.DefaultTriggerBlockBreakEvent", true);
         }
 
-        Argument<World> worldArg = bukkitWorldArgument("World");
-        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument maxBlocksArg = new IntegerArgument("Max Blocks");
         BooleanArgument checkClaimArg = new BooleanArgument("Check Claim");
         BooleanArgument triggerBlockBreakArg = new BooleanArgument("Trigger Block Break Event");
         BooleanArgument autoPickupArg = new BooleanArgument("Auto Pickup");
         BooleanArgument breakOriginalBlockArg = new BooleanArgument("Break Original Block");
-        Argument<List<List<Predicate<Block>>>> commandWhitelistArg = commandWhitelistArgument("Command Defined Whitelist");
+        BooleanArgument silkTouchArg = new BooleanArgument("Silk Touch");
 
         createCommand()
-            .withArguments(
-                worldArg,
-                locArg
-            )
-            .withOptionalArguments(
-                commandWhitelistArg,
-                maxBlocksArg
-            )
+            .withArguments(worldArg(), locArg())
+            .withOptionalArguments(whitelistedBlocksArg(), maxBlocksArg)
             .executes((sender, args) -> {
-                Location loc = args.getByArgument(locArg);
+                Location loc = args.getUnchecked("Location");
                 loc.setWorld((World) args.get("World"));
                 Block block = loc.getBlock();
                 Collection<ItemStack> drops = new ArrayList<>();
@@ -100,24 +89,22 @@ public class BreakInVeinCommand extends Command {
                     ),
                     List.of()
                 );
-                List<List<Predicate<Block>>> predicates = args.getOrDefaultUnchecked("Command Defined Whitelist", predicate);
+                List<List<Predicate<Block>>> predicates = args.getOrDefaultUnchecked("Whitelisted Blocks", predicate);
                 int maxSize = args.getByArgumentOrDefault(maxBlocksArg, defaultMaxBlocks);
 
                 getVeinOresBasic(block, drops, predicates, maxSize, new HashSet<>());
                 dropAllItemStacks(loc, drops);
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        new CommandAPICommand("breakinvein")
-            .withArguments(worldArg, locArg, playerArg)
-            .withOptionalArguments(commandWhitelistArg, triggerBlockBreakArg, maxBlocksArg, checkClaimArg, autoPickupArg, breakOriginalBlockArg)
+        createCommand()
+            .withArguments(worldArg(), locArg(), playerArg())
+            .withOptionalArguments(whitelistedBlocksArg(), triggerBlockBreakArg, maxBlocksArg, checkClaimArg, autoPickupArg, breakOriginalBlockArg, silkTouchArg)
             .executes((sender, args) -> {
-                Location loc = args.getByArgument(locArg);
+                Location loc = args.getUnchecked("Location");
                 loc.setWorld((World) args.get("World"));
                 Block block = loc.getBlock();
-                Player player = args.getByArgument(playerArg);
+                Player player = args.getUnchecked("Player");
                 ItemStack item = player.getInventory().getItemInMainHand();
                 Collection<ItemStack> drops = new ArrayList<>();
                 List<List<Predicate<Block>>> predicate = List.of(
@@ -126,7 +113,7 @@ public class BreakInVeinCommand extends Command {
                     ),
                     List.of()
                 );
-                List<List<Predicate<Block>>> predicates = args.getOrDefaultUnchecked("Command Defined Whitelist", predicate);
+                List<List<Predicate<Block>>> predicates = args.getOrDefaultUnchecked("Whitelisted Blocks", predicate);
 
                 if (player.hasMetadata("ignoreBlockBreak")) return;
 
@@ -134,17 +121,16 @@ public class BreakInVeinCommand extends Command {
                 boolean checkClaim = CommandUtils.griefPreventionEnabled ? args.getByArgumentOrDefault(checkClaimArg, defaultCheckClaim) : false;
                 boolean triggerBlockBreak = args.getByArgumentOrDefault(triggerBlockBreakArg, defaultTriggerBlockBreakEvent);
                 boolean breakOriginalBlock = args.getByArgumentOrDefault(breakOriginalBlockArg, true);
+                boolean silkTouch = args.getByArgumentOrDefault(silkTouchArg, false);
                 player.setMetadata("ignoreBlockBreak", new FixedMetadataValue(CommandUtils.getInstance(), true));
 
-                getVeinOres(block, block, drops, predicates, maxSize, player, item, triggerBlockBreak, checkClaim, breakOriginalBlock);
+                getVeinOres(block, block, drops, predicates, maxSize, player, item, triggerBlockBreak, checkClaim, breakOriginalBlock, silkTouch);
 
                 if (args.getByArgumentOrDefault(autoPickupArg, false)) drops = player.getInventory().addItem(drops.toArray(new ItemStack[0])).values();
 
                 dropAllItemStacks(loc, drops);
                 player.removeMetadata("ignoreBlockBreak", CommandUtils.getInstance());
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
 
@@ -165,21 +151,34 @@ public class BreakInVeinCommand extends Command {
         }
     }
 
-    public static void getVeinOres(Block center, final Block original, Collection<ItemStack> drops, List<List<Predicate<Block>>> predicates, int maxSize, final Player p, final ItemStack item, final boolean triggerBlockBreakEvent, final boolean checkClaim, final boolean breakOriginalBlock) {
-        for (Block b : getBlocksInRadius(center, 1)) {
-            if ((checkClaim && !FUtils.isInClaimOrWilderness(p, b.getLocation())) || drops.size() >= maxSize) return;
-            if (testBlock(b, predicates)) {
-                if (item == null) drops.addAll(b.getDrops());
-                else drops.addAll(b.getDrops(item));
+    public static void getVeinOres(
+        Block center,
+        Block original,
+        Collection<ItemStack> drops,
+        List<List<Predicate<Block>>> predicates,
+        int maxSize,
+        Player player,
+        ItemStack item,
+        boolean triggerBlockBreakEvent,
+        boolean checkClaim,
+        boolean breakOriginalBlock,
+        boolean silkTouch
+    ) {
+        for (Block relative : getBlocksInRadius(center, 1)) {
+            if ((checkClaim && !FUtils.isInClaimOrWilderness(player, relative.getLocation())) || drops.size() >= maxSize) return;
+            if (testBlock(relative, predicates)) {
+                if (silkTouch) drops.add(new ItemStack(relative.getType()));
+                else if (item == null) drops.addAll(relative.getDrops());
+                else drops.addAll(relative.getDrops(item));
 
                 // Trigger Block Break Event
                 if (triggerBlockBreakEvent) {
-                    BlockBreakEvent blockBreakEvent = new BlockBreakEvent(b, p);
+                    BlockBreakEvent blockBreakEvent = new BlockBreakEvent(relative, player);
                     Bukkit.getServer().getPluginManager().callEvent(blockBreakEvent);
                 }
-                if (breakOriginalBlock || !b.equals(original)) b.setType(Material.AIR);
+                if (breakOriginalBlock || !relative.equals(original)) relative.setType(Material.AIR);
 
-                getVeinOres(b, original, drops, predicates, maxSize, p, item, triggerBlockBreakEvent, checkClaim, breakOriginalBlock);
+                getVeinOres(relative, original, drops, predicates, maxSize, player, item, triggerBlockBreakEvent, checkClaim, breakOriginalBlock, silkTouch);
             }
         }
     }

@@ -18,10 +18,8 @@ public class ModifyVelocityCommand extends Command {
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "set", "add", "subtract", "multiply", "divide");
         DoubleArgument amountArg = new DoubleArgument("Amount");
 
-        new CommandAPICommand("modifyvelocity")
-            .withArguments(entityArg)
-            .withArguments(functionArg)
-            .withArguments(amountArg)
+        createCommand()
+            .withArguments(entityArg, functionArg, amountArg)
             .executes((sender, args) -> {
                 Entity e = args.getByArgument(entityArg);
                 double amount = args.getByArgument(amountArg);
@@ -46,8 +44,6 @@ public class ModifyVelocityCommand extends Command {
 
                 e.setVelocity(velocity);
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

@@ -2,7 +2,6 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.CommandUtils;
-import me.dunescifye.commandutils.utils.Utils;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Location;
@@ -17,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.bukkitWorldArgument;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 import static me.dunescifye.commandutils.utils.FUtils.isInClaimOrWilderness;
 import static me.dunescifye.commandutils.utils.Utils.*;
 
@@ -28,37 +27,23 @@ public class BreakInFacingLogCoreProtectCommand extends Command {
 
         if (!CommandUtils.coreProtectEnabled) return;
 
-        Argument<World> worldArg = bukkitWorldArgument("World");
-        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
-        IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        IntegerArgument depthArg = new IntegerArgument("Depth", 0);
-        LiteralArgument whitelistArg = new LiteralArgument("whitelist");
         LiteralArgument forceDropArg = new LiteralArgument("forcedrop");
         ItemStackArgument dropArg = new ItemStackArgument("Drop");
 
         // Breaks Blocks in Direction Player is Facing, Breaks all Blocks
         createCommand()
-            .withArguments(
-                worldArg,
-                locArg,
-                playerArg,
-                radiusArg,
-                depthArg
-            )
-            .withOptionalArguments(
-                forceDropArg
-            )
+            .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), depthArg())
+            .withOptionalArguments(forceDropArg)
             .executes((sender, args) -> {
-                Location loc = args.getByArgument(locArg);
+                Location loc = args.getUnchecked("Location");
                 loc.setWorld((World) args.get("World"));
 
                 breakInFacing(
                     null,
                     loc,
-                    args.getByArgument(playerArg),
-                    args.getByArgument(radiusArg),
-                    args.getByArgument(depthArg),
+                    args.getUnchecked("Player"),
+                    args.getUnchecked("Radius"),
+                    args.getUnchecked("Depth"),
                     args.getByArgument(forceDropArg) != null
                 );
             })
@@ -67,31 +52,18 @@ public class BreakInFacingLogCoreProtectCommand extends Command {
         // Breaks Blocks in Direction Player is Facing with GriefPrevention,
         // Define Predicates in List Format on Command
         createCommand()
-            .withArguments(
-                worldArg,
-                locArg,
-                playerArg,
-                radiusArg,
-                depthArg,
-                whitelistArg,
-                new ListArgumentBuilder<String>("Whitelisted Blocks")
-                    .withList(Utils.getPredicatesList())
-                    .withStringMapper()
-                    .buildText()
-            )
-            .withOptionalArguments(
-                forceDropArg
-            )
+            .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), depthArg(), whitelistedBlocksArg())
+            .withOptionalArguments(forceDropArg)
             .executes((sender, args) -> {
-                Location loc = args.getByArgument(locArg);
+                Location loc = args.getUnchecked("Location");
                 loc.setWorld((World) args.get("World"));
 
                 breakInFacing(
-                    stringListToPredicate(args.getUnchecked("Whitelisted Blocks")),
+                    args.getUnchecked("Whitelisted Blocks"),
                     loc,
-                    args.getByArgument(playerArg),
-                    args.getByArgument(radiusArg),
-                    args.getByArgument(depthArg),
+                    args.getUnchecked("Player"),
+                    args.getUnchecked("Radius"),
+                    args.getUnchecked("Depth"),
                     args.getByArgument(forceDropArg) != null
                 );
             })
@@ -100,29 +72,17 @@ public class BreakInFacingLogCoreProtectCommand extends Command {
         // Breaks Blocks in Direction Player is Facing with GriefPrevention,
         // Define Predicates in List Format on Command, Custom Block Drop
         createCommand()
-            .withArguments(
-                worldArg,
-                locArg,
-                playerArg,
-                radiusArg,
-                depthArg,
-                whitelistArg,
-                new ListArgumentBuilder<String>("Whitelisted Blocks")
-                    .withList(Utils.getPredicatesList())
-                    .withStringMapper()
-                    .buildText(),
-                dropArg
-            )
+            .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), depthArg(), whitelistedBlocksArg(), dropArg)
             .executes((sender, args) -> {
-                Location loc = args.getByArgument(locArg);
+                Location loc = args.getUnchecked("Location");
                 loc.setWorld((World) args.get("World"));
 
                 breakInFacing(
-                    stringListToPredicate(args.getUnchecked("Whitelisted Blocks")),
+                    args.getUnchecked("Whitelisted Blocks"),
                     loc,
-                    args.getByArgument(playerArg),
-                    args.getByArgument(radiusArg),
-                    args.getByArgument(depthArg),
+                    args.getUnchecked("Player"),
+                    args.getUnchecked("Radius"),
+                    args.getUnchecked("Depth"),
                     args.getByArgument(dropArg)
                 );
             })

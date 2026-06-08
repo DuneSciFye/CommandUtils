@@ -1,7 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.dejvokep.boostedyaml.YamlDocument;
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.dunescifye.commandutils.CommandUtils;
@@ -22,7 +21,9 @@ public class LoopCommand extends Command {
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
 
     @SuppressWarnings("ConstantConditions")
-    public void register(YamlDocument config) {
+    public void register() {
+
+        YamlDocument config = this.getConfig();
 
         Logger logger = CommandUtils.getInstance().getLogger();
         String commandSeparator;

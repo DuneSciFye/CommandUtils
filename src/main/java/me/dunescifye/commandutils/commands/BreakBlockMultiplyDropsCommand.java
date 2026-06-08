@@ -4,7 +4,6 @@ import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -12,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.bukkitWorldArgument;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class BreakBlockMultiplyDropsCommand extends Command {
 
@@ -20,26 +19,18 @@ public class BreakBlockMultiplyDropsCommand extends Command {
     @Override
     public void register() {
 
-        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
-        Argument<World> worldArg = bukkitWorldArgument("World");
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument dropsMultiplierArg = new IntegerArgument("Drops Multiplier", 0);
 
         createCommand()
-            .withArguments(
-              worldArg,
-              locArg,
-              playerArg,
-              dropsMultiplierArg
-            )
+            .withArguments(worldArg(), locArg(), playerArg(), dropsMultiplierArg)
             .executes((sender, args) -> {
-                Location loc = args.getByArgument(locArg);
-                loc.setWorld((World) args.get("World"));
-                Block b = loc.getBlock();
-                Player p = args.getByArgument(playerArg);
+                Location loc = args.getUnchecked("Location");
+                loc.setWorld(args.getUnchecked("World"));
+                Block block = loc.getBlock();
+                Player player = args.getUnchecked("Player");
                 int mult = args.getByArgument(dropsMultiplierArg);
 
-                Collection<ItemStack> drops = b.getDrops(p.getInventory().getItemInMainHand());
+                Collection<ItemStack> drops = block.getDrops(player.getInventory().getItemInMainHand());
                 Collection<ItemStack> multipliedDrops = new ArrayList<>(drops.size() * mult);
 
                 // Clone each drop
@@ -47,7 +38,7 @@ public class BreakBlockMultiplyDropsCommand extends Command {
                     for (ItemStack drop : drops)
                         multipliedDrops.add(drop.clone());
 
-                b.setType(Material.AIR);
+                block.setType(Material.AIR);
 
                 Utils.dropAllItemStacks(loc, multipliedDrops);
             })

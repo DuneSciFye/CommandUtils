@@ -18,16 +18,7 @@ public class SelectBlocksFacingCommand extends Command {
         GreedyStringArgument functionsArg = new GreedyStringArgument("Functions");
 
         createCommand()
-            .withArguments(worldArg(), blockLocArg(), playerArg(), radiusArg(), depthArg(), configPredicateArg(),
-                commandSeparatorArg, placeholderSurrounderArg, customPlaceholdersArg, functionsArg)
-            .executes((sender, args) -> {
-                BlockUtils.selectBlocks(args, (origin, p) -> Utils.getBlocksInFacing(origin, (int) args.get("Radius"),
-                    (int) args.get("Depth"), p));
-            })
-            .register(this.getNamespace());
-
-        createCommand()
-            .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), depthArg(), commandWhitelistArg(),
+            .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), depthArg(), whitelistedBlocksArg(),
                 commandSeparatorArg, placeholderSurrounderArg, customPlaceholdersArg, functionsArg)
             .executes((sender, args) -> {
                 BlockUtils.selectBlocks(args, (origin, p) -> Utils.getBlocksInFacing(origin, (int) args.get("Radius"),

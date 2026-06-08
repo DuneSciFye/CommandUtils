@@ -1,9 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.arguments.Argument;
-import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import me.dunescifye.commandutils.CommandUtils;
-import me.dunescifye.commandutils.utils.ArgumentUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,6 +12,9 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.UUID;
 
+import static me.dunescifye.commandutils.utils.ArgumentUtils.durationArg;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
+
 @SuppressWarnings("DataFlowIssue")
 public class DisableSprintCommand extends Command implements Listener {
 
@@ -23,23 +23,20 @@ public class DisableSprintCommand extends Command implements Listener {
     @Override
     public void register() {
 
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        Argument<Duration> durationArg = ArgumentUtils.timeArgument("Duration");
-
         createCommand()
-            .withArguments(playerArg, durationArg)
+            .withArguments(playerArg(), durationArg())
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
+                Player player = args.getUnchecked("Player");
                 Duration duration = args.getUnchecked("Duration");
-                UUID uuid = p.getUniqueId();
-                int foodLevel = p.getFoodLevel();
-                p.setFoodLevel(6);
+                UUID uuid = player.getUniqueId();
+                int foodLevel = player.getFoodLevel();
+                player.setFoodLevel(6);
 
                 BukkitTask task = new BukkitRunnable() {
                     @Override
                     public void run() {
                         tasks.remove(uuid);
-                        p.setFoodLevel(foodLevel);
+                        player.setFoodLevel(foodLevel);
                     }
                 }.runTaskLater(CommandUtils.getInstance(), duration.toMillis() / 50L);
                 if (tasks.containsKey(uuid)) tasks.remove(uuid).cancel();

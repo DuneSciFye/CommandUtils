@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import org.bukkit.entity.Entity;
 
@@ -12,7 +11,7 @@ public class MountCommand extends Command {
         EntitySelectorArgument.OneEntity riderArg = new  EntitySelectorArgument.OneEntity("Rider");
         EntitySelectorArgument.OneEntity mountedArg = new  EntitySelectorArgument.OneEntity("Mounted");
 
-        new CommandAPICommand("mount")
+        createCommand()
             .withArguments(riderArg, mountedArg)
             .executes((sender, args) -> {
                 Entity rider = args.getByArgument(riderArg);
@@ -20,8 +19,6 @@ public class MountCommand extends Command {
 
                 mounted.addPassenger(rider);
             })
-            .withAliases(this.getCommandAliases())
-            .withPermission(this.getPermission())
             .register(this.getNamespace());
     }
 }

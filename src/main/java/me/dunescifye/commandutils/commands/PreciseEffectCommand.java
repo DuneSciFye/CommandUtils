@@ -1,15 +1,16 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
-import me.dunescifye.commandutils.utils.ArgumentUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 
 import java.time.Duration;
 import java.util.Collection;
+
+import static me.dunescifye.commandutils.utils.ArgumentUtils.durationArg;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.entitiesArg;
 
 public class PreciseEffectCommand extends Command {
 
@@ -18,32 +19,20 @@ public class PreciseEffectCommand extends Command {
     @Override
     public void register() {
 
-        EntitySelectorArgument.ManyEntities entitiesArg = new EntitySelectorArgument.ManyEntities("Entities");
         PotionEffectArgument effectArg = new PotionEffectArgument("Effect");
-        Argument<Duration> timeArg = ArgumentUtils.timeArgument("Time");
         LiteralArgument infiniteArg = new LiteralArgument("infinite");
         IntegerArgument amplifierArg = new IntegerArgument("Level", 0);
         BooleanArgument hideParticlesArg = new BooleanArgument("Hide Particles");
         BooleanArgument ambientArg = new BooleanArgument("Ambient");
         BooleanArgument iconArg = new BooleanArgument("Show Icon");
 
-        /*
-         * Gives Potion Effect with more Options
-         * @author DuneSciFye
-         * @since 1.0.4
-         * @param Entities to give Effect to
-         * @param Effect to give
-         * @param Duration How long to give Effect for, in Ticks
-         * @param Amplifier How strong the Effect is
-         * @param HideParticles If Particles are Hidden
-         * @param Ambient If Particle is a Beacon Effect
-         */
+        // Gives Potion Effect with more Options
         new CommandAPICommand("preciseeffect")
-            .withArguments(entitiesArg, effectArg)
-            .withOptionalArguments(timeArg, amplifierArg, hideParticlesArg, ambientArg)
+            .withArguments(entitiesArg(), effectArg)
+            .withOptionalArguments(durationArg(), amplifierArg, hideParticlesArg, ambientArg)
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getByArgument(entitiesArg);
-                Duration duration = args.getOrDefaultUnchecked("Time", Duration.ofSeconds(30));
+                Collection<Entity> entities = args.getUnchecked("Entities");
+                Duration duration = args.getOrDefaultUnchecked("Duration", Duration.ofSeconds(30));
 
                 PotionEffect potionEffect = new PotionEffect(
                     args.getByArgument(effectArg),
@@ -54,36 +43,18 @@ public class PreciseEffectCommand extends Command {
                     args.getByArgumentOrDefault(iconArg, true)
                 );
 
-                for (Entity entity : entities) {
-                    if (entity instanceof LivingEntity livingEntity) {
+                for (Entity entity : entities)
+                    if (entity instanceof LivingEntity livingEntity)
                         livingEntity.addPotionEffect(potionEffect);
-                    }
-                }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /*
-         * Gives Potion Effect with more Options
-         * @author DuneSciFye
-         * @since 1.0.4
-         * @param Entities to give Effect to
-         * @param Effect to give
-         * @param Infinite Literal Argument infinite
-         * @param Amplifier How strong the Effect is
-         * @param HideParticles If Particles are Hidden
-         * @param Ambient If Particle is a Beacon Effect
-         */
-        new CommandAPICommand("preciseeffect")
-            .withArguments(entitiesArg)
-            .withArguments(effectArg)
-            .withOptionalArguments(infiniteArg)
-            .withOptionalArguments(amplifierArg)
-            .withOptionalArguments(hideParticlesArg)
-            .withOptionalArguments(ambientArg)
+        // Gives Potion Effect with more Options
+        createCommand()
+            .withArguments(entitiesArg(), effectArg)
+            .withOptionalArguments(infiniteArg, amplifierArg, hideParticlesArg, ambientArg)
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getByArgument(entitiesArg);
+                Collection<Entity> entities = args.getUnchecked("Entities");
 
                 PotionEffect potionEffect = new PotionEffect(
                     args.getByArgument(effectArg),
@@ -94,14 +65,10 @@ public class PreciseEffectCommand extends Command {
                     args.getByArgumentOrDefault(iconArg, true)
                 );
 
-                for (Entity entity : entities) {
-                    if (entity instanceof LivingEntity livingEntity) {
+                for (Entity entity : entities)
+                    if (entity instanceof LivingEntity livingEntity)
                         livingEntity.addPotionEffect(potionEffect);
-                    }
-                }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 }

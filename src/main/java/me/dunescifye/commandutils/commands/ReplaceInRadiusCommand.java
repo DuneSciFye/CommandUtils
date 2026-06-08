@@ -8,6 +8,7 @@ import me.dunescifye.commandutils.utils.FUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -23,30 +24,24 @@ public class ReplaceInRadiusCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        StringArgument worldArg = new StringArgument("World");
-        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
         BooleanArgument applyPhysicsArg = new BooleanArgument("Apply Physics");
-        Argument<List<List<Predicate<Block>>>> commandWhitelistArg = commandWhitelistArgument("Blocks To Replace From");
         Argument<List<Material>> materialsArg = materialsArgument("Blocks To Replace To");
-        Argument<Duration> timeArg = timeArgument("Time");
 
 
         new CommandAPICommand("replaceinradius")
-            .withArguments(worldArg, locArg, playerArg, radiusArg, commandWhitelistArg, materialsArg)
-            .withOptionalArguments(applyPhysicsArg, timeArg)
+            .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), whitelistedBlocksArg(), materialsArg)
+            .withOptionalArguments(applyPhysicsArg, durationArg())
             .executes((sender, args) -> {
-                List<List<Predicate<Block>>> predicates = args.getUnchecked("Blocks To Replace From");
-                Block origin = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
-                int radius = args.getByArgument(radiusArg);
-                Player p = args.getByArgument(playerArg);
+                List<List<Predicate<Block>>> predicates = args.getUnchecked("Whitelisted Blocks");
+                Block origin = ((World) args.getUnchecked("World")).getBlockAt(args.getUnchecked("Location"));
+                int radius = args.getUnchecked("Radius");
+                Player player = args.getUnchecked("Player");
                 List<Material> blocksTo = args.getUnchecked("Blocks To Replace To");
                 boolean applyPhysics = args.getByArgumentOrDefault(applyPhysicsArg, true);
                 Duration duration = args.getOrDefaultUnchecked("Time", Duration.ofSeconds(-1));
 
                 for (Block b : Utils.getBlocksInRadius(origin, radius))
-                    if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
+                    if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(player, b.getLocation())) {
                         if (duration.isPositive()) {
                             Material oldMat = b.getType();
                             Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
@@ -61,17 +56,17 @@ public class ReplaceInRadiusCommand extends Command {
             .register(this.getNamespace());
 
         new CommandTree("replaceinradius")
-            .then(worldArg
-                .then(locArg
-                    .then(radiusArg
-                        .then(commandWhitelistArg
+            .then(worldArg()
+                .then(locArg()
+                    .then(radiusArg()
+                        .then(whitelistedBlocksArg()
                             .then(materialsArg
                                 .executes((sender, args) -> {
-                                    List<List<Predicate<Block>>> predicates = args.getUnchecked("Blocks To Replace From");
+                                    List<List<Predicate<Block>>> predicates = args.getUnchecked("Whitelisted Blocks");
 
                                     replaceInRadius(
-                                        Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg)),
-                                        args.getByArgument(radiusArg),
+                                        ((World) args.getUnchecked("World")).getBlockAt(args.getUnchecked("Location")),
+                                        args.getUnchecked("Radius"),
                                         predicates,
                                         args.getUnchecked("Blocks To Replace To")
                                     );
@@ -88,8 +83,8 @@ public class ReplaceInRadiusCommand extends Command {
     }
 
     private void replaceInRadius(Block origin, int radius, List<List<Predicate<Block>>> predicates, List<Material> blocksTo) {
-        for (Block b : Utils.getBlocksInRadius(origin, radius))
-            if (Utils.testBlock(b, predicates))
-                b.setType(blocksTo.get(ThreadLocalRandom.current().nextInt(blocksTo.size())));
+        for (Block block : Utils.getBlocksInRadius(origin, radius))
+            if (Utils.testBlock(block, predicates))
+                block.setType(blocksTo.get(ThreadLocalRandom.current().nextInt(blocksTo.size())));
     }
 }

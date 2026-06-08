@@ -4,7 +4,6 @@ import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.FUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Ageable;
@@ -14,17 +13,13 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.bukkitWorldArgument;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class BreakAndReplantCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
-        Argument<World> worldArg = bukkitWorldArgument("World");
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
         IntegerArgument xArg = new IntegerArgument("X");
         IntegerArgument yArg = new IntegerArgument("Y");
         IntegerArgument zArg = new IntegerArgument("Z");
@@ -32,72 +27,26 @@ public class BreakAndReplantCommand extends Command {
 
         // Radius and World version
         createCommand()
-            .withArguments(
-                worldArg,
-                locArg,
-                playerArg,
-                radiusArg,
-                blockArg
-            )
+            .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), blockArg)
             .executes((sender, args) -> {
-                int r = args.getByArgument(radiusArg);
-                Location loc = args.getByArgument(locArg);
-                loc.setWorld((World) args.get("World"));
+                int radius = args.getUnchecked("Radius");
+                Location loc = args.getUnchecked("Location");
+                loc.setWorld(args.getUnchecked("World"));
 
-                breakAndReplant(
-                    loc,
-                    args.getByArgument(playerArg),
-                    r,
-                    0,
-                    r,
-                    args.getByArgument(blockArg)
-                );
+                breakAndReplant(loc, args.getUnchecked("Player"), radius, 0, radius, args.getByArgument(blockArg));
             })
             .register(this.getNamespace());
 
         // X Y Z and World Version
         createCommand()
-            .withArguments(
-                worldArg,
-                locArg,
-                playerArg,
-                xArg,
-                yArg,
-                zArg,
-                blockArg
-            )
+            .withArguments(worldArg(), locArg(), playerArg(), xArg, yArg, zArg, blockArg)
             .executes((sender, args) -> {
-                Location loc = args.getByArgument(locArg);
-                loc.setWorld((World) args.get("World"));
+                Location loc = args.getUnchecked("Location");
+                loc.setWorld(args.getUnchecked("World"));
 
                 breakAndReplant(
                     loc,
-                    args.getByArgument(playerArg),
-                    args.getByArgument(xArg),
-                    args.getByArgument(yArg),
-                    args.getByArgument(zArg),
-                    args.getByArgument(blockArg)
-                );
-            })
-            .register(this.getNamespace());
-
-        // X Y Z and no World Version
-        createCommand()
-            .withArguments(
-                locArg,
-                playerArg,
-                xArg,
-                yArg,
-                zArg,
-                blockArg
-            )
-            .executes((sender, args) -> {
-                Location loc = args.getByArgument(locArg);
-                loc.setWorld((World) args.get("World"));
-
-                breakAndReplant(
-                    loc,
-                    args.getByArgument(playerArg),
+                    args.getUnchecked("Player"),
                     args.getByArgument(xArg),
                     args.getByArgument(yArg),
                     args.getByArgument(zArg),
@@ -108,44 +57,12 @@ public class BreakAndReplantCommand extends Command {
 
         // World and No Radius Version
         createCommand()
-            .withArguments(
-                worldArg,
-                locArg,
-                playerArg,
-                blockArg
-            )
+            .withArguments(worldArg(), locArg(), playerArg(), blockArg)
             .executes((sender, args) -> {
-                Location loc = args.getByArgument(locArg);
-                loc.setWorld((World) args.get("World"));
+                Location loc = args.getUnchecked("Location");
+                loc.setWorld(args.getUnchecked("World"));
 
-                breakAndReplant(
-                    loc,
-                    args.getByArgument(playerArg),
-                    0,
-                    0,
-                    0,
-                    args.getByArgument(blockArg)
-                );
-            })
-            .register(this.getNamespace());
-
-        // No Radius and No World Version
-        createCommand()
-            .withArguments(locArg)
-            .withArguments(playerArg)
-            .withArguments(blockArg)
-            .executes((sender, args) -> {
-                Location loc = args.getByArgument(locArg);
-                loc.setWorld((World) args.get("World"));
-
-                breakAndReplant(
-                    loc,
-                    args.getByArgument(playerArg),
-                    0,
-                    0,
-                    0,
-                    args.getByArgument(blockArg)
-                );
+                breakAndReplant(loc, args.getUnchecked("Player"), 0, 0, 0, args.getByArgument(blockArg));
             })
             .register(this.getNamespace());
 
@@ -159,6 +76,7 @@ public class BreakAndReplantCommand extends Command {
         ItemStack heldItem = p.getInventory().getItemInMainHand();
         Collection<ItemStack> drops = new ArrayList<>();
 
+        // Can't use Utils get in radius because x, y, and z should be independent
         for (int x = -xRad; x <= xRad; x++) {
             for (int y = -yRad; y <= yRad; y++) {
                 for (int z = -zRad; z <= zRad; z++) {

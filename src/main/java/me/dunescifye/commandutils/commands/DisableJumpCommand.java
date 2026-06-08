@@ -1,8 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
-import dev.jorel.commandapi.arguments.Argument;
-import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,7 +12,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.timeArgument;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 @SuppressWarnings("ConstantConditions")
 public class DisableJumpCommand extends Command implements Listener {
@@ -23,15 +21,13 @@ public class DisableJumpCommand extends Command implements Listener {
 
     @Override
     public void register() {
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        Argument<Duration> durationArg = timeArgument("Duration");
 
         createCommand()
-            .withArguments(playerArg, durationArg)
+            .withArguments(playerArg(), durationArg())
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
+                Player player = args.getUnchecked("Player");
                 Duration duration = args.getUnchecked("Duration");
-                UUID uuid = p.getUniqueId();
+                UUID uuid = player.getUniqueId();
 
                 BukkitTask task = new BukkitRunnable() {
                     @Override

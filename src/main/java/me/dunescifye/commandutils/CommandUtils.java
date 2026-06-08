@@ -48,7 +48,7 @@ public final class CommandUtils extends JavaPlugin {
         String version = Bukkit.getServer().getMinecraftVersion();
         double versionAmount = Double.parseDouble(version.substring(2));
 
-        //Files first
+        // Files first
 
         CommandAPI.onEnable();
 
@@ -113,9 +113,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("SetArrowsInBody", new SetArrowsInBodyCommand());
         commands.put("SetAI", new SetAICommand());
         commands.put("SetFireTicks", new SetFireTicksCommand());
-        commands.put("SetBeeStingersInBody", new SetBeeStingersInBodyCommand());
         commands.put("SetFreezeTicks", new SetFreezeTicksCommand());
-        commands.put("SetShieldBlockingDelay", new SetShieldBlockingDelayCommand());
         commands.put("SetCompassTracking", new SetCompassTrackingCommand());
         commands.put("SpawnWitherSkull", new SpawnWitherSkullCommand());
         commands.put("SetArmorTrim", new SetArmorTrimCommand());
@@ -242,13 +240,10 @@ public final class CommandUtils extends JavaPlugin {
 
     private void registerListeners() {
         new EntityDamageByEntityListener().entityDamageByEntityHandler(this);
-        new EntityChangeBlockListener().entityChangeBlockHandler(this);
         new EntityExplodeListener().entityExplodeHandler(this);
         new PlayerDamageTracker().damageTrackerHandler(this);
         new BowForceTracker().bowForceHandler(this);
         new ExperienceTracker().experienceHandler(this);
-        new CustomMobDrops().registerEvents(this);
-        new DisableSpectatorTeleporting().registerEvent(this);
         Bukkit.getPluginManager().registerEvents(new PlayerKillerTracker(), this);
     }
     public static CommandUtils getInstance(){

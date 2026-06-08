@@ -1,42 +1,45 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.EntitySelectorArgument;
-import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.MultiLiteralArgument;
 import org.bukkit.entity.Player;
 
+import static me.dunescifye.commandutils.utils.ArgumentUtils.amountArg;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
+
 public class OxygenCommand extends Command {
+
+    enum function {
+        SET,
+        ADD,
+        REMOVE,
+        SUBTRACT,
+        GET
+    }
 
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {
 
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "set", "add", "remove", "get");
-        IntegerArgument amountArg = new IntegerArgument("Amount");
 
-        new CommandAPICommand("oxygen")
-            .withArguments(functionArg)
-            .withArguments(playerArg)
-            .withOptionalArguments(amountArg)
+        createCommand()
+            .withArguments(functionArg, playerArg())
+            .withOptionalArguments(amountArg())
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
-                int amount = args.getByArgument(amountArg);
+                Player player = args.getUnchecked("Player");
+                int amount = args.getUnchecked("Amount");
 
                 switch (args.getByArgument(functionArg)) {
                     case "set" ->
-                        p.setRemainingAir(amount);
+                        player.setRemainingAir(amount);
                     case "add" ->
-                        p.setRemainingAir(p.getRemainingAir() + amount);
+                        player.setRemainingAir(player.getRemainingAir() + amount);
                     case "remove" ->
-                        p.setRemainingAir(p.getRemainingAir() - amount);
+                        player.setRemainingAir(player.getRemainingAir() - amount);
                     case "get" ->
-                        sender.sendMessage(String.valueOf(p.getRemainingAir()));
+                        sender.sendMessage(String.valueOf(player.getRemainingAir()));
                 }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

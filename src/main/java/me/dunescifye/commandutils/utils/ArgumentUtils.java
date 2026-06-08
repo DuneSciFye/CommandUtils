@@ -17,13 +17,7 @@ import java.util.function.Predicate;
 
 public class ArgumentUtils {
 
-    public static Argument<List<List<Predicate<Block>>>> configPredicateArgument(String nodeName) {
-        return new CustomArgument<>(new StringArgument(nodeName), info -> Config.getPredicate(info.input()))
-            .replaceSuggestions(ArgumentSuggestions.strings(Config.getPredicates()));
-    }
-
-
-    public static Argument<List<List<Predicate<Block>>>> commandWhitelistArgument(String nodeName) {
+    private static Argument<List<List<Predicate<Block>>>> whitelistedBlocksArgument(String nodeName) {
 
         Argument<List> listArgument = new ListArgumentBuilder<String>(nodeName)
           .withList(Utils.getPredicatesList())
@@ -32,7 +26,13 @@ public class ArgumentUtils {
 
         return new CustomArgument<>(
           listArgument,
-          info -> Utils.stringListToPredicate((List<String>) info.currentInput())
+          info -> {
+              List<String> input = (List<String>) info.currentInput();
+              if (input.size() == 1 && Config.getPredicates().contains(input.getFirst())) {
+                  return Config.getPredicate(input.getFirst());
+              }
+              return Utils.stringListToPredicate(input);
+          }
         ).replaceSuggestions(listArgument.getOverriddenSuggestions().get());
     }
 
@@ -56,7 +56,7 @@ public class ArgumentUtils {
     }
 
 
-    public static Argument<World> bukkitWorldArgument(String nodeName) {
+    private static Argument<World> bukkitWorldArgument(String nodeName) {
         return new CustomArgument<>(new StringArgument(nodeName), info -> {
             World world = Bukkit.getWorld(info.input());
 
@@ -134,11 +134,10 @@ public class ArgumentUtils {
         "Entities"); }
     public static Argument<Duration> delayArg() { return ArgumentUtils.timeArgument("Initial Delay"); }
     public static Argument<Duration> periodArg() { return ArgumentUtils.timeArgument("Period"); }
+    public static Argument<Duration> maxTimeArg() { return ArgumentUtils.timeArgument("Max Time"); }
     public static FloatArgument yawArg() { return new FloatArgument("Yaw"); }
     public static FloatArgument pitchArg() { return new FloatArgument("Pitch"); }
-    public static Argument<List<List<Predicate<Block>>>> configPredicateArg() { return configPredicateArgument(
-        "Whitelisted Blocks"); }
-    public static Argument<List<List<Predicate<Block>>>> commandWhitelistArg() { return commandWhitelistArgument(
+    public static Argument<List<List<Predicate<Block>>>> whitelistedBlocksArg() { return whitelistedBlocksArgument(
         "Whitelisted Blocks"); }
     public static ParticleArgument particleArg() { return new ParticleArgument("Particle"); }
     public static IntegerArgument amountArg() { return new IntegerArgument("Amount"); }

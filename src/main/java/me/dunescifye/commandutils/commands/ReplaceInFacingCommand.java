@@ -32,19 +32,8 @@ public class ReplaceInFacingCommand extends Command {
             .buildText();
         BooleanArgument applyPhysicsArg = new BooleanArgument("Apply Physics");
 
-        /*
-         * Replaces Blocks in Direction Player is Facing, Command Defined Predicates
-         * @author DuneSciFye
-         * @since 1.0.4
-         * @param World of the Blocks
-         * @param Location of the Center Block
-         * @param Player to Check Claim
-         * @param Radius of the Blocks to go out
-         * @param Depth of Blocks to go in
-         * @param List of Predicates to Replace From
-         * @param List of Blocks to Replace To
-         */
-        new CommandAPICommand("replaceinfacing")
+        // Replaces Blocks in Direction Player is Facing, Command Defined Predicates
+        createCommand()
             .withArguments(worldArg, locArg, playerArg, radiusArg, depthArg, blocksFromArg, blocksToArg)
             .withOptionalArguments(applyPhysicsArg)
             .executes((sender, args) -> {
@@ -58,8 +47,6 @@ public class ReplaceInFacingCommand extends Command {
                 }
 
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 }

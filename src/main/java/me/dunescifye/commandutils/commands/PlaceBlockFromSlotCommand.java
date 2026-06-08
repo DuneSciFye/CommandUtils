@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.executors.ExecutorType;
 import me.dunescifye.commandutils.utils.ArgumentUtils;
@@ -12,34 +11,32 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.command.ProxiedCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class PlaceBlockFromSlotCommand extends Command {
 
     @Override
     public void register() {
 
-        Argument<World> worldArg = ArgumentUtils.bukkitWorldArgument("World");
-        LocationArgument locArg = new LocationArgument("Block Location", LocationType.BLOCK_POSITION);
-        StringArgument slotArg = new StringArgument("Slot");
         BooleanArgument consumeArg = new BooleanArgument("Consume from Inventory");
         BooleanArgument triggerEventArg = new  BooleanArgument("Trigger Block Place Event");
 
-        new CommandAPICommand("placeblockfromslot")
-            .withArguments(worldArg, locArg, slotArg.replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots())))
+        createCommand()
+            .withArguments(worldArg(), locArg(), slotArg())
             .withOptionalArguments(consumeArg, triggerEventArg)
             .executes((sender, args) -> {
-                final Player player = sender instanceof ProxiedCommandSender proxy ? (Player) proxy.getCallee() : (Player) sender;
-                final World world = args.getUnchecked("World");
-                final Location loc = args.getByArgument(locArg);
+                Player player = ArgumentUtils.getPlayer(sender);
+                World world = args.getUnchecked("World");
+                Location loc = args.getUnchecked("Location");
                 loc.setWorld(world);
-                final String slot = args.getByArgument(slotArg);
-                final Boolean consume = args.getByArgumentOrDefault(consumeArg, true);
-                final Boolean triggerEvent = args.getByArgumentOrDefault(triggerEventArg, true);
+                String slot = args.getUnchecked("Slot");
+                Boolean consume = args.getByArgumentOrDefault(consumeArg, true);
+                Boolean triggerEvent = args.getByArgumentOrDefault(triggerEventArg, true);
 
                 ItemStack item = Utils.getInvItem(player, slot);
                 Block block = loc.getBlock();
@@ -67,8 +64,6 @@ public class PlaceBlockFromSlotCommand extends Command {
                 }
 
             }, ExecutorType.PROXY, ExecutorType.PLAYER)
-            .withAliases(this.getCommandAliases())
-            .withPermission(this.getPermission())
             .register(this.getNamespace());
 
     }

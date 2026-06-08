@@ -1,10 +1,14 @@
 package me.dunescifye.commandutils.commands;
 
 import com.jeff_media.morepersistentdatatypes.DataType;
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
+import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -13,9 +17,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static me.dunescifye.commandutils.listeners.CustomMobDrops.*;
+public class MobDropsCommand extends Command implements Listener {
 
-public class MobDropsCommand extends Command {
+    private final NamespacedKey noVanillaDropsKey = new NamespacedKey("commandutils", "novanilladrops");
+    private final NamespacedKey dropsKey = new NamespacedKey("commandutils", "drops");
+    private final NamespacedKey commandDropsKey = new NamespacedKey("commandutils", "commanddrops");
 
     @SuppressWarnings("ConstantConditions")
     @Override
@@ -119,4 +125,22 @@ public class MobDropsCommand extends Command {
             })
             .register(this.getNamespace());
     }
+
+
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent e) {
+        Entity entity = e.getEntity();
+        PersistentDataContainer container = entity.getPersistentDataContainer();
+        if (container.has(noVanillaDropsKey))
+            e.getDrops().clear();
+        if (container.has(dropsKey)) {
+            ItemStack[] drops = container.get(dropsKey, DataType.ITEM_STACK_ARRAY);
+            if (drops != null) e.getDrops().addAll(List.of(drops));
+        }
+        if (container.has(commandDropsKey)) {
+            String[] commands = container.get(commandDropsKey, DataType.STRING_ARRAY);
+            if (commands != null) Utils.runConsoleCommands(commands);
+        }
+    }
+
 }

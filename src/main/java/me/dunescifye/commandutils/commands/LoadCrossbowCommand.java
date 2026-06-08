@@ -1,9 +1,7 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
-import dev.jorel.commandapi.arguments.EntitySelectorArgument;
-import dev.jorel.commandapi.arguments.IntegerArgument;
+import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -12,28 +10,28 @@ import org.bukkit.inventory.meta.CrossbowMeta;
 
 import java.util.List;
 
+import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.slotArg;
+
 public class LoadCrossbowCommand extends Command {
 
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        IntegerArgument slotArg = new IntegerArgument("Slot", 0, 36);
         BooleanArgument loadedArg = new BooleanArgument("Loaded");
         BooleanArgument interactWithInvArg = new BooleanArgument("Interact With Inventory");
 
         // Loads/unloads crossbow
         createCommand()
-            .withArguments(playerArg)
-            .withArguments(slotArg)
-            .withOptionalArguments(loadedArg)
-            .withOptionalArguments(interactWithInvArg)
+            .withArguments(playerArg(), slotArg())
+            .withOptionalArguments(loadedArg, interactWithInvArg)
             .executes((sender, args) -> {
-                Player p = args.getByArgument(playerArg);
-                PlayerInventory inv = p.getInventory();
+                Player player = args.getUnchecked("Player");
+                PlayerInventory inv = player.getInventory();
+                String slot = args.getUnchecked("Slot");
 
-                ItemStack item = inv.getItem(args.getByArgument(slotArg));
+                ItemStack item = Utils.getInvItem(player, slot);
                 ItemStack arrow = new ItemStack(Material.ARROW, 1);
 
                 if (!(item.getItemMeta() instanceof CrossbowMeta crossbowMeta)) return;
@@ -51,7 +49,7 @@ public class LoadCrossbowCommand extends Command {
                     crossbowMeta.setChargedProjectiles(List.of());
                     if (args.getByArgumentOrDefault(interactWithInvArg, true)) {
                         if (!inv.addItem(arrow).isEmpty()) {
-                            p.getWorld().dropItem(p.getLocation(), arrow);
+                            player.getWorld().dropItem(player.getLocation(), arrow);
                         }
                     }
                 }

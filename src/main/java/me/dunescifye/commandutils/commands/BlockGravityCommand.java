@@ -7,13 +7,16 @@ import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import static me.dunescifye.commandutils.CommandUtils.noGravityKey;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-public class BlockGravityCommand extends Command {
+public class BlockGravityCommand extends Command implements Listener {
 
     @SuppressWarnings("ConstantConditions")
     public void register() {
@@ -42,5 +45,16 @@ public class BlockGravityCommand extends Command {
                 }
             })
             .register(this.getNamespace());
+    }
+
+    @EventHandler
+    public void onEntityChangeBlock(EntityChangeBlockEvent e) {
+        Block block = e.getBlock();
+        PersistentDataContainer blockContainer = new CustomBlockData(block, CommandUtils.getInstance());
+        Byte data = blockContainer.get(CommandUtils.noGravityKey, PersistentDataType.BYTE);
+        if (data != null) {
+            // Cancel the physics event to prevent the block from falling
+            e.setCancelled(true);
+        }
     }
 }

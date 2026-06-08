@@ -1,7 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.dejvokep.boostedyaml.YamlDocument;
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.executors.ExecutorType;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -20,7 +18,7 @@ import java.util.List;
 public class RemoveItemCommand extends Command {
 
     @SuppressWarnings("ConstantConditions")
-    public void register(YamlDocument config) {
+    public void register() {
 
         EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         ItemStackArgument itemArg = new ItemStackArgument("Item");
@@ -31,7 +29,7 @@ public class RemoveItemCommand extends Command {
         BooleanArgument noCommandsIfZeroArg = new BooleanArgument("No Commands If Zero");
         TextArgument commandSeparatorArg = new TextArgument("Command Separator");
 
-        new CommandAPICommand("removeitem")
+        createCommand()
             .withArguments(playerArg, itemArg)
             .withOptionalArguments(maxAmountArg, strictArg, checkChestArg, commandsArg, noCommandsIfZeroArg, commandSeparatorArg)
             .executes((sender, args) -> {
@@ -82,8 +80,6 @@ public class RemoveItemCommand extends Command {
                     ).split(args.getByArgumentOrDefault(commandSeparatorArg, ",,")));
 
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
 
@@ -96,7 +92,7 @@ public class RemoveItemCommand extends Command {
         BooleanArgument vanillaArg = new BooleanArgument("Vanilla");
         GreedyStringArgument greedyCommandsArg = new GreedyStringArgument("Commands");
 
-        new CommandAPICommand("removeitem")
+        createCommand()
             .withArguments(materialsArg)
             .withOptionalArguments(minAmountArg, maxAmountArg, vanillaArg, checkChestArg, commandSeparatorArg, greedyCommandsArg)
             .executes((sender, args) -> {
@@ -149,8 +145,6 @@ public class RemoveItemCommand extends Command {
                     ).split(args.getByArgumentOrDefault(commandSeparatorArg, ",,")));
 
             }, ExecutorType.PROXY, ExecutorType.PLAYER)
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
     }
 

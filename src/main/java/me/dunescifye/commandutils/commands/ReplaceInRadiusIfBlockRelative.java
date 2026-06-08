@@ -1,14 +1,12 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.FUtils;
 import me.dunescifye.commandutils.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -18,15 +16,13 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
+
 public class ReplaceInRadiusIfBlockRelative extends Command {
     @SuppressWarnings("ConstantConditions")
     @Override
     public void register() {
 
-        StringArgument worldArg = new StringArgument("World");
-        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        IntegerArgument radiusArg = new IntegerArgument("Radius", 0);
         ListTextArgument<String> blocksFromArg = new ListArgumentBuilder<String>("Blocks To Replace From")
             .withList(Utils.getPredicatesList())
             .withStringMapper()
@@ -46,36 +42,23 @@ public class ReplaceInRadiusIfBlockRelative extends Command {
             .buildText();
         ItemStackArgument removeItemArg = new ItemStackArgument("Remove Item");
 
-        /*
-         * Replaces Blocks in a Radius, Checks Nearby Blocks
-         * @author DuneSciFye
-         * @since 2.4.0
-         * @param World of the Blocks
-         * @param Location of the Center Block
-         * @param Player to check claims for
-         * @param Radius to check
-         * @param Blocks to replace from
-         * @param Blocks to replace to
-         * @param Which block faces to check
-         * @param Blocks that all defined block faces must contain
-         * @param Optional, each block requires an item from player Inventory
-         */
-        new CommandAPICommand("replaceinradiusifblockrelative")
-            .withArguments(worldArg, locArg, playerArg, radiusArg, blocksFromArg, blocksToArg, blockFacesArg, blocksRelativeArg)
+        // Replaces Blocks in a Radius, Checks Nearby Blocks
+        createCommand()
+            .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), blocksFromArg, blocksToArg, blockFacesArg, blocksRelativeArg)
             .withOptionalArguments(removeItemArg)
             .executes((sender, args) -> {
-                final Player p = args.getByArgument(playerArg);
-                final Block origin = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
-                final int radius = args.getByArgument(radiusArg);
-                final List<List<Predicate<Block>>> blocksFrom = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
-                final List<Material> blocksTo = args.getUnchecked("Blocks To Replace To");
-                final List<BlockFace> blocksFaces = args.getUnchecked("Block Faces");
-                final List<List<Predicate<Block>>> blocksRelative = Utils.stringListToPredicate(args.getUnchecked("Blocks Relative"));
-                final ItemStack item = args.getByArgumentOrDefault(removeItemArg, null);
-                Inventory inv = p.getInventory();
+                Player player = args.getUnchecked("Player");
+                Block origin = ((World) args.get("World")).getBlockAt(args.getUnchecked("Location"));
+                int radius = args.getUnchecked("Radius");
+                List<List<Predicate<Block>>> blocksFrom = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
+                List<Material> blocksTo = args.getUnchecked("Blocks To Replace To");
+                List<BlockFace> blocksFaces = args.getUnchecked("Block Faces");
+                List<List<Predicate<Block>>> blocksRelative = Utils.stringListToPredicate(args.getUnchecked("Blocks Relative"));
+                ItemStack item = args.getByArgumentOrDefault(removeItemArg, null);
+                Inventory inv = player.getInventory();
 
                 block: for (Block b : Utils.getBlocksInRadius(origin, radius))
-                    if (Utils.testBlock(b, blocksFrom) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
+                    if (Utils.testBlock(b, blocksFrom) && FUtils.isInClaimOrWilderness(player, b.getLocation())) {
                         for (BlockFace blockFace : blocksFaces)
                             if (!Utils.testBlock(b.getRelative(blockFace), blocksRelative))
                                 continue block;
@@ -83,40 +66,25 @@ public class ReplaceInRadiusIfBlockRelative extends Command {
                         b.setType(blocksTo.get(ThreadLocalRandom.current().nextInt(blocksTo.size())));
                     }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        /*
-         * Replaces Blocks in a Radius, Checks Nearby Blocks
-         * @author DuneSciFye
-         * @since 2.4.1
-         * @param World of the Blocks
-         * @param Location of the Center Block
-         * @param Player to check claims for
-         * @param Radius to check
-         * @param Blocks to replace from
-         * @param Block to replace to
-         * @param Which block faces to check
-         * @param Blocks that all defined block faces must contain
-         * @param Optional, each block requires an item from player Inventory
-         */
-        new CommandAPICommand("replaceinradiusifblockrelative")
-            .withArguments(worldArg, locArg, playerArg, radiusArg, blocksFromArg, blockToArg, blockFacesArg, blocksRelativeArg)
+        // Replaces Blocks in a Radius, Checks Nearby Blocks
+        createCommand()
+            .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), blocksFromArg, blockToArg, blockFacesArg, blocksRelativeArg)
             .withOptionalArguments(removeItemArg)
             .executes((sender, args) -> {
-                final Player p = args.getByArgument(playerArg);
-                final Block origin = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
-                final int radius = args.getByArgument(radiusArg);
-                final List<List<Predicate<Block>>> blocksFrom = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
-                final BlockData blockTo = args.getByArgument(blockToArg).getBlockData();
-                final List<BlockFace> blocksFaces = args.getUnchecked("Block Faces");
-                final List<List<Predicate<Block>>> blocksRelative = Utils.stringListToPredicate(args.getUnchecked("Blocks Relative"));
-                final ItemStack item = args.getByArgumentOrDefault(removeItemArg, null);
-                Inventory inv = p.getInventory();
+                Player player = args.getUnchecked("Player");
+                Block origin = ((World) args.get("World")).getBlockAt(args.getUnchecked("Location"));
+                int radius = args.getUnchecked("Radius");
+                List<List<Predicate<Block>>> blocksFrom = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
+                BlockData blockTo = args.getByArgument(blockToArg).getBlockData();
+                List<BlockFace> blocksFaces = args.getUnchecked("Block Faces");
+                List<List<Predicate<Block>>> blocksRelative = Utils.stringListToPredicate(args.getUnchecked("Blocks Relative"));
+                ItemStack item = args.getByArgumentOrDefault(removeItemArg, null);
+                Inventory inv = player.getInventory();
 
                 block: for (Block b : Utils.getBlocksInRadius(origin, radius))
-                    if (Utils.testBlock(b, blocksFrom) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
+                    if (Utils.testBlock(b, blocksFrom) && FUtils.isInClaimOrWilderness(player, b.getLocation())) {
                         for (BlockFace blockFace : blocksFaces)
                             if (!Utils.testBlock(b.getRelative(blockFace), blocksRelative))
                                 continue block;
@@ -124,8 +92,6 @@ public class ReplaceInRadiusIfBlockRelative extends Command {
                         b.setBlockData(blockTo);
                     }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

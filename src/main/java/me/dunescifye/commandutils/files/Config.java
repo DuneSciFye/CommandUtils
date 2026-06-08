@@ -140,6 +140,10 @@ public class Config {
                     predicates.put(key, Utils.stringListToPredicate(config.getStringList("Whitelists." + key)));
             }
 
+            // Add these config predicates to Utils.PREDICATES_LIST here, because this is initalized
+            // after PREDICATES_LIST is
+            Utils.getPredicatesList().addAll(getPredicates());
+
             config.save();
         } catch (IOException e) {
             throw new RuntimeException(e);
