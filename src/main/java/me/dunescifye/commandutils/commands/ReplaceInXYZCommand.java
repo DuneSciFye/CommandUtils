@@ -7,6 +7,7 @@ import me.dunescifye.commandutils.utils.FUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -23,9 +24,6 @@ public class ReplaceInXYZCommand extends Command {
     @SuppressWarnings("ConstantConditions")
     public void register() {
 
-        StringArgument worldArg = new StringArgument("World");
-        LocationArgument locArg = new LocationArgument("Location", LocationType.BLOCK_POSITION);
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         IntegerArgument xArg = new IntegerArgument("X", 0);
         IntegerArgument yArg = new IntegerArgument("Y", 0);
         IntegerArgument zArg = new IntegerArgument("Z", 0);
@@ -35,25 +33,25 @@ public class ReplaceInXYZCommand extends Command {
 
 
         createCommand()
-            .withArguments(worldArg, locArg, playerArg, xArg, yArg, zArg, whitelistedBlocksArg(), materialsArg)
+            .withArguments(worldArg(), locArg(), playerArg(), xArg, yArg, zArg, whitelistedBlocksArg(), materialsArg)
             .withOptionalArguments(applyPhysicsArg, timeArg)
             .executes((sender, args) -> {
                 List<List<Predicate<Block>>> predicates = args.getUnchecked("Whitelisted Blocks");
-                Block origin = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
-                Player p = args.getByArgument(playerArg);
+                Block origin = ((World) args.get("World")).getBlockAt(args.getUnchecked("Location"));
+                Player player = args.getUnchecked("Player");
                 List<Material> blocksTo = args.getUnchecked("Blocks To Replace To");
                 boolean applyPhysics = args.getByArgumentOrDefault(applyPhysicsArg, true);
                 Duration duration = args.getOrDefaultUnchecked("Time", Duration.ofSeconds(-1));
 
-                for (Block b : getBlocksInFacingXYZ(origin, args.getByArgument(xArg), args.getByArgument(yArg), args.getByArgument(zArg), p)) {
-                    if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
+                for (Block relative : getBlocksInFacingXYZ(origin, args.getByArgument(xArg), args.getByArgument(yArg), args.getByArgument(zArg), player)) {
+                    if (Utils.testBlock(relative, predicates) && FUtils.isInClaimOrWilderness(player, relative.getLocation())) {
                         if (duration.isPositive()) {
-                            Material oldMat = b.getType();
+                            Material oldMat = relative.getType();
                             Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
-                                b.setType(oldMat);
+                                relative.setType(oldMat);
                             }, duration.toMillis() / 50);
                         }
-                        b.setType(blocksTo.get(ThreadLocalRandom.current().nextInt(blocksTo.size())), applyPhysics);
+                        relative.setType(blocksTo.get(ThreadLocalRandom.current().nextInt(blocksTo.size())), applyPhysics);
                     }
                 }
             })

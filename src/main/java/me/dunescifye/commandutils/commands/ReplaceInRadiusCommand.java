@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.CommandUtils;
@@ -27,8 +26,7 @@ public class ReplaceInRadiusCommand extends Command {
         BooleanArgument applyPhysicsArg = new BooleanArgument("Apply Physics");
         Argument<List<Material>> materialsArg = materialsArgument("Blocks To Replace To");
 
-
-        new CommandAPICommand("replaceinradius")
+        createCommand()
             .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), whitelistedBlocksArg(), materialsArg)
             .withOptionalArguments(applyPhysicsArg, durationArg())
             .executes((sender, args) -> {
@@ -40,19 +38,17 @@ public class ReplaceInRadiusCommand extends Command {
                 boolean applyPhysics = args.getByArgumentOrDefault(applyPhysicsArg, true);
                 Duration duration = args.getOrDefaultUnchecked("Time", Duration.ofSeconds(-1));
 
-                for (Block b : Utils.getBlocksInRadius(origin, radius))
-                    if (Utils.testBlock(b, predicates) && FUtils.isInClaimOrWilderness(player, b.getLocation())) {
+                for (Block relative : Utils.getBlocksInRadius(origin, radius))
+                    if (Utils.testBlock(relative, predicates) && FUtils.isInClaimOrWilderness(player, relative.getLocation())) {
                         if (duration.isPositive()) {
-                            Material oldMat = b.getType();
+                            Material oldMat = relative.getType();
                             Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
-                                b.setType(oldMat);
+                                relative.setType(oldMat);
                             }, duration.toMillis() / 50);
                         }
-                        b.setType(blocksTo.get(ThreadLocalRandom.current().nextInt(blocksTo.size())), applyPhysics);
+                        relative.setType(blocksTo.get(ThreadLocalRandom.current().nextInt(blocksTo.size())), applyPhysics);
                     }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
         new CommandTree("replaceinradius")
