@@ -11,6 +11,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 
 import java.util.Collection;
 
+@CommandInfo(minVersion = 21.1)
 public class LifeStealCommand extends Command {
 
     @Override

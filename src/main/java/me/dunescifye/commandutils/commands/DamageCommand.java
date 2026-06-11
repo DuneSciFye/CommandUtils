@@ -11,6 +11,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import java.util.Collection;
 
 @SuppressWarnings({"unchecked", "DataFlowIssue"})
+@CommandInfo(enabled = false)
 public class DamageCommand extends Command {
 
     @Override

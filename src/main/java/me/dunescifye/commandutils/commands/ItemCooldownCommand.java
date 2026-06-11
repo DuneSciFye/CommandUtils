@@ -17,6 +17,7 @@ import java.time.Duration;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 @SuppressWarnings({"DataFlowIssue", "UnstableApiUsage"})
+@CommandInfo(minVersion = 21.1)
 public class ItemCooldownCommand extends Command {
 
     @Override

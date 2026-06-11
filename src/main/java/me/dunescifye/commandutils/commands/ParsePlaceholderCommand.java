@@ -7,6 +7,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 
+@CommandInfo(requiredPlugins = "PlaceholderAPI")
 public class ParsePlaceholderCommand extends Command {
 
     @SuppressWarnings({"ConstantConditions", "null"})

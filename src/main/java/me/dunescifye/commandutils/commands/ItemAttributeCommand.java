@@ -16,6 +16,7 @@ import org.bukkit.persistence.PersistentDataType;
 import static me.dunescifye.commandutils.utils.Utils_21_4.equipmentSlotGroupArgument;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
+@CommandInfo(minVersion = 21.1)
 public class ItemAttributeCommand extends Command {
 
     @SuppressWarnings({"ConstantConditions", "null"})

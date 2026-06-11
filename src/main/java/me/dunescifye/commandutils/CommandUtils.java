@@ -12,8 +12,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.logging.Logger;
 
 public final class CommandUtils extends JavaPlugin {
@@ -61,123 +68,7 @@ public final class CommandUtils extends JavaPlugin {
             }
         }, 20L);
 
-        commands.put("BlockCycle", new BlockCycleCommand());
-        commands.put("BlockGravity", new BlockGravityCommand());
-        commands.put("BoneMealBlock", new BoneMealBlockCommand());
-        commands.put("BreakAndReplant", new BreakAndReplantCommand());
-        commands.put("BreakInFacing", new BreakInFacingCommand());
-        commands.put("BreakInRadius", new BreakInRadiusCommand());
-        commands.put("BroadcastMessage", new BroadcastMessageCommand());
-        commands.put("ChanceRandomRun", new ChanceRandomRunCommand());
-        commands.put("ChangeVillagerProfession", new ChangeVillagerProfessionCommand());
-        commands.put("Food", new FoodCommand());
-        commands.put("HighlightBlocks", new HighlightBlocksCommand());
-        commands.put("LaunchProjectile", new LaunchProjectileCommand());
-        commands.put("LaunchFirework", new LaunchFireworkCommand());
-        commands.put("LoadCrossbow", new LoadCrossbowCommand());
-        commands.put("PushEntity", new PushEntityCommand());
-        commands.put("RayTraceParticle", new RayTraceParticleCommand());
-        commands.put("RemoveItem", new RemoveItemCommand());
-        commands.put("ReplaceInFacing", new ReplaceInFacingCommand());
-        commands.put("RunCommandLater", new RunCommandLaterCommand());
-        commands.put("RunCommandWhen", new RunCommandWhenCommand());
-        commands.put("SendBossBar", new SendBossBarCommand());
-        commands.put("SendMessage", new SendMessageCommand());
-        commands.put("SetCursorItem", new SetCursorItemCommand());
-        commands.put("SetItem", new SetItemCommand());
-        commands.put("SetItemNBT", new SetItemNBTCommand());
-        commands.put("SetTNTSource", new SetTNTSourceCommand());
-        commands.put("SilentParticle", new SilentParticleCommand());
-        commands.put("SpawnBlockBreaker", new SpawnBlockBreakerCommand());
-        commands.put("SpawnNoDamageEvokerFang", new SpawnNoDamageEvokerFangCommand());
-        commands.put("SpawnNoDamageFirework", new SpawnNoDamageFireworkCommand());
-        commands.put("Waterlog", new WaterlogCommand());
-        commands.put("WeightedRandom", new WeightedRandomCommand());
-        commands.put("While", new WhileCommand());
-        commands.put("Loop", new LoopCommand());
-        commands.put("If", new IfCommand());
-        commands.put("MobTarget", new MobTargetCommand());
-        commands.put("SendConditionMessage", new SendConditionMessageCommand());
-        commands.put("OverrideEffect", new OverrideEffectCommand());
-        commands.put("PreciseEffect", new PreciseEffectCommand());
-        commands.put("ReplaceLore", new ReplaceLoreCommand());
-        commands.put("ReplaceLoreRegex", new ReplaceLoreRegexCommand());
-        commands.put("BreakInVein", new BreakInVeinCommand());
-        commands.put("GetPlayerHead", new GetPlayerHeadCommand());
-        commands.put("RemoveInRadius", new RemoveInRadiusCommand());
-        commands.put("LaunchTNT", new LaunchTNTCommand());
-        commands.put("ReplaceInRadius", new ReplaceInRadiusCommand());
-        commands.put("SpawnGuardianBeam", new SpawnGuardianBeamCommand());
-        commands.put("Oxygen", new OxygenCommand());
-        commands.put("ZombifyVillager", new ZombifyVillagerCommand());
-        commands.put("CureVillager", new CureVillagerCommand());
-        commands.put("SetArrowsInBody", new SetArrowsInBodyCommand());
-        commands.put("SetAI", new SetAICommand());
-        commands.put("SetFireTicks", new SetFireTicksCommand());
-        commands.put("SetFreezeTicks", new SetFreezeTicksCommand());
-        commands.put("SetCompassTracking", new SetCompassTrackingCommand());
-        commands.put("SpawnWitherSkull", new SpawnWitherSkullCommand());
-        commands.put("SetArmorTrim", new SetArmorTrimCommand());
-        commands.put("ItemDamage", new ItemDamageCommand());
-        commands.put("BreakBlockMultiplyDrops", new BreakBlockMultiplyDropsCommand());
-        commands.put("Saturation", new SaturationCommand());
-        commands.put("TempVar", new TempVarCommand());
-        commands.put("BreakInFacingLogCoreProtect", new BreakInFacingLogCoreProtectCommand());
-        commands.put("SetMobTarget", new SetMobTargetCommand());
-        commands.put("RemoveEntity", new RemoveEntityCommand());
-        commands.put("CooldownCommand", new CooldownCommandCommand());
-        commands.put("ModifyVelocity", new ModifyVelocityCommand());
-        commands.put("TempPlayerVar", new TempPlayerVarCommand());
-        commands.put("BreakInXYZ", new BreakInXYZCommand());
-        commands.put("AddItemNBT", new AddItemNBTCommand());
-        commands.put("BlockPrison", new BlockPrisonCommand());
-        commands.put("SendActionBar", new SendActionBarCommand());
-        commands.put("MobDrops", new MobDropsCommand());
-        commands.put("ItemLore", new ItemLoreCommand());
-        commands.put("ReplaceInRadiusIfBlockRelative", new ReplaceInRadiusIfBlockRelativeCommand());
-        commands.put("RemoveNBTItem", new RemoveNBTItemCommand());
-        commands.put("PreciseIf", new PreciseIfCommand());
-        commands.put("CopyEffects", new CopyEffectsCommand());
-        commands.put("DisableJump", new DisableJumpCommand());
-        commands.put("Give", new GiveCommand());
-        commands.put("SetFlight", new SetFlightCommand());
-        commands.put("FlightSpeed", new FlightSpeedCommand());
-        commands.put("Health", new HealthCommand());
-        commands.put("RunCommandFor", new RunCommandForCommand());
-        commands.put("DisableSprint", new DisableSprintCommand());
-        commands.put("RefreshVillagerTrades", new RefreshVillagerTradesCommand());
-        commands.put("SmeltItem", new SmeltItemCommand());
-        commands.put("SelectBlocks", new SelectBlocksCommand());
-        commands.put("MetaData", new MetaDataCommand());
-        commands.put("SetEnchantment", new SetEnchantmentCommand());
-        commands.put("SelectBlocksFacing", new SelectBlocksFacingCommand());
-        commands.put("MultiplyVelocity", new MultiplyVelocityCommand());
-        commands.put("SelectItems", new SelectItemsCommand());
-        commands.put("SpawnNoDamageLightning", new SpawnNoDamageLightningCommand());
-        commands.put("TrimCommand", new TrimCommandCommand());
-        commands.put("PlaceBlockFromInv", new PlaceBlockFromInvCommand());
-        commands.put("PlaceBlockFromSlot", new PlaceBlockFromSlotCommand());
-        commands.put("SilentSummon", new SilentSummonCommand());
-        commands.put("ItemName", new ItemNameCommand());
-        commands.put("SetHeldSlot", new SetHeldSlotCommand());
-        commands.put("LockHeldSlot", new LockHeldSlotCommand());
-        commands.put("MixInventory", new MixInventoryCommand());
-        commands.put("PreventMixInventory", new PreventMixInventoryCommand());
-        commands.put("MobTargetTeam", new MobTargetTeamCommand());
-        commands.put("SetProjectileCommands", new SetProjectileCommandsCommand());
-        commands.put("SetGliding", new SetGlidingCommand());
-        commands.put("Mount", new MountCommand());
-        commands.put("UnsetItemNBT", new UnsetItemNBTCommand());
-        commands.put("ShearEntity", new ShearEntityCommand());
-        commands.put("RemoveInFacing", new RemoveInFacingCommand());
-        commands.put("SetVillagerTrade", new SetVillagerTradeCommand());
-        commands.put("RemoveCustomDataItem", new RemoveCustomDataItemCommand());
-        commands.put("ReplaceInXYZ", new ReplaceInXYZCommand());
-        commands.put("ReplaceInXZ", new ReplaceInXZCommand());
-        commands.put("SwapPositions", new SwapPositionsCommand());
-        if (versionAmount > 21.1) commands.put("ItemCooldown", new ItemCooldownCommand());
-        if (versionAmount > 21.1) commands.put("ItemAttribute", new ItemAttributeCommand());
-        if (versionAmount > 21.1) commands.put("LifeSteal", new LifeStealCommand());
+        registerCommands(versionAmount, logger);
 
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
             logger.info("Detected GriefPrevention, enabling support for it.");
@@ -211,7 +102,6 @@ public final class CommandUtils extends JavaPlugin {
 
          */
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            commands.put("ParsePlaceholder", new ParsePlaceholderCommand());
             placeholderAPIEnabled = true;
             logger.info("Detected PlaceholderAPI, enabling support for it.");
         }
@@ -247,6 +137,80 @@ public final class CommandUtils extends JavaPlugin {
         new ExperienceTracker().experienceHandler(this);
         Bukkit.getPluginManager().registerEvents(new PlayerKillerTracker(), this);
     }
+
+    private static final String COMMANDS_PACKAGE = "me/dunescifye/commandutils/commands/";
+
+    /**
+     * Discovers every concrete {@link Command} subclass in the commands package by scanning the
+     * plugin jar, then registers each one whose {@link CommandInfo} conditions (if any) are met.
+     * The command name is taken from {@link CommandInfo#name()} or, when unset, derived from the
+     * class name by stripping the trailing {@code "Command"}.
+     */
+    private void registerCommands(double versionAmount, Logger logger) {
+        for (Class<? extends Command> clazz : findCommandClasses(logger)) {
+            CommandInfo info = clazz.getAnnotation(CommandInfo.class);
+
+            if (info != null) {
+                if (!info.enabled()) continue;
+                if (info.minVersion() > 0 && versionAmount <= info.minVersion()) continue;
+
+                boolean missingPlugin = false;
+                for (String requiredPlugin : info.requiredPlugins()) {
+                    if (!Bukkit.getPluginManager().isPluginEnabled(requiredPlugin)) {
+                        missingPlugin = true;
+                        break;
+                    }
+                }
+                if (missingPlugin) continue;
+            }
+
+            String name = (info != null && !info.name().isEmpty()) ? info.name() : deriveCommandName(clazz);
+            try {
+                commands.put(name, clazz.getDeclaredConstructor().newInstance());
+            } catch (ReflectiveOperationException e) {
+                logger.warning("Failed to instantiate command " + clazz.getName() + ": " + e);
+            }
+        }
+        logger.info("Registered " + commands.size() + " commands.");
+    }
+
+    /** Strips the trailing {@code "Command"} from a command class's simple name. */
+    private static String deriveCommandName(Class<?> clazz) {
+        String simpleName = clazz.getSimpleName();
+        return simpleName.endsWith("Command")
+            ? simpleName.substring(0, simpleName.length() - "Command".length())
+            : simpleName;
+    }
+
+    /** Reads the plugin jar and returns every concrete, non-abstract {@link Command} subclass in
+     * the commands package (excluding {@link Command} itself). */
+    private List<Class<? extends Command>> findCommandClasses(Logger logger) {
+        List<Class<? extends Command>> classes = new ArrayList<>();
+        try (JarFile jar = new JarFile(getFile())) {
+            Enumeration<JarEntry> entries = jar.entries();
+            while (entries.hasMoreElements()) {
+                String entryName = entries.nextElement().getName();
+                if (!entryName.startsWith(COMMANDS_PACKAGE) || !entryName.endsWith(".class")) continue;
+                if (entryName.contains("$")) continue; // skip nested/anonymous classes
+
+                String className = entryName.substring(0, entryName.length() - ".class".length()).replace('/', '.');
+                try {
+                    Class<?> clazz = Class.forName(className, false, getClass().getClassLoader());
+                    if (Command.class.isAssignableFrom(clazz)
+                        && clazz != Command.class
+                        && !Modifier.isAbstract(clazz.getModifiers())) {
+                        classes.add(clazz.asSubclass(Command.class));
+                    }
+                } catch (Throwable t) {
+                    logger.warning("Failed to load command class " + className + ": " + t);
+                }
+            }
+        } catch (IOException e) {
+            logger.severe("Failed to scan plugin jar for commands: " + e);
+        }
+        return classes;
+    }
+
     public static CommandUtils getInstance(){
         return plugin;
     }
