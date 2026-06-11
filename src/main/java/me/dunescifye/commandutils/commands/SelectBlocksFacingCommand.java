@@ -21,8 +21,8 @@ public class SelectBlocksFacingCommand extends Command {
             .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), depthArg(), whitelistedBlocksArg(),
                 commandSeparatorArg, placeholderSurrounderArg, customPlaceholdersArg, functionsArg)
             .executes((sender, args) -> {
-                BlockUtils.selectBlocks(args, (origin, p) -> Utils.getBlocksInFacing(origin, (int) args.get("Radius"),
-                    (int) args.get("Depth"), p));
+                BlockUtils.selectBlocks(args, (origin, p) -> Utils.getBlocksInFacing(origin, (int) args.get(RADIUS_NAME),
+                    (int) args.get(DEPTH_NAME), p));
             })
             .register(this.getNamespace());
 

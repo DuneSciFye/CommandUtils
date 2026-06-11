@@ -33,8 +33,8 @@ public class BlockCycleCommand extends Command {
         createCommand()
             .withArguments(oxidizeArg, worldArg(), blockLocArg())
             .executes((sender, args) -> {
-                Location loc = (Location) args.get("Location");
-                Block b = ((World) args.get("World")).getBlockAt(loc);
+                Location loc = (Location) args.get(LOC_NAME);
+                Block b = ((World) args.get(WORLD_NAME)).getBlockAt(loc);
                 Material material = b.getType();
                 BlockData blockData = b.getBlockData();
 
@@ -315,7 +315,7 @@ public class BlockCycleCommand extends Command {
         createCommand()
             .withArguments(waxArg, worldArg(), blockLocArg())
             .executes((sender, args) -> {
-                Block b = ((World) args.get("World")).getBlockAt((Location) args.get("Location"));
+                Block b = ((World) args.get(WORLD_NAME)).getBlockAt((Location) args.get(LOC_NAME));
                 BlockData blockData = b.getBlockData();
 
                 Stairs.Shape shape = null;

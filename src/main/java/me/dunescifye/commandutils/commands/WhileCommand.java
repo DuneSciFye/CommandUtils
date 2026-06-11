@@ -48,13 +48,13 @@ public class WhileCommand extends Command {
                 commandsArg
             )
             .executes((sender, args) -> {
-                Player player = (Player) args.get("Player");
+                Player player = (Player) args.get(PLAYER_NAME);
                 String compare1 = args.getByArgument(compare1Arg).replace("$", "%");
                 String compare2 = args.getByArgument(compare2Arg).replace("$", "%");
                 String compareMethod = args.getByArgument(compareMethodArg);
                 String commandID = args.getByArgument(commandIDArg);
-                long delay = ((Duration) args.get("Initial Delay")).toMillis() / 50;
-                long period = ((Duration) args.get("Period")).toMillis() / 50;
+                long delay = ((Duration) args.get(INITIAL_DELAY_NAME)).toMillis() / 50;
+                long period = ((Duration) args.get(PERIOD_NAME)).toMillis() / 50;
                 String commandsInput = args.getByArgument(commandsArg);
                 commandsInput = commandsInput.replace("$", "%");
                 List<String> commands = List.of(commandsInput.split(",,"));

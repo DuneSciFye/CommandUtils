@@ -20,7 +20,7 @@ public class SetCursorItemCommand extends Command {
                 Player player = args.getUnchecked(PLAYER_NAME);
                 ItemStack item = args.getUnchecked(ITEM_NAME);
 
-                item.setAmount(args.getOrDefaultUnchecked("Amount", 1));
+                item.setAmount(args.getOrDefaultUnchecked(AMOUNT_NAME, 1));
                 player.setItemOnCursor(item);
             })
             .register(this.getNamespace());

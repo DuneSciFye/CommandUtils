@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
 import static me.dunescifye.commandutils.utils.ArgumentUtils.locArg;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class SilentSummonCommand extends Command {
 
@@ -16,7 +17,7 @@ public class SilentSummonCommand extends Command {
         createCommand()
             .withArguments(entityTypeArg, locArg())
             .executes((sender, args) -> {
-                Location loc = (Location) args.get("Location");
+                Location loc = (Location) args.get(LOC_NAME);
                 EntityType entityType = (EntityType) args.get("Entity Type");
 
                 loc.getWorld().spawnEntity(loc, entityType);

@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import static me.dunescifye.commandutils.utils.Utils_21_4.equipmentSlotGroupArgument;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class ItemAttributeCommand extends Command {
 
@@ -42,7 +43,7 @@ public class ItemAttributeCommand extends Command {
             .executes((sender, args) -> {
                 ItemStack item = Utils.getInvItem(
                     args.getByArgument(playerArg),
-                    (String) args.get("Slot")
+                    (String) args.get(SLOT_NAME)
                 );
                 if (item == null || !item.hasItemMeta())
                     return;
@@ -95,7 +96,7 @@ public class ItemAttributeCommand extends Command {
         createCommand()
             .withArguments(removeArg, playerArg, slotArg, attributeArg, idArg)
             .executes((sender, args) -> {
-                ItemStack item = Utils.getInvItem(args.getByArgument(playerArg), (String) args.get("Slot"));
+                ItemStack item = Utils.getInvItem(args.getByArgument(playerArg), (String) args.get(SLOT_NAME));
                 if (item == null || !item.hasItemMeta()) return;
 
                 ItemMeta meta = item.getItemMeta();

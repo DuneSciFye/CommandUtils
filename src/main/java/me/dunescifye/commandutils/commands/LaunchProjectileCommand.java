@@ -16,6 +16,7 @@ import java.text.DecimalFormat;
 import java.time.Duration;
 
 import static me.dunescifye.commandutils.utils.ArgumentUtils.timeArgument;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class LaunchProjectileCommand extends Command {
 
@@ -51,7 +52,7 @@ public class LaunchProjectileCommand extends Command {
               if (proj != null && particleData != null) {
                   Particle particle = particleData.particle();
                   // Needs to be node name or immutable map error
-                  long period = ((Duration) args.get("Period")).toMillis() / 50;
+                  long period = ((Duration) args.get(PERIOD_NAME)).toMillis() / 50;
                   final World world = proj.getWorld();
 
                   new BukkitRunnable() {
@@ -98,7 +99,7 @@ public class LaunchProjectileCommand extends Command {
               if (commands != null) {
                   final String commandSeparator = args.getByArgument(commandSeparatorArg);
                   // Needs to be node name or immutable map error
-                  final long period = ((Duration) args.get("Period")).toMillis() / 50;
+                  final long period = ((Duration) args.get(PERIOD_NAME)).toMillis() / 50;
                   final long delay = ((Duration) args.get("Delay")).toMillis() / 50;
 
                   new BukkitRunnable() {

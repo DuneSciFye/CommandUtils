@@ -32,7 +32,7 @@ public class OverrideEffectCommand extends Command {
                 Player player = args.getUnchecked(PLAYER_NAME);
                 String id = args.getByArgument(idArg);
                 PotionEffectType effectType = args.getByArgument(effectArg);
-                int duration = args.getOrDefaultUnchecked("Duration", 30);
+                int duration = args.getOrDefaultUnchecked(DURATION_NAME, 30);
                 int amplifier = args.getByArgumentOrDefault(amplifierArg, 0);
                 boolean hideParticles = args.getByArgumentOrDefault(hideParticlesArg, false);
                 boolean ambient = args.getByArgumentOrDefault(ambientArg, false);

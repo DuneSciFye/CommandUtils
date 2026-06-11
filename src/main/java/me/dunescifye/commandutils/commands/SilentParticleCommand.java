@@ -24,9 +24,9 @@ public class SilentParticleCommand extends Command {
             .executes((sender, args) -> {
                 ParticleData<?> particleData = args.getUnchecked(PARTICLE_NAME);
                 Particle particle = particleData.particle();
-                Location loc = (Location) args.get("Location");
+                Location loc = (Location) args.get(LOC_NAME);
                 World world = loc.getWorld();
-                int amount = args.getOrDefaultUnchecked("Amount", 1);
+                int amount = args.getOrDefaultUnchecked(AMOUNT_NAME, 1);
                 double speed = args.getByArgumentOrDefault(speedArg, 1.0);
                 double xOffset = args.getByArgumentOrDefault(xOffsetArg, 0.0);
                 double yOffset = args.getByArgumentOrDefault(yOffsetArg, 0.0);

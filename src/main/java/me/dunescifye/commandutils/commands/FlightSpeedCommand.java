@@ -5,6 +5,7 @@ import dev.jorel.commandapi.arguments.LiteralArgument;
 import org.bukkit.entity.Player;
 
 import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 @SuppressWarnings("DataFlowIssue")
 public class FlightSpeedCommand extends Command {
@@ -21,7 +22,7 @@ public class FlightSpeedCommand extends Command {
         createCommand()
             .withArguments(setArg, playerArg(), flightSpeedArg)
             .executes((sender, args) -> {
-                ((Player) args.get("Player")).setFlySpeed(args.getByArgument(flightSpeedArg));
+                ((Player) args.get(PLAYER_NAME)).setFlySpeed(args.getByArgument(flightSpeedArg));
             })
             .register(this.getNamespace());
 
@@ -29,7 +30,7 @@ public class FlightSpeedCommand extends Command {
         createCommand()
             .withArguments(getArg, playerArg())
             .executes((sender, args) -> {
-                sender.sendMessage(String.valueOf(((Player) args.get("Player")).getFlySpeed()));
+                sender.sendMessage(String.valueOf(((Player) args.get(PLAYER_NAME)).getFlySpeed()));
             })
             .register(this.getNamespace());
 
@@ -37,7 +38,7 @@ public class FlightSpeedCommand extends Command {
         createCommand()
             .withArguments(resetArg, playerArg())
             .executes((sender, args) -> {
-                ((Player) args.get("Player")).setFlySpeed(0.1F);
+                ((Player) args.get(PLAYER_NAME)).setFlySpeed(0.1F);
             })
             .register(this.getNamespace());
 

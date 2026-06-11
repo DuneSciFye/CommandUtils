@@ -31,7 +31,7 @@ public class PreciseEffectCommand extends Command {
             .withOptionalArguments(durationArg(), amplifierArg, hideParticlesArg, ambientArg)
             .executes((sender, args) -> {
                 Collection<Entity> entities = args.getUnchecked(ENTITIES_NAME);
-                Duration duration = args.getOrDefaultUnchecked("Duration", Duration.ofSeconds(30));
+                Duration duration = args.getOrDefaultUnchecked(DURATION_NAME, Duration.ofSeconds(30));
 
                 PotionEffect potionEffect = new PotionEffect(
                     args.getByArgument(effectArg),

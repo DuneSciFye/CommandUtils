@@ -25,8 +25,8 @@ public class WaterlogCommand extends Command {
             .executes((sender, args) -> {
                 boolean waterlog = args.getByArgumentOrDefault(waterlogArg, true);
 
-                Set<Block> blocks = Utils.getBlocksInRadius(((World) args.get("World")).getBlockAt((Location) args.get(
-                    "Location")), (int) args.getOrDefault("Radius", 0));
+                Set<Block> blocks = Utils.getBlocksInRadius(((World) args.get(WORLD_NAME)).getBlockAt((Location) args.get(
+                    "Location")), (int) args.getOrDefault(RADIUS_NAME, 0));
 
                 for (Block block : blocks) {
                     if (!(block.getBlockData() instanceof Waterlogged waterlogged)) continue;

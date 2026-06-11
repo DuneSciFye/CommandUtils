@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.UseCooldownComponent;
 
 import java.time.Duration;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 @SuppressWarnings({"DataFlowIssue", "UnstableApiUsage"})
 public class ItemCooldown extends Command {
@@ -34,10 +35,10 @@ public class ItemCooldown extends Command {
             .withOptionalArguments(durationArg)
             .executes((sender, args) -> {
                 Player p = args.getByArgument(playerArg);
-                String slot = (String) args.get("Slot");
+                String slot = (String) args.get(SLOT_NAME);
                 ItemStack item = Utils.getInvItem(p, slot);
                 String key = args.getByArgument(keyArg);
-                Duration duration = (Duration) args.get("Duration");
+                Duration duration = (Duration) args.get(DURATION_NAME);
 
                 ItemMeta meta = item.getItemMeta();
                 UseCooldownComponent useCooldown = meta.getUseCooldown();
@@ -52,9 +53,9 @@ public class ItemCooldown extends Command {
             .withArguments(setCooldownArg, playerArg, slotArg, durationArg)
             .executes((sender, args) -> {
                 Player p = args.getByArgument(playerArg);
-                String slot = (String) args.get("Slot");
+                String slot = (String) args.get(SLOT_NAME);
                 ItemStack item = Utils.getInvItem(p, slot);
-                Duration duration = (Duration) args.get("Duration");
+                Duration duration = (Duration) args.get(DURATION_NAME);
 
                 p.setCooldown(item, (int) (duration.toMillis() / 50));
             })
@@ -64,7 +65,7 @@ public class ItemCooldown extends Command {
             .withArguments(setMaterialCooldownArg, playerArg, materialArg, durationArg)
             .executes((sender, args) -> {
                 Player p = args.getByArgument(playerArg);
-                Duration duration = (Duration) args.get("Duration");
+                Duration duration = (Duration) args.get(DURATION_NAME);
                 final Material mat = args.getUnchecked("Material");
 
                 for (ItemStack itemStack : p.getInventory().getContents()) {

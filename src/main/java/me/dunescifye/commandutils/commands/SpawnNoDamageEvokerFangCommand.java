@@ -9,6 +9,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import static me.dunescifye.commandutils.utils.ArgumentUtils.locArg;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.worldArg;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class SpawnNoDamageEvokerFangCommand extends Command {
 
@@ -20,8 +21,8 @@ public class SpawnNoDamageEvokerFangCommand extends Command {
             .withArguments(worldArg())
             .withArguments(locArg())
             .executes((sender, args) -> {
-                World world = (World) args.get("World");
-                Location loc = (Location) args.get("Location");
+                World world = (World) args.get(WORLD_NAME);
+                Location loc = (Location) args.get(LOC_NAME);
                 Entity evokerFangs = world.spawnEntity(loc, EntityType.EVOKER_FANGS);
                 evokerFangs.setMetadata("nodamage", new FixedMetadataValue(CommandUtils.getInstance(), true));
             })

@@ -9,6 +9,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import static me.dunescifye.commandutils.utils.ArgumentUtils.locArg;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.worldArg;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class SpawnNoDamageLightningCommand extends Command {
     @Override
@@ -17,8 +18,8 @@ public class SpawnNoDamageLightningCommand extends Command {
         createCommand()
             .withArguments(worldArg(), locArg())
             .executes((sender, args) -> {
-                World world = (World) args.get("World");
-                Location loc = (Location) args.get("Location");
+                World world = (World) args.get(WORLD_NAME);
+                Location loc = (Location) args.get(LOC_NAME);
                 Entity lightning = world.spawnEntity(loc, EntityType.LIGHTNING_BOLT);
                 lightning.setMetadata("nodamage", new FixedMetadataValue(CommandUtils.getInstance(), true));
             })

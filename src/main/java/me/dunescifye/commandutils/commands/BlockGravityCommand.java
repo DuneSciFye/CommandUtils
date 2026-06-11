@@ -28,8 +28,8 @@ public class BlockGravityCommand extends Command implements Listener {
             .withArguments(worldArg(), blockLocArg())
             .withOptionalArguments(gravityArg, radiusArg())
             .executes((sender, args) -> {
-                Block origin = ((World) args.get("World")).getBlockAt((Location) args.get("Location"));
-                int radius = (int) args.getOrDefault("Radius", 0);
+                Block origin = ((World) args.get(WORLD_NAME)).getBlockAt((Location) args.get(LOC_NAME));
+                int radius = (int) args.getOrDefault(RADIUS_NAME, 0);
                 Boolean gravity = args.getByArgument(gravityArg);
 
                 for (Block b : Utils.getBlocksInRadius(origin, radius)) {

@@ -147,7 +147,7 @@ public class SpawnBlockBreakerCommand extends Command {
         boolean autoPickup = args.getOrDefaultUnchecked("Auto Pickup", false);
 
         // Case 1: used player as target
-        Player player = (Player) args.get("Player");
+        Player player = (Player) args.get(PLAYER_NAME);
         if (player != null) {
             loc = player.getLocation();
             yaw =  player.getLocation().getYaw();

@@ -66,8 +66,8 @@ public class BreakInFacingCommand extends Command {
         loc.setWorld(args.getUnchecked(WORLD_NAME));
         Player player = args.getUnchecked(PLAYER_NAME);
 
-        BlockUtils.BlockProvider provider = (origin, p) -> Utils.getBlocksInFacing(origin, (int) args.get("Radius"),
-            (int) args.get("Depth"), p);
+        BlockUtils.BlockProvider provider = (origin, p) -> Utils.getBlocksInFacing(origin, (int) args.get(RADIUS_NAME),
+            (int) args.get(DEPTH_NAME), p);
 
         if (drop == null) BlockUtils.breakBlocks(predicates, loc, player, forceDrop, provider);
         else BlockUtils.breakBlocks(predicates, loc, player, drop, provider);

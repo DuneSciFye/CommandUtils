@@ -80,7 +80,7 @@ public class BreakInVeinCommand extends Command {
             .withOptionalArguments(whitelistedBlocksArg(), maxBlocksArg)
             .executes((sender, args) -> {
                 Location loc = args.getUnchecked(LOC_NAME);
-                loc.setWorld((World) args.get("World"));
+                loc.setWorld((World) args.get(WORLD_NAME));
                 Block block = loc.getBlock();
                 Collection<ItemStack> drops = new ArrayList<>();
                 List<List<Predicate<Block>>> predicate = List.of(
@@ -89,7 +89,7 @@ public class BreakInVeinCommand extends Command {
                     ),
                     List.of()
                 );
-                List<List<Predicate<Block>>> predicates = args.getOrDefaultUnchecked("Whitelisted Blocks", predicate);
+                List<List<Predicate<Block>>> predicates = args.getOrDefaultUnchecked(WHITELISTED_BLOCKS_NAME, predicate);
                 int maxSize = args.getByArgumentOrDefault(maxBlocksArg, defaultMaxBlocks);
 
                 getVeinOresBasic(block, drops, predicates, maxSize, new HashSet<>());
@@ -102,7 +102,7 @@ public class BreakInVeinCommand extends Command {
             .withOptionalArguments(whitelistedBlocksArg(), triggerBlockBreakArg, maxBlocksArg, checkClaimArg, autoPickupArg, breakOriginalBlockArg, silkTouchArg)
             .executes((sender, args) -> {
                 Location loc = args.getUnchecked(LOC_NAME);
-                loc.setWorld((World) args.get("World"));
+                loc.setWorld((World) args.get(WORLD_NAME));
                 Block block = loc.getBlock();
                 Player player = args.getUnchecked(PLAYER_NAME);
                 ItemStack item = player.getInventory().getItemInMainHand();
@@ -113,7 +113,7 @@ public class BreakInVeinCommand extends Command {
                     ),
                     List.of()
                 );
-                List<List<Predicate<Block>>> predicates = args.getOrDefaultUnchecked("Whitelisted Blocks", predicate);
+                List<List<Predicate<Block>>> predicates = args.getOrDefaultUnchecked(WHITELISTED_BLOCKS_NAME, predicate);
 
                 if (player.hasMetadata("ignoreBlockBreak")) return;
 

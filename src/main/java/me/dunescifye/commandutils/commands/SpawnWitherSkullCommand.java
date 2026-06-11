@@ -23,10 +23,10 @@ public class SpawnWitherSkullCommand extends Command {
             .withArguments(worldArg(), locArg())
             .withOptionalArguments(yawArg(), pitchArg(), velocityMultiplierArg, breakBlocksArg)
             .executes((sender, args) -> {
-                World world = (World) args.get("World");
-                Location loc = (Location) args.get("Location");
-                loc.setYaw((float) args.getOrDefault("Yaw", 0));
-                loc.setPitch((float) args.getOrDefault("Pitch", 0));
+                World world = (World) args.get(WORLD_NAME);
+                Location loc = (Location) args.get(LOC_NAME);
+                loc.setYaw((float) args.getOrDefault(YAW_NAME, 0));
+                loc.setPitch((float) args.getOrDefault(PITCH_NAME, 0));
                 WitherSkull witherSkull = (WitherSkull) world.spawnEntity(loc, EntityType.WITHER_SKULL);
                 witherSkull.setVelocity(witherSkull.getVelocity().multiply(args.getByArgumentOrDefault(velocityMultiplierArg, 1.0)));
                 if (!args.getByArgumentOrDefault(breakBlocksArg, true)) {

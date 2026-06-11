@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 
 import static me.dunescifye.commandutils.utils.ArgumentUtils.worldArg;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class SpawnGuardianBeamCommand extends Command {
     @SuppressWarnings({"ConstantConditions", "null"})
@@ -30,7 +31,7 @@ public class SpawnGuardianBeamCommand extends Command {
             .executes((sender, args) -> {
                 Location location1 = args.getByArgument(loc1Arg);
                 Location location2 = args.getByArgument(loc2Arg);
-                World world = (World) args.get("World");
+                World world = (World) args.get(WORLD_NAME);
                 location1.setWorld(world);
                 location2.setWorld(world);
                 try {
@@ -73,7 +74,7 @@ public class SpawnGuardianBeamCommand extends Command {
             .executes((sender, args) -> {
                 try {
                     Location location = args.getByArgument(loc1Arg);
-                    World world = (World) args.get("World");
+                    World world = (World) args.get(WORLD_NAME);
                     location.setWorld(world);
                     Entity entity = args.getByArgument(entity1Arg);
 
@@ -96,7 +97,7 @@ public class SpawnGuardianBeamCommand extends Command {
             .executes((sender, args) -> {
                 try {
                     Location location = args.getByArgument(loc1Arg);
-                    World world = (World) args.get("World");
+                    World world = (World) args.get(WORLD_NAME);
                     location.setWorld(world);
                     Entity entity = args.getByArgument(entity1Arg);
 

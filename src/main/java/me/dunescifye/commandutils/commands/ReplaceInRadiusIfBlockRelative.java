@@ -48,7 +48,7 @@ public class ReplaceInRadiusIfBlockRelative extends Command {
             .withOptionalArguments(removeItemArg)
             .executes((sender, args) -> {
                 Player player = args.getUnchecked(PLAYER_NAME);
-                Block origin = ((World) args.get("World")).getBlockAt(args.getUnchecked(LOC_NAME));
+                Block origin = ((World) args.get(WORLD_NAME)).getBlockAt(args.getUnchecked(LOC_NAME));
                 int radius = args.getUnchecked(RADIUS_NAME);
                 List<List<Predicate<Block>>> blocksFrom = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
                 List<Material> blocksTo = args.getUnchecked("Blocks To Replace To");
@@ -74,7 +74,7 @@ public class ReplaceInRadiusIfBlockRelative extends Command {
             .withOptionalArguments(removeItemArg)
             .executes((sender, args) -> {
                 Player player = args.getUnchecked(PLAYER_NAME);
-                Block origin = ((World) args.get("World")).getBlockAt(args.getUnchecked(LOC_NAME));
+                Block origin = ((World) args.get(WORLD_NAME)).getBlockAt(args.getUnchecked(LOC_NAME));
                 int radius = args.getUnchecked(RADIUS_NAME);
                 List<List<Predicate<Block>>> blocksFrom = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
                 BlockData blockTo = args.getByArgument(blockToArg).getBlockData();

@@ -20,9 +20,9 @@ public class BoneMealBlockCommand extends Command {
             .withArguments(worldArg(), locArg())
             .withOptionalArguments(amountArg(), radiusArg(), affectTargetBlockArg)
             .executes((sender, args) -> {
-                Block block = ((World) args.get("World")).getBlockAt(args.getUnchecked(LOC_NAME));
-                int amount = args.getOrDefaultUnchecked("Amount", 1);
-                int radius = args.getOrDefaultUnchecked("Radius", 0);
+                Block block = ((World) args.get(WORLD_NAME)).getBlockAt(args.getUnchecked(LOC_NAME));
+                int amount = args.getOrDefaultUnchecked(AMOUNT_NAME, 1);
+                int radius = args.getOrDefaultUnchecked(RADIUS_NAME, 0);
                 boolean affectTargetBlock = args.getByArgumentOrDefault(affectTargetBlockArg, true);
 
                 for (Block b : Utils.getBlocksInRadius(block, radius)) {

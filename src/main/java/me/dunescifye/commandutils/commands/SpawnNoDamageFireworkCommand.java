@@ -16,6 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static me.dunescifye.commandutils.utils.ArgumentUtils.locArg;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.worldArg;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class SpawnNoDamageFireworkCommand extends Command {
     @SuppressWarnings({"ConstantConditions", "null"})
@@ -30,7 +31,7 @@ public class SpawnNoDamageFireworkCommand extends Command {
             .withArguments(worldArg(), locArg(), ticksToDetonateArg)
             .withOptionalArguments(playerArg)
             .executes((sender, args) -> {
-                Firework fw = (Firework) ((World) args.get("World")).spawnEntity((Location) args.get("Location"), EntityType.FIREWORK_ROCKET);
+                Firework fw = (Firework) ((World) args.get(WORLD_NAME)).spawnEntity((Location) args.get(LOC_NAME), EntityType.FIREWORK_ROCKET);
 
                 spawnFirework(fw, args.getByArgument(ticksToDetonateArg), args.getByArgument(playerArg));
             })

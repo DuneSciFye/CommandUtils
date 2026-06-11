@@ -20,17 +20,17 @@ public class BlockPrisonCommand extends Command {
             .withArguments(worldArg(), blockLocArg(), playerArg(), blockStateArg(), radiusArg(), heightArg())
             .withOptionalArguments(durationArg(), floorArg)
             .executes((sender, args) -> {
-                World world = (World) args.get("World");
-                Block block = world.getBlockAt((Location) args.get("Location"));
+                World world = (World) args.get(WORLD_NAME);
+                Block block = world.getBlockAt((Location) args.get(LOC_NAME));
                 Location loc = block.getLocation();
                 int startX = loc.getBlockX();
                 int startY = loc.getBlockY();
                 int startZ = loc.getBlockZ();
-                String player = ((Player) args.get("Player")).getName();
-                int radius = (int) args.get("Radius");
-                int height = (int) args.get("Height");
-                int duration = (int) args.getOrDefault("Duration", 100);
-                String blockName = ((BlockState) args.get("Block State")).getType().toString();
+                String player = ((Player) args.get(PLAYER_NAME)).getName();
+                int radius = (int) args.get(RADIUS_NAME);
+                int height = (int) args.get(HEIGHT_NAME);
+                int duration = (int) args.getOrDefault(DURATION_NAME, 100);
+                String blockName = ((BlockState) args.get(BLOCK_STATE_NAME)).getType().toString();
                 boolean floor = args.getByArgumentOrDefault(floorArg, false);
 
                 Server server = Bukkit.getServer();

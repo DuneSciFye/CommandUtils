@@ -20,16 +20,16 @@ public class AddItemNBTCommand extends Command {
             .withArguments(playerArg(), slotArg(), namespaceArg(), keyArg())
             .withOptionalArguments(contentArg())
             .executes((sender, args) -> {
-                ItemStack item = Utils.getInvItem((Player) args.get("Player"), (String) args.get("Slot"));
+                ItemStack item = Utils.getInvItem((Player) args.get(PLAYER_NAME), (String) args.get(SLOT_NAME));
 
                 if (item == null) return;
 
                 NamespacedKey key = new NamespacedKey(
-                    (String) args.get("Namespace"),
-                    (String) args.get("Key")
+                    (String) args.get(NAMESPACE_NAME),
+                    (String) args.get(KEY_NAME)
                 );
 
-                String content = (String) args.getOrDefault("Content", "");
+                String content = (String) args.getOrDefault(CONTENT_NAME, "");
                 ItemMeta meta = item.getItemMeta();
                 PersistentDataContainer pdc = meta.getPersistentDataContainer();
 

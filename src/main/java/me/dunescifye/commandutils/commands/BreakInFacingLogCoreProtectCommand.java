@@ -36,7 +36,7 @@ public class BreakInFacingLogCoreProtectCommand extends Command {
             .withOptionalArguments(forceDropArg)
             .executes((sender, args) -> {
                 Location loc = args.getUnchecked(LOC_NAME);
-                loc.setWorld((World) args.get("World"));
+                loc.setWorld((World) args.get(WORLD_NAME));
 
                 breakInFacing(
                     null,
@@ -56,7 +56,7 @@ public class BreakInFacingLogCoreProtectCommand extends Command {
             .withOptionalArguments(forceDropArg)
             .executes((sender, args) -> {
                 Location loc = args.getUnchecked(LOC_NAME);
-                loc.setWorld((World) args.get("World"));
+                loc.setWorld((World) args.get(WORLD_NAME));
 
                 breakInFacing(
                     args.getUnchecked(WHITELISTED_BLOCKS_NAME),
@@ -75,7 +75,7 @@ public class BreakInFacingLogCoreProtectCommand extends Command {
             .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), depthArg(), whitelistedBlocksArg(), dropArg)
             .executes((sender, args) -> {
                 Location loc = args.getUnchecked(LOC_NAME);
-                loc.setWorld((World) args.get("World"));
+                loc.setWorld((World) args.get(WORLD_NAME));
 
                 breakInFacing(
                     args.getUnchecked(WHITELISTED_BLOCKS_NAME),

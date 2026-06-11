@@ -37,7 +37,7 @@ public class ReplaceInXYZCommand extends Command {
             .withOptionalArguments(applyPhysicsArg, timeArg)
             .executes((sender, args) -> {
                 List<List<Predicate<Block>>> predicates = args.getUnchecked(WHITELISTED_BLOCKS_NAME);
-                Block origin = ((World) args.get("World")).getBlockAt(args.getUnchecked(LOC_NAME));
+                Block origin = ((World) args.get(WORLD_NAME)).getBlockAt(args.getUnchecked(LOC_NAME));
                 Player player = args.getUnchecked(PLAYER_NAME);
                 List<Material> blocksTo = args.getUnchecked("Blocks To Replace To");
                 boolean applyPhysics = args.getByArgumentOrDefault(applyPhysicsArg, true);

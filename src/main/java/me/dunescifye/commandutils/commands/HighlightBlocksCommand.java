@@ -93,7 +93,7 @@ public class HighlightBlocksCommand extends Command {
             .withArguments(worldArg(), locArg(), radiusArg(), blockPredicateArg, particleArg)
             .withOptionalArguments(particleCountArg, particleOffsetArg, particleSpeedArg, numberOfIntervalsArg, particleSpawnIntervalArg)
             .executes((sender, args) -> {
-                World world = (World) args.get("World");
+                World world = (World) args.get(WORLD_NAME);
                 Location loc = args.getUnchecked(LOC_NAME);
                 loc.setWorld(world);
                 Block origin = world.getBlockAt(loc);
@@ -146,7 +146,7 @@ public class HighlightBlocksCommand extends Command {
             .executes((sender, args) -> {
                 List<List<Predicate<Block>>> predicates = args.getUnchecked(WHITELISTED_BLOCKS_NAME);
 
-                World world = (World) args.get("World");
+                World world = (World) args.get(WORLD_NAME);
                 Location loc = args.getUnchecked(LOC_NAME);
                 Block origin = world.getBlockAt(loc);
                 int radius = args.getUnchecked(RADIUS_NAME);
