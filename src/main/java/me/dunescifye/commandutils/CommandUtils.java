@@ -7,7 +7,7 @@ import dev.jorel.commandapi.network.CommandAPIProtocol;
 import me.dunescifye.commandutils.commands.*;
 import me.dunescifye.commandutils.files.Config;
 import me.dunescifye.commandutils.listeners.*;
-import me.dunescifye.commandutils.commands.Command;
+
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -53,7 +53,7 @@ public final class CommandUtils extends JavaPlugin {
 
 
         String version = Bukkit.getServer().getMinecraftVersion();
-        double versionAmount = Double.parseDouble(version.substring(2));
+        double versionAmount = parseVersionAmount(version, logger);
 
         // Files first
 
@@ -139,6 +139,32 @@ public final class CommandUtils extends JavaPlugin {
     }
 
     private static final String COMMANDS_PACKAGE = "me/dunescifye/commandutils/commands/";
+
+    /**
+     * Extracts a comparable {@code minor.patch} version number from a Minecraft version string.
+     * <p>
+     * Versions are expected in {@code "1.<minor>.<patch>"} form (e.g. {@code "1.21.4"} &rarr;
+     * {@code 21.4}), matching the values used by {@link CommandInfo#minVersion()}. Anything that
+     * doesn't fit that shape (unexpected formats, snapshots, future major versions) is treated as
+     * the newest version so that all version-gated commands still register, rather than crashing
+     * startup.
+     */
+    private static double parseVersionAmount(String version, Logger logger) {
+        String[] parts = version.split("\\.");
+        try {
+            if (parts.length >= 3 && parts[0].equals("1")) {
+                return Double.parseDouble(parts[1] + "." + parts[2]);
+            }
+            if (parts.length == 2 && parts[0].equals("1")) {
+                return Double.parseDouble(parts[1]);
+            }
+        } catch (NumberFormatException ignored) {
+            // fall through to the newest-version fallback below
+        }
+        logger.warning("Unrecognized Minecraft version '" + version
+            + "', treating it as the newest version for command registration.");
+        return Double.MAX_VALUE;
+    }
 
     /**
      * Discovers every concrete {@link Command} subclass in the commands package by scanning the
