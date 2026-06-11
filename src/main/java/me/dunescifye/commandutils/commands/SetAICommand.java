@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;

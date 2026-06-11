@@ -9,7 +9,6 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 
 import java.util.*;
@@ -86,4 +85,3 @@ public class MobTargetTeamCommand extends Command implements Listener {
 
   }
 }
-

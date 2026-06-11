@@ -1,7 +1,6 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.CommandTree;
-import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
 import me.clip.placeholderapi.PlaceholderAPI;

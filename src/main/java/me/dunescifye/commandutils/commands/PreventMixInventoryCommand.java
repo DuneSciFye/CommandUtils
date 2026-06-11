@@ -7,7 +7,6 @@ import dev.jorel.commandapi.arguments.TextArgument;
 import dev.jorel.commandapi.executors.ExecutorType;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.ArgumentUtils;
-import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;

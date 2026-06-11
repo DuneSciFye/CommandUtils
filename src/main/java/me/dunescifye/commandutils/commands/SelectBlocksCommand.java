@@ -4,8 +4,6 @@ import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.BlockUtils;
 import me.dunescifye.commandutils.utils.Utils;
 
-import java.util.*;
-
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class SelectBlocksCommand extends Command {

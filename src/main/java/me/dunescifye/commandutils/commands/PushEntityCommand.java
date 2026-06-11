@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.*;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -18,12 +17,10 @@ public class PushEntityCommand extends Command {
         LocationArgument locArg = new LocationArgument("Location");
         DoubleArgument multiplierArg = new DoubleArgument("Multiplier");
         EntitySelectorArgument.OneEntity targetArg = new EntitySelectorArgument.OneEntity("Target");
-        StringArgument worldArg = new StringArgument("World");
 
-        //No World Arg
-        new CommandAPICommand("pushentity")
-            .withArguments(entitiesArg)
-            .withArguments(locArg)
+        // No World Arg
+        createCommand()
+            .withArguments(entitiesArg, locArg)
             .withOptionalArguments(multiplierArg)
             .executes((sender, args) -> {
                 Collection<Entity> entities = args.getByArgument(entitiesArg);
@@ -41,14 +38,11 @@ public class PushEntityCommand extends Command {
                     entity.setVelocity(direction.normalize().multiply(multiplier));
                 }
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
-        //Target for location
-        new CommandAPICommand("pushentity")
-            .withArguments(entitiesArg)
-            .withArguments(targetArg)
+        // Target for location
+        createCommand()
+            .withArguments(entitiesArg, targetArg)
             .withOptionalArguments(multiplierArg)
             .executes((sender, args) -> {
                 Collection<Entity> entities = args.getByArgument(entitiesArg);
@@ -67,8 +61,6 @@ public class PushEntityCommand extends Command {
                 }
 
             })
-            .withPermission(this.getPermission())
-            .withAliases(this.getCommandAliases())
             .register(this.getNamespace());
 
     }

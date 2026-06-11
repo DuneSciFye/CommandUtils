@@ -43,7 +43,6 @@ public class CooldownCommandCommand extends Command {
         TextArgument commandsArg = new TextArgument("Commands");
         GreedyStringArgument commands2Arg = new GreedyStringArgument("Commands2");
         TextArgument commandSeparatorArg = new TextArgument("Command Separator");
-        LiteralArgument globalArg = new LiteralArgument("global");
 
         createCommand()
             .withArguments(playerArg(), idArg, timeArg, commandsArg)
