@@ -12,7 +12,7 @@ import org.bukkit.event.entity.EntityToggleGlideEvent;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class SetGliding extends Command implements Listener {
+public class SetGlidingCommand extends Command implements Listener {
 
     final ArrayList<UUID> glidingPlayers = new ArrayList<>();
 

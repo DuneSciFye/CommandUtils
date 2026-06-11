@@ -18,7 +18,7 @@ import java.util.function.Predicate;
 
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-public class ReplaceInRadiusIfBlockRelative extends Command {
+public class ReplaceInRadiusIfBlockRelativeCommand extends Command {
     @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {

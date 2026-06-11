@@ -52,6 +52,7 @@ public final class CommandUtils extends JavaPlugin {
 
         CommandAPI.onEnable();
 
+        // Fix for a CommandAPI exploit
         Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
             for (String channel : CommandAPIProtocol.getAllChannelIdentifiers()) {
                 Bukkit.getMessenger().unregisterIncomingPluginChannel(plugin, channel);
@@ -103,7 +104,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("ReplaceLoreRegex", new ReplaceLoreRegexCommand());
         commands.put("BreakInVein", new BreakInVeinCommand());
         commands.put("GetPlayerHead", new GetPlayerHeadCommand());
-        commands.put("RemoveInRadius", new RemoveInRadius());
+        commands.put("RemoveInRadius", new RemoveInRadiusCommand());
         commands.put("LaunchTNT", new LaunchTNTCommand());
         commands.put("ReplaceInRadius", new ReplaceInRadiusCommand());
         commands.put("SpawnGuardianBeam", new SpawnGuardianBeamCommand());
@@ -133,16 +134,16 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("SendActionBar", new SendActionBarCommand());
         commands.put("MobDrops", new MobDropsCommand());
         commands.put("ItemLore", new ItemLoreCommand());
-        commands.put("ReplaceInRadiusIfBlockRelative", new ReplaceInRadiusIfBlockRelative());
+        commands.put("ReplaceInRadiusIfBlockRelative", new ReplaceInRadiusIfBlockRelativeCommand());
         commands.put("RemoveNBTItem", new RemoveNBTItemCommand());
         commands.put("PreciseIf", new PreciseIfCommand());
-        commands.put("CopyEffectsCommand", new CopyEffectsCommand());
+        commands.put("CopyEffects", new CopyEffectsCommand());
         commands.put("DisableJump", new DisableJumpCommand());
         commands.put("Give", new GiveCommand());
         commands.put("SetFlight", new SetFlightCommand());
         commands.put("FlightSpeed", new FlightSpeedCommand());
         commands.put("Health", new HealthCommand());
-        commands.put("RunCommandFor", new RunCommandFor());
+        commands.put("RunCommandFor", new RunCommandForCommand());
         commands.put("DisableSprint", new DisableSprintCommand());
         commands.put("RefreshVillagerTrades", new RefreshVillagerTradesCommand());
         commands.put("SmeltItem", new SmeltItemCommand());
@@ -164,7 +165,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("PreventMixInventory", new PreventMixInventoryCommand());
         commands.put("MobTargetTeam", new MobTargetTeamCommand());
         commands.put("SetProjectileCommands", new SetProjectileCommandsCommand());
-        commands.put("SetGliding", new SetGliding());
+        commands.put("SetGliding", new SetGlidingCommand());
         commands.put("Mount", new MountCommand());
         commands.put("UnsetItemNBT", new UnsetItemNBTCommand());
         commands.put("ShearEntity", new ShearEntityCommand());
@@ -174,7 +175,7 @@ public final class CommandUtils extends JavaPlugin {
         commands.put("ReplaceInXYZ", new ReplaceInXYZCommand());
         commands.put("ReplaceInXZ", new ReplaceInXZCommand());
         commands.put("SwapPositions", new SwapPositionsCommand());
-        if (versionAmount > 21.1) commands.put("ItemCooldown", new ItemCooldown());
+        if (versionAmount > 21.1) commands.put("ItemCooldown", new ItemCooldownCommand());
         if (versionAmount > 21.1) commands.put("ItemAttribute", new ItemAttributeCommand());
         if (versionAmount > 21.1) commands.put("LifeSteal", new LifeStealCommand());
 

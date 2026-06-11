@@ -290,7 +290,7 @@ public class Utils {
         }
         return List.of(whitelist, blacklist);
     }
-    
+
     public static List<Material> stringListToMaterials(List<String> inputs) {
         List<Material> materials = new ArrayList<>();
 

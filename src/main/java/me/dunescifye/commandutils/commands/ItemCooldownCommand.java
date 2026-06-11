@@ -17,7 +17,7 @@ import java.time.Duration;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 @SuppressWarnings({"DataFlowIssue", "UnstableApiUsage"})
-public class ItemCooldown extends Command {
+public class ItemCooldownCommand extends Command {
 
     @Override
     public void register() {

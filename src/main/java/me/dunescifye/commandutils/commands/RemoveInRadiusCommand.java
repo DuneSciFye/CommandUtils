@@ -9,7 +9,7 @@ import org.bukkit.block.Block;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 import static org.bukkit.Material.AIR;
 
-public class RemoveInRadius extends Command {
+public class RemoveInRadiusCommand extends Command {
 
     @SuppressWarnings({"ConstantConditions", "null"})
     @Override

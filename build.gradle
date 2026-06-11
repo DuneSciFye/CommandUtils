@@ -90,18 +90,6 @@ shadowJar {
     archiveVersion.set("")    // removes the version number
 }
 
-subprojects {
-    apply plugin: 'java'
-
-    group = 'me.dunescifye'
-    version = '1.0'
-
-    repositories {
-        mavenCentral()
-    }
-
-}
-
 def targetJavaVersion = 21
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
