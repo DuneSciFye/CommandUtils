@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-@SuppressWarnings("ConstantConditions")
+@SuppressWarnings({"ConstantConditions", "null"})
 public class DisableJumpCommand extends Command implements Listener {
 
     private final HashMap<UUID, BukkitTask> tasks = new HashMap<>();
@@ -25,8 +25,8 @@ public class DisableJumpCommand extends Command implements Listener {
         createCommand()
             .withArguments(playerArg(), durationArg())
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
-                Duration duration = args.getUnchecked("Duration");
+                Player player = args.getUnchecked(PLAYER_NAME);
+                Duration duration = args.getUnchecked(DURATION_NAME);
                 UUID uuid = player.getUniqueId();
 
                 BukkitTask task = new BukkitRunnable() {

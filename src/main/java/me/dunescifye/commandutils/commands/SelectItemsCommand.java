@@ -18,7 +18,7 @@ import java.util.UUID;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 import static me.dunescifye.commandutils.utils.Utils.*;
 
-@SuppressWarnings("ConstantConditions")
+@SuppressWarnings({"ConstantConditions", "null"})
 public class SelectItemsCommand extends Command {
 
     @Override
@@ -34,13 +34,13 @@ public class SelectItemsCommand extends Command {
             .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), materialsArg, commandSeparatorArg, placeholderSurrounderArg,
                 customPlaceholdersArg, functionsArg)
             .executes((sender, args) -> {
-                World world = args.getUnchecked("World");
-                Location loc = args.getUnchecked("Location");
+                World world = args.getUnchecked(WORLD_NAME);
+                Location loc = args.getUnchecked(LOC_NAME);
                 loc.setWorld(world);
 
-                Player player = args.getUnchecked("Player");
+                Player player = args.getUnchecked(PLAYER_NAME);
                 List<Material> materials = args.getUnchecked("Materials");
-                int radius = args.getUnchecked("Radius");
+                int radius = args.getUnchecked(RADIUS_NAME);
 
                 String commandSeparator = args.getByArgument(commandSeparatorArg);
                 String placeholderSurrounder = args.getByArgument(placeholderSurrounderArg);

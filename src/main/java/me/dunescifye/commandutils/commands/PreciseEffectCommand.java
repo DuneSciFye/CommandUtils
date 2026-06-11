@@ -8,14 +8,13 @@ import org.bukkit.potion.PotionEffect;
 
 import java.time.Duration;
 import java.util.Collection;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.durationArg;
-import static me.dunescifye.commandutils.utils.ArgumentUtils.entitiesArg;
 
 public class PreciseEffectCommand extends Command {
 
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -31,7 +30,7 @@ public class PreciseEffectCommand extends Command {
             .withArguments(entitiesArg(), effectArg)
             .withOptionalArguments(durationArg(), amplifierArg, hideParticlesArg, ambientArg)
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getUnchecked("Entities");
+                Collection<Entity> entities = args.getUnchecked(ENTITIES_NAME);
                 Duration duration = args.getOrDefaultUnchecked("Duration", Duration.ofSeconds(30));
 
                 PotionEffect potionEffect = new PotionEffect(
@@ -54,7 +53,7 @@ public class PreciseEffectCommand extends Command {
             .withArguments(entitiesArg(), effectArg)
             .withOptionalArguments(infiniteArg, amplifierArg, hideParticlesArg, ambientArg)
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getUnchecked("Entities");
+                Collection<Entity> entities = args.getUnchecked(ENTITIES_NAME);
 
                 PotionEffect potionEffect = new PotionEffect(
                     args.getByArgument(effectArg),

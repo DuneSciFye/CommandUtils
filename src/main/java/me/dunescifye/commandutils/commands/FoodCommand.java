@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 
 public class FoodCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "remove", "set");

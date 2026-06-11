@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ReplaceLoreCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 

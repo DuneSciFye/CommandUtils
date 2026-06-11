@@ -9,13 +9,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.intellij.lang.annotations.RegExp;
 
 import java.util.List;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
-import static me.dunescifye.commandutils.utils.ArgumentUtils.slotArg;
 
 public class ReplaceLoreRegexCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -27,7 +26,7 @@ public class ReplaceLoreRegexCommand extends Command {
             .withArguments(playerArg(), slotArg(), fromArg, toArg)
             .executes((sender, args) -> {
                 updateLore(
-                    Utils.getInvItem(args.getUnchecked("Player"), args.getUnchecked("Slot")),
+                    Utils.getInvItem(args.getUnchecked(PLAYER_NAME), args.getUnchecked(SLOT_NAME)),
                     args.getByArgument(fromArg),
                     args.getByArgument(toArg)
                 );

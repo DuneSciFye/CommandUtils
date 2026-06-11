@@ -31,10 +31,10 @@ public class PlaceBlockFromSlotCommand extends Command {
             .withOptionalArguments(consumeArg, triggerEventArg)
             .executes((sender, args) -> {
                 Player player = ArgumentUtils.getPlayer(sender);
-                World world = args.getUnchecked("World");
-                Location loc = args.getUnchecked("Location");
+                World world = args.getUnchecked(WORLD_NAME);
+                Location loc = args.getUnchecked(LOC_NAME);
                 loc.setWorld(world);
-                String slot = args.getUnchecked("Slot");
+                String slot = args.getUnchecked(SLOT_NAME);
                 Boolean consume = args.getByArgumentOrDefault(consumeArg, true);
                 Boolean triggerEvent = args.getByArgumentOrDefault(triggerEventArg, true);
 

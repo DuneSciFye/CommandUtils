@@ -20,7 +20,7 @@ import static me.dunescifye.commandutils.utils.Utils.*;
 // Does the same thing as replaceinxyz but ignores looking down or up. Only uses four cardinal directions.
 public class ReplaceInXZCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         StringArgument worldArg = new StringArgument("World");
@@ -37,7 +37,7 @@ public class ReplaceInXZCommand extends Command {
             .withArguments(worldArg, locArg, playerArg, xArg, zArg, whitelistedBlocksArg(), materialsArg)
             .withOptionalArguments(applyPhysicsArg, timeArg)
             .executes((sender, args) -> {
-                List<List<Predicate<Block>>> predicates = args.getUnchecked("Whitelisted Blocks");
+                List<List<Predicate<Block>>> predicates = args.getUnchecked(WHITELISTED_BLOCKS_NAME);
                 Block origin = Bukkit.getWorld(args.getByArgument(worldArg)).getBlockAt(args.getByArgument(locArg));
                 Player p = args.getByArgument(playerArg);
                 List<Material> blocksTo = args.getUnchecked("Blocks To Replace To");

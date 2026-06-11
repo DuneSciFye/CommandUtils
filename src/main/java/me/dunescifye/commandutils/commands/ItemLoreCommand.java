@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ItemLoreCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "append", "set", "remove");

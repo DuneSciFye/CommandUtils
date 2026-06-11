@@ -9,9 +9,9 @@ import org.bukkit.entity.Player;
 
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
+@SuppressWarnings("null")
 public class BlockPrisonCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
     public void register() {
         BooleanArgument floorArg = new BooleanArgument("Floor");
 

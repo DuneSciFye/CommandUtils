@@ -5,12 +5,12 @@ import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
 import me.clip.placeholderapi.PlaceholderAPI;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
 
 public class ParsePlaceholderCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         new CommandTree("parseplaceholder")
@@ -18,7 +18,7 @@ public class ParsePlaceholderCommand extends Command {
                 .then(new GreedyStringArgument("Placeholder")
                     .executes((sender, args) -> {
                         String placeholder = args.getUnchecked("Placeholder");
-                        sender.sendMessage(PlaceholderAPI.setPlaceholders(args.getUnchecked("Player"), placeholder));
+                        sender.sendMessage(PlaceholderAPI.setPlaceholders(args.getUnchecked(PLAYER_NAME), placeholder));
                     })
                 )
             )

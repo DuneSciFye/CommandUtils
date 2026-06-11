@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class TempPlayerVarCommand extends Command {
     private static final HashMap<String, HashMap<String, String>> playerVars = new HashMap<>(); //Player Var
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 

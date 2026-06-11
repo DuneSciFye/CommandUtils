@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static me.dunescifye.commandutils.files.Config.getPrefix;
-import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class CooldownCommandCommand extends Command {
 
@@ -24,7 +24,7 @@ public class CooldownCommandCommand extends Command {
     // Identifier, CommandID, Time
     private static String cooldownMessageHours, cooldownMessageMinutes, cooldownMessageSeconds, cooldownMessageMilliseconds;
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -49,7 +49,7 @@ public class CooldownCommandCommand extends Command {
             .withArguments(playerArg(), idArg, timeArg, commandsArg)
             .withOptionalArguments(commandSeparatorArg)
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
+                Player player = args.getUnchecked(PLAYER_NAME);
                 String id = args.getByArgument(idArg);
                 HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(player.getUniqueId().toString(), k -> new HashMap<>());
 
@@ -65,7 +65,7 @@ public class CooldownCommandCommand extends Command {
         createCommand()
             .withArguments(run2Arg, playerArg(), idArg, timeArg, commands2Arg)
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
+                Player player = args.getUnchecked(PLAYER_NAME);
                 String id = args.getByArgument(idArg);
                 Duration time = args.getUnchecked("Time");
                 String message = args.getByArgument(commands2Arg);
@@ -95,7 +95,7 @@ public class CooldownCommandCommand extends Command {
             .withArguments(runArg, playerArg(), idArg, timeArg, commandsArg)
             .withOptionalArguments(commandSeparatorArg)
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
+                Player player = args.getUnchecked(PLAYER_NAME);
                 String id = args.getByArgument(idArg);
                 Duration time = args.getUnchecked("Time");
                 String[] commands = args.getByArgument(commandsArg).split(args.getByArgumentOrDefault(commandSeparatorArg, ",,"));
@@ -131,12 +131,12 @@ public class CooldownCommandCommand extends Command {
             .then(resetArg
                 .then(playerArg()
                     .executes((sender, args) -> {
-                        Player player = args.getUnchecked("Player");
+                        Player player = args.getUnchecked(PLAYER_NAME);
                         cooldowns.remove(player.getUniqueId().toString());
                     })
                     .then(idArg
                         .executes((sender, args) -> {
-                            Player player = args.getUnchecked("Player");
+                            Player player = args.getUnchecked(PLAYER_NAME);
                             HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(player.getUniqueId().toString(), k -> new HashMap<>());
                             playerCDs.remove(args.getByArgument(idArg));
                         })
@@ -147,7 +147,7 @@ public class CooldownCommandCommand extends Command {
                 .then(playerArg()
                     .then(idArg
                         .executes((sender, args) -> {
-                            Player player = args.getUnchecked("Player");
+                            Player player = args.getUnchecked(PLAYER_NAME);
                             String id = args.getByArgument(idArg);
                             HashMap<String, Instant> playerCDs = cooldowns.computeIfAbsent(player.getUniqueId().toString(), k -> new HashMap<>());
 

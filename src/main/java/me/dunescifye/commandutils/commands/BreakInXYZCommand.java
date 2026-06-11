@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-@SuppressWarnings("ConstantConditions")
+@SuppressWarnings({"ConstantConditions", "null"})
 public class BreakInXYZCommand extends Command {
 
     @Override
@@ -29,7 +29,7 @@ public class BreakInXYZCommand extends Command {
             .withArguments(worldArg(), locArg(), playerArg(), xArg, yArg, zArg)
             .withOptionalArguments(whitelistedBlocksArg())
             .executes((sender, args) -> {
-                breakInXYZ(args, args.getUnchecked("Whitelisted Blocks"), false, null);
+                breakInXYZ(args, args.getUnchecked(WHITELISTED_BLOCKS_NAME), false, null);
             })
             .register(this.getNamespace());
 
@@ -41,9 +41,9 @@ public class BreakInXYZCommand extends Command {
         boolean forceDrop,
         ItemStack drop
     ) {
-        Location loc = args.getUnchecked("Location");
-        loc.setWorld(args.getUnchecked("World"));
-        Player player = args.getUnchecked("Player");
+        Location loc = args.getUnchecked(LOC_NAME);
+        loc.setWorld(args.getUnchecked(WORLD_NAME));
+        Player player = args.getUnchecked(PLAYER_NAME);
 
         BlockUtils.BlockProvider provider = (origin, p) -> Utils.getBlocksInFacingXYZ(origin, (int) args.get("X"),
             (int) args.get("Y"), (int) args.get("Z"), p);

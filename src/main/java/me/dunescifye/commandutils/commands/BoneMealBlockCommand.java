@@ -10,7 +10,7 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class BoneMealBlockCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         BooleanArgument affectTargetBlockArg = new BooleanArgument("Affect Target Block");
@@ -20,7 +20,7 @@ public class BoneMealBlockCommand extends Command {
             .withArguments(worldArg(), locArg())
             .withOptionalArguments(amountArg(), radiusArg(), affectTargetBlockArg)
             .executes((sender, args) -> {
-                Block block = ((World) args.get("World")).getBlockAt(args.getUnchecked("Location"));
+                Block block = ((World) args.get("World")).getBlockAt(args.getUnchecked(LOC_NAME));
                 int amount = args.getOrDefaultUnchecked("Amount", 1);
                 int radius = args.getOrDefaultUnchecked("Radius", 0);
                 boolean affectTargetBlock = args.getByArgumentOrDefault(affectTargetBlockArg, true);

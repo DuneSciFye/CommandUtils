@@ -17,7 +17,7 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class BreakAndReplantCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         IntegerArgument xArg = new IntegerArgument("X");
@@ -29,11 +29,11 @@ public class BreakAndReplantCommand extends Command {
         createCommand()
             .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), blockArg)
             .executes((sender, args) -> {
-                int radius = args.getUnchecked("Radius");
-                Location loc = args.getUnchecked("Location");
-                loc.setWorld(args.getUnchecked("World"));
+                int radius = args.getUnchecked(RADIUS_NAME);
+                Location loc = args.getUnchecked(LOC_NAME);
+                loc.setWorld(args.getUnchecked(WORLD_NAME));
 
-                breakAndReplant(loc, args.getUnchecked("Player"), radius, 0, radius, args.getByArgument(blockArg));
+                breakAndReplant(loc, args.getUnchecked(PLAYER_NAME), radius, 0, radius, args.getByArgument(blockArg));
             })
             .register(this.getNamespace());
 
@@ -41,12 +41,12 @@ public class BreakAndReplantCommand extends Command {
         createCommand()
             .withArguments(worldArg(), locArg(), playerArg(), xArg, yArg, zArg, blockArg)
             .executes((sender, args) -> {
-                Location loc = args.getUnchecked("Location");
-                loc.setWorld(args.getUnchecked("World"));
+                Location loc = args.getUnchecked(LOC_NAME);
+                loc.setWorld(args.getUnchecked(WORLD_NAME));
 
                 breakAndReplant(
                     loc,
-                    args.getUnchecked("Player"),
+                    args.getUnchecked(PLAYER_NAME),
                     args.getByArgument(xArg),
                     args.getByArgument(yArg),
                     args.getByArgument(zArg),
@@ -59,10 +59,10 @@ public class BreakAndReplantCommand extends Command {
         createCommand()
             .withArguments(worldArg(), locArg(), playerArg(), blockArg)
             .executes((sender, args) -> {
-                Location loc = args.getUnchecked("Location");
-                loc.setWorld(args.getUnchecked("World"));
+                Location loc = args.getUnchecked(LOC_NAME);
+                loc.setWorld(args.getUnchecked(WORLD_NAME));
 
-                breakAndReplant(loc, args.getUnchecked("Player"), 0, 0, 0, args.getByArgument(blockArg));
+                breakAndReplant(loc, args.getUnchecked(PLAYER_NAME), 0, 0, 0, args.getByArgument(blockArg));
             })
             .register(this.getNamespace());
 

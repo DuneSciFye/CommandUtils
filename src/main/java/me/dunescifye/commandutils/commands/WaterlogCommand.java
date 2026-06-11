@@ -13,7 +13,7 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class WaterlogCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         BooleanArgument waterlogArg = new BooleanArgument("Waterlogged State");

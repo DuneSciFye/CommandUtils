@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class MobTargetCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
   @Override
   public void register() {
 

@@ -3,13 +3,12 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.CommandAPICommand;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.contentArg;
-import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
 
 public class SendActionBarCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -17,8 +16,8 @@ public class SendActionBarCommand extends Command {
             .withArguments(playerArg())
             .withArguments(contentArg())
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
-                String content = args.getUnchecked("Content");
+                Player player = args.getUnchecked(PLAYER_NAME);
+                String content = args.getUnchecked(CONTENT_NAME);
 
                 player.sendActionBar(LegacyComponentSerializer.legacyAmpersand().deserialize(content));
             })

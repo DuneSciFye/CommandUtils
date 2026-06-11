@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.UUID;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class PreventMixInventoryCommand extends Command {
 
@@ -34,7 +35,7 @@ public class PreventMixInventoryCommand extends Command {
        .withOptionalArguments(commandSeparatorArg, commandsArg)
        .executes((sender, args) -> {
          final Player p = ArgumentUtils.getPlayer(sender);
-         final long milis = ((Duration) args.getUnchecked("Duration")).toMillis() / 50L;
+         final long milis = ((Duration) args.getUnchecked(DURATION_NAME)).toMillis() / 50L;
          final UUID uuid = p.getUniqueId();
 
          final String commandsInput = args.getByArgument(commandsArg);

@@ -1,6 +1,5 @@
 package me.dunescifye.commandutils.commands;
 
-import dev.jorel.commandapi.arguments.*;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -13,7 +12,7 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class AddItemNBTCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 

@@ -22,7 +22,7 @@ public class SelectBlocksCommand extends Command {
             .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), whitelistedBlocksArg(),
                 commandSeparatorArg, placeholderSurrounderArg, customPlaceholdersArg, functionsArg)
             .executes((sender, args) -> {
-                BlockUtils.selectBlocks(args, (origin, player) -> Utils.getBlocksInRadius(origin, args.getUnchecked("Radius")));
+                BlockUtils.selectBlocks(args, (origin, player) -> Utils.getBlocksInRadius(origin, args.getUnchecked(RADIUS_NAME)));
             })
             .register(this.getNamespace());
 

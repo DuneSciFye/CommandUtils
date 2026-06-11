@@ -33,8 +33,8 @@ public class PlaceBlockFromInvCommand extends Command {
             .withOptionalArguments(consumeArg, triggerEventArg)
             .executes((sender, args) -> {
                 Player player = getPlayer(sender);
-                World world = args.getUnchecked("World");
-                Location loc = args.getUnchecked("Location");
+                World world = args.getUnchecked(WORLD_NAME);
+                Location loc = args.getUnchecked(LOC_NAME);
                 loc.setWorld(world);
                 Boolean consume = args.getByArgumentOrDefault(consumeArg, true);
                 Boolean triggerEvent = args.getByArgumentOrDefault(triggerEventArg, true);

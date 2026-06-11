@@ -4,11 +4,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Villager;
 
 import java.util.Collection;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.entitiesArg;
 
 public class ZombifyVillagerCommand extends Command {
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -16,7 +16,7 @@ public class ZombifyVillagerCommand extends Command {
         createCommand()
             .withArguments(entitiesArg())
             .executes((sender, args) -> {
-                Collection<Entity> villagers = args.getUnchecked("Entities");
+                Collection<Entity> villagers = args.getUnchecked(ENTITIES_NAME);
 
                 for (Entity entity : villagers)
                     if (entity instanceof Villager villager)

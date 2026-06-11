@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 public class RemoveNBTItemCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 

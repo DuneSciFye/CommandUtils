@@ -15,7 +15,7 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class BreakBlockMultiplyDropsCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -24,10 +24,10 @@ public class BreakBlockMultiplyDropsCommand extends Command {
         createCommand()
             .withArguments(worldArg(), locArg(), playerArg(), dropsMultiplierArg)
             .executes((sender, args) -> {
-                Location loc = args.getUnchecked("Location");
-                loc.setWorld(args.getUnchecked("World"));
+                Location loc = args.getUnchecked(LOC_NAME);
+                loc.setWorld(args.getUnchecked(WORLD_NAME));
                 Block block = loc.getBlock();
-                Player player = args.getUnchecked("Player");
+                Player player = args.getUnchecked(PLAYER_NAME);
                 int mult = args.getByArgument(dropsMultiplierArg);
 
                 Collection<ItemStack> drops = block.getDrops(player.getInventory().getItemInMainHand());

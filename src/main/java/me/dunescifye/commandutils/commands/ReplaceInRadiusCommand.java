@@ -20,7 +20,7 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class ReplaceInRadiusCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         BooleanArgument applyPhysicsArg = new BooleanArgument("Apply Physics");
@@ -30,10 +30,10 @@ public class ReplaceInRadiusCommand extends Command {
             .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), whitelistedBlocksArg(), materialsArg)
             .withOptionalArguments(applyPhysicsArg, durationArg())
             .executes((sender, args) -> {
-                List<List<Predicate<Block>>> predicates = args.getUnchecked("Whitelisted Blocks");
-                Block origin = ((World) args.getUnchecked("World")).getBlockAt(args.getUnchecked("Location"));
-                int radius = args.getUnchecked("Radius");
-                Player player = args.getUnchecked("Player");
+                List<List<Predicate<Block>>> predicates = args.getUnchecked(WHITELISTED_BLOCKS_NAME);
+                Block origin = ((World) args.getUnchecked(WORLD_NAME)).getBlockAt(args.getUnchecked(LOC_NAME));
+                int radius = args.getUnchecked(RADIUS_NAME);
+                Player player = args.getUnchecked(PLAYER_NAME);
                 List<Material> blocksTo = args.getUnchecked("Blocks To Replace To");
                 boolean applyPhysics = args.getByArgumentOrDefault(applyPhysicsArg, true);
                 Duration duration = args.getOrDefaultUnchecked("Time", Duration.ofSeconds(-1));
@@ -58,11 +58,11 @@ public class ReplaceInRadiusCommand extends Command {
                         .then(whitelistedBlocksArg()
                             .then(materialsArg
                                 .executes((sender, args) -> {
-                                    List<List<Predicate<Block>>> predicates = args.getUnchecked("Whitelisted Blocks");
+                                    List<List<Predicate<Block>>> predicates = args.getUnchecked(WHITELISTED_BLOCKS_NAME);
 
                                     replaceInRadius(
-                                        ((World) args.getUnchecked("World")).getBlockAt(args.getUnchecked("Location")),
-                                        args.getUnchecked("Radius"),
+                                        ((World) args.getUnchecked(WORLD_NAME)).getBlockAt(args.getUnchecked(LOC_NAME)),
+                                        args.getUnchecked(RADIUS_NAME),
                                         predicates,
                                         args.getUnchecked("Blocks To Replace To")
                                     );

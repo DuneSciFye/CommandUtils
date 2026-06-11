@@ -23,7 +23,7 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class BlockCycleCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings("null")
     public void register() {
 
         LiteralArgument oxidizeArg = new LiteralArgument("oxidize");
@@ -34,8 +34,7 @@ public class BlockCycleCommand extends Command {
             .withArguments(oxidizeArg, worldArg(), blockLocArg())
             .executes((sender, args) -> {
                 Location loc = (Location) args.get("Location");
-                loc.setWorld((World) args.get("World"));
-                Block b = loc.getBlock();
+                Block b = ((World) args.get("World")).getBlockAt(loc);
                 Material material = b.getType();
                 BlockData blockData = b.getBlockData();
 
@@ -52,64 +51,64 @@ public class BlockCycleCommand extends Command {
                 Set<BlockFace> faces = null;
                 BlockFace rotation = null;
 
-              switch (blockData) {
-                case Stairs stairs -> {
-                  shape = stairs.getShape();
-                  waterlogged = stairs.isWaterlogged();
-                  facing = stairs.getFacing();
-                  half = stairs.getHalf();
+                switch (blockData) {
+                    case Stairs stairs -> {
+                        shape = stairs.getShape();
+                        waterlogged = stairs.isWaterlogged();
+                        facing = stairs.getFacing();
+                        half = stairs.getHalf();
+                    }
+                    case Slab slab -> {
+                        type = slab.getType();
+                        waterlogged = slab.isWaterlogged();
+                    }
+                    case Door door -> {
+                        Block relative = b.getRelative(BlockFace.DOWN);
+                        if (relative.getBlockData() instanceof Door relativeDoor) {
+                            b = relative;
+                            door = relativeDoor;
+                        }
+                        hinge = door.getHinge();
+                        facing = door.getFacing();
+                        half = door.getHalf();
+                        opened = door.isOpen();
+                        powered = door.isPowered();
+                    }
+                    case TrapDoor trapDoor -> {
+                        facing = trapDoor.getFacing();
+                        half = trapDoor.getHalf();
+                        opened = trapDoor.isOpen();
+                        powered = trapDoor.isPowered();
+                        waterlogged = trapDoor.isWaterlogged();
+                    }
+                    case Lantern lantern -> {
+                        hanging = lantern.isHanging();
+                        waterlogged = lantern.isWaterlogged();
+                    }
+                    case Orientable orientable -> {
+                        axis = orientable.getAxis();
+                        if (orientable instanceof Waterlogged w) {
+                            waterlogged = w.isWaterlogged();
+                        }
+                    }
+                    case MultipleFacing multipleFacing -> {
+                        faces = multipleFacing.getFaces();
+                        if (multipleFacing instanceof Waterlogged w) {
+                            waterlogged = w.isWaterlogged();
+                        }
+                    }
+                    case Directional directional -> {
+                        facing = directional.getFacing();
+                        if (directional instanceof Waterlogged w) {
+                            waterlogged = w.isWaterlogged();
+                        }
+                    }
+                    case Rotatable rotatable -> {
+                        rotation = rotatable.getRotation();
+                    }
+                    default -> {
+                    }
                 }
-                case Slab slab -> {
-                  type = slab.getType();
-                  waterlogged = slab.isWaterlogged();
-                }
-                case Door door -> {
-                  Block relative = b.getRelative(BlockFace.DOWN);
-                  if (relative.getBlockData() instanceof Door relativeDoor) {
-                    b = relative;
-                    door = relativeDoor;
-                  }
-                  hinge = door.getHinge();
-                  facing = door.getFacing();
-                  half = door.getHalf();
-                  opened = door.isOpen();
-                  powered = door.isPowered();
-                }
-                case TrapDoor trapDoor -> {
-                  facing = trapDoor.getFacing();
-                  half = trapDoor.getHalf();
-                  opened = trapDoor.isOpen();
-                  powered = trapDoor.isPowered();
-                  waterlogged = trapDoor.isWaterlogged();
-                }
-                case Lantern lantern -> {
-                  hanging = lantern.isHanging();
-                  waterlogged = lantern.isWaterlogged();
-                }
-                case Orientable orientable -> {
-                  axis = orientable.getAxis();
-                  if (orientable instanceof Waterlogged w) {
-                    waterlogged = w.isWaterlogged();
-                  }
-                }
-                case MultipleFacing multipleFacing -> {
-                  faces = multipleFacing.getFaces();
-                  if (multipleFacing instanceof Waterlogged w) {
-                    waterlogged = w.isWaterlogged();
-                  }
-                }
-                case Directional directional -> {
-                  facing = directional.getFacing();
-                  if (directional instanceof Waterlogged w) {
-                    waterlogged = w.isWaterlogged();
-                  }
-                }
-                case Rotatable rotatable -> {
-                  rotation = rotatable.getRotation();
-                }
-                default -> {
-                }
-              }
 
                 switch (material) {
                     // Cut Copper Stairs
@@ -244,70 +243,70 @@ public class BlockCycleCommand extends Command {
 
                 BlockData newBlockData = b.getBlockData();
 
-              switch (newBlockData) {
-                case Stairs newStairs -> {
-                  newStairs.setFacing(facing);
-                  newStairs.setShape(shape);
-                  newStairs.setWaterlogged(waterlogged);
-                  newStairs.setHalf(half);
-                  b.setBlockData(newStairs);
+                switch (newBlockData) {
+                    case Stairs newStairs -> {
+                        newStairs.setFacing(facing);
+                        newStairs.setShape(shape);
+                        newStairs.setWaterlogged(waterlogged);
+                        newStairs.setHalf(half);
+                        b.setBlockData(newStairs);
+                    }
+                    case Slab newSlab -> {
+                        newSlab.setType(type);
+                        newSlab.setWaterlogged(waterlogged);
+                        b.setBlockData(newSlab);
+                    }
+                    case Door door -> {
+                        door.setHinge(hinge);
+                        door.setFacing(facing);
+                        door.setHalf(half);
+                        door.setOpen(opened);
+                        door.setPowered(powered);
+                        b.setBlockData(door);
+                    }
+                    case TrapDoor newTrapDoor -> {
+                        newTrapDoor.setFacing(facing);
+                        newTrapDoor.setHalf(half);
+                        newTrapDoor.setOpen(opened);
+                        newTrapDoor.setPowered(powered);
+                        newTrapDoor.setWaterlogged(waterlogged);
+                        b.setBlockData(newTrapDoor);
+                    }
+                    case Lantern newLantern -> {
+                        newLantern.setHanging(hanging);
+                        newLantern.setWaterlogged(waterlogged);
+                        b.setBlockData(newLantern);
+                    }
+                    case Orientable newOrientable -> {
+                        newOrientable.setAxis(axis);
+                        if (newOrientable instanceof Waterlogged w) {
+                            w.setWaterlogged(waterlogged);
+                        }
+                        b.setBlockData(newOrientable);
+                    }
+                    case MultipleFacing newMultipleFacing -> {
+                        for (BlockFace face : newMultipleFacing.getAllowedFaces()) {
+                          newMultipleFacing.setFace(face, faces != null && faces.contains(face));
+                        }
+                        if (newMultipleFacing instanceof Waterlogged w) {
+                            w.setWaterlogged(waterlogged);
+                        }
+                        b.setBlockData(newMultipleFacing);
+                    }
+                    case Directional newDirectional -> {
+                        newDirectional.setFacing(facing);
+                        if (newDirectional instanceof Waterlogged w) {
+                            w.setWaterlogged(waterlogged);
+                        }
+                        b.setBlockData(newDirectional);
+                    }
+                    case Rotatable newRotatable -> {
+                        newRotatable.setRotation(rotation);
+                        b.setBlockData(newRotatable);
+                    }
+                    default -> {
+                    }
                 }
-                case Slab newSlab -> {
-                  newSlab.setType(type);
-                  newSlab.setWaterlogged(waterlogged);
-                  b.setBlockData(newSlab);
-                }
-                case Door door -> {
-                  door.setHinge(hinge);
-                  door.setFacing(facing);
-                  door.setHalf(half);
-                  door.setOpen(opened);
-                  door.setPowered(powered);
-                  b.setBlockData(door);
-                }
-                case TrapDoor newTrapDoor -> {
-                  newTrapDoor.setFacing(facing);
-                  newTrapDoor.setHalf(half);
-                  newTrapDoor.setOpen(opened);
-                  newTrapDoor.setPowered(powered);
-                  newTrapDoor.setWaterlogged(waterlogged);
-                  b.setBlockData(newTrapDoor);
-                }
-                case Lantern newLantern -> {
-                  newLantern.setHanging(hanging);
-                  newLantern.setWaterlogged(waterlogged);
-                  b.setBlockData(newLantern);
-                }
-                case Orientable newOrientable -> {
-                  newOrientable.setAxis(axis);
-                  if (newOrientable instanceof Waterlogged w) {
-                    w.setWaterlogged(waterlogged);
-                  }
-                  b.setBlockData(newOrientable);
-                }
-                case MultipleFacing newMultipleFacing -> {
-                  for (BlockFace face : newMultipleFacing.getAllowedFaces()) {
-                    newMultipleFacing.setFace(face, faces != null && faces.contains(face));
-                  }
-                  if (newMultipleFacing instanceof Waterlogged w) {
-                    w.setWaterlogged(waterlogged);
-                  }
-                  b.setBlockData(newMultipleFacing);
-                }
-                case Directional newDirectional -> {
-                  newDirectional.setFacing(facing);
-                  if (newDirectional instanceof Waterlogged w) {
-                    w.setWaterlogged(waterlogged);
-                  }
-                  b.setBlockData(newDirectional);
-                }
-                case Rotatable newRotatable -> {
-                  newRotatable.setRotation(rotation);
-                  b.setBlockData(newRotatable);
-                }
-                default -> {
-                }
-              }
 
             })
             .register(this.getNamespace());

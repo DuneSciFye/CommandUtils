@@ -12,7 +12,7 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class GetPlayerHeadCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -23,7 +23,7 @@ public class GetPlayerHeadCommand extends Command {
             .withArguments(playerArg())
             .withOptionalArguments(targetArg)
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
+                Player player = args.getUnchecked(PLAYER_NAME);
                 ItemStack head = new ItemStack(Material.PLAYER_HEAD);
                 SkullMeta headMeta = (SkullMeta) head.getItemMeta();
                 headMeta.setOwningPlayer(player);
@@ -33,7 +33,7 @@ public class GetPlayerHeadCommand extends Command {
                 target.getInventory().addItem(head);
             })
             .executesPlayer((sender, args) -> {
-                Player player = args.getUnchecked("Player");
+                Player player = args.getUnchecked(PLAYER_NAME);
                 ItemStack head = new ItemStack(Material.PLAYER_HEAD);
                 SkullMeta headMeta = (SkullMeta) head.getItemMeta();
                 headMeta.setOwningPlayer(player);
@@ -48,9 +48,9 @@ public class GetPlayerHeadCommand extends Command {
         createCommand()
             .withArguments(playerArg(), worldArg(), locArg())
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
-                World world = args.getUnchecked("World");
-                Location loc = args.getUnchecked("Location");
+                Player player = args.getUnchecked(PLAYER_NAME);
+                World world = args.getUnchecked(WORLD_NAME);
+                Location loc = args.getUnchecked(LOC_NAME);
                 loc.setWorld(world);
 
                 ItemStack head = new ItemStack(Material.PLAYER_HEAD);

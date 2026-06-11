@@ -11,7 +11,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class SpawnWitherSkullCommand extends Command {
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 

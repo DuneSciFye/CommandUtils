@@ -4,7 +4,7 @@ import dev.jorel.commandapi.CommandTree;
 
 public class SendConditionMessageCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
         new CommandTree("sendconditionmessage")

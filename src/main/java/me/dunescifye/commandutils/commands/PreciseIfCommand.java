@@ -7,7 +7,7 @@ import dev.jorel.commandapi.arguments.TextArgument;
 import me.dunescifye.commandutils.utils.Utils;
 
 public class PreciseIfCommand extends Command {
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 

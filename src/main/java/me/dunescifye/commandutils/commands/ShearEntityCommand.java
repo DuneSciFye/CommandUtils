@@ -9,8 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 
 import java.util.Collection;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.entitiesArg;
 
 public class ShearEntityCommand extends Command {
 
@@ -20,7 +20,7 @@ public class ShearEntityCommand extends Command {
         createCommand()
             .withArguments(entitiesArg())
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getUnchecked("Entities");
+                Collection<Entity> entities = args.getUnchecked(ENTITIES_NAME);
                 Player player = ArgumentUtils.getPlayer(sender);
 
                 for (Entity entity : entities) {
@@ -33,7 +33,7 @@ public class ShearEntityCommand extends Command {
             }, ExecutorType.PLAYER, ExecutorType.PROXY)
             // Shearing without a player
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getUnchecked("Entities");
+                Collection<Entity> entities = args.getUnchecked(ENTITIES_NAME);
 
                 for (Entity entity : entities)
                     if (entity instanceof Shearable shearable && shearable.readyToBeSheared())

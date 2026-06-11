@@ -9,7 +9,7 @@ public class TempVarCommand extends Command {
 
     private static final HashMap<String, String> vars = new HashMap<>(); //Server Vars
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 

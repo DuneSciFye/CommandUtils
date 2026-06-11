@@ -12,7 +12,7 @@ import static org.bukkit.Material.AIR;
 
 public class RemoveInRadius extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -20,8 +20,8 @@ public class RemoveInRadius extends Command {
         createCommand()
             .withArguments(worldArg(), locArg(), radiusArg(), playerArg())
             .executes((sender, args) -> {
-                for (Block b : Utils.getBlocksInRadius(((World) args.get("World")).getBlockAt(args.getUnchecked("Location")), args.getUnchecked("Radius")))
-                    if (FUtils.isInClaimOrWilderness(args.getUnchecked("Player"), b.getLocation()))
+                for (Block b : Utils.getBlocksInRadius(((World) args.get("World")).getBlockAt(args.getUnchecked(LOC_NAME)), args.getUnchecked(RADIUS_NAME)))
+                    if (FUtils.isInClaimOrWilderness(args.getUnchecked(PLAYER_NAME), b.getLocation()))
                         b.setType(AIR);
             })
             .register(this.getNamespace());
@@ -30,8 +30,8 @@ public class RemoveInRadius extends Command {
         createCommand()
             .withArguments(worldArg(), locArg(), radiusArg(), playerArg(), whitelistedBlocksArg())
             .executes((sender, args) -> {
-                for (Block b : Utils.getBlocksInRadius(((World) args.get("World")).getBlockAt(args.getUnchecked("Location")), args.getUnchecked("Radius")))
-                    if (Utils.testBlock(b, args.getUnchecked("Whitelisted Blocks")) && FUtils.isInClaimOrWilderness(args.getUnchecked("Player"), b.getLocation()))
+                for (Block b : Utils.getBlocksInRadius(((World) args.get("World")).getBlockAt(args.getUnchecked(LOC_NAME)), args.getUnchecked(RADIUS_NAME)))
+                    if (Utils.testBlock(b, args.getUnchecked(WHITELISTED_BLOCKS_NAME)) && FUtils.isInClaimOrWilderness(args.getUnchecked(PLAYER_NAME), b.getLocation()))
                         b.setType(Material.AIR);
             })
             .register(this.getNamespace());

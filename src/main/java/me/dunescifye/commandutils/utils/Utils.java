@@ -290,6 +290,7 @@ public class Utils {
         }
         return List.of(whitelist, blacklist);
     }
+    
     public static List<Material> stringListToMaterials(List<String> inputs) {
         List<Material> materials = new ArrayList<>();
 
@@ -549,13 +550,13 @@ public class Utils {
                     if (!(Double.parseDouble(condition[0].trim()) >= Double.parseDouble(condition[1].trim()))) return false;
                 } else if (conditions.contains("<=")) {
                     String[] condition = conditions.split("<=", 2);
-                    if (!(Double.parseDouble(condition[0]) <= Double.parseDouble(condition[1]))) return false;
+                    if (!(Double.parseDouble(condition[0].trim()) <= Double.parseDouble(condition[1].trim()))) return false;
                 } else if (conditions.contains(">")) {
                     String[] condition = conditions.split(">", 2);
-                    if (!(Double.parseDouble(condition[0]) > Double.parseDouble(condition[1]))) return false;
+                    if (!(Double.parseDouble(condition[0].trim()) > Double.parseDouble(condition[1].trim()))) return false;
                 } else if (conditions.contains("<")) {
                     String[] condition = conditions.split("<", 2);
-                    if (!(Double.parseDouble(condition[0]) < Double.parseDouble(condition[1]))) return false;
+                    if (!(Double.parseDouble(condition[0].trim()) < Double.parseDouble(condition[1].trim()))) return false;
                 } else if (conditions.contains("==")) {
                     String[] condition = conditions.split("==", 2);
                     if (!Objects.equals(condition[0].trim(), condition[1].trim())) return false;

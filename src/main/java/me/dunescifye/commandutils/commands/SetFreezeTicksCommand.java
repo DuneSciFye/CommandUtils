@@ -5,11 +5,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.Collection;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.entitiesArg;
 
 public class SetFreezeTicksCommand extends Command {
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -19,7 +19,7 @@ public class SetFreezeTicksCommand extends Command {
         createCommand()
             .withArguments(entitiesArg(), freezeTicksArg)
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getUnchecked("Entities");
+                Collection<Entity> entities = args.getUnchecked(ENTITIES_NAME);
                 int freezeTicks = args.getByArgument(freezeTicksArg);
 
                 for (Entity entity : entities)

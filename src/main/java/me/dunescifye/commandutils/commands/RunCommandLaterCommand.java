@@ -18,7 +18,7 @@ import java.util.Map;
 public class RunCommandLaterCommand extends Command {
 
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         Server server = Bukkit.getServer();

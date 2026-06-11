@@ -13,7 +13,7 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class LaunchTNTCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -24,7 +24,7 @@ public class LaunchTNTCommand extends Command {
             .withArguments(playerArg())
             .withOptionalArguments(breakBlocksArg)
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
+                Player player = args.getUnchecked(PLAYER_NAME);
                 Entity tnt = player.getWorld().spawnEntity(player.getLocation(), EntityType.TNT);
                 tnt.setVelocity(player.getEyeLocation().getDirection());
                 if (args.getByArgumentOrDefault(breakBlocksArg, false)) {
@@ -38,8 +38,8 @@ public class LaunchTNTCommand extends Command {
             .withArguments(worldArg(), locArg())
             .withOptionalArguments(breakBlocksArg)
             .executes((sender, args) -> {
-                World world = args.getUnchecked("World");
-                Location loc = args.getUnchecked("Location");
+                World world = args.getUnchecked(WORLD_NAME);
+                Location loc = args.getUnchecked(LOC_NAME);
                 loc.setWorld(world);
                 Entity tnt = world.spawnEntity(loc, EntityType.TNT);
                 if (args.getByArgumentOrDefault(breakBlocksArg, false)) {

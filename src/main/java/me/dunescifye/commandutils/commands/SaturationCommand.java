@@ -2,11 +2,11 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.arguments.*;
 import org.bukkit.entity.Player;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
 
 public class SaturationCommand extends Command {
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "add", "remove", "set", "get");
@@ -17,7 +17,7 @@ public class SaturationCommand extends Command {
             .withArguments(functionArg, playerArg())
             .withArguments(amountArg)
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
+                Player player = args.getUnchecked(PLAYER_NAME);
                 float amount = args.getByArgument(amountArg);
 
                 int foodLevel = player.getFoodLevel();

@@ -21,7 +21,7 @@ import static me.dunescifye.commandutils.utils.Utils.getBlocksInFacingXYZ;
 
 public class ReplaceInXYZCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         IntegerArgument xArg = new IntegerArgument("X", 0);
@@ -36,9 +36,9 @@ public class ReplaceInXYZCommand extends Command {
             .withArguments(worldArg(), locArg(), playerArg(), xArg, yArg, zArg, whitelistedBlocksArg(), materialsArg)
             .withOptionalArguments(applyPhysicsArg, timeArg)
             .executes((sender, args) -> {
-                List<List<Predicate<Block>>> predicates = args.getUnchecked("Whitelisted Blocks");
-                Block origin = ((World) args.get("World")).getBlockAt(args.getUnchecked("Location"));
-                Player player = args.getUnchecked("Player");
+                List<List<Predicate<Block>>> predicates = args.getUnchecked(WHITELISTED_BLOCKS_NAME);
+                Block origin = ((World) args.get("World")).getBlockAt(args.getUnchecked(LOC_NAME));
+                Player player = args.getUnchecked(PLAYER_NAME);
                 List<Material> blocksTo = args.getUnchecked("Blocks To Replace To");
                 boolean applyPhysics = args.getByArgumentOrDefault(applyPhysicsArg, true);
                 Duration duration = args.getOrDefaultUnchecked("Time", Duration.ofSeconds(-1));

@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class SetTNTSourceCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         EntitySelectorArgument.ManyEntities entitySourcesArg = new EntitySelectorArgument.ManyEntities("Entity Sources");

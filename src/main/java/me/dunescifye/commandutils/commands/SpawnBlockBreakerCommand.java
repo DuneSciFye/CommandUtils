@@ -20,7 +20,7 @@ import java.util.function.Predicate;
 
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-@SuppressWarnings("ConstantConditions")
+@SuppressWarnings({"ConstantConditions", "null"})
 public class SpawnBlockBreakerCommand extends Command {
 
     public void register() {
@@ -137,11 +137,11 @@ public class SpawnBlockBreakerCommand extends Command {
         float yaw;
         float pitch;
         double velocityMultiplier = args.getOrDefaultUnchecked("Velocity Multiplier", 1.0);
-        ItemStack item = args.getUnchecked("Item");
-        Duration maxTime = args.getUnchecked("Duration");
-        int radius = args.getUnchecked("Radius");
-        List<List<Predicate<Block>>> predicates = args.getUnchecked("Whitelisted Blocks");
-        Duration period = args.getUnchecked("Period");
+        ItemStack item = args.getUnchecked(ITEM_NAME);
+        Duration maxTime = args.getUnchecked(DURATION_NAME);
+        int radius = args.getUnchecked(RADIUS_NAME);
+        List<List<Predicate<Block>>> predicates = args.getUnchecked(WHITELISTED_BLOCKS_NAME);
+        Duration period = args.getUnchecked(PERIOD_NAME);
         boolean generateBlockBreakEvent = args.getOrDefaultUnchecked("Generate Block Break Event", false);
         boolean checkClaim = args.getOrDefaultUnchecked("Check Claim", false);
         boolean autoPickup = args.getOrDefaultUnchecked("Auto Pickup", false);
@@ -155,9 +155,9 @@ public class SpawnBlockBreakerCommand extends Command {
         }
         // Case 2: manually defined loc, yaw and pitch
         else {
-            loc = args.getUnchecked("Location");
-            yaw = args.getUnchecked("Yaw");
-            pitch = args.getUnchecked("Pitch");
+            loc = args.getUnchecked(LOC_NAME);
+            yaw = args.getUnchecked(YAW_NAME);
+            pitch = args.getUnchecked(PITCH_NAME);
         }
 
         Snowball snowball = loc.getWorld().spawn(loc, Snowball.class);
@@ -201,4 +201,3 @@ public class SpawnBlockBreakerCommand extends Command {
         }.runTaskTimer(CommandUtils.getInstance(), 0, (int) (period.toMillis() / 50L));
     }
 }
-

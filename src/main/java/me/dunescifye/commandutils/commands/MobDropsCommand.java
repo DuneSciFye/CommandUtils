@@ -23,7 +23,7 @@ public class MobDropsCommand extends Command implements Listener {
     private final NamespacedKey dropsKey = new NamespacedKey("commandutils", "drops");
     private final NamespacedKey commandDropsKey = new NamespacedKey("commandutils", "commanddrops");
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 

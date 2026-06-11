@@ -11,15 +11,15 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.Map;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
 
 public class SendBossBarCommand extends Command {
 
     private static final Map<String, BossBar> bossBars = new HashMap<>();
     private static final Map<String, BukkitTask> bossBarTasks = new HashMap<>();
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         createCommand()
@@ -32,7 +32,7 @@ public class SendBossBarCommand extends Command {
                 new GreedyStringArgument("Bossbar Content")
             )
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
+                Player player = args.getUnchecked(PLAYER_NAME);
                 String bossbarID = args.getUnchecked("Bossbar ID");
                 String bossbarColor = args.getUnchecked("Bossbar Color");
                 float bossbarProgress = args.getUnchecked("Bossbar Progress");

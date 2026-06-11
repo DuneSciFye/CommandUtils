@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 public class IfCommand extends Command  {
     private static String elseIfKeyword, elseKeyword, commandSeparator, conditionSeparator;
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
         YamlDocument config = this.getConfig();
 

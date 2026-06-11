@@ -22,7 +22,7 @@ import static me.dunescifye.commandutils.utils.Utils.*;
 
 public class BreakInFacingLogCoreProtectCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         if (!CommandUtils.coreProtectEnabled) return;
@@ -35,15 +35,15 @@ public class BreakInFacingLogCoreProtectCommand extends Command {
             .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), depthArg())
             .withOptionalArguments(forceDropArg)
             .executes((sender, args) -> {
-                Location loc = args.getUnchecked("Location");
+                Location loc = args.getUnchecked(LOC_NAME);
                 loc.setWorld((World) args.get("World"));
 
                 breakInFacing(
                     null,
                     loc,
-                    args.getUnchecked("Player"),
-                    args.getUnchecked("Radius"),
-                    args.getUnchecked("Depth"),
+                    args.getUnchecked(PLAYER_NAME),
+                    args.getUnchecked(RADIUS_NAME),
+                    args.getUnchecked(DEPTH_NAME),
                     args.getByArgument(forceDropArg) != null
                 );
             })
@@ -55,15 +55,15 @@ public class BreakInFacingLogCoreProtectCommand extends Command {
             .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), depthArg(), whitelistedBlocksArg())
             .withOptionalArguments(forceDropArg)
             .executes((sender, args) -> {
-                Location loc = args.getUnchecked("Location");
+                Location loc = args.getUnchecked(LOC_NAME);
                 loc.setWorld((World) args.get("World"));
 
                 breakInFacing(
-                    args.getUnchecked("Whitelisted Blocks"),
+                    args.getUnchecked(WHITELISTED_BLOCKS_NAME),
                     loc,
-                    args.getUnchecked("Player"),
-                    args.getUnchecked("Radius"),
-                    args.getUnchecked("Depth"),
+                    args.getUnchecked(PLAYER_NAME),
+                    args.getUnchecked(RADIUS_NAME),
+                    args.getUnchecked(DEPTH_NAME),
                     args.getByArgument(forceDropArg) != null
                 );
             })
@@ -74,15 +74,15 @@ public class BreakInFacingLogCoreProtectCommand extends Command {
         createCommand()
             .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), depthArg(), whitelistedBlocksArg(), dropArg)
             .executes((sender, args) -> {
-                Location loc = args.getUnchecked("Location");
+                Location loc = args.getUnchecked(LOC_NAME);
                 loc.setWorld((World) args.get("World"));
 
                 breakInFacing(
-                    args.getUnchecked("Whitelisted Blocks"),
+                    args.getUnchecked(WHITELISTED_BLOCKS_NAME),
                     loc,
-                    args.getUnchecked("Player"),
-                    args.getUnchecked("Radius"),
-                    args.getUnchecked("Depth"),
+                    args.getUnchecked(PLAYER_NAME),
+                    args.getUnchecked(RADIUS_NAME),
+                    args.getUnchecked(DEPTH_NAME),
                     args.getByArgument(dropArg)
                 );
             })

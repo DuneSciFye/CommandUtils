@@ -3,13 +3,12 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.itemArg;
-import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
 
 public class SetCursorItemCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         IntegerArgument amountArg = new IntegerArgument("Amount", 0, 64);
@@ -18,13 +17,13 @@ public class SetCursorItemCommand extends Command {
             .withArguments(playerArg(), itemArg())
             .withOptionalArguments(amountArg)
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
-                ItemStack item = args.getUnchecked("Item");
+                Player player = args.getUnchecked(PLAYER_NAME);
+                ItemStack item = args.getUnchecked(ITEM_NAME);
 
                 item.setAmount(args.getOrDefaultUnchecked("Amount", 1));
                 player.setItemOnCursor(item);
             })
             .register(this.getNamespace());
     }
-    
+
 }

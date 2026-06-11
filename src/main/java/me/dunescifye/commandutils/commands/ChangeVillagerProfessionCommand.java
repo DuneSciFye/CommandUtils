@@ -22,7 +22,7 @@ public class ChangeVillagerProfessionCommand extends Command {
             .collect(Collectors.toList());
     }
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         EntitySelectorArgument.ManyEntities villagersArg = new EntitySelectorArgument.ManyEntities("Villagers");

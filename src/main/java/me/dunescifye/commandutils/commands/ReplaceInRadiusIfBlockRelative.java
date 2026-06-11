@@ -19,7 +19,7 @@ import java.util.function.Predicate;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class ReplaceInRadiusIfBlockRelative extends Command {
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -47,9 +47,9 @@ public class ReplaceInRadiusIfBlockRelative extends Command {
             .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), blocksFromArg, blocksToArg, blockFacesArg, blocksRelativeArg)
             .withOptionalArguments(removeItemArg)
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
-                Block origin = ((World) args.get("World")).getBlockAt(args.getUnchecked("Location"));
-                int radius = args.getUnchecked("Radius");
+                Player player = args.getUnchecked(PLAYER_NAME);
+                Block origin = ((World) args.get("World")).getBlockAt(args.getUnchecked(LOC_NAME));
+                int radius = args.getUnchecked(RADIUS_NAME);
                 List<List<Predicate<Block>>> blocksFrom = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
                 List<Material> blocksTo = args.getUnchecked("Blocks To Replace To");
                 List<BlockFace> blocksFaces = args.getUnchecked("Block Faces");
@@ -73,9 +73,9 @@ public class ReplaceInRadiusIfBlockRelative extends Command {
             .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), blocksFromArg, blockToArg, blockFacesArg, blocksRelativeArg)
             .withOptionalArguments(removeItemArg)
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
-                Block origin = ((World) args.get("World")).getBlockAt(args.getUnchecked("Location"));
-                int radius = args.getUnchecked("Radius");
+                Player player = args.getUnchecked(PLAYER_NAME);
+                Block origin = ((World) args.get("World")).getBlockAt(args.getUnchecked(LOC_NAME));
+                int radius = args.getUnchecked(RADIUS_NAME);
                 List<List<Predicate<Block>>> blocksFrom = Utils.stringListToPredicate(args.getUnchecked("Blocks To Replace From"));
                 BlockData blockTo = args.getByArgument(blockToArg).getBlockData();
                 List<BlockFace> blocksFaces = args.getUnchecked("Block Faces");

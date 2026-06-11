@@ -18,7 +18,7 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class BlockGravityCommand extends Command implements Listener {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         BooleanArgument gravityArg = new BooleanArgument("Gravity Enabled");

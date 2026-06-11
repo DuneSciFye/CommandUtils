@@ -15,9 +15,9 @@ import java.util.function.Predicate;
 import static me.dunescifye.commandutils.CommandUtils.getInstance;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
+@SuppressWarnings({"ConstantConditions", "null"})
 public class HighlightBlocksCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
     public void register(){
         YamlDocument config = this.getConfig();
 
@@ -94,10 +94,10 @@ public class HighlightBlocksCommand extends Command {
             .withOptionalArguments(particleCountArg, particleOffsetArg, particleSpeedArg, numberOfIntervalsArg, particleSpawnIntervalArg)
             .executes((sender, args) -> {
                 World world = (World) args.get("World");
-                Location loc = args.getUnchecked("Location");
+                Location loc = args.getUnchecked(LOC_NAME);
                 loc.setWorld(world);
                 Block origin = world.getBlockAt(loc);
-                int radius = args.getUnchecked("Radius");
+                int radius = args.getUnchecked(RADIUS_NAME);
                 Predicate<Block> predicate = args.getByArgument(blockPredicateArg);
                 ParticleData<?> particleData = args.getByArgument(particleArg);
 
@@ -119,10 +119,10 @@ public class HighlightBlocksCommand extends Command {
             .withArguments(locArg(), radiusArg(), blockPredicateArg, particleArg)
             .withOptionalArguments(particleCountArg, particleOffsetArg, particleSpeedArg, numberOfIntervalsArg, particleSpawnIntervalArg)
             .executes((sender, args) -> {
-                Location loc = args.getUnchecked("Location");
+                Location loc = args.getUnchecked(LOC_NAME);
                 World world = loc.getWorld();
                 Block origin = loc.getBlock();
-                int radius = args.getUnchecked("Radius");
+                int radius = args.getUnchecked(RADIUS_NAME);
                 Predicate<Block> predicate = args.getByArgument(blockPredicateArg);
                 ParticleData<?> particleData = args.getByArgument(particleArg);
 
@@ -144,12 +144,12 @@ public class HighlightBlocksCommand extends Command {
             .withArguments(worldArg(), locArg(), radiusArg(), whitelistedBlocksArg(), particleArg)
             .withOptionalArguments(particleCountArg, particleOffsetArg, particleSpeedArg, numberOfIntervalsArg, particleSpawnIntervalArg)
             .executes((sender, args) -> {
-                List<List<Predicate<Block>>> predicates = args.getUnchecked("Whitelisted Blocks");
+                List<List<Predicate<Block>>> predicates = args.getUnchecked(WHITELISTED_BLOCKS_NAME);
 
                 World world = (World) args.get("World");
-                Location loc = args.getUnchecked("Location");
+                Location loc = args.getUnchecked(LOC_NAME);
                 Block origin = world.getBlockAt(loc);
-                int radius = args.getUnchecked("Radius");
+                int radius = args.getUnchecked(RADIUS_NAME);
                 ParticleData<?> particleData = args.getByArgument(particleArg);
 
                 for (Block relative : Utils.getBlocksInRadius(origin, radius)) {

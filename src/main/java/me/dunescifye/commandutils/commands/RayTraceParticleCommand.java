@@ -15,7 +15,7 @@ import org.bukkit.util.Vector;
 
 public class RayTraceParticleCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         ParticleArgument particleArg = new ParticleArgument("Particle");

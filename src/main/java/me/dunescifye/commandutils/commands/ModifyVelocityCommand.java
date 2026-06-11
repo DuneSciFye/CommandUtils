@@ -10,7 +10,7 @@ import org.bukkit.util.Vector;
 
 public class ModifyVelocityCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 

@@ -64,11 +64,11 @@ public class Config {
                 command.setPermission(CommandPermission.OP);
                 //command.setPermission(keySection.getString("Permission", "commandutils.command." + key.toLowerCase()));
 
-                if (keySection.getOptionalString("NameSpace").isPresent()) {
+                if (keySection.getOptionalString("Namespace").isPresent()) {
                     if (keySection.isString("Namespace")) {
                         command.setNamespace(keySection.getString("Namespace"));
                     } else {
-                        logger.warning("Configuration Commands." + key + ".Namespace is not a string. Found " + keySection.get("NameSpace"));
+                        logger.warning("Configuration Commands." + key + ".Namespace is not a string. Found " + keySection.get("Namespace"));
                     }
                 }
 

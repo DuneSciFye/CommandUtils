@@ -20,7 +20,7 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.timeArgument;
 public class LaunchProjectileCommand extends Command {
 
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         StringArgument projArg = new StringArgument("Projectile");

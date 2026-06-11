@@ -9,14 +9,13 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.CrossbowMeta;
 
 import java.util.List;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
-import static me.dunescifye.commandutils.utils.ArgumentUtils.slotArg;
 
 public class LoadCrossbowCommand extends Command {
 
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         BooleanArgument loadedArg = new BooleanArgument("Loaded");
@@ -27,9 +26,9 @@ public class LoadCrossbowCommand extends Command {
             .withArguments(playerArg(), slotArg())
             .withOptionalArguments(loadedArg, interactWithInvArg)
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
+                Player player = args.getUnchecked(PLAYER_NAME);
                 PlayerInventory inv = player.getInventory();
-                String slot = args.getUnchecked("Slot");
+                String slot = args.getUnchecked(SLOT_NAME);
 
                 ItemStack item = Utils.getInvItem(player, slot);
                 ItemStack arrow = new ItemStack(Material.ARROW, 1);

@@ -11,9 +11,8 @@ import org.bukkit.scheduler.BukkitTask;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.UUID;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.durationArg;
-import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
 
 @SuppressWarnings("DataFlowIssue")
 public class DisableSprintCommand extends Command implements Listener {
@@ -26,8 +25,8 @@ public class DisableSprintCommand extends Command implements Listener {
         createCommand()
             .withArguments(playerArg(), durationArg())
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
-                Duration duration = args.getUnchecked("Duration");
+                Player player = args.getUnchecked(PLAYER_NAME);
+                Duration duration = args.getUnchecked(DURATION_NAME);
                 UUID uuid = player.getUniqueId();
                 int foodLevel = player.getFoodLevel();
                 player.setFoodLevel(6);

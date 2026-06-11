@@ -6,15 +6,14 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.durationArg;
-import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
 
 public class OverrideEffectCommand extends Command {
 
     private static final HashMap<String, PotionEffect> potionEffects = new HashMap<>();
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
         MultiLiteralArgument functionArg = new MultiLiteralArgument("Function", "override", "retrieve", "remove");
@@ -30,7 +29,7 @@ public class OverrideEffectCommand extends Command {
             .withArguments(functionArg, idArg, playerArg(), effectArg)
             .withOptionalArguments(durationArg(), amplifierArg, hideParticlesArg, ambientArg)
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
+                Player player = args.getUnchecked(PLAYER_NAME);
                 String id = args.getByArgument(idArg);
                 PotionEffectType effectType = args.getByArgument(effectArg);
                 int duration = args.getOrDefaultUnchecked("Duration", 30);
@@ -67,7 +66,7 @@ public class OverrideEffectCommand extends Command {
             .withArguments(functionArg, idArg, playerArg(), effectArg)
             .withOptionalArguments(infiniteArg, amplifierArg, hideParticlesArg, ambientArg)
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
+                Player player = args.getUnchecked(PLAYER_NAME);
                 String id = args.getByArgument(idArg);
                 PotionEffectType effectType = args.getByArgument(effectArg);
                 int amplifier = args.getByArgumentOrDefault(amplifierArg, 0);

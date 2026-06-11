@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 
 public class WeightedRandomCommand extends Command {
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         GreedyStringArgument argumentsArg = new GreedyStringArgument("Arguments");

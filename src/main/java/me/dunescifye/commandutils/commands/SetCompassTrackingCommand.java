@@ -11,7 +11,7 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class SetCompassTrackingCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -23,10 +23,10 @@ public class SetCompassTrackingCommand extends Command {
             .executes((sender, args) -> {
 
                 Player player = args.getUnchecked("player");
-                String slot = args.getUnchecked("Slot");
+                String slot = args.getUnchecked(SLOT_NAME);
                 ItemStack item = Utils.getInvItem(player, slot);
-                Location loc = args.getUnchecked("Location");
-                loc.setWorld(args.getUnchecked("World"));
+                Location loc = args.getUnchecked(LOC_NAME);
+                loc.setWorld(args.getUnchecked(WORLD_NAME));
 
                 if (item.getItemMeta() instanceof CompassMeta compassMeta) {
                     compassMeta.setLodestone(loc);
@@ -41,8 +41,8 @@ public class SetCompassTrackingCommand extends Command {
         createCommand()
             .withArguments(playerArg(), slotArg(), targetArg)
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
-                String slot = args.getUnchecked("Slot");
+                Player player = args.getUnchecked(PLAYER_NAME);
+                String slot = args.getUnchecked(SLOT_NAME);
                 ItemStack item = Utils.getInvItem(player, slot);
 
                 if (item.getItemMeta() instanceof CompassMeta compassMeta) {

@@ -4,12 +4,12 @@ import dev.jorel.commandapi.CommandAPICommand;
 import org.bukkit.entity.Entity;
 
 import java.util.Collection;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.entitiesArg;
 
 public class RemoveEntityCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -17,7 +17,7 @@ public class RemoveEntityCommand extends Command {
         new CommandAPICommand("removeentity")
             .withArguments(entitiesArg())
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getUnchecked("Entities");
+                Collection<Entity> entities = args.getUnchecked(ENTITIES_NAME);
 
                 for (Entity entity : entities) entity.remove();
             })

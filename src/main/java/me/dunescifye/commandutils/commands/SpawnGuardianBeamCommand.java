@@ -13,7 +13,7 @@ import org.bukkit.entity.Entity;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.worldArg;
 
 public class SpawnGuardianBeamCommand extends Command {
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 

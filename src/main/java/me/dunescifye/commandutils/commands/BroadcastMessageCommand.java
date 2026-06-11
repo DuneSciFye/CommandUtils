@@ -11,7 +11,7 @@ import java.util.Collection;
 
 public class BroadcastMessageCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
         GreedyStringArgument greedyStringArg = new GreedyStringArgument("Message");
         BooleanArgument colorCodesArg = new BooleanArgument("Color Codes");

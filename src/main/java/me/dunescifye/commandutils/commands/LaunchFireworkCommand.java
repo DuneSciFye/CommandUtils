@@ -13,13 +13,13 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.concurrent.ThreadLocalRandom;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
 
 public class LaunchFireworkCommand extends Command {
 
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         this.addCommandAliases(new String[]{"spawnfirework", "summonfirework"});
@@ -38,7 +38,7 @@ public class LaunchFireworkCommand extends Command {
           .withOptionalArguments(fireworkPowerArg)
           .executes((sender, args) -> {
               launchFirework(
-                args.getUnchecked("Player"),
+                args.getUnchecked(PLAYER_NAME),
                 Color.fromRGB(args.getByArgument(rgbArg)),
                 args.getByArgumentOrDefault(fireworkPowerArg, 1),
                 args.getByArgument(ticksToDetonateArg),
@@ -55,7 +55,7 @@ public class LaunchFireworkCommand extends Command {
             .withOptionalArguments(fireworkPowerArg)
             .executes((sender, args) -> {
                 launchFirework(
-                    args.getUnchecked("Player"),
+                    args.getUnchecked(PLAYER_NAME),
                     Color.fromRGB(
                         args.getByArgumentOrDefault(redColorArg, ThreadLocalRandom.current().nextInt(0, 256)),
                         args.getByArgumentOrDefault(greenColorArg, ThreadLocalRandom.current().nextInt(0, 256)),

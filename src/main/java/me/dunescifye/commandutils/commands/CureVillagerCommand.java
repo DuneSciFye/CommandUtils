@@ -7,12 +7,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.ZombieVillager;
 
 import java.util.Collection;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
 
 public class CureVillagerCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -26,7 +26,7 @@ public class CureVillagerCommand extends Command {
             .executes((sender, args) -> {
                 Collection<Entity> entities = args.getByArgument(villagersArg);
                 int conversionTime = args.getByArgumentOrDefault(conversionTimeArg, 0);
-                Player player = args.getUnchecked("Player");
+                Player player = args.getUnchecked(PLAYER_NAME);
 
                 for (Entity entity : entities) {
                     if (!(entity instanceof ZombieVillager zombieVillager)) continue;

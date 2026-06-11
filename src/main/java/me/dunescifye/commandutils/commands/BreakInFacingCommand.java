@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-@SuppressWarnings("ConstantConditions")
+@SuppressWarnings({"ConstantConditions", "null"})
 public class BreakInFacingCommand extends Command {
 
     public void register() {
@@ -34,7 +34,7 @@ public class BreakInFacingCommand extends Command {
         createCommand()
             .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), depthArg(), whitelistedBlocksArg())
             .executes((sender, args) -> {
-                breakInFacing(args, args.getUnchecked("Whitelisted Blocks"), false, null);
+                breakInFacing(args, args.getUnchecked(WHITELISTED_BLOCKS_NAME), false, null);
             })
             .register(this.getNamespace());
 
@@ -42,7 +42,7 @@ public class BreakInFacingCommand extends Command {
         createCommand()
             .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), depthArg(), whitelistedBlocksArg(), dropArg)
             .executes((sender, args) -> {
-                breakInFacing(args, args.getUnchecked("Whitelisted Blocks"), false,
+                breakInFacing(args, args.getUnchecked(WHITELISTED_BLOCKS_NAME), false,
                     args.getByArgument(dropArg));
             })
             .register(this.getNamespace());
@@ -51,7 +51,7 @@ public class BreakInFacingCommand extends Command {
         createCommand()
             .withArguments(worldArg(), locArg(), playerArg(), radiusArg(), depthArg(), whitelistedBlocksArg(), forceDropArg)
             .executes((sender, args) -> {
-                breakInFacing(args, Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks")), true, null);
+                breakInFacing(args, Utils.stringListToPredicate(args.getUnchecked(WHITELISTED_BLOCKS_NAME)), true, null);
             })
             .register(this.getNamespace());
 
@@ -62,9 +62,9 @@ public class BreakInFacingCommand extends Command {
         boolean forceDrop,
         ItemStack drop
     ) {
-        Location loc = args.getUnchecked("Location");
-        loc.setWorld(args.getUnchecked("World"));
-        Player player = args.getUnchecked("Player");
+        Location loc = args.getUnchecked(LOC_NAME);
+        loc.setWorld(args.getUnchecked(WORLD_NAME));
+        Player player = args.getUnchecked(PLAYER_NAME);
 
         BlockUtils.BlockProvider provider = (origin, p) -> Utils.getBlocksInFacing(origin, (int) args.get("Radius"),
             (int) args.get("Depth"), p);

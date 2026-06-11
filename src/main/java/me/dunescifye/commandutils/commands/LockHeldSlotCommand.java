@@ -14,8 +14,8 @@ import org.bukkit.scheduler.BukkitTask;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.UUID;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.durationArg;
 
 public class LockHeldSlotCommand extends Command implements Listener {
 
@@ -31,10 +31,10 @@ public class LockHeldSlotCommand extends Command implements Listener {
             .withOptionalArguments(slotArg)
             .executes((sender, args) -> {
                 Player player = ArgumentUtils.getPlayer(sender);
-                Duration duration = args.getUnchecked("Duration");
+                Duration duration = args.getUnchecked(DURATION_NAME);
                 UUID uuid = player.getUniqueId();
 
-                final Integer slot = args.getUnchecked("Slot");
+                final Integer slot = args.getUnchecked(SLOT_NAME);
                 if (slot != null) player.getInventory().setHeldItemSlot(slot);
 
                 BukkitTask task = new BukkitRunnable() {

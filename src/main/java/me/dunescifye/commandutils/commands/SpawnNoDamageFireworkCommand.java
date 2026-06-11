@@ -18,7 +18,7 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.locArg;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.worldArg;
 
 public class SpawnNoDamageFireworkCommand extends Command {
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         IntegerArgument ticksToDetonateArg = new IntegerArgument("Ticks To Detonate", 0);

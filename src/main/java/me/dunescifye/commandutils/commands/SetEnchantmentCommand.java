@@ -8,8 +8,8 @@ import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.slotArg;
 
 public class SetEnchantmentCommand extends Command {
     @Override
@@ -22,7 +22,7 @@ public class SetEnchantmentCommand extends Command {
             .withArguments(slotArg(), enchantArg, levelArg)
             .executes((sender, args) -> {
                 Player player = ArgumentUtils.getPlayer(sender);
-                String slot = args.getUnchecked("Slot");
+                String slot = args.getUnchecked(SLOT_NAME);
                 Enchantment enchant = args.getByArgument(enchantArg);
                 Integer level = args.getByArgument(levelArg);
 

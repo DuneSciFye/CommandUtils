@@ -23,7 +23,7 @@ import static me.dunescifye.commandutils.utils.Utils.*;
 
 public class BreakInVeinCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
         YamlDocument config = this.getConfig();
@@ -79,7 +79,7 @@ public class BreakInVeinCommand extends Command {
             .withArguments(worldArg(), locArg())
             .withOptionalArguments(whitelistedBlocksArg(), maxBlocksArg)
             .executes((sender, args) -> {
-                Location loc = args.getUnchecked("Location");
+                Location loc = args.getUnchecked(LOC_NAME);
                 loc.setWorld((World) args.get("World"));
                 Block block = loc.getBlock();
                 Collection<ItemStack> drops = new ArrayList<>();
@@ -101,10 +101,10 @@ public class BreakInVeinCommand extends Command {
             .withArguments(worldArg(), locArg(), playerArg())
             .withOptionalArguments(whitelistedBlocksArg(), triggerBlockBreakArg, maxBlocksArg, checkClaimArg, autoPickupArg, breakOriginalBlockArg, silkTouchArg)
             .executes((sender, args) -> {
-                Location loc = args.getUnchecked("Location");
+                Location loc = args.getUnchecked(LOC_NAME);
                 loc.setWorld((World) args.get("World"));
                 Block block = loc.getBlock();
-                Player player = args.getUnchecked("Player");
+                Player player = args.getUnchecked(PLAYER_NAME);
                 ItemStack item = player.getInventory().getItemInMainHand();
                 Collection<ItemStack> drops = new ArrayList<>();
                 List<List<Predicate<Block>>> predicate = List.of(

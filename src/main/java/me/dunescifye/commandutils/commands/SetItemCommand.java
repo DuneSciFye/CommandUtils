@@ -9,9 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
-import static me.dunescifye.commandutils.utils.ArgumentUtils.slotArg;
 
 public class SetItemCommand extends Command {
 
@@ -25,8 +24,8 @@ public class SetItemCommand extends Command {
             .withArguments(playerArg(), slotArg(), itemArg)
             .withOptionalArguments(functionArg)
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
-                String slot = args.getUnchecked("Slot");
+                Player player = args.getUnchecked(PLAYER_NAME);
+                String slot = args.getUnchecked(SLOT_NAME);
                 ItemStack invItem = Utils.getInvItem(player, slot);
                 ItemStack argItem = args.getByArgument(itemArg);
                 ItemMeta argMeta = argItem.getItemMeta();

@@ -6,11 +6,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.Collection;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.entitiesArg;
 
 public class SetMobTargetCommand extends Command {
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -19,7 +19,7 @@ public class SetMobTargetCommand extends Command {
         createCommand()
             .withArguments(entitiesArg(), targetArg)
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getUnchecked("Entities");
+                Collection<Entity> entities = args.getUnchecked(ENTITIES_NAME);
                 Entity target = args.getByArgument(targetArg);
                 if (!(target instanceof LivingEntity livingTarget))
                     return;

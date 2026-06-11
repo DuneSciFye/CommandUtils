@@ -20,7 +20,7 @@ import static me.dunescifye.commandutils.utils.Utils.runConsoleCommands;
 public class WhileCommand extends Command {
 
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
 

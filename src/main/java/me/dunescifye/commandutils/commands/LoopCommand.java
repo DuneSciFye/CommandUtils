@@ -15,12 +15,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class LoopCommand extends Command {
 
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         YamlDocument config = this.getConfig();
@@ -60,7 +61,7 @@ public class LoopCommand extends Command {
                         BukkitTask task = tasks.remove(commandID);
                         if (task != null) task.cancel();
                         int delay = (int) (((Duration) args.getUnchecked("Delay")).toMillis() / 50);
-                        int period = (int) (((Duration) args.getUnchecked("Period")).toMillis() / 50);
+                        int period = (int) (((Duration) args.getUnchecked(PERIOD_NAME)).toMillis() / 50);
                         tasks.put(commandID, runCommands(args.getByArgument(loopAmountArg), args.getByArgument(commandsArg).replace("$", "%").split(commandSeparator), delay, period, commandID, args.getByArgument(endCommandsArg), args.getByArgument(playerArg)));
                     }
                     case "remove", "cancel" -> {
@@ -88,7 +89,7 @@ public class LoopCommand extends Command {
             .withOptionalArguments(endCommandsArg, playerArg)
             .executes((sender, args) -> {
                 int delay = (int) (((Duration) args.getUnchecked("Delay")).toMillis() / 50);
-                int period = (int) (((Duration) args.getUnchecked("Period")).toMillis() / 50);
+                int period = (int) (((Duration) args.getUnchecked(PERIOD_NAME)).toMillis() / 50);
                 runCommands(args.getByArgument(loopAmountArg), args.getByArgument(commandsArg).replace("$", "%").split(commandSeparator), delay, period, null, args.getByArgument(endCommandsArg), args.getByArgument(playerArg));
             })
             .register(this.getNamespace());

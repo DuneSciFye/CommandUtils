@@ -8,7 +8,7 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class SilentParticleCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register(){
 
         DoubleArgument xOffsetArg = new DoubleArgument("X Offset");
@@ -22,7 +22,7 @@ public class SilentParticleCommand extends Command {
             .withOptionalArguments(xOffsetArg.combineWith(yOffsetArg).combineWith(zOffsetArg))
             .withOptionalArguments(speedArg, amountArg(), forceArg)
             .executes((sender, args) -> {
-                ParticleData<?> particleData = args.getUnchecked("Particle");
+                ParticleData<?> particleData = args.getUnchecked(PARTICLE_NAME);
                 Particle particle = particleData.particle();
                 Location loc = (Location) args.get("Location");
                 World world = loc.getWorld();

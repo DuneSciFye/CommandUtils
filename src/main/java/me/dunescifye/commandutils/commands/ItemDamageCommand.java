@@ -9,7 +9,7 @@ import org.bukkit.inventory.meta.Damageable;
 
 public class ItemDamageCommand extends Command {
 
-  @SuppressWarnings("ConstantConditions")
+  @SuppressWarnings({"ConstantConditions", "null"})
   @Override
   public void register() {
 

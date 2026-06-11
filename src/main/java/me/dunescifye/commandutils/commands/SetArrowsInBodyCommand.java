@@ -5,11 +5,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.Collection;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.entitiesArg;
 
 public class SetArrowsInBodyCommand extends Command {
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -19,7 +19,7 @@ public class SetArrowsInBodyCommand extends Command {
         createCommand()
             .withArguments(entitiesArg(), numberArg)
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getUnchecked("Entities");
+                Collection<Entity> entities = args.getUnchecked(ENTITIES_NAME);
                 int arrows = args.getByArgument(numberArg);
 
                 for (Entity entity : entities)

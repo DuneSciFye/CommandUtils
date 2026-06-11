@@ -6,7 +6,7 @@ import me.dunescifye.commandutils.utils.Utils;
 
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-@SuppressWarnings("ConstantConditions")
+@SuppressWarnings({"ConstantConditions", "null"})
 public class SelectBlocksFacingCommand extends Command {
 
     @Override

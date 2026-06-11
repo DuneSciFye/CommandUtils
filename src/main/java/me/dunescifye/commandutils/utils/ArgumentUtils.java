@@ -113,33 +113,55 @@ public class ArgumentUtils {
      * This section holds all arguments to be reused throughout commands
      */
 
-    public static LocationArgument locArg() { return new LocationArgument("Location"); }
-    public static EntitySelectorArgument.OnePlayer playerArg() { return new EntitySelectorArgument.OnePlayer("Player"); }
-    public static Argument<String> slotArg() { return slotArgument("Slot"); }
+    public static final String LOC_NAME = "Location";
+    public static final String PLAYER_NAME = "Player";
+    public static final String SLOT_NAME = "Slot";
+    public static final String NAMESPACE_NAME = "Namespace";
+    public static final String KEY_NAME = "Key";
+    public static final String CONTENT_NAME = "Content";
+    public static final String WORLD_NAME = "World";
+    public static final String BLOCK_LOC_NAME = "Location";
+    public static final String RADIUS_NAME = "Radius";
+    public static final String DEPTH_NAME = "Depth";
+    public static final String BLOCK_STATE_NAME = "Block State";
+    public static final String DURATION_NAME = "Duration";
+    public static final String HEIGHT_NAME = "Height";
+    public static final String ENTITIES_NAME = "Entities";
+    public static final String INITIAL_DELAY_NAME = "Initial Delay";
+    public static final String PERIOD_NAME = "Period";
+    public static final String MAX_TIME_NAME = "Max Time";
+    public static final String YAW_NAME = "Yaw";
+    public static final String PITCH_NAME = "Pitch";
+    public static final String WHITELISTED_BLOCKS_NAME = "Whitelisted Blocks";
+    public static final String PARTICLE_NAME = "Particle";
+    public static final String AMOUNT_NAME = "Amount";
+    public static final String ITEM_NAME = "Item";
+
+    public static LocationArgument locArg() { return new LocationArgument(LOC_NAME); }
+    public static EntitySelectorArgument.OnePlayer playerArg() { return new EntitySelectorArgument.OnePlayer(PLAYER_NAME); }
+    public static Argument<String> slotArg() { return slotArgument(SLOT_NAME); }
     public static TextArgument namespaceArg() {
-        return new TextArgument("Namespace");
+        return new TextArgument(NAMESPACE_NAME);
     }
     public static TextArgument keyArg() {
-        return new TextArgument("Key");
+        return new TextArgument(KEY_NAME);
     }
-    public static GreedyStringArgument contentArg() { return new GreedyStringArgument("Content"); }
-    public static Argument<World> worldArg() { return bukkitWorldArgument("World"); }
-    public static LocationArgument blockLocArg() { return new LocationArgument("Location", LocationType.BLOCK_POSITION); }
-    public static IntegerArgument radiusArg() { return new IntegerArgument("Radius", 0); }
-    public static IntegerArgument depthArg() { return new IntegerArgument("Depth", 0); }
-    public static BlockStateArgument blockStateArg() { return new BlockStateArgument("Block State"); }
-    public static IntegerArgument durationArg() { return new IntegerArgument("Duration"); }
-    public static IntegerArgument heightArg() { return new IntegerArgument("Height"); }
-    public static EntitySelectorArgument.ManyEntities entitiesArg() { return new EntitySelectorArgument.ManyEntities(
-        "Entities"); }
-    public static Argument<Duration> delayArg() { return ArgumentUtils.timeArgument("Initial Delay"); }
-    public static Argument<Duration> periodArg() { return ArgumentUtils.timeArgument("Period"); }
-    public static Argument<Duration> maxTimeArg() { return ArgumentUtils.timeArgument("Max Time"); }
-    public static FloatArgument yawArg() { return new FloatArgument("Yaw"); }
-    public static FloatArgument pitchArg() { return new FloatArgument("Pitch"); }
-    public static Argument<List<List<Predicate<Block>>>> whitelistedBlocksArg() { return whitelistedBlocksArgument(
-        "Whitelisted Blocks"); }
-    public static ParticleArgument particleArg() { return new ParticleArgument("Particle"); }
-    public static IntegerArgument amountArg() { return new IntegerArgument("Amount"); }
-    public static ItemStackArgument itemArg() { return new ItemStackArgument("Item"); }
+    public static GreedyStringArgument contentArg() { return new GreedyStringArgument(CONTENT_NAME); }
+    public static Argument<World> worldArg() { return bukkitWorldArgument(WORLD_NAME); }
+    public static LocationArgument blockLocArg() { return new LocationArgument(BLOCK_LOC_NAME, LocationType.BLOCK_POSITION); }
+    public static IntegerArgument radiusArg() { return new IntegerArgument(RADIUS_NAME, 0); }
+    public static IntegerArgument depthArg() { return new IntegerArgument(DEPTH_NAME, 0); }
+    public static BlockStateArgument blockStateArg() { return new BlockStateArgument(BLOCK_STATE_NAME); }
+    public static IntegerArgument durationArg() { return new IntegerArgument(DURATION_NAME); }
+    public static IntegerArgument heightArg() { return new IntegerArgument(HEIGHT_NAME); }
+    public static EntitySelectorArgument.ManyEntities entitiesArg() { return new EntitySelectorArgument.ManyEntities(ENTITIES_NAME); }
+    public static Argument<Duration> delayArg() { return ArgumentUtils.timeArgument(INITIAL_DELAY_NAME); }
+    public static Argument<Duration> periodArg() { return ArgumentUtils.timeArgument(PERIOD_NAME); }
+    public static Argument<Duration> maxTimeArg() { return ArgumentUtils.timeArgument(MAX_TIME_NAME); }
+    public static FloatArgument yawArg() { return new FloatArgument(YAW_NAME); }
+    public static FloatArgument pitchArg() { return new FloatArgument(PITCH_NAME); }
+    public static Argument<List<List<Predicate<Block>>>> whitelistedBlocksArg() { return whitelistedBlocksArgument(WHITELISTED_BLOCKS_NAME); }
+    public static ParticleArgument particleArg() { return new ParticleArgument(PARTICLE_NAME); }
+    public static IntegerArgument amountArg() { return new IntegerArgument(AMOUNT_NAME); }
+    public static ItemStackArgument itemArg() { return new ItemStackArgument(ITEM_NAME); }
 }

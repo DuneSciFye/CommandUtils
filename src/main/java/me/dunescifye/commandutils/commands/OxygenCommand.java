@@ -2,9 +2,8 @@ package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.arguments.MultiLiteralArgument;
 import org.bukkit.entity.Player;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.amountArg;
-import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
 
 public class OxygenCommand extends Command {
 
@@ -16,7 +15,7 @@ public class OxygenCommand extends Command {
         GET
     }
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -26,8 +25,8 @@ public class OxygenCommand extends Command {
             .withArguments(functionArg, playerArg())
             .withOptionalArguments(amountArg())
             .executes((sender, args) -> {
-                Player player = args.getUnchecked("Player");
-                int amount = args.getUnchecked("Amount");
+                Player player = args.getUnchecked(PLAYER_NAME);
+                int amount = args.getUnchecked(AMOUNT_NAME);
 
                 switch (args.getByArgument(functionArg)) {
                     case "set" ->

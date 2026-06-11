@@ -16,7 +16,7 @@ import java.util.Arrays;
 
 public class RemoveCustomDataItemCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
   @Override
   public void register() {
 

@@ -83,7 +83,7 @@ public class StringPlaceholders extends PlaceholderExpansion {
         return true;
     }
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public @Nullable String onRequest(OfflinePlayer player, @NotNull String args) {
         String[] parts = args.split("_", 2); //Get function
@@ -115,7 +115,7 @@ public class StringPlaceholders extends PlaceholderExpansion {
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     private String function(String function, String arguments, String separator, Player p) {
         switch (function) {
             case "inputoutput" -> {

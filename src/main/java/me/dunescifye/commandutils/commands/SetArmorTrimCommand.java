@@ -26,7 +26,7 @@ public class SetArmorTrimCommand extends Command {
             .map(Object::toString)
             .collect(Collectors.toList());
     }
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 

@@ -17,10 +17,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
+
 public class RunCommandWhenCommand extends Command {
 
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         LiteralArgument addArg = new LiteralArgument("add");
@@ -84,12 +86,12 @@ public class RunCommandWhenCommand extends Command {
                                         .then(new IntegerArgument("Interval")
                                             .then(new GreedyStringArgument("Commands")
                                                 .executes((sender, args) -> {
-                                                    Player p = args.getUnchecked("Player");
+                                                    Player p = args.getUnchecked(PLAYER_NAME);
                                                     String compare1 = args.getByClass("Compare 1", String.class).replace("$", "%");
                                                     String compare2 = args.getByClass("Compare 2", String.class).replace("$", "%");
                                                     String compareMethod = args.getUnchecked("Compare Method");
                                                     String commandID = args.getUnchecked("Command ID");
-                                                    int delay = args.getUnchecked("Initial Delay");
+                                                    int delay = args.getUnchecked(INITIAL_DELAY_NAME);
                                                     int interval = args.getUnchecked("Interval");
                                                     String[] commands = ((String) args.getUnchecked("Commands")).replace("$", "%").split("\\|");
 

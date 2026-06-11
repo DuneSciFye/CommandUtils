@@ -12,7 +12,7 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.worldArg;
 
 public class SpawnNoDamageEvokerFangCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         // Summons an Evoker Fang that does no damage

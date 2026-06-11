@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ChanceRandomRunCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         String argumentSeparator = ",,";

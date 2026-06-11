@@ -11,7 +11,7 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class SetItemNBTCommand extends Command {
 
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     public void register() {
 
         // Sets NBT Data of an Item
@@ -19,9 +19,9 @@ public class SetItemNBTCommand extends Command {
             .withArguments(playerArg(), slotArg(), namespaceArg(), keyArg())
             .withOptionalArguments(contentArg())
             .executes((sender, args) -> {
-                ItemStack item = Utils.getInvItem(args.getUnchecked("Player"), args.getUnchecked("Slot"));
-                String namespace = args.getUnchecked("Namespace");
-                String inputKey = args.getUnchecked("Key");
+                ItemStack item = Utils.getInvItem(args.getUnchecked(PLAYER_NAME), args.getUnchecked(SLOT_NAME));
+                String namespace = args.getUnchecked(NAMESPACE_NAME);
+                String inputKey = args.getUnchecked(KEY_NAME);
                 String content = args.getOrDefaultUnchecked("Content", "");
 
                 if (item == null)

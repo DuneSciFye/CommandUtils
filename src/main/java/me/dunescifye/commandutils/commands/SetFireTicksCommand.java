@@ -5,12 +5,11 @@ import org.bukkit.entity.LivingEntity;
 
 import java.time.Duration;
 import java.util.Collection;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.durationArg;
-import static me.dunescifye.commandutils.utils.ArgumentUtils.entitiesArg;
 
 public class SetFireTicksCommand extends Command {
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     @Override
     public void register() {
 
@@ -18,8 +17,8 @@ public class SetFireTicksCommand extends Command {
         createCommand()
             .withArguments(entitiesArg(), durationArg())
             .executes((sender, args) -> {
-                Collection<Entity> entities = args.getUnchecked("Entities");
-                Duration duration = args.getUnchecked("Duration");
+                Collection<Entity> entities = args.getUnchecked(ENTITIES_NAME);
+                Duration duration = args.getUnchecked(DURATION_NAME);
                 int fireTicks = (int) (duration.toMillis() / 50);
 
                 for (Entity entity : entities)
