@@ -144,7 +144,7 @@ public class Utils {
     }
 
 
-    //Method for checking if is integer by Jonas K https://stackoverflow.com/questions/237159/whats-the-best-way-to-check-if-a-string-represents-an-integer-in-java
+    // Method for checking if is integer by Jonas K https://stackoverflow.com/questions/237159/whats-the-best-way-to-check-if-a-string-represents-an-integer-in-java
     public static boolean isInteger(String str) {
         if (str == null) {
             return false;
@@ -216,79 +216,67 @@ public class Utils {
         return null;
     }
 
+    /**
+     * Given a list of string predicates, returns preferred format
+     * @param predicates String list of human readable predicates
+     * @return Preferred format for predicates
+     */
     public static List<List<Predicate<Block>>> stringListToPredicate(List<String> predicates) {
         List<Predicate<Block>> whitelist = new ArrayList<>(), blacklist = new ArrayList<>();
         Logger logger = CommandUtils.getInstance().getLogger();
 
         for (String predicate : predicates) {
-            if (predicate.startsWith("!")) { //Blacklist
-                if (predicate.startsWith("!minecraft")) {
-                    predicate = predicate.substring(1);
-                    try {
-                        NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
-                        if (predicateKey == null) continue;
-                        Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
-                        if (tag == null) continue;
-                        blacklist.add(block -> tag.isTagged(block.getType()));
-                    } catch (
-                      IllegalArgumentException e) {
-                        logger.info("Invalid block tag: " + predicate);
-                    }
-                }
-                else if (predicate.startsWith("!#")) {
-                    predicate = predicate.substring(2);
-                    try {
-                        NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
-                        if (predicateKey == null) continue;
-                        Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
-                        if (tag == null) continue;
-                        blacklist.add(block -> tag.isTagged(block.getType()));
-                    } catch (
-                      IllegalArgumentException e) {
-                        logger.info("Invalid block tag: " + predicate);
-                    }
-                }
-                else { //Blocks
-                    predicate = predicate.substring(1);
-                    Material material = Material.getMaterial(predicate.toUpperCase());
-                    if (material == null) continue;
-                    blacklist.add(block -> block.getType().equals(material));
-                }
+            boolean isBlacklist = predicate.startsWith("!");
+            List<Predicate<Block>> targetList = isBlacklist ? blacklist : whitelist;
+
+            String cleanPredicate = isBlacklist ? predicate.substring(1) : predicate;
+
+            String tagString = null;
+            if (cleanPredicate.startsWith("minecraft")) {
+                tagString = cleanPredicate;
+            } else if (cleanPredicate.startsWith("#")) {
+                tagString = cleanPredicate.substring(1);
             }
-            else { //Whitelist
-                if (predicate.startsWith("minecraft")) { //Tags
-                    try {
-                        NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
-                        if (predicateKey == null) continue;
-                        Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
-                        if (tag == null) continue;
-                        whitelist.add(block -> tag.isTagged(block.getType()));
-                    } catch (
-                      IllegalArgumentException e) {
-                        logger.info("Invalid block tag: " + predicate);
-                    }
-                }
-                else if (predicate.startsWith("#")) {
-                    predicate = predicate.substring(1);
-                    try {
-                        NamespacedKey predicateKey = NamespacedKey.fromString(predicate);
-                        if (predicateKey == null) continue;
-                        Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
-                        if (tag == null) continue;
-                        whitelist.add(block -> tag.isTagged(block.getType()));
-                    } catch (
-                      IllegalArgumentException e) {
-                        logger.info("Invalid block tag: " + predicate);
-                    }
-                }
-                else { //Blocks
-                    Material material = Material.getMaterial(predicate.toUpperCase());
-                    if (material == null) continue;
-                    whitelist.add(block -> block.getType().equals(material));
-                }
+
+            if (tagString != null) {
+                addBlockTag(tagString, targetList, logger);
+            } else {
+                addBlockMaterial(cleanPredicate, targetList);
             }
         }
         return List.of(whitelist, blacklist);
+    }
+
+    /**
+     * Internal helper function for stringListToPredicate to add a tag predicate
+     * to targetList
+     * @param tagString The string of the predicate
+     * @param targetList The predicate list to be added into
+     * @param logger Server logger to announce invalid predicates
+     */
+    private static void addBlockTag(String tagString, List<Predicate<Block>> targetList, Logger logger) {
+        try {
+            NamespacedKey predicateKey = NamespacedKey.fromString(tagString);
+            if (predicateKey == null) return;
+            Tag<Material> tag = Bukkit.getServer().getTag("blocks", predicateKey, Material.class);
+            if (tag == null) return;
+            targetList.add(block -> tag.isTagged(block.getType()));
+        } catch (IllegalArgumentException e) {
+            logger.info("Invalid block tag: " + tagString);
+        }
+    }
+
+    /**
+     * Internal helper function for stringListToPredicate to add a material
+     * to targetList
+     * @param materialString String name of the material to add
+     * @param targetList The predicate list to be added into
+     */
+    private static void addBlockMaterial(String materialString, List<Predicate<Block>> targetList) {
+        Material material = Material.getMaterial(materialString.toUpperCase());
+        if (material != null) {
+            targetList.add(block -> block.getType().equals(material));
+        }
     }
 
     public static List<Material> stringListToMaterials(List<String> inputs) {
