@@ -68,7 +68,7 @@ public class LaunchProjectileCommand extends Command {
               }
 
               // Needs to be node name or an immutable map error will throw
-              long maxAlive = ((Duration) args.getOrDefault("Max Alive Time", Duration.ofSeconds(30))).toMillis() / 50;
+              long maxAlive = ((Duration) args.getOrDefault(MAX_ALIVE_TIME_NAME, Duration.ofSeconds(30))).toMillis() / 50;
 
               new BukkitRunnable() {
                   @Override
@@ -127,7 +127,7 @@ public class LaunchProjectileCommand extends Command {
               }
 
               // Needs to be node name or an immutable map error will throw
-              long maxAlive = ((Duration) args.getOrDefault("Max Alive Time", Duration.ofSeconds(30))).toMillis() / 50;
+              long maxAlive = ((Duration) args.getOrDefault(MAX_ALIVE_TIME_NAME, Duration.ofSeconds(30))).toMillis() / 50;
 
               new BukkitRunnable() {
                   @Override
@@ -175,7 +175,7 @@ public class LaunchProjectileCommand extends Command {
               }.runTaskTimer(CommandUtils.getInstance(), 0, 1L);
 
               // Needs to be node name or an immutable map error will throw
-              long maxAlive = ((Duration) args.get("Max Alive Time")).toMillis() / 50;
+              long maxAlive = ((Duration) args.get(MAX_ALIVE_TIME_NAME)).toMillis() / 50;
 
               new BukkitRunnable() {
                   @Override

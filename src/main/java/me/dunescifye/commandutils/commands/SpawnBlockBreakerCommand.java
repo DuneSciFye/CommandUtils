@@ -136,15 +136,15 @@ public class SpawnBlockBreakerCommand extends Command {
         Location loc;
         float yaw;
         float pitch;
-        double velocityMultiplier = args.getOrDefaultUnchecked("Velocity Multiplier", 1.0);
+        double velocityMultiplier = args.getOrDefaultUnchecked(VELOCITY_MULTIPLIER_NAME, 1.0);
         ItemStack item = args.getUnchecked(ITEM_NAME);
         Duration maxTime = args.getUnchecked(DURATION_NAME);
         int radius = args.getUnchecked(RADIUS_NAME);
         List<List<Predicate<Block>>> predicates = args.getUnchecked(WHITELISTED_BLOCKS_NAME);
         Duration period = args.getUnchecked(PERIOD_NAME);
-        boolean generateBlockBreakEvent = args.getOrDefaultUnchecked("Generate Block Break Event", false);
-        boolean checkClaim = args.getOrDefaultUnchecked("Check Claim", false);
-        boolean autoPickup = args.getOrDefaultUnchecked("Auto Pickup", false);
+        boolean generateBlockBreakEvent = args.getOrDefaultUnchecked(GENERATE_BLOCK_BREAK_EVENT_NAME, false);
+        boolean checkClaim = args.getOrDefaultUnchecked(CHECK_CLAIM_NAME, false);
+        boolean autoPickup = args.getOrDefaultUnchecked(AUTO_PICKUP_NAME, false);
 
         // Case 1: used player as target
         Player player = (Player) args.get(PLAYER_NAME);

@@ -136,6 +136,12 @@ public class ArgumentUtils {
     public static final String PARTICLE_NAME = "Particle";
     public static final String AMOUNT_NAME = "Amount";
     public static final String ITEM_NAME = "Item";
+    public static final String TIME_NAME = "Time";
+    public static final String MAX_ALIVE_TIME_NAME = "Max Alive Time";
+    public static final String VELOCITY_MULTIPLIER_NAME = "Velocity Multiplier";
+    public static final String GENERATE_BLOCK_BREAK_EVENT_NAME = "Generate Block Break Event";
+    public static final String CHECK_CLAIM_NAME = "Check Claim";
+    public static final String AUTO_PICKUP_NAME = "Auto Pickup";
 
     public static LocationArgument locArg() { return new LocationArgument(LOC_NAME); }
     public static EntitySelectorArgument.OnePlayer playerArg() { return new EntitySelectorArgument.OnePlayer(PLAYER_NAME); }

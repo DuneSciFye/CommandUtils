@@ -36,7 +36,7 @@ public class ReplaceInRadiusCommand extends Command {
                 Player player = args.getUnchecked(PLAYER_NAME);
                 List<Material> blocksTo = args.getUnchecked("Blocks To Replace To");
                 boolean applyPhysics = args.getByArgumentOrDefault(applyPhysicsArg, true);
-                Duration duration = args.getOrDefaultUnchecked("Time", Duration.ofSeconds(-1));
+                Duration duration = args.getOrDefaultUnchecked(TIME_NAME, Duration.ofSeconds(-1));
 
                 for (Block relative : Utils.getBlocksInRadius(origin, radius))
                     if (Utils.testBlock(relative, predicates) && FUtils.isInClaimOrWilderness(player, relative.getLocation())) {

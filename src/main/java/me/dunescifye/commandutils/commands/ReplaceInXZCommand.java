@@ -42,7 +42,7 @@ public class ReplaceInXZCommand extends Command {
                 Player p = args.getByArgument(playerArg);
                 List<Material> blocksTo = args.getUnchecked("Blocks To Replace To");
                 boolean applyPhysics = args.getByArgumentOrDefault(applyPhysicsArg, true);
-                Duration duration = args.getOrDefaultUnchecked("Time", Duration.ofSeconds(-1));
+                Duration duration = args.getOrDefaultUnchecked(TIME_NAME, Duration.ofSeconds(-1));
 
                 for (Block b : getBlocksInFacingXZ(origin, args.getByArgument(xArg), args.getByArgument(zArg), p)) {
                     if (testBlock(b, predicates) && FUtils.isInClaimOrWilderness(p, b.getLocation())) {
