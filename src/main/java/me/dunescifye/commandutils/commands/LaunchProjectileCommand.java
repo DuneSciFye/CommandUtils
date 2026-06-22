@@ -34,7 +34,7 @@ public class LaunchProjectileCommand extends Command {
         TextArgument commandSeparatorArg = new TextArgument("Command Separator");
         GreedyStringArgument commandsArg = new GreedyStringArgument("Commands");
 
-        final String[] projectiles = {"WIND_CHARGE", "DRAGONFIREBALL", "ARROW", "SNOWBALL", "FIREWORK_ROCKET"};
+        final String[] projectiles = {"WIND_CHARGE", "DRAGONFIREBALL", "ARROW", "SNOWBALL", "FIREWORK_ROCKET", "WITHER_SKULL"};
 
         createCommand()
           .withArguments(projArg
@@ -198,6 +198,7 @@ public class LaunchProjectileCommand extends Command {
             case "WIND_CHARGE", "WINDCHARGE" -> p.launchProjectile(WindCharge.class);
             case "SNOWBALL" -> p.launchProjectile(Snowball.class);
             case "FIREWORK_ROCKET" -> p.launchProjectile(Firework.class);
+            case "WITHER_SKULL" -> p.launchProjectile(WitherSkull.class);
             default -> null;
         };
     }
