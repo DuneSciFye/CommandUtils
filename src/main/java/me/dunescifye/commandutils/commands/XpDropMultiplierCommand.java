@@ -1,10 +1,10 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.arguments.DoubleArgument;
-import dev.jorel.commandapi.arguments.EntitySelectorArgument;
 import dev.jorel.commandapi.arguments.ListArgumentBuilder;
 import dev.jorel.commandapi.arguments.ListTextArgument;
 import dev.jorel.commandapi.arguments.MultiLiteralArgument;
+import me.dunescifye.commandutils.utils.ArgumentUtils;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,7 +36,6 @@ public class XpDropMultiplierCommand extends Command implements Listener {
 
         MultiLiteralArgument setFunctionArg = new MultiLiteralArgument("Function", "set");
         MultiLiteralArgument clearFunctionArg = new MultiLiteralArgument("Function", "clear");
-        EntitySelectorArgument.ManyPlayers playersArg = new EntitySelectorArgument.ManyPlayers("Players");
         DoubleArgument multiplierArg = new DoubleArgument("Multiplier", 1);
         ListTextArgument<EntityType> blacklistArg = new ListArgumentBuilder<EntityType>("Blacklist")
             .allowDuplicates(false)
@@ -47,10 +46,10 @@ public class XpDropMultiplierCommand extends Command implements Listener {
         // Sets the XP drop multiplier on the given players. Every mob they kill, except those whose
         // type is in the blacklist, drops its experience multiplied by this amount.
         createCommand()
-            .withArguments(setFunctionArg, playersArg, multiplierArg)
+            .withArguments(setFunctionArg, ArgumentUtils.manyPlayersArg(), multiplierArg)
             .withOptionalArguments(blacklistArg)
             .executes((sender, args) -> {
-                Collection<Player> players = args.getByArgument(playersArg);
+                Collection<Player> players = args.getUnchecked(ArgumentUtils.PLAYERS_NAME);
                 double multiplier = args.getByArgument(multiplierArg);
                 List<EntityType> blacklist = args.getOptionalByArgument(blacklistArg).orElse(List.of());
                 Set<EntityType> blacklistSet = blacklist.isEmpty() ? EnumSet.noneOf(EntityType.class) : EnumSet.copyOf(blacklist);
@@ -64,9 +63,9 @@ public class XpDropMultiplierCommand extends Command implements Listener {
         // Removes the XP drop multiplier from the given players, returning them to vanilla XP.
         // Works even if the player is offline.
         createCommand()
-            .withArguments(clearFunctionArg, playersArg)
+            .withArguments(clearFunctionArg, ArgumentUtils.manyPlayersArg())
             .executes((sender, args) -> {
-                Collection<Player> players = args.getByArgument(playersArg);
+                Collection<Player> players = args.getUnchecked(ArgumentUtils.PLAYERS_NAME);
 
                 for (Player player : players)
                     multipliers.remove(player.getUniqueId());

@@ -115,6 +115,7 @@ public class ArgumentUtils {
 
     public static final String LOC_NAME = "Location";
     public static final String PLAYER_NAME = "Player";
+    public static final String PLAYERS_NAME = "Players";
     public static final String SLOT_NAME = "Slot";
     public static final String NAMESPACE_NAME = "Namespace";
     public static final String KEY_NAME = "Key";
@@ -145,6 +146,7 @@ public class ArgumentUtils {
 
     public static LocationArgument locArg() { return new LocationArgument(LOC_NAME); }
     public static EntitySelectorArgument.OnePlayer playerArg() { return new EntitySelectorArgument.OnePlayer(PLAYER_NAME); }
+    public static EntitySelectorArgument.ManyPlayers manyPlayersArg() { return new EntitySelectorArgument.ManyPlayers(PLAYERS_NAME); }
     public static Argument<String> slotArg() { return slotArgument(SLOT_NAME); }
     public static TextArgument namespaceArg() {
         return new TextArgument(NAMESPACE_NAME);
