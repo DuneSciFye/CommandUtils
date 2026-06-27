@@ -37,7 +37,6 @@ public class SetArmorTrimCommand extends Command {
     @Override
     public void register() {
 
-        EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
         StringArgument materialArg = new StringArgument("Material");
         StringArgument patternArg = new StringArgument("Pattern");
         LiteralArgument noneArg = new LiteralArgument("none");
@@ -53,7 +52,7 @@ public class SetArmorTrimCommand extends Command {
                     .replaceSuggestions(ArgumentSuggestions.strings(getPatterns()))
             )
             .executes((sender, args) -> {
-                Player player = args.getByArgument(playerArg);
+                Player player = args.getUnchecked(PLAYER_NAME);
                 String slot = args.getUnchecked(SLOT_NAME);
                 ItemStack item = Utils.getInvItem(player, slot);
 
@@ -69,9 +68,9 @@ public class SetArmorTrimCommand extends Command {
 
         // Unsets armor trim
         createCommand()
-            .withArguments(playerArg, slotArg(), noneArg)
+            .withArguments(playerArg(), slotArg(), noneArg)
             .executes((sender, args) -> {
-                Player player = args.getByArgument(playerArg);
+                Player player = args.getUnchecked(PLAYER_NAME);
                 String slot = args.getUnchecked(SLOT_NAME);
                 ItemStack item = Utils.getInvItem(player, slot);
 
