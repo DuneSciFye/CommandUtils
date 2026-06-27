@@ -7,11 +7,13 @@ import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.command.CommandSender;
 import org.bukkit.command.ProxiedCommandSender;
 import org.bukkit.entity.Player;
 
+import org.bukkit.inventory.ItemStack;
+
 import java.time.Duration;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -24,15 +26,17 @@ public class SetTempBlockCommand extends Command {
     public void register() {
         BlockStateArgument blockStateArg = new BlockStateArgument(BLOCK_STATE_NAME);
         BooleanArgument showBreakingArg = new BooleanArgument("Show Breaking");
+        BooleanArgument dropArg = new BooleanArgument("Drop Block");
 
         createCommand()
             .withArguments(worldArg(), blockLocArg(), blockStateArg, timeArgument(DURATION_NAME))
-            .withOptionalArguments(showBreakingArg, whitelistedBlocksArg())
+            .withOptionalArguments(showBreakingArg, dropArg, whitelistedBlocksArg())
             .executes((sender, args) -> {
                 World world = args.getUnchecked(WORLD_NAME);
                 BlockData newData = args.getByArgument(blockStateArg).getBlockData();
                 int ticks = (int) (((Duration) args.get(DURATION_NAME)).toMillis() / 50);
                 boolean showBreaking = args.getOrDefaultUnchecked("Show Breaking", Boolean.FALSE);
+                boolean drop = args.getOrDefaultUnchecked("Drop Block", Boolean.FALSE);
 
                 Block block = world.getBlockAt(args.getUnchecked(BLOCK_LOC_NAME));
                 Location loc = block.getLocation();
@@ -66,8 +70,17 @@ public class SetTempBlockCommand extends Command {
                     }
                 }
 
-                Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () ->
-                    block.setBlockData(originalData, false), ticks);
+                Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
+                    if (drop) {
+                        Collection<ItemStack> drops = block.getDrops();
+                        block.setBlockData(originalData, false);
+                        for (ItemStack item : drops) {
+                            loc.getWorld().dropItemNaturally(loc, item);
+                        }
+                    } else {
+                        block.setBlockData(originalData, false);
+                    }
+                }, ticks);
             })
             .register(this.getNamespace());
     }
