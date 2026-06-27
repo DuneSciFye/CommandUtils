@@ -25,7 +25,6 @@ public class ItemAttributeCommand extends Command {
         LiteralArgument addArg = new LiteralArgument("add");
         LiteralArgument removeArg = new LiteralArgument("remove");
         EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        Argument<String> slotArg = ArgumentUtils.slotArgument("Slot");
         Argument<Attribute> attributeArg = ArgumentUtils.attributeArgument("Attribute");
         DoubleArgument valueArg = new DoubleArgument("Value");
         Argument<AttributeModifier.Operation> operationArg = ArgumentUtils.operationArgument("Operation");
@@ -38,7 +37,7 @@ public class ItemAttributeCommand extends Command {
         GreedyStringArgument contentArg = new GreedyStringArgument("Content");
 
         createCommand()
-            .withArguments(addArg, playerArg, slotArg, attributeArg, idArg, valueArg, operationArg, equipSlotArg)
+            .withArguments(addArg, playerArg, slotArg(), attributeArg, idArg, valueArg, operationArg, equipSlotArg)
             .withOptionalArguments(addDefaultAttributesArg)
             .withOptionalArguments(namespaceArg.combineWith(keyArg.combineWith(contentArg)))
             .executes((sender, args) -> {
@@ -95,7 +94,7 @@ public class ItemAttributeCommand extends Command {
             .register(this.getNamespace());
 
         createCommand()
-            .withArguments(removeArg, playerArg, slotArg, attributeArg, idArg)
+            .withArguments(removeArg, playerArg, slotArg(), attributeArg, idArg)
             .executes((sender, args) -> {
                 ItemStack item = Utils.getInvItem(args.getByArgument(playerArg), (String) args.get(SLOT_NAME));
                 if (item == null || !item.hasItemMeta()) return;

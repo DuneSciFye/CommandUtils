@@ -98,7 +98,7 @@ public class ArgumentUtils {
         return new CustomArgument<>(new StringArgument(nodeName), info -> Utils.parseDuration(info.input()));
     }
 
-    public static Argument<String> slotArgument(String nodeName) {
+    private static Argument<String> slotArgument(String nodeName) {
         return new CustomArgument<>(new StringArgument(nodeName), info ->
             info.input().toLowerCase()
         ).replaceSuggestions(ArgumentSuggestions.strings(Utils.getItemSlots()));

@@ -23,7 +23,6 @@ public class ItemCooldownCommand extends Command {
     @Override
     public void register() {
         EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        Argument<String> slotArg = ArgumentUtils.slotArgument("Slot");
         LiteralArgument setCooldownGroupArg = new LiteralArgument("setcooldowngroup");
         StringArgument keyArg = new StringArgument("Key");
         LiteralArgument setCooldownArg = new LiteralArgument("setcooldown");
@@ -32,7 +31,7 @@ public class ItemCooldownCommand extends Command {
         Argument<Material> materialArg = ArgumentUtils.materialArgument("Material");
 
         createCommand()
-            .withArguments(setCooldownGroupArg, playerArg, slotArg, keyArg)
+            .withArguments(setCooldownGroupArg, playerArg, slotArg(), keyArg)
             .withOptionalArguments(durationArg)
             .executes((sender, args) -> {
                 Player p = args.getByArgument(playerArg);
@@ -51,7 +50,7 @@ public class ItemCooldownCommand extends Command {
             .register(this.getNamespace());
 
         createCommand()
-            .withArguments(setCooldownArg, playerArg, slotArg, durationArg)
+            .withArguments(setCooldownArg, playerArg, slotArg(), durationArg)
             .executes((sender, args) -> {
                 Player p = args.getByArgument(playerArg);
                 String slot = (String) args.get(SLOT_NAME);

@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.arguments.*;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
+import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.entity.Player;
@@ -15,8 +16,7 @@ import org.bukkit.inventory.meta.trim.TrimPattern;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
-import static me.dunescifye.commandutils.utils.ArgumentUtils.slotArg;
+import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 public class SetArmorTrimCommand extends Command {
     @SuppressWarnings("DataFlowIssue")
@@ -38,7 +38,6 @@ public class SetArmorTrimCommand extends Command {
     public void register() {
 
         EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        IntegerArgument slotArg = new IntegerArgument("Slot");
         StringArgument materialArg = new StringArgument("Material");
         StringArgument patternArg = new StringArgument("Pattern");
         LiteralArgument noneArg = new LiteralArgument("none");
@@ -55,8 +54,9 @@ public class SetArmorTrimCommand extends Command {
             )
             .executes((sender, args) -> {
                 Player player = args.getByArgument(playerArg);
+                String slot = args.getUnchecked(SLOT_NAME);
+                ItemStack item = Utils.getInvItem(player, slot);
 
-                ItemStack item = player.getInventory().getItem(args.getByArgument(slotArg));
                 if (item.getItemMeta() instanceof ArmorMeta armorMeta) {
                     armorMeta.setTrim(new ArmorTrim(
                         RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_MATERIAL).get(NamespacedKey.minecraft(args.getByArgument(materialArg))),
@@ -69,11 +69,12 @@ public class SetArmorTrimCommand extends Command {
 
         // Unsets armor trim
         createCommand()
-            .withArguments(playerArg, slotArg, noneArg)
+            .withArguments(playerArg, slotArg(), noneArg)
             .executes((sender, args) -> {
                 Player player = args.getByArgument(playerArg);
+                String slot = args.getUnchecked(SLOT_NAME);
+                ItemStack item = Utils.getInvItem(player, slot);
 
-                ItemStack item = player.getInventory().getItem(args.getByArgument(slotArg));
                 if (item.getItemMeta() instanceof ArmorMeta armorMeta) {
                     armorMeta.setTrim(null);
                     item.setItemMeta(armorMeta);
