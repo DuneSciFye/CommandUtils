@@ -1,14 +1,17 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.arguments.*;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
+import org.bukkit.inventory.meta.trim.TrimMaterial;
+import org.bukkit.inventory.meta.trim.TrimPattern;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,14 +19,18 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.playerArg;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.slotArg;
 
 public class SetArmorTrimCommand extends Command {
+    @SuppressWarnings("DataFlowIssue")
     private static List<String> getMaterials() {
-        return Arrays.stream(Registry.TRIM_MATERIAL.stream().toArray())
-            .map(Object::toString)
+        Registry<TrimMaterial> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_MATERIAL);
+        return registry.stream()
+            .map(m -> registry.getKey(m).getKey())
             .collect(Collectors.toList());
     }
+    @SuppressWarnings("DataFlowIssue")
     private static List<String> getPatterns() {
-        return Arrays.stream(Registry.TRIM_PATTERN.stream().toArray())
-            .map(Object::toString)
+        Registry<TrimPattern> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_PATTERN);
+        return registry.stream()
+            .map(p -> registry.getKey(p).getKey())
             .collect(Collectors.toList());
     }
     @SuppressWarnings({"ConstantConditions", "null"})
@@ -51,7 +58,10 @@ public class SetArmorTrimCommand extends Command {
 
                 ItemStack item = player.getInventory().getItem(args.getByArgument(slotArg));
                 if (item.getItemMeta() instanceof ArmorMeta armorMeta) {
-                    armorMeta.setTrim(new ArmorTrim(Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(args.getByArgument(materialArg))), Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(args.getByArgument(patternArg)))));
+                    armorMeta.setTrim(new ArmorTrim(
+                        RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_MATERIAL).get(NamespacedKey.minecraft(args.getByArgument(materialArg))),
+                        RegistryAccess.registryAccess().getRegistry(RegistryKey.TRIM_PATTERN).get(NamespacedKey.minecraft(args.getByArgument(patternArg)))
+                    ));
                     item.setItemMeta(armorMeta);
                 }
             })
