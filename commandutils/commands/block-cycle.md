@@ -4,11 +4,12 @@ description: Cycles a block through various stages
 
 # Block Cycle
 
-Usage: /blockcycle \<oxidize | wax> <[world](../arguments/world-argument.md)> <[block location](../arguments/block-location-argument.md)>
+Usage: /blockcycle \<oxidize | wax> \<[world](../arguments/world-argument.md)> \<[location](../arguments/block-location-argument.md)>
 
-* The type to cycle through, only supports oxidize and wax at the moment.
-* The World of the block
-* The location of the block
+* World - The world the location is in
+* Location - Coordinates of the block/location
+
+> Only supports oxidize and wax at the moment.
 
 Examples:
 

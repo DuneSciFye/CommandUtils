@@ -1,10 +1,10 @@
 ---
-description: Adds a number to a pre-existing number NBT of an Item.
+description: Sets an NBT value on an item
 ---
 
-# Add Item NBT
+# Set Item NBT
 
-Usage: /additemnbt \<Player> \<[slot](../arguments/slot-argument.md)> \<Namespace> \<Key> \[\<Content>]
+Usage: /setitemnbt \<Player> \<[slot](../arguments/slot-argument.md)> \<Namespace> \<Key> \[\<Content>]
 
 * Player - The player to affect
 * Slot - Slot of the item

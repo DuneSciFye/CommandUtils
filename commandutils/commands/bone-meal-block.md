@@ -1,28 +1,16 @@
 ---
-description: Bone meals blocks
+description: Applies bone meal to a block
 ---
 
 # Bone Meal Block
 
-> Usage: /bonemealblock <[World](../arguments/world-argument.md)> <[Block Location](../arguments/block-location-argument.md)> \[\<Amount>] \[\<Radius>] \[\<Affect Target Block>]
+Usage: /bonemealblock \<[world](../arguments/world-argument.md)> \<[location](../arguments/block-location-argument.md)> \[\<Amount>] \[\<Radius>] \[\<Affect Target Block>]
 
-* World - The world of the block
-* Block Location - Coordinates of the block
-* Amount - Number of times to bonemeal
-  * Defaults to 1
-* Radius - Radius of bonemeal effect
-  * Defaults to 0
-* Affect Target Block - If the designated block at the coordinates should be affected
-  * Defaults to true
-  * Useful if the center block is already being bonemealed.
+* World - The world the location is in
+* Location - Coordinates of the block/location
+* Amount _(optional)_ - Numerical amount
+* Radius _(optional)_ - Radius of the effect
+* Affect Target Block _(optional)_ - Whether the center block at the coordinates should also be affected
 
-{% hint style="info" %}
-Example of an bone meal that bone meals in a 5x5:
-
-Attach this command to a bone meal item:
-
-```
-/bonemealblock %world% %block_x% %block_y% %block_z% 1 2 false
-```
-{% endhint %}
-
+> Example of a bone meal that bone meals in a 5x5:
+> Attach this command to a bone meal item: `/bonemealblock %world% %block_x% %block_y% %block_z% 1 2 false`
