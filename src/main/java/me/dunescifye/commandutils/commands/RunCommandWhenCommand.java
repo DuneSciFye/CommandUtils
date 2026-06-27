@@ -76,12 +76,12 @@ public class RunCommandWhenCommand extends Command {
         new CommandTree("runcommandwhen")
             .then(new LiteralArgument("add")
                 .then(new StringArgument("Command ID")
-                    .then(new EntitySelectorArgument.OnePlayer("Player")
+                    .then(playerArg()
                         .then(new TextArgument("Compare 1")
                             .then(new TextArgument("Compare Method")
                                 .replaceSuggestions(ArgumentSuggestions.strings("==", "!=", "contains", "!contains", "equals"))
                                 .then(new TextArgument("Compare 2")
-                                    .then(new IntegerArgument("Initial Delay")
+                                    .then(delayArg
                                         .then(new IntegerArgument("Interval")
                                             .then(new GreedyStringArgument("Commands")
                                                 .executes((sender, args) -> {
