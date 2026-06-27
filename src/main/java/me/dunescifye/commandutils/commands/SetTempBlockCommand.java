@@ -55,8 +55,9 @@ public class SetTempBlockCommand extends Command {
                 BlockData originalData = block.getBlockData();
                 block.setBlockData(newData, false);
 
+                int entityId = (loc.getBlockX() * 31 + loc.getBlockY()) * 31 + loc.getBlockZ();
+
                 if (showBreaking) {
-                    int entityId = (loc.getBlockX() * 31 + loc.getBlockY()) * 31 + loc.getBlockZ();
                     for (int i = 1; i <= 9; i++) {
                         final float progress = (float) i / 10.0f;
                         long delay = Math.max(1L, (long) ticks * i / 10L);
@@ -79,6 +80,9 @@ public class SetTempBlockCommand extends Command {
                         }
                     } else {
                         block.setBlockData(originalData, false);
+                    }
+                    if (showBreaking) {
+                        loc.getWorld().spawnParticle(Particle.BLOCK, loc.clone().add(0.5, 0.5, 0.5), 30, 0.3, 0.3, 0.3, 0.15, newData);
                     }
                 }, ticks);
             })
