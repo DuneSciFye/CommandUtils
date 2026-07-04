@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
-public class LoopCommand extends Command {
+public class LoopCommandCommand extends Command {
 
     private static final Map<String, BukkitTask> tasks = new HashMap<>();
 
