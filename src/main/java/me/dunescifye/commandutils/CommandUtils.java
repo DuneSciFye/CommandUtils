@@ -37,6 +37,7 @@ public final class CommandUtils extends JavaPlugin {
     public static boolean libsDisguisesEnabled = false;
     public static boolean leafAPIEnabled = false;
     public static boolean worldGuardEnabled = false;
+    public static boolean protocolLibEnabled = false;
     private static final HashMap<String, Command> commands = new HashMap<>();
 
     @Override
@@ -93,6 +94,11 @@ public final class CommandUtils extends JavaPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
             logger.info("Detected WorldGuard, enabling support for it.");
             worldGuardEnabled = true;
+        }
+
+        if (Bukkit.getPluginManager().isPluginEnabled("ProtocolLib")) {
+            logger.info("Detected ProtocolLib, enabling support for it.");
+            protocolLibEnabled = true;
         }
 
         //Special Commands
