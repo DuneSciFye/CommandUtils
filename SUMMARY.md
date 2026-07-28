@@ -114,6 +114,7 @@
   * [Set TNT Source](commandutils/commands/set-tnt-source.md)
   * [Set Temp Block](commandutils/commands/set-temp-block.md)
   * [Set Villager Trade](commandutils/commands/set-villager-trade.md)
+  * [Set Water Walk](commandutils/commands/set-water-walk.md)
   * [Shear Entity](commandutils/commands/shear-entity.md)
   * [Silent Particle](commandutils/commands/silent-particle.md)
   * [Silent Summon](commandutils/commands/silent-summon.md)
