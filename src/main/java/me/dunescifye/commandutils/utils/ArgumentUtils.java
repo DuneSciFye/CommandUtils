@@ -160,7 +160,7 @@ public class ArgumentUtils {
     public static IntegerArgument radiusArg() { return new IntegerArgument(RADIUS_NAME, 0); }
     public static IntegerArgument depthArg() { return new IntegerArgument(DEPTH_NAME, 0); }
     public static BlockStateArgument blockStateArg() { return new BlockStateArgument(BLOCK_STATE_NAME); }
-    public static IntegerArgument durationArg() { return new IntegerArgument(DURATION_NAME); }
+    public static Argument<Duration> durationArg() { return ArgumentUtils.timeArgument(DURATION_NAME); }
     public static IntegerArgument heightArg() { return new IntegerArgument(HEIGHT_NAME); }
     public static EntitySelectorArgument.ManyEntities entitiesArg() { return new EntitySelectorArgument.ManyEntities(ENTITIES_NAME); }
     public static Argument<Duration> delayArg() { return ArgumentUtils.timeArgument(INITIAL_DELAY_NAME); }

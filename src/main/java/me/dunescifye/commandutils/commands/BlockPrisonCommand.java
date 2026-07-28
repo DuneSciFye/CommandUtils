@@ -7,6 +7,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import java.time.Duration;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 @SuppressWarnings("null")
@@ -29,7 +30,7 @@ public class BlockPrisonCommand extends Command {
                 String player = ((Player) args.get(PLAYER_NAME)).getName();
                 int radius = (int) args.get(RADIUS_NAME);
                 int height = (int) args.get(HEIGHT_NAME);
-                int duration = (int) args.getOrDefault(DURATION_NAME, 100);
+                int duration = (int) (((Duration) args.getOrDefault(DURATION_NAME, Duration.ofMillis(100 * 50))).toMillis() / 50);
                 String blockName = ((BlockState) args.get(BLOCK_STATE_NAME)).getType().toString();
                 boolean floor = args.getByArgumentOrDefault(floorArg, false);
 

@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.time.Duration;
 import java.util.HashMap;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
@@ -32,7 +33,8 @@ public class OverrideEffectCommand extends Command {
                 Player player = args.getUnchecked(PLAYER_NAME);
                 String id = args.getByArgument(idArg);
                 PotionEffectType effectType = args.getByArgument(effectArg);
-                int duration = args.getOrDefaultUnchecked(DURATION_NAME, 30);
+                Duration durationArg = args.getOrDefaultUnchecked(DURATION_NAME, Duration.ofMillis(30 * 50));
+                int duration = (int) (durationArg.toMillis() / 50);
                 int amplifier = args.getByArgumentOrDefault(amplifierArg, 0);
                 boolean hideParticles = args.getByArgumentOrDefault(hideParticlesArg, false);
                 boolean ambient = args.getByArgumentOrDefault(ambientArg, false);
