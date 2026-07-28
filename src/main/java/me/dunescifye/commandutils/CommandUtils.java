@@ -7,6 +7,7 @@ import dev.jorel.commandapi.network.CommandAPIProtocol;
 import me.dunescifye.commandutils.commands.*;
 import me.dunescifye.commandutils.files.Config;
 import me.dunescifye.commandutils.listeners.*;
+import me.dunescifye.commandutils.utils.FluidSurface;
 
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -128,6 +129,8 @@ public final class CommandUtils extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        // Real entities, so they have to go before we do
+        FluidSurface.clearAll();
         CommandAPI.onDisable();
     }
 
