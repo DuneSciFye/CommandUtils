@@ -77,7 +77,7 @@ dependencies {
     compileOnly fileTree(dir: 'libs', include: ['*.jar']) // LibsDisguises, LeafAPI (local JARs)
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.9' // WorldGuard
     compileOnly 'com.comphenix.protocol:ProtocolLib:5.3.0' // ProtocolLib
-    implementation 'fr.skytasul:guardianbeam:2.4.7' // GuardianBeam API
+    implementation 'com.github.dunescifye:guardianbeam:2.4.8-dune' // GuardianBeam API
     implementation 'com.jeff-media:MorePersistentDataTypes:2.4.0'
     implementation 'com.jeff-media:custom-block-data:2.2.3'
     implementation "dev.jorel:commandapi-paper-shade:11.2.0" // CommandAPI
