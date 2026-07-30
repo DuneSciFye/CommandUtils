@@ -65,33 +65,44 @@ See [Placeholders](placeholders/README.md) for what each expansion provides.
 
 ## Commands
 
-Every command has its own block under `Commands`. The common keys are:
-
-* **Enabled** — whether the command is registered. Set to `false` to disable it.
-* **Aliases** — a list of extra names the command responds to, e.g. `["ci", "icd"]`.
-* **Permission** — overrides the default permission node for the command.
+Every command has its own block under `Commands`, named after the command in PascalCase.
 
 ```yaml
 Commands:
   BreakInRadius:
     Enabled: true
-    Aliases: []
-    Permission: "commandutils.command.breakinradiuscommand"
+    Aliases: ["bir", "hammer"]
 ```
 
-Many commands add their own extra keys. A few examples:
-
-* **BreakInVein** — `DefaultCheckClaim`, `DefaultMaxBlocks`, `DefaultTriggerBlockBreakEvent`
-* **HighlightBlocks** — `DefaultParticleOffset`, `DefaultParticleSpeed`, `DefaultParticleCount`, `DefaultNumberOfIntervals`, `DefaultParticleSpawnInterval`
-* **If / Loop / While / WeightedRandom / ChanceRandomRun** — `CommandSeparator`, `ArgumentSeparator`, `PlaceholderSurrounder`, condition keywords
-* **CooldownCommand** — `CooldownMessages` (Hours / Minutes / Seconds / Milliseconds)
-* **SendMessage** — `Use&ForColorCodesByDefault`, `ParsePlaceholdersByDefault`, `ColorCodesByDefault`, `PlayersListArg`
-* **SetTNTSource** — `MultipleTNTs`, `MultipleSources` (require a restart)
-* **BlockCycle** — per-type block mappings (`oxidize`, `KeepStairData`, `KeepSlabData`)
+| Key | Effect |
+| --- | --- |
+| `Enabled` | Whether the command is registered at all. `false` removes it |
+| `Aliases` | Extra names the command answers to |
+| `Namespace` | Registers this one command under a different namespace |
 
 {% hint style="info" %}
-Commands that aren't listed in `config.yml` still register with their default settings. Add a block for a command only when you want to change its defaults.
+Commands with no block in `config.yml` still register with their defaults, and a block is written for them on the next start. Add one only when you want to change something.
 {% endhint %}
+
+{% hint style="warning" %}
+The `Permission` key present in the generated file is not read — every command currently requires operator level. Use `Enabled` and your own command-blocking setup to restrict access.
+{% endhint %}
+
+### Per-command settings
+
+Some commands add their own keys, which set the defaults used when the matching argument is left out:
+
+| Command | Keys |
+| --- | --- |
+| [Break In Vein](commands/break-in-vein.md) | `DefaultCheckClaim`, `DefaultMaxBlocks`, `DefaultTriggerBlockBreakEvent` |
+| [Highlight Blocks](commands/highlight-blocks.md) | `DefaultParticleOffset`, `DefaultParticleSpeed`, `DefaultParticleCount`, `DefaultNumberOfIntervals`, `DefaultParticleSpawnInterval` |
+| [If](commands/if.md) | `ElseIfKeyword`, `ElseKeyword`, `CommandSeparator`, `ConditionSeparator` |
+| [Loop](commands/loop.md) | `CommandSeparator` |
+| [Chance Random Run](commands/chance-random-run.md) | `ArgumentSeparator`, `CommandSeparator` |
+| [Cooldown Command](commands/cooldown-command.md) | `CooldownMessages` — `Hours`, `Minutes`, `Seconds`, `Milliseconds` |
+| [Send Message](commands/send-message.md) | `Use&ForColorCodesByDefault`, `ParsePlaceholdersByDefault`, `ColorCodesByDefault`, `PlayersListArg` |
+| [Mob Target](commands/mob-target.md) | `AllowMultipleTargets` |
+| [Block Cycle](commands/block-cycle.md) | `oxidize` — `KeepStairData`, `KeepSlabData`, and the `blocks` mapping |
 
 ## Global settings
 
@@ -99,4 +110,4 @@ Commands that aren't listed in `config.yml` still register with their default se
 CommandNamespace: "commandutils"
 ```
 
-* **CommandNamespace** — the namespace commands are registered under (used for the `namespace:command` form). Recommended to leave as-is unless you know what you're doing.
+* **CommandNamespace** — the namespace every command is registered under, so `/commandutils:breakinradius` always works even if another plugin claims the plain name. Leave it alone unless you have a reason to change it.

@@ -5,7 +5,7 @@
 ## Getting Started
 
 * [Quickstart](getting-started/quickstart.md)
-* [Publish your docs](getting-started/publish-your-docs.md)
+* [Recipes](getting-started/recipes.md)
 
 ## CommandUtils
 
@@ -33,6 +33,7 @@
   * [Disable Jump](commandutils/commands/disable-jump.md)
   * [Disable Shield](commandutils/commands/disable-shield.md)
   * [Disable Sprint](commandutils/commands/disable-sprint.md)
+  * [Effect](commandutils/commands/effect.md)
   * [Flight Speed](commandutils/commands/flight-speed.md)
   * [Food](commandutils/commands/food.md)
   * [Get Player Head](commandutils/commands/get-player-head.md)
@@ -48,6 +49,7 @@
   * [Launch Firework](commandutils/commands/launch-firework.md)
   * [Launch Projectile](commandutils/commands/launch-projectile.md)
   * [Launch TNT](commandutils/commands/launch-tnt.md)
+  * [Leash](commandutils/commands/leash.md)
   * [Life Steal](commandutils/commands/life-steal.md)
   * [Load Crossbow](commandutils/commands/load-crossbow.md)
   * [Lock Held Slot](commandutils/commands/lock-held-slot.md)
@@ -114,6 +116,8 @@
   * [Set TNT Source](commandutils/commands/set-tnt-source.md)
   * [Set Temp Block](commandutils/commands/set-temp-block.md)
   * [Set Villager Trade](commandutils/commands/set-villager-trade.md)
+  * [Set Visual Hearts](commandutils/commands/set-visual-hearts.md)
+  * [Set Water Float](commandutils/commands/set-water-float.md)
   * [Set Water Walk](commandutils/commands/set-water-walk.md)
   * [Shear Entity](commandutils/commands/shear-entity.md)
   * [Silent Particle](commandutils/commands/silent-particle.md)
@@ -137,7 +141,9 @@
   * [Xp Drop Multiplier](commandutils/commands/xp-drop-multiplier.md)
   * [Zombify Villager](commandutils/commands/zombify-villager.md)
 * [Arguments](commandutils/arguments/README.md)
-  * [Slot Argument](commandutils/arguments/slot-argument.md)
-  * [NameSpacedKeys](commandutils/arguments/namespacedkeys.md)
   * [World Argument](commandutils/arguments/world-argument.md)
+  * [Location Argument](commandutils/arguments/location-argument.md)
   * [Block Location Argument](commandutils/arguments/block-location-argument.md)
+  * [Slot Argument](commandutils/arguments/slot-argument.md)
+  * [Whitelisted Blocks](commandutils/arguments/whitelisted-blocks.md)
+  * [NameSpacedKeys](commandutils/arguments/namespacedkeys.md)

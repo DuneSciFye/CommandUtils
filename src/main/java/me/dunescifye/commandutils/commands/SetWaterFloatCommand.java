@@ -1,6 +1,7 @@
 package me.dunescifye.commandutils.commands;
 
 import dev.jorel.commandapi.arguments.BooleanArgument;
+import dev.jorel.commandapi.arguments.DoubleArgument;
 import me.dunescifye.commandutils.CommandUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -12,9 +13,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
@@ -24,8 +25,8 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
  * bubble column does, without any block being placed.
  * <p>
  * The pull is vanilla's: a tenth of a block per tick added to whatever the player is already doing,
- * capped at 1.8 blocks per tick. The client applies its own water drag on top of that, so the
- * player settles at the same rise speed a real column gives instead of accelerating forever.
+ * capped by default at 1.8 blocks per tick. The client applies its own water drag on top of that,
+ * so the player settles at the same rise speed a real column gives instead of accelerating forever.
  */
 @SuppressWarnings("DataFlowIssue")
 public class SetWaterFloatCommand extends Command implements Listener {
@@ -34,9 +35,10 @@ public class SetWaterFloatCommand extends Command implements Listener {
     private static final double RISE_PER_TICK = 0.1;
 
     /** Terminal upward speed, in blocks per tick. Vanilla's bubble column cap. */
-    private static final double MAX_RISE = 1.8;
+    private static final double DEFAULT_MAX_RISE = 1.8;
 
-    private final Set<UUID> floating = new HashSet<>();
+    /** Floating players, each mapped to the top speed their rise is capped at. */
+    private final Map<UUID, Double> floating = new HashMap<>();
 
     private BukkitTask task;
 
@@ -44,14 +46,16 @@ public class SetWaterFloatCommand extends Command implements Listener {
     public void register() {
 
         BooleanArgument enabledArg = new BooleanArgument("Enabled");
+        DoubleArgument maxSpeedArg = new DoubleArgument("Max Speed", 0);
 
         createCommand()
             .withArguments(playerArg(), enabledArg)
+            .withOptionalArguments(maxSpeedArg)
             .executes((sender, args) -> {
                 Player player = args.getUnchecked(PLAYER_NAME);
 
                 if (args.getByArgument(enabledArg)) {
-                    floating.add(player.getUniqueId());
+                    floating.put(player.getUniqueId(), args.getByArgumentOrDefault(maxSpeedArg, DEFAULT_MAX_RISE));
                     startTask();
                 } else {
                     stopFloating(player.getUniqueId());
@@ -71,14 +75,14 @@ public class SetWaterFloatCommand extends Command implements Listener {
                     stopTask();
                     return;
                 }
-                for (Iterator<UUID> it = floating.iterator(); it.hasNext(); ) {
-                    UUID uuid = it.next();
-                    Player player = Bukkit.getPlayer(uuid);
+                for (Iterator<Map.Entry<UUID, Double>> it = floating.entrySet().iterator(); it.hasNext(); ) {
+                    Map.Entry<UUID, Double> entry = it.next();
+                    Player player = Bukkit.getPlayer(entry.getKey());
                     if (player == null) {
                         it.remove();
                         continue;
                     }
-                    tick(player);
+                    tick(player, entry.getValue());
                 }
             }
         }.runTaskTimer(CommandUtils.getInstance(), 1L, 1L);
@@ -90,17 +94,14 @@ public class SetWaterFloatCommand extends Command implements Listener {
         task = null;
     }
 
-    private void tick(Player player) {
-        // Head under, not feet in: bobbing at the surface is the point, so the push has to stop
-        // the moment the player breaks it. isUnderWater covers kelp and waterlogged blocks too.
+    private void tick(Player player, double maxRise) {
         if (!player.isUnderWater()) return;
         if (player.isFlying() || player.getGameMode() == GameMode.SPECTATOR) return;
 
         Vector velocity = player.getVelocity();
-        double rise = Math.min(MAX_RISE, velocity.getY() + RISE_PER_TICK);
+        double rise = Math.min(maxRise, velocity.getY() + RISE_PER_TICK);
 
-        // Only ever an upward push. A player already rising faster than the column pulls - a
-        // launch, a knockback - is left alone rather than being clamped back down to the cap.
+        // A player already rising faster than the column pulls is left alone.
         if (rise <= velocity.getY()) return;
 
         player.setVelocity(velocity.setY(rise));
@@ -113,7 +114,6 @@ public class SetWaterFloatCommand extends Command implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
-        // Not saved across sessions, same as the rest of the movement toggles.
         stopFloating(e.getPlayer().getUniqueId());
     }
 }

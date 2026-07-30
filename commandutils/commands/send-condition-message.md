@@ -1,10 +1,17 @@
 ---
-description: Sends a message to a player based on a condition
+description: Reserved — not yet implemented
 ---
 
 # Send Condition Message
 
-Usage: /sendconditionmessage
+The `/sendconditionmessage` command is registered but has no usable form yet.
 
+{% hint style="warning" %}
+Nothing happens when you run it. For conditional messages today, combine [If](if.md) or [Precise If](precise-if.md) with [Send Message](send-message.md).
+{% endhint %}
 
-> This command is a work in progress.
+### Example
+
+```
+/preciseif Steve ,, % "%player_health% <= 6" sendmessage Steve &cYou are badly hurt else sendmessage Steve &aYou are fine
+```
