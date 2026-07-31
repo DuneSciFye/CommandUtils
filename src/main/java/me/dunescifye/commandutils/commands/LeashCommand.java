@@ -13,6 +13,8 @@ import org.bukkit.event.entity.EntityUnleashEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Collection;
+
 @SuppressWarnings({"unchecked", "DataFlowIssue"})
 public class LeashCommand extends Command implements Listener {
 
@@ -22,25 +24,44 @@ public class LeashCommand extends Command implements Listener {
     public void register() {
 
         EntitySelectorArgument.OnePlayer playerArg = new EntitySelectorArgument.OnePlayer("Player");
-        EntitySelectorArgument.OneEntity targetArg = new EntitySelectorArgument.OneEntity("Target");
+        EntitySelectorArgument.ManyEntities targetsArg = new EntitySelectorArgument.ManyEntities("Targets");
         IntegerArgument maxArg = new IntegerArgument("Max", 1);
         BooleanArgument dropLeashArg = new BooleanArgument("Drop Leash");
 
         createCommand()
-            .withArguments(playerArg, targetArg, maxArg)
+            .withArguments(playerArg, targetsArg, maxArg)
             .withOptionalArguments(dropLeashArg)
             .executes((sender, args) -> {
                 Player player = args.getByArgument(playerArg);
-                Entity target = args.getByArgument(targetArg);
+                Collection<Entity> targets = args.getByArgument(targetsArg);
                 int max = args.getByArgument(maxArg);
                 boolean dropLeash = args.getOrDefaultUnchecked("Drop Leash", Boolean.TRUE);
 
-                if (target instanceof Animals animal && !animal.isLeashed() && countLeashedTo(player) < max) {
+                // Counted once up front, then tracked as we go, so a selector matching a whole herd
+                // still respects the cap instead of leashing everything it touches.
+                int held = countLeashedTo(player);
+
+                for (Entity target : targets) {
+                    if (!(target instanceof Animals animal)) continue;
+
+                    PersistentDataContainer pdc = animal.getPersistentDataContainer();
+
+                    if (animal.isLeashed()) {
+                        // Toggle: running the command on a leashed animal takes the leash off.
+                        // No lead drops, since the command never consumed one to put it on.
+                        if (player.equals(animal.getLeashHolder())) held--;
+                        animal.setLeashHolder(null);
+                        pdc.remove(noLeashDropKey);
+                        continue;
+                    }
+
+                    if (held >= max) continue;
+
                     animal.setLeashHolder(player);
+                    held++;
 
                     // Stored on the mob so the setting survives restarts and chunk unloads, the
                     // same as the leash itself does.
-                    PersistentDataContainer pdc = animal.getPersistentDataContainer();
                     if (dropLeash) pdc.remove(noLeashDropKey);
                     else pdc.set(noLeashDropKey, PersistentDataType.BYTE, (byte) 1);
                 }
