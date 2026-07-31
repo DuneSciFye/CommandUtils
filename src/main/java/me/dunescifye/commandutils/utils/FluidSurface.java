@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Shulker;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -155,6 +156,7 @@ public final class FluidSurface {
             stand.setPersistent(false);
             stand.setCollidable(false);
             stand.setRemoveWhenFarAway(true);
+            neverDrowns(stand);
         });
 
         Shulker shulker = player.getWorld().spawn(at, Shulker.class, entity -> {
@@ -167,6 +169,7 @@ public final class FluidSurface {
             entity.setPeek(0); // a peeking shulker is taller and would lift the player
             entity.setAttachedFace(BlockFace.DOWN);
             entity.setInvisible(true); // set pre-spawn, so it rides the spawn packet: no flash
+            neverDrowns(entity);
 
             // Mounted before it enters the world, for two reasons. A free shulker over open water
             // has no face to attach to, and Shulker#tick answers that by teleporting itself
@@ -187,6 +190,23 @@ public final class FluidSurface {
             other.hideEntity(plugin, mount);
         }
         return new Surface(shulker, mount);
+    }
+
+    /**
+     * Stops a surface entity from ever running out of air.
+     * <p>
+     * Both halves of a surface are living entities sitting with their eyes under the film, so vanilla
+     * drowns them: air ticks down from 300, and on the tick it reaches -20 the entity emits eight
+     * bubble particles, resets its air to 0 and takes drowning damage. Invulnerability cancels the
+     * damage but not the particles, and the reset means it happens again every second after that. A
+     * player standing still is surrounded by a couple of dozen of these, so the water fizzes.
+     * <p>
+     * The bubbles come from the drowning branch running client side off the synced air value, so
+     * they stop only if the air never runs out - clearing the particles server side isn't an option.
+     */
+    private static void neverDrowns(LivingEntity entity) {
+        entity.setMaximumAir(Integer.MAX_VALUE);
+        entity.setRemainingAir(Integer.MAX_VALUE);
     }
 
     private static void removeQuietly(Surface surface) {
