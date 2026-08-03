@@ -5,9 +5,11 @@ import dev.jorel.commandapi.executors.CommandArguments;
 import me.dunescifye.commandutils.CommandUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
@@ -20,7 +22,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 
 /**
- * Tracks potion effects per player/type, keyed by an ID, but only once a custom effect has been
+ * Tracks potion effects per entity/type, keyed by an ID, but only once a custom effect has been
  * given for that type via this command. From that point, vanilla/other-plugin effects of the same
  * type are folded into the same tracked stack; only the highest-priority tracked effect is ever
  * actually applied. Removing an entry by ID lets the next-highest tracked entry of that type take
@@ -36,7 +38,6 @@ public class EffectCommand extends Command implements Listener {
     private static final Map<UUID, Map<PotionEffectType, String>> activeIds = new HashMap<>();
     private static final Set<UUID> suppress = new HashSet<>();
 
-    @SuppressWarnings({"ConstantConditions", "DataFlowIssue"})
     @Override
     public void register() {
         StringArgument idArg = new StringArgument("ID");
@@ -53,94 +54,112 @@ public class EffectCommand extends Command implements Listener {
         ).replaceSuggestions(ArgumentSuggestions.strings("infinite"));
 
         createCommand()
-            .withArguments(new LiteralArgument("give"), playerArg(), effectArg, durationArg, amplifierArg)
+            .withArguments(new LiteralArgument("give"), entitiesArg(), effectArg, durationArg, amplifierArg)
             .withOptionalArguments(idArg, particlesArg, ambientArg, iconArg)
             .executes((sender, args) -> {
                 Duration duration = args.getUnchecked(DURATION_NAME);
                 long ticks = duration == null ? -1 : duration.toMillis() / 50;
-                giveEffect(args, effectArg, ticks, amplifierArg, idArg, particlesArg, ambientArg, iconArg);
+                for (LivingEntity target : targets(args))
+                    giveEffect(target, args, effectArg, ticks, amplifierArg, idArg, particlesArg, ambientArg, iconArg);
             })
             .register(this.getNamespace());
 
         createCommand()
-            .withArguments(new LiteralArgument("remove"), playerArg(), idArg)
+            .withArguments(new LiteralArgument("remove"), entitiesArg(), idArg)
             .executes((sender, args) -> {
-                Player player = args.getUnchecked(PLAYER_NAME);
                 String id = args.getByArgument(idArg);
-                purgeExpired(player);
+                int removed = 0;
 
-                List<StackedEffect> list = tracked.get(player.getUniqueId());
-                StackedEffect found = list == null ? null :
-                    list.stream().filter(e -> e.id().equalsIgnoreCase(id)).findFirst().orElse(null);
+                for (LivingEntity target : targets(args)) {
+                    purgeExpired(target);
 
-                if (found == null) {
-                    sender.sendMessage("No tracked effect with ID '" + id + "' found for " + player.getName() + ".");
-                    return;
+                    List<StackedEffect> list = tracked.get(target.getUniqueId());
+                    StackedEffect found = list == null ? null :
+                        list.stream().filter(e -> e.id().equalsIgnoreCase(id)).findFirst().orElse(null);
+                    if (found == null) continue;
+
+                    list.remove(found);
+                    applyWinner(target, found.type());
+                    pruneIfNoCustom(target, found.type());
+                    removed++;
                 }
 
-                list.remove(found);
-                applyWinner(player, found.type());
-                pruneIfNoCustom(player, found.type());
+                if (removed == 0) sender.sendMessage("No tracked effect with ID '" + id + "' found on any target.");
             })
             .register(this.getNamespace());
 
         createCommand()
-            .withArguments(new LiteralArgument("list"), playerArg())
+            .withArguments(new LiteralArgument("list"), entitiesArg())
             .withOptionalArguments(effectArg)
             .executes((sender, args) -> {
-                Player player = args.getUnchecked(PLAYER_NAME);
                 PotionEffectType filter = args.getByArgumentOrDefault(effectArg, null);
-                purgeExpired(player);
 
-                List<StackedEffect> list = tracked.getOrDefault(player.getUniqueId(), List.of());
-                List<StackedEffect> shown = filter == null ? list : list.stream().filter(e -> e.type().equals(filter)).toList();
+                for (LivingEntity target : targets(args)) {
+                    purgeExpired(target);
 
-                if (shown.isEmpty()) {
-                    sender.sendMessage(player.getName() + " has no tracked effects.");
-                    return;
-                }
+                    List<StackedEffect> list = tracked.getOrDefault(target.getUniqueId(), List.of());
+                    List<StackedEffect> shown = filter == null ? list : list.stream().filter(e -> e.type().equals(filter)).toList();
 
-                Map<PotionEffectType, String> active = activeIds.getOrDefault(player.getUniqueId(), Map.of());
-                long now = System.currentTimeMillis();
-                for (StackedEffect e : shown) {
-                    boolean isActive = e.id().equals(active.get(e.type()));
-                    String remaining = e.expiresAt() == Long.MAX_VALUE ? "infinite" : ((e.expiresAt() - now) / 1000) + "s";
-                    sender.sendMessage((isActive ? "* " : "  ") + e.type().getKey().getKey() + " " + (e.amplifier() + 1)
-                        + " [id=" + e.id() + "] " + remaining + " remaining (" + (e.custom() ? "custom" : "captured") + ")");
+                    if (shown.isEmpty()) {
+                        sender.sendMessage(target.getName() + " has no tracked effects.");
+                        continue;
+                    }
+
+                    sender.sendMessage(target.getName() + ":");
+                    Map<PotionEffectType, String> active = activeIds.getOrDefault(target.getUniqueId(), Map.of());
+                    long now = System.currentTimeMillis();
+                    for (StackedEffect e : shown) {
+                        boolean isActive = e.id().equals(active.get(e.type()));
+                        String remaining = e.expiresAt() == Long.MAX_VALUE ? "infinite" : ((e.expiresAt() - now) / 1000) + "s";
+                        sender.sendMessage((isActive ? "* " : "  ") + e.type().getKey().getKey() + " " + (e.amplifier() + 1)
+                            + " [id=" + e.id() + "] " + remaining + " remaining (" + (e.custom() ? "custom" : "captured") + ")");
+                    }
                 }
             })
             .register(this.getNamespace());
 
         createCommand()
-            .withArguments(new LiteralArgument("clear"), playerArg())
+            .withArguments(new LiteralArgument("clear"), entitiesArg())
             .withOptionalArguments(effectArg)
             .executes((sender, args) -> {
-                Player player = args.getUnchecked(PLAYER_NAME);
                 PotionEffectType filter = args.getByArgumentOrDefault(effectArg, null);
-                purgeExpired(player);
 
-                List<StackedEffect> list = tracked.get(player.getUniqueId());
-                if (list == null) return;
+                for (LivingEntity target : targets(args)) {
+                    purgeExpired(target);
 
-                Set<PotionEffectType> affected = new HashSet<>();
-                if (filter == null) {
-                    for (StackedEffect e : list) affected.add(e.type());
-                    list.clear();
-                } else {
-                    list.removeIf(e -> e.type().equals(filter) && affected.add(filter));
-                }
+                    List<StackedEffect> list = tracked.get(target.getUniqueId());
+                    if (list == null) continue;
 
-                for (PotionEffectType type : affected) {
-                    applyWinner(player, type);
-                    pruneIfNoCustom(player, type);
+                    Set<PotionEffectType> affected = new HashSet<>();
+                    if (filter == null) {
+                        for (StackedEffect e : list) affected.add(e.type());
+                        list.clear();
+                    } else {
+                        list.removeIf(e -> e.type().equals(filter) && affected.add(filter));
+                    }
+
+                    for (PotionEffectType type : affected) {
+                        applyWinner(target, type);
+                        pruneIfNoCustom(target, type);
+                    }
                 }
             })
             .register(this.getNamespace());
     }
 
-    private void giveEffect(CommandArguments args, PotionEffectArgument effectArg, long ticks, IntegerArgument amplifierArg,
+    /** Only living entities can hold potion effects, so anything else the selector matched is dropped. */
+    @SuppressWarnings({"ConstantConditions", "DataFlowIssue"})
+    private List<LivingEntity> targets(CommandArguments args) {
+        Collection<Entity> entities = args.getUnchecked(ENTITIES_NAME);
+        List<LivingEntity> living = new ArrayList<>();
+        for (Entity entity : entities)
+            if (entity instanceof LivingEntity livingEntity) living.add(livingEntity);
+        return living;
+    }
+
+    @SuppressWarnings({"ConstantConditions", "DataFlowIssue"})
+    private void giveEffect(LivingEntity target, CommandArguments args, PotionEffectArgument effectArg, long ticks, IntegerArgument amplifierArg,
                              StringArgument idArg, BooleanArgument particlesArg, BooleanArgument ambientArg, BooleanArgument iconArg) {
-        Player player = args.getUnchecked(PLAYER_NAME);
         PotionEffectType type = args.getByArgument(effectArg);
         int amplifier = args.getByArgument(amplifierArg);
         String requestedId = args.getByArgumentOrDefault(idArg, null);
@@ -148,25 +167,26 @@ public class EffectCommand extends Command implements Listener {
         boolean ambient = args.getByArgumentOrDefault(ambientArg, false);
         boolean icon = args.getByArgumentOrDefault(iconArg, true);
 
-        purgeExpired(player);
-        captureIfUntracked(player, type);
+        purgeExpired(target);
+        captureIfUntracked(target, type);
 
-        String id = (requestedId == null || requestedId.isBlank()) ? generateId(player) : requestedId;
-        PotionEffectType previousType = removeById(player, id);
+        // IDs are scoped to a single entity, so one command can hand the same ID to a whole selector.
+        String id = (requestedId == null || requestedId.isBlank()) ? generateId(target) : requestedId;
+        PotionEffectType previousType = removeById(target, id);
 
         long expiresAt = ticks < 0 ? Long.MAX_VALUE : System.currentTimeMillis() + ticks * 50L;
-        track(player, new StackedEffect(id, type, amplifier, ambient, particles, icon, expiresAt, System.nanoTime(), true));
-        applyWinner(player, type);
+        track(target, new StackedEffect(id, type, amplifier, ambient, particles, icon, expiresAt, System.nanoTime(), true));
+        applyWinner(target, type);
 
         if (previousType != null && !previousType.equals(type)) {
-            applyWinner(player, previousType);
-            pruneIfNoCustom(player, previousType);
+            applyWinner(target, previousType);
+            pruneIfNoCustom(target, previousType);
         }
     }
 
-    /** Removes the entry with this ID for the player, if any, returning its effect type. */
-    private PotionEffectType removeById(Player player, String id) {
-        List<StackedEffect> list = tracked.get(player.getUniqueId());
+    /** Removes the entry with this ID for the entity, if any, returning its effect type. */
+    private PotionEffectType removeById(LivingEntity target, String id) {
+        List<StackedEffect> list = tracked.get(target.getUniqueId());
         if (list == null) return null;
 
         Iterator<StackedEffect> it = list.iterator();
@@ -182,29 +202,29 @@ public class EffectCommand extends Command implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityPotionEffect(EntityPotionEffectEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-        UUID uuid = player.getUniqueId();
+        if (!(event.getEntity() instanceof LivingEntity target)) return;
+        UUID uuid = target.getUniqueId();
         if (suppress.contains(uuid)) return;
 
         PotionEffectType type = event.getModifiedType();
-        purgeExpired(player);
+        purgeExpired(target);
 
         switch (event.getAction()) {
             case ADDED, CHANGED -> {
                 // Only fold this into a tracked stack if a custom effect already anchors one for
                 // this type; otherwise this effect has nothing to do with us, leave it alone.
-                if (entriesFor(player, type).isEmpty()) return;
+                if (entriesFor(target, type).isEmpty()) return;
 
                 PotionEffect newEffect = event.getNewEffect();
                 if (newEffect == null) return;
 
                 // Supersede any previously captured vanilla/plugin entry for this type: it shares
                 // the same deterministic ID, so re-tracking it here would otherwise duplicate it.
-                removeById(player, vanillaId(type));
+                removeById(target, vanillaId(type));
                 StackedEffect entry = fromPotionEffect(newEffect);
-                track(player, entry);
+                track(target, entry);
 
-                StackedEffect winner = pickWinner(entriesFor(player, type));
+                StackedEffect winner = pickWinner(entriesFor(target, type));
                 if (winner != null && !winner.id().equals(entry.id())) {
                     event.setCancelled(true);
                 } else {
@@ -221,8 +241,8 @@ public class EffectCommand extends Command implements Listener {
                     if (list != null) list.removeIf(e -> e.id().equals(activeId));
                 }
                 Bukkit.getScheduler().runTask(CommandUtils.getInstance(), () -> {
-                    applyWinner(player, type);
-                    pruneIfNoCustom(player, type);
+                    applyWinner(target, type);
+                    pruneIfNoCustom(target, type);
                 });
             }
             case CLEARED -> {
@@ -244,7 +264,16 @@ public class EffectCommand extends Command implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
+        forget(event.getPlayer().getUniqueId());
+    }
+
+    /** A dead mob is never coming back, and its effects died with it, so drop everything tracked for it. */
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent event) {
+        forget(event.getEntity().getUniqueId());
+    }
+
+    private void forget(UUID uuid) {
         tracked.remove(uuid);
         activeIds.remove(uuid);
         suppress.remove(uuid);
@@ -252,23 +281,23 @@ public class EffectCommand extends Command implements Listener {
 
     /**
      * Called right before a custom effect is given for a type that isn't tracked yet: if the
-     * player already has a live effect of that type (given by vanilla, another plugin, or before
+     * entity already has a live effect of that type (given by vanilla, another plugin, or before
      * this command ever ran), remember it so it can resume once the new custom effect is removed.
      */
-    private void captureIfUntracked(Player player, PotionEffectType type) {
-        if (!entriesFor(player, type).isEmpty()) return;
+    private void captureIfUntracked(LivingEntity target, PotionEffectType type) {
+        if (!entriesFor(target, type).isEmpty()) return;
 
-        PotionEffect current = player.getPotionEffect(type);
+        PotionEffect current = target.getPotionEffect(type);
         if (current == null) return;
 
         StackedEffect entry = fromPotionEffect(current);
-        track(player, entry);
-        activeIds.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>()).put(type, entry.id());
+        track(target, entry);
+        activeIds.computeIfAbsent(target.getUniqueId(), k -> new HashMap<>()).put(type, entry.id());
     }
 
     /** Drops tracking for a type entirely once no custom-given entry remains for it, letting vanilla take back over unmonitored. */
-    private void pruneIfNoCustom(Player player, PotionEffectType type) {
-        UUID uuid = player.getUniqueId();
+    private void pruneIfNoCustom(LivingEntity target, PotionEffectType type) {
+        UUID uuid = target.getUniqueId();
         List<StackedEffect> list = tracked.get(uuid);
         if (list == null) return;
 
@@ -295,20 +324,20 @@ public class EffectCommand extends Command implements Listener {
         return "vanilla-" + type.getKey().getKey();
     }
 
-    private void track(Player player, StackedEffect entry) {
-        tracked.computeIfAbsent(player.getUniqueId(), k -> new ArrayList<>()).add(entry);
+    private void track(LivingEntity target, StackedEffect entry) {
+        tracked.computeIfAbsent(target.getUniqueId(), k -> new ArrayList<>()).add(entry);
     }
 
-    private void purgeExpired(Player player) {
-        List<StackedEffect> list = tracked.get(player.getUniqueId());
+    private void purgeExpired(LivingEntity target) {
+        List<StackedEffect> list = tracked.get(target.getUniqueId());
         if (list == null) return;
         long now = System.currentTimeMillis();
         list.removeIf(e -> e.expiresAt() <= now);
     }
 
-    private List<StackedEffect> entriesFor(Player player, PotionEffectType type) {
-        purgeExpired(player);
-        List<StackedEffect> list = tracked.get(player.getUniqueId());
+    private List<StackedEffect> entriesFor(LivingEntity target, PotionEffectType type) {
+        purgeExpired(target);
+        List<StackedEffect> list = tracked.get(target.getUniqueId());
         if (list == null) return List.of();
         return list.stream().filter(e -> e.type().equals(type)).toList();
     }
@@ -319,24 +348,24 @@ public class EffectCommand extends Command implements Listener {
             .orElse(null);
     }
 
-    private void applyWinner(Player player, PotionEffectType type) {
-        UUID uuid = player.getUniqueId();
-        StackedEffect winner = pickWinner(entriesFor(player, type));
+    private void applyWinner(LivingEntity target, PotionEffectType type) {
+        UUID uuid = target.getUniqueId();
+        StackedEffect winner = pickWinner(entriesFor(target, type));
 
         suppress.add(uuid);
         try {
             if (winner == null) {
                 Map<PotionEffectType, String> active = activeIds.get(uuid);
                 if (active != null) active.remove(type);
-                if (player.hasPotionEffect(type)) player.removePotionEffect(type);
+                if (target.hasPotionEffect(type)) target.removePotionEffect(type);
             } else {
                 int ticks = winner.expiresAt() == Long.MAX_VALUE
                     ? PotionEffect.INFINITE_DURATION
                     : (int) Math.max(1, (winner.expiresAt() - System.currentTimeMillis()) / 50);
                 // Vanilla refuses to lower an active effect's amplifier via addPotionEffect alone,
                 // so the currently-applied effect must be cleared first to allow a downgrade to stick.
-                if (player.hasPotionEffect(type)) player.removePotionEffect(type);
-                player.addPotionEffect(new PotionEffect(type, ticks, winner.amplifier(), winner.ambient(), winner.particles(), winner.icon()));
+                if (target.hasPotionEffect(type)) target.removePotionEffect(type);
+                target.addPotionEffect(new PotionEffect(type, ticks, winner.amplifier(), winner.ambient(), winner.particles(), winner.icon()));
                 activeIds.computeIfAbsent(uuid, k -> new HashMap<>()).put(type, winner.id());
             }
         } finally {
@@ -344,8 +373,8 @@ public class EffectCommand extends Command implements Listener {
         }
     }
 
-    private String generateId(Player player) {
-        List<StackedEffect> list = tracked.getOrDefault(player.getUniqueId(), List.of());
+    private String generateId(LivingEntity target) {
+        List<StackedEffect> list = tracked.getOrDefault(target.getUniqueId(), List.of());
         String id = Integer.toHexString(ThreadLocalRandom.current().nextInt(0x1000000));
         while (idInUse(list, id)) {
             id = Integer.toHexString(ThreadLocalRandom.current().nextInt(0x1000000));

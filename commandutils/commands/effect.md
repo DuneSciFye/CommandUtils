@@ -4,19 +4,19 @@ description: Gives potion effects that stack by ID and fall back to each other
 
 # Effect
 
-Usage: /effect \<give> \<Player> \<Effect> \<Duration> \<Level> \[\<ID>] \[\<Particles>] \[\<Ambient>] \[\<Icon>]
+Usage: /effect \<give> \<Entities> \<Effect> \<Duration> \<Level> \[\<ID>] \[\<Particles>] \[\<Ambient>] \[\<Icon>]
 
-Usage: /effect \<remove> \<Player> \<ID>
+Usage: /effect \<remove> \<Entities> \<ID>
 
-Usage: /effect \<list> \<Player> \[\<Effect>]
+Usage: /effect \<list> \<Entities> \[\<Effect>]
 
-Usage: /effect \<clear> \<Player> \[\<Effect>]
+Usage: /effect \<clear> \<Entities> \[\<Effect>]
 
-* Player - The player to affect
+* Entities - The players or mobs to affect. Accepts selectors like `@a` or `@e[type=zombie]`. Anything that can't hold potion effects is skipped
 * Effect - The potion effect
 * Duration - How long it lasts, e.g. `30s`, `1m`, `100t`, or `infinite`
 * Level - Amplifier. `0` is level I, `1` is level II
-* ID _(optional)_ - Name for this effect, so it can be removed later. Generated automatically if left out
+* ID _(optional)_ - Name for this effect, so it can be removed later. Generated automatically if left out. IDs are per entity, so one command can give the same ID to everything the selector matched
 * Particles _(optional)_ - Shows the swirling particles. Defaults to `true`
 * Ambient _(optional)_ - Uses the faded beacon-style particles. Defaults to `false`
 * Icon _(optional)_ - Shows the effect icon in the HUD. Defaults to `true`
@@ -25,7 +25,9 @@ Vanilla keeps only one effect of each type: a weaker one applied over a stronger
 
 For each effect type, all tracked entries are ranked by level, then by which arrived most recently, and only the winner is actually applied. Remove or expire the winner and the next one takes over with whatever time it had left.
 
-Effects the player already had, from vanilla or another plugin, are folded into the stack the first time this command touches that type, so nothing gets lost. Once no entry from this command remains for a type, tracking is dropped and vanilla takes over again.
+Effects the entity already had, from vanilla or another plugin, are folded into the stack the first time this command touches that type, so nothing gets lost. Once no entry from this command remains for a type, tracking is dropped and vanilla takes over again.
+
+Every entity keeps its own stack, so each one in a selector is handled independently. Tracking is dropped when a player leaves or a mob dies, and it does not survive a restart.
 
 | Function | Effect |
 | --- | --- |
@@ -55,4 +57,12 @@ Inspect and clear:
 ```
 /effect list Steve speed
 /effect clear Steve speed
+```
+
+A team-wide buff, and a mob-wide one, given and taken away in one go:
+
+```
+/effect give @a resistance infinite 0 event_buff
+/effect give @e[type=zombie,distance=..20] strength 1m 1 horde
+/effect remove @a event_buff
 ```
