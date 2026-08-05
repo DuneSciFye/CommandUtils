@@ -49,9 +49,15 @@ public class EffectCommand extends Command implements Listener {
 
         // Accepts either a duration string ("20s") or the literal "infinite" in one node, so
         // "give" only needs a single registration instead of two competing ones for the same literal.
-        Argument<Duration> durationArg = new CustomArgument<>(new StringArgument(DURATION_NAME), info ->
-            info.input().equalsIgnoreCase("infinite") ? null : Utils.parseDuration(info.input())
-        ).replaceSuggestions(ArgumentSuggestions.strings("infinite"));
+        // A bare number means seconds here, matching vanilla /effect, rather than the ticks the
+        // shared parser would otherwise assume; "100t" is still available for ticks.
+        Argument<Duration> durationArg = new CustomArgument<>(new StringArgument(DURATION_NAME), info -> {
+            String input = info.input();
+            if (input.equalsIgnoreCase("infinite")) return null;
+            return input.matches("\\d+(\\.\\d+)?")
+                ? Duration.ofMillis((long) (Double.parseDouble(input) * 1000))
+                : Utils.parseDuration(input);
+        }).replaceSuggestions(ArgumentSuggestions.strings("infinite"));
 
         createCommand()
             .withArguments(new LiteralArgument("give"), entitiesArg(), effectArg, durationArg, amplifierArg)

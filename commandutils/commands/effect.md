@@ -14,7 +14,7 @@ Usage: /effect \<clear> \<Entities> \[\<Effect>]
 
 * Entities - The players or mobs to affect. Accepts selectors like `@a` or `@e[type=zombie]`. Anything that can't hold potion effects is skipped
 * Effect - The potion effect
-* Duration - How long it lasts, e.g. `30s`, `1m`, `100t`, or `infinite`
+* Duration - How long it lasts, e.g. `30s`, `1m`, `100t`, or `infinite`. A plain number is seconds, so `10` is ten seconds
 * Level - Amplifier. `0` is level I, `1` is level II
 * ID _(optional)_ - Name for this effect, so it can be removed later. Generated automatically if left out. IDs are per entity, so one command can give the same ID to everything the selector matched
 * Particles _(optional)_ - Shows the swirling particles. Defaults to `true`
