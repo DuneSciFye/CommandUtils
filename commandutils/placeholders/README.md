@@ -119,7 +119,9 @@ Also: `material_<slot>` for the held material, `nbt_...`, `amount_...`, `cursori
 
 ### Player state
 
-`isgliding`, `isblocking`, `isfrozen`, `worldenvironment` (alias `dimension`), `facing`, `raytrace_<distance>[,...]`, `potioneffectlevel_<effect>`, `potioneffectduration_<effect>`, `lastrawdamage`, `lastfinaldamage`, `lastrawdamagedealt`, `lastfinaldamagedealt`, `lastbowforce`, `expreason`.
+`isgliding`, `isblocking`, `isfrozen`, `worldenvironment` (alias `dimension`), `facing`, `raytrace_<distance>[,...]`, `potioneffectlevel_<effect>`, `potioneffectduration_<effect>`, `lastrawdamage`, `lastfinaldamage`, `lastrawdamagedealt`, `lastfinaldamagedealt`, `lastattacker`, `lastbowforce`, `expreason`.
+
+`lastattacker` (aliases `lastplayerattacker`, `lastdamager`, `lastplayerdamager`) is the name of the player who last damaged you. It is blank if you have not been damaged, or if your most recent damage came from anything other than a player.
 
 ### Land protection
 

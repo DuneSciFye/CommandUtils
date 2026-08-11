@@ -17,6 +17,7 @@ public class PlayerDamageTracker implements Listener {
     private static final HashMap<UUID, Double> lastFinalDamageTaken = new HashMap<>();
     private static final HashMap<UUID, Double> lastRawDamageDealt = new HashMap<>();
     private static final HashMap<UUID, Double> lastFinalDamageDealt = new HashMap<>();
+    private static final HashMap<UUID, String> lastPlayerAttacker = new HashMap<>();
 
     public void damageTrackerHandler(CommandUtils plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -28,6 +29,12 @@ public class PlayerDamageTracker implements Listener {
             UUID uuid = p.getUniqueId();
             lastRawDamageTaken.put(uuid, e.getDamage());
             lastFinalDamageTaken.put(uuid, e.getFinalDamage());
+            // Any damage from something other than a player clears the last attacker
+            if (e.getDamageSource().getCausingEntity() instanceof Player attacker) {
+                lastPlayerAttacker.put(uuid, attacker.getName());
+            } else {
+                lastPlayerAttacker.remove(uuid);
+            }
         }
         if (e.getDamageSource().getCausingEntity() instanceof Player p) {
             UUID uuid = p.getUniqueId();
@@ -48,6 +55,7 @@ public class PlayerDamageTracker implements Listener {
             lastFinalDamageTaken.remove(uuid);
             lastRawDamageDealt.remove(uuid);
         }
+        lastPlayerAttacker.remove(uuid);
     }
 
     public static Double getLastRawDamageTaken(UUID uuid) {
@@ -61,5 +69,8 @@ public class PlayerDamageTracker implements Listener {
     }
     public static Double getLastFinalDamageDealt(UUID uuid) {
         return lastFinalDamageDealt.get(uuid);
+    }
+    public static String getLastPlayerAttacker(UUID uuid) {
+        return lastPlayerAttacker.get(uuid);
     }
 }

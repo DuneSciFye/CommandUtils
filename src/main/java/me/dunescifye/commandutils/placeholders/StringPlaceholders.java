@@ -1023,6 +1023,10 @@ public class StringPlaceholders extends PlaceholderExpansion {
             case "lastfinaldamagedealt" -> {
                 return String.valueOf(PlayerDamageTracker.getLastFinalDamageDealt(p.getUniqueId()));
             }
+            case "lastattacker", "lastplayerattacker", "lastdamager", "lastplayerdamager" -> {
+                String attacker = PlayerDamageTracker.getLastPlayerAttacker(p.getUniqueId());
+                return attacker == null ? "" : attacker;
+            }
             case "lastbowforce", "bowforce", "recentbowforce" -> {
                 return String.valueOf(BowForceTracker.getBowForce(p));
             }
