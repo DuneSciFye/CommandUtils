@@ -3,6 +3,7 @@ package me.dunescifye.commandutils.commands;
 import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.executors.CommandArguments;
 import me.dunescifye.commandutils.CommandUtils;
+import me.dunescifye.commandutils.utils.PotionEffectUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -32,7 +33,8 @@ import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
 public class EffectCommand extends Command implements Listener {
 
     private record StackedEffect(String id, PotionEffectType type, int amplifier, boolean ambient,
-                                  boolean particles, boolean icon, long expiresAt, long addedAt, boolean custom) {}
+                                  boolean particles, boolean icon, boolean triggerEvent, long expiresAt,
+                                  long addedAt, boolean custom) {}
 
     private static final Map<UUID, List<StackedEffect>> tracked = new HashMap<>();
     private static final Map<UUID, Map<PotionEffectType, String>> activeIds = new HashMap<>();
@@ -46,6 +48,7 @@ public class EffectCommand extends Command implements Listener {
         BooleanArgument ambientArg = new BooleanArgument("Ambient");
         BooleanArgument particlesArg = new BooleanArgument("Particles");
         BooleanArgument iconArg = new BooleanArgument("Icon");
+        BooleanArgument triggerEventArg = new BooleanArgument("Trigger Event");
 
         // Accepts either a duration string ("20s") or the literal "infinite" in one node, so
         // "give" only needs a single registration instead of two competing ones for the same literal.
@@ -61,12 +64,12 @@ public class EffectCommand extends Command implements Listener {
 
         createCommand()
             .withArguments(new LiteralArgument("give"), entitiesArg(), effectArg, durationArg, amplifierArg)
-            .withOptionalArguments(idArg, particlesArg, ambientArg, iconArg)
+            .withOptionalArguments(idArg, particlesArg, ambientArg, iconArg, triggerEventArg)
             .executes((sender, args) -> {
                 Duration duration = args.getUnchecked(DURATION_NAME);
                 long ticks = duration == null ? -1 : duration.toMillis() / 50;
                 for (LivingEntity target : targets(args))
-                    giveEffect(target, args, effectArg, ticks, amplifierArg, idArg, particlesArg, ambientArg, iconArg);
+                    giveEffect(target, args, effectArg, ticks, amplifierArg, idArg, particlesArg, ambientArg, iconArg, triggerEventArg);
             })
             .register(this.getNamespace());
 
@@ -165,13 +168,15 @@ public class EffectCommand extends Command implements Listener {
 
     @SuppressWarnings({"ConstantConditions", "DataFlowIssue"})
     private void giveEffect(LivingEntity target, CommandArguments args, PotionEffectArgument effectArg, long ticks, IntegerArgument amplifierArg,
-                             StringArgument idArg, BooleanArgument particlesArg, BooleanArgument ambientArg, BooleanArgument iconArg) {
+                             StringArgument idArg, BooleanArgument particlesArg, BooleanArgument ambientArg, BooleanArgument iconArg,
+                             BooleanArgument triggerEventArg) {
         PotionEffectType type = args.getByArgument(effectArg);
         int amplifier = args.getByArgument(amplifierArg);
         String requestedId = args.getByArgumentOrDefault(idArg, null);
         boolean particles = args.getByArgumentOrDefault(particlesArg, true);
         boolean ambient = args.getByArgumentOrDefault(ambientArg, false);
         boolean icon = args.getByArgumentOrDefault(iconArg, true);
+        boolean triggerEvent = args.getByArgumentOrDefault(triggerEventArg, true);
 
         purgeExpired(target);
         captureIfUntracked(target, type);
@@ -181,7 +186,7 @@ public class EffectCommand extends Command implements Listener {
         PotionEffectType previousType = removeById(target, id);
 
         long expiresAt = ticks < 0 ? Long.MAX_VALUE : System.currentTimeMillis() + ticks * 50L;
-        track(target, new StackedEffect(id, type, amplifier, ambient, particles, icon, expiresAt, System.nanoTime(), true));
+        track(target, new StackedEffect(id, type, amplifier, ambient, particles, icon, triggerEvent, expiresAt, System.nanoTime(), true));
         applyWinner(target, type);
 
         if (previousType != null && !previousType.equals(type)) {
@@ -321,8 +326,10 @@ public class EffectCommand extends Command implements Listener {
 
     private StackedEffect fromPotionEffect(PotionEffect effect) {
         long expiresAt = effect.getDuration() < 0 ? Long.MAX_VALUE : System.currentTimeMillis() + effect.getDuration() * 50L;
+        // Captured effects came from somewhere that already fired the event once, so re-applying them
+        // when they resume should fire it again rather than silently reinstating them.
         return new StackedEffect(vanillaId(effect.getType()), effect.getType(), effect.getAmplifier(), effect.isAmbient(),
-            effect.hasParticles(), effect.hasIcon(), expiresAt, System.nanoTime(), false);
+            effect.hasParticles(), effect.hasIcon(), true, expiresAt, System.nanoTime(), false);
     }
 
     /** Deterministic ID for a captured (non-custom) effect of a given type, so it can always be removed without needing to list first. */
@@ -371,7 +378,9 @@ public class EffectCommand extends Command implements Listener {
                 // Vanilla refuses to lower an active effect's amplifier via addPotionEffect alone,
                 // so the currently-applied effect must be cleared first to allow a downgrade to stick.
                 if (target.hasPotionEffect(type)) target.removePotionEffect(type);
-                target.addPotionEffect(new PotionEffect(type, ticks, winner.amplifier(), winner.ambient(), winner.particles(), winner.icon()));
+                PotionEffect effect = new PotionEffect(type, ticks, winner.amplifier(), winner.ambient(), winner.particles(), winner.icon());
+                if (winner.triggerEvent()) target.addPotionEffect(effect);
+                else PotionEffectUtils.applySilently(target, effect);
                 activeIds.computeIfAbsent(uuid, k -> new HashMap<>()).put(type, winner.id());
             }
         } finally {

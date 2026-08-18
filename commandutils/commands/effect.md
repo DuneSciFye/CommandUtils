@@ -4,7 +4,7 @@ description: Gives potion effects that stack by ID and fall back to each other
 
 # Effect
 
-Usage: /effect \<give> \<Entities> \<Effect> \<Duration> \<Level> \[\<ID>] \[\<Particles>] \[\<Ambient>] \[\<Icon>]
+Usage: /effect \<give> \<Entities> \<Effect> \<Duration> \<Level> \[\<ID>] \[\<Particles>] \[\<Ambient>] \[\<Icon>] \[\<Trigger Event>]
 
 Usage: /effect \<remove> \<Entities> \<ID>
 
@@ -20,6 +20,7 @@ Usage: /effect \<clear> \<Entities> \[\<Effect>]
 * Particles _(optional)_ - Shows the swirling particles. Defaults to `true`
 * Ambient _(optional)_ - Uses the faded beacon-style particles. Defaults to `false`
 * Icon _(optional)_ - Shows the effect icon in the HUD. Defaults to `true`
+* Trigger Event _(optional)_ - Fires the potion effect event that other plugins listen for, such as ExecutableItems' `PLAYER_RECEIVE_EFFECT` activator. Set to `false` to apply the effect without anything else reacting to it. Defaults to `true`
 
 Vanilla keeps only one effect of each type: a weaker one applied over a stronger one is thrown away, and a stronger one applied over a weaker one erases it for good. This command keeps every entry instead.
 
@@ -28,6 +29,8 @@ For each effect type, all tracked entries are ranked by level, then by which arr
 Effects the entity already had, from vanilla or another plugin, are folded into the stack the first time this command touches that type, so nothing gets lost. Once no entry from this command remains for a type, tracking is dropped and vanilla takes over again.
 
 Every entity keeps its own stack, so each one in a selector is handled independently. Tracking is dropped when a player leaves or a mob dies, and it does not survive a restart.
+
+Whether an entry fires the potion effect event is remembered with the entry, so an entry given with `Trigger Event` set to `false` stays quiet later on too, when it takes back over after the one above it is removed or expires.
 
 | Function | Effect |
 | --- | --- |
@@ -50,6 +53,12 @@ A short, stronger burst on top of a long weaker buff — the burst wins, then th
 ```
 /effect give Steve speed 5m 0 boots
 /effect give Steve speed 10s 2 dash
+```
+
+A passive buff that shouldn't set off items reacting to `PLAYER_RECEIVE_EFFECT`:
+
+```
+/effect give Steve regeneration infinite 0 passive_regen true false true false
 ```
 
 Inspect and clear:

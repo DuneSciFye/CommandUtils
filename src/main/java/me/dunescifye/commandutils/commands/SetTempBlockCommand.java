@@ -6,6 +6,7 @@ import me.dunescifye.commandutils.utils.FUtils;
 import me.dunescifye.commandutils.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.command.ProxiedCommandSender;
 import org.bukkit.entity.Player;
@@ -14,7 +15,10 @@ import org.bukkit.inventory.ItemStack;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 import static me.dunescifye.commandutils.utils.ArgumentUtils.*;
@@ -27,10 +31,11 @@ public class SetTempBlockCommand extends Command {
         BlockStateArgument blockStateArg = new BlockStateArgument(BLOCK_STATE_NAME);
         BooleanArgument showBreakingArg = new BooleanArgument("Show Breaking");
         BooleanArgument dropArg = new BooleanArgument("Drop Block");
+        BlockStateArgument restoreBlockStateArg = new BlockStateArgument("Restore Block State");
 
         createCommand()
             .withArguments(worldArg(), blockLocArg(), blockStateArg, timeArgument(DURATION_NAME))
-            .withOptionalArguments(showBreakingArg, dropArg, whitelistedBlocksArg())
+            .withOptionalArguments(showBreakingArg, dropArg, whitelistedBlocksArg(), restoreBlockStateArg)
             .executes((sender, args) -> {
                 World world = args.getUnchecked(WORLD_NAME);
                 BlockData newData = args.getByArgument(blockStateArg).getBlockData();
@@ -52,10 +57,22 @@ public class SetTempBlockCommand extends Command {
 
                 if (predicates != null && !Utils.testBlock(block, predicates)) return;
 
-                BlockData originalData = block.getBlockData();
+                BlockState restoreState = args.getByArgumentOrDefault(restoreBlockStateArg, null);
+                BlockData restoreData = restoreState == null ? block.getBlockData() : restoreState.getBlockData();
                 block.setBlockData(newData, false);
 
                 int entityId = (loc.getBlockX() * 31 + loc.getBlockY()) * 31 + loc.getBlockZ();
+
+                // Players that have been sent a cracking stage, so it can be wiped from their client afterwards.
+                // Otherwise the cracks linger on whatever block ends up at this location, even a manually placed one
+                Set<UUID> cracked = new HashSet<>();
+                Runnable clearBreaking = () -> {
+                    for (UUID uuid : cracked) {
+                        Player p = Bukkit.getPlayer(uuid);
+                        if (p != null) p.sendBlockDamage(loc, 0.0f, entityId);
+                    }
+                    cracked.clear();
+                };
 
                 if (showBreaking) {
                     for (int i = 1; i <= 9; i++) {
@@ -65,7 +82,11 @@ public class SetTempBlockCommand extends Command {
                             if (block.getType() == newData.getMaterial()) {
                                 for (Player p : loc.getNearbyPlayers(20)) {
                                     p.sendBlockDamage(loc, progress, entityId);
+                                    cracked.add(p.getUniqueId());
                                 }
+                            } else {
+                                // Block was broken early, stop the animation and clean up what was already sent
+                                clearBreaking.run();
                             }
                         }, delay);
                     }
@@ -74,14 +95,15 @@ public class SetTempBlockCommand extends Command {
                 Bukkit.getScheduler().runTaskLater(CommandUtils.getInstance(), () -> {
                     if (drop) {
                         Collection<ItemStack> drops = block.getDrops();
-                        block.setBlockData(originalData, false);
+                        block.setBlockData(restoreData, false);
                         for (ItemStack item : drops) {
                             loc.getWorld().dropItemNaturally(loc, item);
                         }
                     } else {
-                        block.setBlockData(originalData, false);
+                        block.setBlockData(restoreData, false);
                     }
                     if (showBreaking) {
+                        clearBreaking.run();
                         loc.getWorld().spawnParticle(Particle.BLOCK, loc.clone().add(0.5, 0.5, 0.5), 30, 0.3, 0.3, 0.3, 0.15, newData);
                     }
                 }, ticks);
