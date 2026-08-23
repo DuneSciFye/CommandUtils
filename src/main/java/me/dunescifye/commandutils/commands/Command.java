@@ -40,7 +40,7 @@ public abstract class Command {
     }
 
     public CommandPermission getPermission() {
-        return CommandPermission.OP;
+        return permission;
     }
 
     public void setPermission(CommandPermission permission) {

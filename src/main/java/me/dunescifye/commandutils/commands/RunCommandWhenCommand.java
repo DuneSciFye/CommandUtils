@@ -90,7 +90,7 @@ public class RunCommandWhenCommand extends Command {
                                                     String compare2 = args.getByClass("Compare 2", String.class).replace("$", "%");
                                                     String compareMethod = args.getUnchecked("Compare Method");
                                                     String commandID = args.getUnchecked("Command ID");
-                                                    int delay = args.getUnchecked(INITIAL_DELAY_NAME);
+                                                    long delay = Utils.parseDuration(args.getByClass(INITIAL_DELAY_NAME, String.class)).toMillis() / 50;
                                                     int interval = args.getUnchecked("Interval");
                                                     String[] commands = ((String) args.getUnchecked("Commands")).replace("$", "%").split("\\|");
 

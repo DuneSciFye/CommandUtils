@@ -61,8 +61,8 @@ public class Config {
                         logger.warning("Configuration Commands." + key + ".Aliases is not a list. Found " + keySection.get("Aliases"));
                     }
                 }
-                command.setPermission(CommandPermission.OP);
-                //command.setPermission(keySection.getString("Permission", "commandutils.command." + key.toLowerCase()));
+                command.setPermission(CommandPermission.fromString(keySection.getString("Permission",
+                    "commandutils.command." + key.toLowerCase())));
 
                 if (keySection.getOptionalString("Namespace").isPresent()) {
                     if (keySection.isString("Namespace")) {

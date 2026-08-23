@@ -213,6 +213,9 @@ public class PlayerPlaceholders extends PlaceholderExpansion {
                 AttributeInstance attr = p.getAttribute(Attribute.SCALE);
                 return attr.getValue() == attr.getBaseValue() ? "true" : "false";
             }
+            case "attackcharge", "attackcooldown" -> {
+                return String.valueOf(p.getAttackCooldown());
+            }
             default -> {
                 return null;
             }
