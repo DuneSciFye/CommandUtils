@@ -46,6 +46,7 @@ Every command can be enabled, disabled or aliased in [config.yml](../config.md),
 | [Bone Meal Block](bone-meal-block.md) | Bone meal an area |
 | [Place Block From Inv](place-block-from-inv.md) / [Place Block From Slot](place-block-from-slot.md) | Place a block a player pays for |
 | [Highlight Blocks](highlight-blocks.md) | Mark matching blocks with particles |
+| [Glow Blocks](glow-blocks.md) | Make matching blocks glow for a set time |
 
 ## Custom tools
 

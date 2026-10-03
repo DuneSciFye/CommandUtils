@@ -40,6 +40,7 @@
   * [Give](commandutils/commands/give.md)
   * [Health](commandutils/commands/health.md)
   * [Highlight Blocks](commandutils/commands/highlight-blocks.md)
+  * [Glow Blocks](commandutils/commands/glow-blocks.md)
   * [If](commandutils/commands/if.md)
   * [Item Attribute](commandutils/commands/item-attribute.md)
   * [Item Cooldown](commandutils/commands/item-cooldown.md)

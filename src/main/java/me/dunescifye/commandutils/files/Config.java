@@ -46,11 +46,10 @@ public class Config {
             for (String key : commands.keySet()) {
                 if (commandSection.getOptionalSection(key).isEmpty()) {
                     config.set("Commands." + key + ".Enabled", true);
-                    config.set("Commands." + key + ".Aliases", new String[0]);
+                    config.set("Commands." + key + ".Aliases", new java.util.ArrayList<String>());
                     config.set("Commands." + key + ".Permission", "commandutils.command." + key.toLowerCase());
-                    continue;
                 }
-                Section keySection = commandSection.getSection(key);
+                Section keySection = config.getSection("Commands." + key);
                 Command command = commands.get(key);
                 command.setEnabled(config.getBoolean("Commands." + key + ".Enabled", true));
 
